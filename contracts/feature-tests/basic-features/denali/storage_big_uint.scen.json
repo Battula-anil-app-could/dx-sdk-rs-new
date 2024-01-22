@@ -1,6 +1,5 @@
 {
     "name": "storage",
-    "gasSchedule": "v2",
     "steps": [
         {
             "step": "setState",
@@ -13,7 +12,7 @@
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "100000000000000000",
                     "storage": {},
                     "code": ""
                 }
@@ -30,8 +29,8 @@
                 "arguments": [
                     "123"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
@@ -69,8 +68,8 @@
                 "value": "0",
                 "function": "load_big_uint",
                 "arguments": [],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [ "123" ],
@@ -91,8 +90,8 @@
                 "arguments": [
                     "0"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
@@ -130,8 +129,8 @@
                 "value": "0",
                 "function": "load_big_uint",
                 "arguments": [],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [ "0" ],

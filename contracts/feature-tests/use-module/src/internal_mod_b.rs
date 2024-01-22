@@ -1,4 +1,4 @@
-dharitri_wasm::imports!();
+imports!();
 
 use super::internal_mod_a::*;
 

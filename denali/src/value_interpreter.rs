@@ -2,13 +2,12 @@ use super::context::*;
 use super::value_raw::*;
 use num_bigint::{BigInt, BigUint, Sign};
 use num_traits::identities::Zero;
-use sha3::{Digest, Keccak256};
 
-const STR_PREFIXES: &[&str] = &["str:", "``", "''"];
+const STR_PREFIXES: [&str; 3] = ["str:", "``", "''"];
 
 const ADDR_PREFIX: &str = "address:";
 const FILE_PREFIX: &str = "file:";
-const KECCAK256_PREFIX: &str = "keccak256:";
+// const keccak256Prefix = "keccak256:"
 
 const U64_PREFIX: &str = "u64:";
 const U32_PREFIX: &str = "u32:";
@@ -18,9 +17,6 @@ const I64_PREFIX: &str = "i64:";
 const I32_PREFIX: &str = "i32:";
 const I16_PREFIX: &str = "i16:";
 const I8_PREFIX: &str = "i8:";
-
-const BIGUINT_PREFIX: &str = "biguint:";
-const NESTED_PREFIX: &str = "nested:";
 
 pub fn interpret_subtree(vst: &ValueSubTree, context: &InterpreterContext) -> Vec<u8> {
 	match vst {
@@ -79,12 +75,7 @@ pub fn interpret_string(s: &str, context: &InterpreterContext) -> Vec<u8> {
 		return s.as_bytes().to_vec();
 	}
 
-	if let Some(stripped) = s.strip_prefix(KECCAK256_PREFIX) {
-		let arg = interpret_string(stripped, context);
-		return keccak256(arg.as_slice());
-	}
-
-	if let Some(fixed_width) = try_parse_fixed_width(s, context) {
+	if let Some(fixed_width) = try_parse_fixed_width(s) {
 		return fixed_width;
 	}
 
@@ -101,7 +92,7 @@ pub fn interpret_string(s: &str, context: &InterpreterContext) -> Vec<u8> {
 	parse_unsigned(s)
 }
 
-fn try_parse_fixed_width(s: &str, context: &InterpreterContext) -> Option<Vec<u8>> {
+fn try_parse_fixed_width(s: &str) -> Option<Vec<u8>> {
 	if let Some(stripped) = s.strip_prefix(U64_PREFIX) {
 		return Some(parse_fixed_width_unsigned(stripped, 8));
 	}
@@ -132,14 +123,6 @@ fn try_parse_fixed_width(s: &str, context: &InterpreterContext) -> Option<Vec<u8
 
 	if let Some(stripped) = s.strip_prefix(I8_PREFIX) {
 		return Some(parse_fixed_width_signed(stripped, 1));
-	}
-
-	if let Some(stripped) = s.strip_prefix(BIGUINT_PREFIX) {
-		return Some(parse_biguint(stripped));
-	}
-
-	if let Some(stripped) = s.strip_prefix(NESTED_PREFIX) {
-		return Some(parse_nested(stripped, context));
 	}
 
 	None
@@ -190,18 +173,6 @@ fn parse_fixed_width_unsigned(s: &str, length: usize) -> Vec<u8> {
 		result[offset..].clone_from_slice(&parsed[..]);
 	}
 	result
-}
-
-fn parse_biguint(s: &str) -> Vec<u8> {
-	let parsed = parse_unsigned(s);
-	let encoded_length = (parsed.len() as u32).to_be_bytes();
-	[&encoded_length[..], &parsed[..]].concat()
-}
-
-fn parse_nested(s: &str, context: &InterpreterContext) -> Vec<u8> {
-	let parsed = interpret_string(s, context);
-	let encoded_length = (parsed.len() as u32).to_be_bytes();
-	[&encoded_length[..], &parsed[..]].concat()
 }
 
 fn parse_unsigned(s: &str) -> Vec<u8> {
@@ -256,11 +227,4 @@ fn address(s: &str) -> Vec<u8> {
 	let mut result = vec![b'_'; 32];
 	result[..bytes.len()].copy_from_slice(bytes);
 	result
-}
-
-fn keccak256(data: &[u8]) -> Vec<u8> {
-	let mut hasher = Keccak256::new();
-	hasher.update(data);
-	let hash: [u8; 32] = hasher.finalize().into();
-	hash.into()
 }

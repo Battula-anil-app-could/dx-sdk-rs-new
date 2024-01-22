@@ -9,5 +9,3 @@ pub use endpoint_abi::*;
 pub use type_abi::*;
 pub use type_description::*;
 pub use type_description_container::*;
-
-pub type TypeName = crate::String;

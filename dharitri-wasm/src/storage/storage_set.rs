@@ -1,28 +1,41 @@
-use crate::api::{ErrorApi, StorageWriteApi};
 use crate::*;
+use core::marker::PhantomData;
 use dharitri_codec::*;
 
-struct StorageSetOutput<'k, SWA>
+struct StorageSetOutput<'k, A, BigInt, BigUint>
 where
-	SWA: StorageWriteApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
-	api: SWA,
+	api: A,
 	key: &'k [u8],
+	_phantom1: PhantomData<BigInt>,
+	_phantom2: PhantomData<BigUint>,
 }
 
-impl<'k, SWA> StorageSetOutput<'k, SWA>
+impl<'k, A, BigInt, BigUint> StorageSetOutput<'k, A, BigInt, BigUint>
 where
-	SWA: StorageWriteApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint>,
 {
 	#[inline]
-	fn new(api: SWA, key: &'k [u8]) -> Self {
-		StorageSetOutput { api, key }
+	fn new(api: A, key: &'k [u8]) -> Self {
+		StorageSetOutput {
+			api,
+			key,
+			_phantom1: PhantomData,
+			_phantom2: PhantomData,
+		}
 	}
 }
 
-impl<'k, SWA> TopEncodeOutput for StorageSetOutput<'k, SWA>
+impl<'k, A, BigInt, BigUint> TopEncodeOutput for StorageSetOutput<'k, A, BigInt, BigUint>
 where
-	SWA: StorageWriteApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
 	fn set_slice_u8(self, bytes: &[u8]) {
 		self.api.storage_store_slice_u8(self.key, bytes)
@@ -45,10 +58,12 @@ where
 }
 
 // #[inline]
-pub fn storage_set<SWA, T>(api: SWA, key: &[u8], value: &T)
+pub fn storage_set<A, BigInt, BigUint, T>(api: A, key: &[u8], value: &T)
 where
 	T: TopEncode,
-	SWA: StorageWriteApi + ErrorApi + Clone + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
 	value.top_encode_or_exit(
 		StorageSetOutput::new(api.clone(), key),
@@ -58,9 +73,11 @@ where
 }
 
 #[inline(always)]
-fn storage_set_exit<SWA>(api: SWA, encode_err: EncodeError) -> !
+fn storage_set_exit<A, BigInt, BigUint>(api: A, encode_err: EncodeError) -> !
 where
-	SWA: StorageWriteApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
 	api.signal_error(encode_err.message_bytes())
 }

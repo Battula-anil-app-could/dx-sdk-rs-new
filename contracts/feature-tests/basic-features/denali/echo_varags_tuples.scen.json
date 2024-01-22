@@ -1,13 +1,12 @@
 {
     "name": "echo_varags_tuples",
-    "gasSchedule": "v2",
     "steps": [
         {
             "step": "setState",
             "accounts": {
                 "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
                     "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
@@ -33,7 +32,7 @@
                     "30",
                     "40"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "1,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -58,7 +57,7 @@
                 "value": "0",
                 "function": "echo_varags_tuples",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "1,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -84,7 +83,7 @@
                     "20",
                     "30"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "1,000,000",
                 "gasPrice": "0"
             },
             "expect": {

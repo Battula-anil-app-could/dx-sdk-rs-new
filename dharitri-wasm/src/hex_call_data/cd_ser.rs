@@ -1,4 +1,3 @@
-use crate::types::ArgBuffer;
 use alloc::vec::Vec;
 
 use super::SEPARATOR;
@@ -31,16 +30,10 @@ fn byte_to_hex(byte: u8) -> (u8, u8) {
 pub struct HexCallDataSerializer(Vec<u8>);
 
 impl HexCallDataSerializer {
-	pub fn new(endpoint_name: &[u8]) -> Self {
-		let mut data = Vec::with_capacity(endpoint_name.len());
-		data.extend_from_slice(endpoint_name);
+	pub fn new(func_name: &[u8]) -> Self {
+		let mut data = Vec::with_capacity(func_name.len());
+		data.extend_from_slice(func_name);
 		HexCallDataSerializer(data)
-	}
-
-	pub fn from_arg_buffer(endpoint_name: &[u8], arg_buffer: &ArgBuffer) -> Self {
-		let mut hex_data = HexCallDataSerializer::new(endpoint_name);
-		arg_buffer.for_each_arg(|arg_bytes| hex_data.push_argument_bytes(arg_bytes));
-		hex_data
 	}
 
 	pub fn as_slice(&self) -> &[u8] {

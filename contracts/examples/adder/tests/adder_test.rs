@@ -1,7 +1,6 @@
 extern crate adder;
 use adder::*;
-use dharitri_wasm_debug::api::RustBigInt;
-use dharitri_wasm_debug::TxContext;
+use dharitri_wasm_debug::*;
 
 #[test]
 fn test_add() {

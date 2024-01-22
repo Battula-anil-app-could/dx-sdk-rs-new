@@ -1,6 +1,5 @@
 {
     "name": "storage",
-    "gasSchedule": "v2",
     "steps": [
         {
             "step": "setState",
@@ -13,7 +12,7 @@
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "100000000000000000",
                     "storage": {},
                     "code": ""
                 }
@@ -32,7 +31,7 @@
                     "true"
                 ],
                 "gasLimit": "100",
-                "gasPrice": "0"
+                "gasPrice": "1"
             },
             "expect": {
                 "out": [],

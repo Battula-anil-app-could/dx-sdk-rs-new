@@ -2,7 +2,7 @@
 #![allow(non_snake_case)]
 #![allow(clippy::string_lit_as_bytes)]
 
-dharitri_wasm::imports!();
+imports!();
 
 #[dharitri_wasm_derive::contract(CryptoBubblesImpl)]
 pub trait CryptoBubbles {
@@ -15,9 +15,9 @@ pub trait CryptoBubbles {
 	}
 
 	/// player adds funds
-	#[payable("MOAX")]
+	#[payable]
 	#[endpoint(topUp)]
-	fn top_up(&self, #[payment] payment: BigUint) {
+	fn add_funds(&self, #[payment] payment: BigUint) {
 		let caller = self.get_caller();
 
 		let mut balance = self.get_player_balance(&caller);
@@ -45,7 +45,7 @@ pub trait CryptoBubbles {
 		balance -= amount;
 		self.set_player_balance(player, &balance);
 
-		self.send().direct_moax(player, &amount, b"crypto bubbles");
+		self.send_tx(player, &amount, b"crypto bubbles");
 
 		self.withdraw_event(player, amount);
 
@@ -72,11 +72,13 @@ pub trait CryptoBubbles {
 	}
 
 	// player tops up + joins a game
-	#[payable("MOAX")]
+	#[payable]
 	#[endpoint(joinGame)]
-	fn join_game(&self, game_index: BigUint, #[payment] bet: BigUint) -> SCResult<()> {
+	fn join_game(&self, game_index: BigUint) -> SCResult<()> {
 		let player = self.get_caller();
-		self.top_up(self.call_value().moax_value());
+		let bet = self.get_call_value_big_uint();
+
+		self.add_funds(self.get_call_value_big_uint());
 		self._add_player_to_game_state_change(&game_index, &player, &bet)
 	}
 
@@ -134,15 +136,15 @@ pub trait CryptoBubbles {
 
 	// Events
 
-	#[legacy_event("0x1000000000000000000000000000000000000000000000000000000000000001")]
+	#[event("0x1000000000000000000000000000000000000000000000000000000000000001")]
 	fn top_up_event(&self, player: &Address, amount: &BigUint);
 
-	#[legacy_event("0x1000000000000000000000000000000000000000000000000000000000000002")]
+	#[event("0x1000000000000000000000000000000000000000000000000000000000000002")]
 	fn withdraw_event(&self, player: &Address, amount: &BigUint);
 
-	#[legacy_event("0x1000000000000000000000000000000000000000000000000000000000000003")]
+	#[event("0x1000000000000000000000000000000000000000000000000000000000000003")]
 	fn player_joins_game_event(&self, game_index: &BigUint, player: &Address, bet: &BigUint);
 
-	#[legacy_event("0x1000000000000000000000000000000000000000000000000000000000000004")]
+	#[event("0x1000000000000000000000000000000000000000000000000000000000000004")]
 	fn reward_winner_event(&self, game_index: &BigUint, winner: &Address, prize: &BigUint);
 }

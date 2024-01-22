@@ -4,7 +4,7 @@ use dharitri_codec_derive::*;
 use dharitri_codec::test_util::{check_dep_encode_decode, check_top_encode_decode};
 use dharitri_codec::*;
 
-// to test, run the following command in dharitri-codec folder:
+// to test, run the following command in dharitri-codec-derive folder:
 // cargo expand --test struct_with_generic_derive_test > expanded.rs
 
 trait SimpleTrait {

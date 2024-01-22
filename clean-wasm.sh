@@ -2,21 +2,18 @@
 
 # cleans all wasm targets
 
-set -e
-SMART_CONTRACT_JSONS=$(find . -name "dharitri.json")
-for smart_contract_json in $SMART_CONTRACT_JSONS
-do
-    smart_contract_folder=$(dirname $smart_contract_json)
-    echo ""
-    (set -x; erdpy --verbose contract clean $smart_contract_folder)
-done
-
-# not wasm, but worth cleaning from time to time
-
-cargo clean
-cd dharitri-wasm-node
-cargo clean
-cd ..
-cd dharitri-wasm-output
-cargo clean
-cd ..
+erdpy --verbose contract clean "contracts/benchmarks/str-repeat"
+erdpy --verbose contract clean "contracts/examples/adder"
+erdpy --verbose contract clean "contracts/examples/crowdfunding-moax"
+erdpy --verbose contract clean "contracts/examples/crowdfunding-erc20"
+erdpy --verbose contract clean "contracts/examples/crowdfunding-dct"
+erdpy --verbose contract clean "contracts/examples/crypto-bubbles"
+erdpy --verbose contract clean "contracts/examples/factorial"
+erdpy --verbose contract clean "contracts/examples/lottery-moax"
+erdpy --verbose contract clean "contracts/examples/lottery-erc20"
+erdpy --verbose contract clean "contracts/examples/multisig"
+erdpy --verbose contract clean "contracts/examples/simple-erc20"
+erdpy --verbose contract clean "contracts/feature-tests/basic-features"
+erdpy --verbose contract clean "contracts/feature-tests/async/async-alice"
+erdpy --verbose contract clean "contracts/feature-tests/async/async-bob"
+erdpy --verbose contract clean "contracts/feature-tests/use-module"

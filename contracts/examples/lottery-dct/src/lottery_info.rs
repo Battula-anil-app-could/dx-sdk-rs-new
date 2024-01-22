@@ -1,11 +1,10 @@
-use dharitri_wasm::api::BigUintApi;
-use dharitri_wasm::types::{Address, TokenIdentifier, Vec};
+use dharitri_wasm::{Address, BigUintApi, BoxedBytes, Vec};
 
-dharitri_wasm::derive_imports!();
+derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<BigUint: BigUintApi> {
-	pub dct_token_name: TokenIdentifier,
+	pub dct_token_name: BoxedBytes,
 	pub ticket_price: BigUint,
 	pub tickets_left: u32,
 	pub deadline: u64,

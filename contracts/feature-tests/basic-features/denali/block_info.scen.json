@@ -1,5 +1,6 @@
 {
-    "gasSchedule": "v2",
+    "name": "count ones",
+    "comment": "should fail if the processor doesn't support the `count ones` instruction",
     "steps": [
         {
             "step": "setState",
@@ -22,14 +23,14 @@
                 "blockNonce": "521",
                 "blockRound": "532",
                 "blockEpoch": "544",
-                "blockRandomSeed": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                "blockRandomSeed": "u64:0|u64:0|u64:0|u64:0|u64:0|u64:0"
             },
             "currentBlockInfo": {
                 "blockTimestamp": "511",
                 "blockNonce": "522",
                 "blockRound": "533",
                 "blockEpoch": "544",
-                "blockRandomSeed": "0x123456000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007"
+                "blockRandomSeed": "u64:42|u64:12345|u64:64|u64:7"
             }
         },
         {
@@ -41,7 +42,7 @@
                 "value": "0",
                 "function": "get_prev_block_timestamp",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -61,7 +62,7 @@
                 "value": "0",
                 "function": "get_prev_block_nonce",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -81,7 +82,7 @@
                 "value": "0",
                 "function": "get_prev_block_round",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -101,7 +102,7 @@
                 "value": "0",
                 "function": "get_prev_block_epoch",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -121,11 +122,11 @@
                 "value": "0",
                 "function": "get_prev_block_random_seed",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" ],
+                "out": [ "u64:0|u64:0|u64:0|u64:0|u64:0|u64:0" ],
                 "status": "",
                 "logs": [],
                 "gas": "*",
@@ -142,7 +143,7 @@
                 "value": "0",
                 "function": "get_block_timestamp",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -162,7 +163,7 @@
                 "value": "0",
                 "function": "get_block_nonce",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -182,7 +183,7 @@
                 "value": "0",
                 "function": "get_block_round",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -202,7 +203,7 @@
                 "value": "0",
                 "function": "get_block_epoch",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -223,11 +224,11 @@
                 "value": "0",
                 "function": "get_block_random_seed",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "0x100000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "0x123456000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007" ],
+                "out": [ "u64:0|u64:0|u64:42|u64:12345|u64:64|u64:7" ],
                 "status": "",
                 "logs": [],
                 "gas": "*",

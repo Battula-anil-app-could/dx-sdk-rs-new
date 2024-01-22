@@ -1,4 +1,4 @@
-dharitri_wasm::derive_imports!();
+derive_imports!();
 
 /// Copied from dharitri-wasm serialization tests.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]

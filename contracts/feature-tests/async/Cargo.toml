@@ -17,22 +17,19 @@ path = "async-alice"
 [dependencies.async-bob]
 path = "async-bob"
 
-[dependencies.forwarder]
-path = "forwarder"
-
 [dependencies.dharitri-wasm]
-version = "0.0.6"
+version = "0.0.7"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-derive]
-version = "0.0.6"
+version = "0.0.7"
 path = "../../../dharitri-wasm-derive"
 
 [dependencies.dharitri-wasm-node]
-version = "0.0.6"
+version = "0.0.7"
 path = "../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.0.6"
+version = "0.0.7"
 path = "../../../dharitri-wasm-debug"

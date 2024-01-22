@@ -1,19 +1,18 @@
 {
     "name": "panic",
-    "gasSchedule": "v2",
     "steps": [
         {
             "step": "setState",
             "accounts": {
                 "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
                     "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x300abc",
                     "storage": {},
                     "code": ""
                 }
@@ -28,8 +27,8 @@
                 "value": "0",
                 "function": "panicWithMessage",
                 "arguments": [],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
@@ -45,13 +44,13 @@
             "accounts": {
                 "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
                     "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "1",
-                    "balance": "0",
+                    "balance": "0x200abc",
                     "storage": {},
                     "code": ""
                 }

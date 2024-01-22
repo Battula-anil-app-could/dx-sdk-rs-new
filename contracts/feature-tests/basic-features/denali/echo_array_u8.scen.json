@@ -1,19 +1,18 @@
 {
     "name": "echo_array_u8",
-    "gasSchedule": "v2",
     "steps": [
         {
             "step": "setState",
             "accounts": {
                 "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
                     "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x300abc",
                     "storage": {},
                     "code": ""
                 }
@@ -30,8 +29,8 @@
                 "arguments": [
                     "0x0102030405"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [
@@ -54,8 +53,8 @@
                 "arguments": [
                     "0x010203"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
@@ -71,13 +70,13 @@
             "accounts": {
                 "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
                     "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "2",
-                    "balance": "0",
+                    "balance": "0x100abc",
                     "storage": {},
                     "code": ""
                 }

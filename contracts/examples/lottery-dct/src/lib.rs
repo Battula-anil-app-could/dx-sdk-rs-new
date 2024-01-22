@@ -1,7 +1,7 @@
 #![no_std]
 #![allow(clippy::too_many_arguments)]
 
-dharitri_wasm::imports!();
+imports!();
 
 mod lottery_info;
 mod random;
@@ -10,6 +10,10 @@ mod status;
 use lottery_info::LotteryInfo;
 use random::Random;
 use status::Status;
+
+use dharitri_wasm::HexCallDataSerializer;
+
+const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
 
 const PERCENTAGE_TOTAL: u16 = 100;
 const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
@@ -24,7 +28,7 @@ pub trait Lottery {
 	fn start(
 		&self,
 		lottery_name: BoxedBytes,
-		dct_token_name: TokenIdentifier,
+		dct_token_name: BoxedBytes,
 		ticket_price: BigUint,
 		opt_total_tickets: Option<u32>,
 		opt_deadline: Option<u64>,
@@ -48,7 +52,7 @@ pub trait Lottery {
 	fn create_lottery_pool(
 		&self,
 		lottery_name: BoxedBytes,
-		dct_token_name: TokenIdentifier,
+		dct_token_name: BoxedBytes,
 		ticket_price: BigUint,
 		opt_total_tickets: Option<u32>,
 		opt_deadline: Option<u64>,
@@ -71,7 +75,7 @@ pub trait Lottery {
 	fn start_lottery(
 		&self,
 		lottery_name: BoxedBytes,
-		dct_token_name: TokenIdentifier,
+		dct_token_name: BoxedBytes,
 		ticket_price: BigUint,
 		opt_total_tickets: Option<u32>,
 		opt_deadline: Option<u64>,
@@ -84,7 +88,7 @@ pub trait Lottery {
 	) -> SCResult<()> {
 		require!(!lottery_name.is_empty(), "Name can't be empty!");
 		require!(
-			!dct_token_name.is_moax(),
+			!dct_token_name.is_empty(),
 			"Dct token name can't be empty!"
 		);
 
@@ -148,16 +152,10 @@ pub trait Lottery {
 	}
 
 	#[endpoint]
-	#[payable("*")]
-	fn buy_ticket(
-		&self,
-		lottery_name: BoxedBytes,
-		#[payment] payment: BigUint,
-		#[payment_token] token: TokenIdentifier,
-	) -> SCResult<()> {
+	fn buy_ticket(&self, lottery_name: BoxedBytes) -> SCResult<()> {
 		match self.status(&lottery_name) {
 			Status::Inactive => sc_error!("Lottery is currently inactive."),
-			Status::Running => self.update_after_buy_ticket(&lottery_name, payment, token),
+			Status::Running => self.update_after_buy_ticket(&lottery_name),
 			Status::Ended => {
 				sc_error!("Lottery entry period has ended! Awaiting winner announcement.")
 			},
@@ -192,21 +190,18 @@ pub trait Lottery {
 		Status::Running
 	}
 
-	fn update_after_buy_ticket(
-		&self,
-		lottery_name: &BoxedBytes,
-		payment: BigUint,
-		token: TokenIdentifier,
-	) -> SCResult<()> {
+	fn update_after_buy_ticket(&self, lottery_name: &BoxedBytes) -> SCResult<()> {
 		let mut info = self.get_lottery_info(&lottery_name);
 		let caller = self.get_caller();
+		let call_token_name = self.get_dct_token_name_boxed();
+		let payment = self.get_dct_value_big_uint();
 
 		require!(
 			info.whitelist.is_empty() || info.whitelist.contains(&caller),
 			"You are not allowed to participate in this lottery!"
 		);
 
-		require!(token == info.dct_token_name, "Wrong dct token!");
+		require!(call_token_name == info.dct_token_name, "Wrong dct token!");
 
 		require!(payment == info.ticket_price, "Wrong ticket fee!");
 
@@ -277,8 +272,7 @@ pub trait Lottery {
 
 						self.set_lottery_info(lottery_name, &info);
 
-						self.send()
-							.direct(&winner_address, &info.dct_token_name, &prize, &[]);
+						self.pay_dct(&info.dct_token_name, &prize, &winner_address);
 
 						break;
 					}
@@ -298,6 +292,18 @@ pub trait Lottery {
 		}
 
 		self.clear_lottery_info(lottery_name);
+	}
+
+	fn pay_dct(&self, dct_token_name: &BoxedBytes, amount: &BigUint, to: &Address) {
+		let mut serializer = HexCallDataSerializer::new(DCT_TRANSFER_STRING);
+		serializer.push_argument_bytes(dct_token_name.as_slice());
+		serializer.push_argument_bytes(amount.to_bytes_be().as_slice());
+
+		self.async_call(&to, &BigUint::zero(), serializer.as_slice());
+	}
+
+	fn get_dct_token_name_boxed(&self) -> BoxedBytes {
+		BoxedBytes::from(self.get_dct_token_name())
 	}
 
 	fn sum_array(&self, array: &[u8]) -> u16 {

@@ -1,4 +1,3 @@
-pub mod mappers;
 pub mod protected_keys;
 pub mod storage_get;
 pub mod storage_set;

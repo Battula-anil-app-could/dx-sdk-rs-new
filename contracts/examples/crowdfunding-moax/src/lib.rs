@@ -1,8 +1,8 @@
 #![no_std]
 #![allow(unused_attributes)]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+imports!();
+derive_imports!();
 
 #[derive(TopEncode, TopDecode, PartialEq, Clone, Copy, TypeAbi)]
 pub enum Status {
@@ -21,7 +21,7 @@ pub trait Crowdfunding {
 		self.set_deadline(deadline);
 	}
 
-	#[payable("MOAX")]
+	#[payable]
 	#[endpoint]
 	fn fund(&self, #[payment] payment: BigUint) -> SCResult<()> {
 		if self.get_block_nonce() > self.get_deadline() {
@@ -61,16 +61,14 @@ pub trait Crowdfunding {
 				if caller != self.get_owner() {
 					return sc_error!("only owner can claim successful funding");
 				}
-				self.send()
-					.direct_moax(&caller, &self.get_sc_balance(), b"funding success");
+				self.send_tx(&caller, &self.get_sc_balance(), b"funding success");
 				Ok(())
 			},
 			Status::Failed => {
 				let caller = self.get_caller();
 				let deposit = self.get_deposit(&caller);
 				if deposit > 0 {
-					self.send()
-						.direct_moax(&caller, &deposit, b"reclaim failed funding");
+					self.send_tx(&caller, &deposit, b"reclaim failed funding");
 					self.set_deposit(&caller, &BigUint::zero());
 				}
 				Ok(())

@@ -5,7 +5,7 @@ pub use internal_mod_a::*;
 mod internal_mod_b;
 pub use internal_mod_b::*;
 
-dharitri_wasm::imports!();
+imports!();
 
 #[cfg(feature = "dharitri-wasm-module-features-default")]
 use dharitri_wasm_module_features_default::*;

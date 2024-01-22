@@ -1,5 +1,5 @@
 {
-    "gasSchedule": "v2",
+    "name": "unjail nodes scenario",
     "steps": [
         {
             "step": "externalSteps",
@@ -20,7 +20,7 @@
                 "arguments": [
                     "3"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -40,37 +40,11 @@
                 "value": "0",
                 "function": "sign",
                 "arguments": ["1"],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
-                "status": "",
-                "logs": [],
-                "gas": "*",
-                "refund": "*"
-            }
-        },
-        {
-            "step": "scCall",
-            "txId": "pending-action-data",
-            "tx": {
-                "from": "address:bob",
-                "to": "address:multisig",
-                "value": "0",
-                "function": "getPendingActionFullInfo",
-                "arguments": [],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [
-                    [
-                        "u32:1",
-                        "u8:4|u32:3",
-                        "u32:2|address:alice|address:bob"
-                    ]
-                ],
                 "status": "",
                 "logs": [],
                 "gas": "*",
@@ -86,7 +60,7 @@
                 "value": "0",
                 "function": "performAction",
                 "arguments": ["1"],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -106,33 +80,13 @@
                 "value": "0",
                 "function": "getQuorum",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [
                     "3"
                 ],
-                "status": "",
-                "logs": [],
-                "gas": "*",
-                "refund": "*"
-            }
-        },
-        {
-            "step": "scCall",
-            "txId": "pending-action-data-none",
-            "tx": {
-                "from": "address:bob",
-                "to": "address:multisig",
-                "value": "0",
-                "function": "getPendingActionFullInfo",
-                "arguments": [],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
                 "status": "",
                 "logs": [],
                 "gas": "*",

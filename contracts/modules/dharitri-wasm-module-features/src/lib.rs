@@ -4,7 +4,7 @@
 #[macro_use]
 extern crate dharitri_wasm;
 
-dharitri_wasm::imports!();
+imports!();
 
 pub const FEATURE_NOT_SET: u8 = 0;
 pub const FEATURE_ON: u8 = 1;
@@ -56,7 +56,7 @@ use dharitri_wasm::dharitri_codec::*;
 impl<'a> NestedEncode for FeatureName<'a> {
 	#[inline]
 	fn dep_encode<O: NestedEncodeOutput>(&self, dest: &mut O) -> Result<(), EncodeError> {
-		dest.write(self.0);
+		dest.write(&self.0[..]);
 		Result::Ok(())
 	}
 
@@ -67,7 +67,7 @@ impl<'a> NestedEncode for FeatureName<'a> {
 		_: ExitCtx,
 		_: fn(ExitCtx, EncodeError) -> !,
 	) {
-		dest.write(self.0);
+		dest.write(&self.0[..]);
 	}
 }
 

@@ -2,23 +2,31 @@ use crate::*;
 use dharitri_codec::*;
 
 /// Any type that is used as an endpoint argument must implement this trait.
-pub trait DynArg: Sized {
-	fn dyn_load<I, D>(loader: &mut D, arg_id: ArgId) -> Self
-	where
-		I: TopDecodeInput,
-		D: DynArgInput<I>;
+pub trait DynArg<I, D>: Sized
+where
+	I: TopDecodeInput,
+	D: DynArgInput<I>,
+{
+	fn dyn_load(loader: &mut D, arg_id: ArgId) -> Self;
+}
+
+/// Used for loading arguments annotated with `#[multi(...)]`.
+pub trait DynArgMulti<I, D>: DynArg<I, D>
+where
+	I: TopDecodeInput,
+	D: DynArgInput<I>,
+{
+	fn dyn_load_multi(loader: &mut D, arg_id: ArgId, num: usize) -> Self;
 }
 
 /// All top-deserializable types can be endpoint arguments.
-impl<T> DynArg for T
+impl<I, D, T> DynArg<I, D> for T
 where
+	I: TopDecodeInput,
+	D: DynArgInput<I>,
 	T: TopDecode,
 {
-	fn dyn_load<I, D>(loader: &mut D, arg_id: ArgId) -> Self
-	where
-		I: TopDecodeInput,
-		D: DynArgInput<I>,
-	{
+	fn dyn_load(loader: &mut D, arg_id: ArgId) -> Self {
 		if let TypeInfo::Unit = T::TYPE_INFO {
 			// unit type returns without loading anything
 			let cast_unit: T = unsafe { core::mem::transmute_copy(&()) };
@@ -37,5 +45,5 @@ where
 	D: DynArgInput<I>,
 {
 	let (loader, arg_id) = ctx;
-	signal_arg_de_error(*loader, *arg_id, de_err)
+	loader.signal_arg_de_error(*arg_id, de_err)
 }

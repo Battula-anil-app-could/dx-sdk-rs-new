@@ -1,20 +1,24 @@
+#![allow(dead_code)]
+#![allow(unused_imports)]
+
 pub mod abi_json;
-pub mod api;
 mod async_data;
+mod big_int_mock;
+mod big_uint_mock;
 mod blockchain_mock;
 mod contract_map;
 mod display_util;
 mod execute_denali;
-mod mock_error;
-mod tx_context;
+mod ext_mock;
 
 pub use async_data::*;
+pub use big_int_mock::*;
+pub use big_uint_mock::*;
 pub use blockchain_mock::*;
 pub use contract_map::*;
 pub use display_util::*;
 pub use execute_denali::*;
-pub use mock_error::*;
-pub use tx_context::*;
+pub use ext_mock::*;
 
 #[macro_use]
 extern crate alloc;
@@ -25,7 +29,7 @@ pub use std::collections::HashMap;
 
 #[cfg(test)]
 mod dharitri_codec_tests {
-	use crate::api::{RustBigInt, RustBigUint};
+	use super::*;
 	use core::fmt::Debug;
 	use dharitri_wasm::dharitri_codec::test_util::{check_top_decode, check_top_encode};
 	use dharitri_wasm::dharitri_codec::*;

@@ -3,7 +3,7 @@ use dharitri_codec_derive::*;
 
 use dharitri_codec::test_util::{check_dep_encode_decode, check_top_decode, check_top_encode_decode};
 
-// to test, run the following command in dharitri-codec folder:
+// to test, run the following command in dharitri-codec-derive folder:
 // cargo expand --test enum_derive_test > enum_expanded.rs
 
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Debug)]

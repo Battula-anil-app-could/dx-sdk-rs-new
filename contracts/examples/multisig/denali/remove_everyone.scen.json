@@ -1,5 +1,5 @@
 {
-    "gasSchedule": "v2",
+    "name": "unjail nodes scenario",
     "steps": [
         {
             "step": "externalSteps",
@@ -7,7 +7,7 @@
         },
         {
             "step": "scDeploy",
-            "txId": "multisig-deploy",
+            "txId": "1",
             "tx": {
                 "from": "address:owner",
                 "value": "0",
@@ -16,7 +16,7 @@
                     "1",
                     "address:alice"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -38,7 +38,7 @@
                 "arguments": [
                     "address:alice"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -58,7 +58,7 @@
                 "value": "0",
                 "function": "sign",
                 "arguments": ["1"],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -78,7 +78,7 @@
                 "value": "0",
                 "function": "performAction",
                 "arguments": ["1"],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {

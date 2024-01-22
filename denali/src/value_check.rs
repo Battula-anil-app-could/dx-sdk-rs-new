@@ -1,5 +1,3 @@
-use crate::CheckBytesValueRaw;
-
 use super::context::*;
 use super::value::*;
 use super::value_raw::*;
@@ -29,48 +27,46 @@ impl Checkable<u64> for U64Value {
 }
 
 #[derive(Debug)]
-pub enum CheckValue<T: Default> {
+pub enum CheckValue<T> {
+	DefaultStar,
 	Star,
 	Equal(T),
 }
 
-impl<T> CheckValue<T>
-where
-	T: InterpretableFrom<ValueSubTree> + Default,
-{
+impl<T: InterpretableFrom<ValueSubTree>> CheckValue<T> {
 	pub fn is_star(&self) -> bool {
-		matches!(self, CheckValue::Star)
+		matches!(self, CheckValue::Star | CheckValue::DefaultStar)
+	}
+
+	pub fn is_default_star(&self) -> bool {
+		matches!(self, CheckValue::DefaultStar)
 	}
 }
 
-impl<T> Default for CheckValue<T>
-where
-	T: InterpretableFrom<ValueSubTree> + Default,
-{
+impl<T: InterpretableFrom<ValueSubTree>> Default for CheckValue<T> {
 	fn default() -> Self {
-		CheckValue::Equal(T::default())
+		CheckValue::DefaultStar
 	}
 }
 
-impl<T> InterpretableFrom<CheckBytesValueRaw> for CheckValue<T>
-where
-	T: InterpretableFrom<ValueSubTree> + Default,
-{
-	fn interpret_from(from: CheckBytesValueRaw, context: &InterpreterContext) -> Self {
-		match from {
-			CheckBytesValueRaw::Unspecified => CheckValue::Equal(T::default()),
-			CheckBytesValueRaw::Star => CheckValue::Star,
-			CheckBytesValueRaw::Equal(bytes_value) => {
-				CheckValue::Equal(T::interpret_from(bytes_value, context))
-			},
+impl<T: InterpretableFrom<ValueSubTree>> InterpretableFrom<ValueSubTree> for CheckValue<T> {
+	fn interpret_from(from: ValueSubTree, context: &InterpreterContext) -> Self {
+		if let ValueSubTree::Str(s) = &from {
+			if s.is_empty() {
+				return CheckValue::DefaultStar;
+			} else if s == "*" {
+				return CheckValue::Star;
+			}
 		}
+
+		CheckValue::Equal(T::interpret_from(from, context))
 	}
 }
 
-impl<T: fmt::Display + Default> fmt::Display for CheckValue<T> {
+impl<T: fmt::Display> fmt::Display for CheckValue<T> {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
-			CheckValue::Star => write!(f, "*"),
+			CheckValue::Star | CheckValue::DefaultStar => write!(f, "*"),
 			CheckValue::Equal(eq_value) => eq_value.fmt(f),
 		}
 	}
@@ -78,11 +74,11 @@ impl<T: fmt::Display + Default> fmt::Display for CheckValue<T> {
 
 impl<V, T> Checkable<V> for CheckValue<T>
 where
-	T: Checkable<V> + Default,
+	T: Checkable<V>,
 {
 	fn check(&self, value: V) -> bool {
 		match self {
-			CheckValue::Star => true,
+			CheckValue::DefaultStar | CheckValue::Star => true,
 			CheckValue::Equal(eq) => eq.check(value),
 		}
 	}

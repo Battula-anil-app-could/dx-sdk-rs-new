@@ -1,14 +1,10 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+imports!();
 
-mod abi_enum;
 mod abi_test_type;
-mod only_nested;
 
-use abi_enum::*;
 use abi_test_type::*;
-use only_nested::*;
 
 /// Contract whose sole purpose is to verify that
 /// the ABI generation framework works sa expected.
@@ -25,11 +21,6 @@ pub trait AbiTester {
 	}
 
 	#[endpoint]
-	fn echo_enum(&self, e: AbiEnum) -> AbiEnum {
-		e
-	}
-
-	#[endpoint]
 	#[output_name("multi-result-1")]
 	#[output_name("multi-result-2")]
 	#[output_name("multi-result-3")]
@@ -41,12 +32,12 @@ pub trait AbiTester {
 	#[endpoint]
 	#[output_name("multi-too-few-1")]
 	#[output_name("multi-too-few-2")]
-	fn multi_result_4(&self) -> MultiResult4<i32, [u8; 3], BoxedBytes, OnlyShowsUpAsNested03> {
+	fn multi_result_4(&self) -> MultiResult4<i32, [u8; 3], BoxedBytes, OnlyShowsUpAsNested3> {
 		(
 			1,
 			[2; 3],
 			BoxedBytes::empty(),
-			OnlyShowsUpAsNested03 { something: () },
+			OnlyShowsUpAsNested3 { something: () },
 		)
 			.into()
 	}
@@ -55,12 +46,12 @@ pub trait AbiTester {
 	fn var_args(
 		&self,
 		_simple_arg: u32,
-		#[var_args] _var_args: VarArgs<MultiArg2<OnlyShowsUpAsNested04, i32>>,
+		#[var_args] _var_args: VarArgs<MultiArg2<OnlyShowsUpAsNested4, i32>>,
 	) {
 	}
 
 	#[endpoint]
-	fn multi_result_vec(&self) -> MultiResultVec<OnlyShowsUpAsNested05> {
+	fn multi_result_vec(&self) -> MultiResultVec<OnlyShowsUpAsNested5> {
 		MultiResultVec::new()
 	}
 
@@ -68,12 +59,12 @@ pub trait AbiTester {
 	fn optional_arg(
 		&self,
 		_simple_arg: u32,
-		#[var_args] _opt_args: OptionalArg<OnlyShowsUpAsNested06>,
+		#[var_args] _opt_args: OptionalArg<OnlyShowsUpAsNested6>,
 	) {
 	}
 
 	#[endpoint]
-	fn optional_result(&self) -> OptionalResult<OnlyShowsUpAsNested07> {
+	fn optional_result(&self) -> OptionalResult<OnlyShowsUpAsNested7> {
 		OptionalResult::None
 	}
 
@@ -83,25 +74,6 @@ pub trait AbiTester {
 	}
 
 	#[endpoint]
-	#[payable("MOAX")]
-	fn payable_moax(&self, #[payment] _payment: BigUint, #[payment_token] _token: TokenIdentifier) {
-	}
-
-	#[endpoint]
-	#[payable("TOKEN-FOR-ABI")]
-	fn payable_some_token(
-		&self,
-		#[payment] _payment: BigUint,
-		#[payment_token] _token: TokenIdentifier,
-	) {
-	}
-
-	#[endpoint]
-	#[payable("*")]
-	fn payable_any_token(
-		&self,
-		#[payment] _payment: BigUint,
-		#[payment_token] _token: TokenIdentifier,
-	) {
-	}
+	#[payable]
+	fn payable_moax(&self, #[payment] _payment: BigUint) {}
 }

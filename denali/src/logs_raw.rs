@@ -20,7 +20,7 @@ pub struct CheckLogRaw {
 pub enum CheckLogsRaw {
 	Star,
 	List(Vec<CheckLogRaw>),
-	Unspecified,
+	DefaultStar,
 }
 
 impl CheckLogsRaw {
@@ -29,13 +29,13 @@ impl CheckLogsRaw {
 	}
 
 	pub fn is_default(&self) -> bool {
-		matches!(self, CheckLogsRaw::Unspecified)
+		matches!(self, CheckLogsRaw::DefaultStar)
 	}
 }
 
 impl Default for CheckLogsRaw {
 	fn default() -> Self {
-		CheckLogsRaw::Unspecified
+		CheckLogsRaw::DefaultStar
 	}
 }
 
@@ -45,8 +45,7 @@ impl Serialize for CheckLogsRaw {
 		S: Serializer,
 	{
 		match self {
-			CheckLogsRaw::Unspecified => serializer.serialize_str(""),
-			CheckLogsRaw::Star => serializer.serialize_str("*"),
+			CheckLogsRaw::Star | CheckLogsRaw::DefaultStar => serializer.serialize_str("*"),
 			CheckLogsRaw::List(l) => {
 				let mut seq = serializer.serialize_seq(Some(l.len()))?;
 				for item in l {

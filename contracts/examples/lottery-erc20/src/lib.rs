@@ -1,8 +1,7 @@
 #![no_std]
 #![allow(clippy::too_many_arguments)]
-#![allow(non_snake_case)]
 
-dharitri_wasm::imports!();
+imports!();
 
 mod lottery_info;
 mod random;
@@ -17,14 +16,18 @@ const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
 
 #[dharitri_wasm_derive::callable(Erc20Proxy)]
 pub trait Erc20 {
+	#[callback(transfer_from_callback)]
 	fn transferFrom(
 		&self,
 		sender: &Address,
 		recipient: &Address,
-		amount: &BigUint,
-	) -> ContractCall<BigUint, ()>;
+		amount: BigUint,
+		#[callback_arg] cb_lottery_name: &BoxedBytes,
+		#[callback_arg] cb_sender: &Address,
+	);
 
-	fn transfer(&self, to: &Address, amount: &BigUint) -> ContractCall<BigUint, ()>;
+	#[callback(distribute_prizes_callback)]
+	fn transfer(&self, to: &Address, amount: BigUint, #[callback_arg] cb_lottery_name: &BoxedBytes);
 }
 
 #[dharitri_wasm_derive::contract(LotteryImpl)]
@@ -146,11 +149,7 @@ pub trait Lottery {
 	}
 
 	#[endpoint]
-	fn buy_ticket(
-		&self,
-		lottery_name: BoxedBytes,
-		token_amount: BigUint,
-	) -> SCResult<AsyncCall<BigUint>> {
+	fn buy_ticket(&self, lottery_name: BoxedBytes, token_amount: BigUint) -> SCResult<()> {
 		match self.status(&lottery_name) {
 			Status::Inactive => sc_error!("Lottery is currently inactive."),
 			Status::Running => self.update_after_buy_ticket(&lottery_name, &token_amount),
@@ -164,10 +163,7 @@ pub trait Lottery {
 	}
 
 	#[endpoint]
-	fn determine_winner(
-		&self,
-		lottery_name: BoxedBytes,
-	) -> SCResult<OptionalResult<AsyncCall<BigUint>>> {
+	fn determine_winner(&self, lottery_name: BoxedBytes) -> SCResult<()> {
 		match self.status(&lottery_name) {
 			Status::Inactive => sc_error!("Lottery is inactive!"),
 			Status::Running => sc_error!("Lottery is still running!"),
@@ -180,7 +176,9 @@ pub trait Lottery {
 					);
 				}
 
-				Ok(self.distribute_prizes(&lottery_name))
+				self.distribute_prizes(&lottery_name);
+
+				Ok(())
 			},
 			Status::DistributingPrizes => sc_error!("Prizes are currently being distributed!"),
 		}
@@ -211,7 +209,7 @@ pub trait Lottery {
 		&self,
 		lottery_name: &BoxedBytes,
 		token_amount: &BigUint,
-	) -> SCResult<AsyncCall<BigUint>> {
+	) -> SCResult<()> {
 		let info = self.get_lottery_info(&lottery_name);
 		let caller = self.get_caller();
 
@@ -234,13 +232,16 @@ pub trait Lottery {
 
 		let erc20_address = self.get_erc20_contract_address();
 		let lottery_contract_address = self.get_sc_address();
-		Ok(contract_call!(self, erc20_address, Erc20Proxy)
-			.transferFrom(&caller, &lottery_contract_address, token_amount)
-			.async_call()
-			.with_callback(
-				self.callbacks()
-					.transfer_from_callback(lottery_name, &caller),
-			))
+		let erc20_proxy = contract_proxy!(self, &erc20_address, Erc20);
+		erc20_proxy.transferFrom(
+			&caller,
+			&lottery_contract_address,
+			token_amount.clone(),
+			lottery_name,
+			&caller,
+		);
+
+		Ok(())
 	}
 
 	fn reserve_ticket(&self, lottery_name: &BoxedBytes) {
@@ -259,7 +260,7 @@ pub trait Lottery {
 		self.set_lottery_info(lottery_name, &info);
 	}
 
-	fn distribute_prizes(&self, lottery_name: &BoxedBytes) -> OptionalResult<AsyncCall<BigUint>> {
+	fn distribute_prizes(&self, lottery_name: &BoxedBytes) {
 		let info = self.get_lottery_info(&lottery_name);
 
 		let total_tickets = info.current_ticket_number;
@@ -271,7 +272,7 @@ pub trait Lottery {
 		if winners_left == 0 {
 			self.clear_storage(lottery_name);
 
-			return OptionalResult::None;
+			return;
 		}
 
 		let last_winning_ticket_index: usize;
@@ -305,15 +306,11 @@ pub trait Lottery {
 		self.set_lottery_info(lottery_name, &info);
 
 		let erc20_address = self.get_erc20_contract_address();
-		OptionalResult::Some(
-			contract_call!(self, erc20_address, Erc20Proxy)
-				.transfer(&winner_address, &prize)
-				.async_call()
-				.with_callback(self.callbacks().distribute_prizes_callback(lottery_name)),
-		)
+		let erc20_proxy = contract_proxy!(self, &erc20_address, Erc20);
+		erc20_proxy.transfer(&winner_address, prize, lottery_name);
 	}
 
-	fn get_random_winning_ticket_id(&self, prev_winners: &[u32], total_tickets: u32) -> u32 {
+	fn get_random_winning_ticket_id(&self, prev_winners: &Vec<u32>, total_tickets: u32) -> u32 {
 		let seed = self.get_block_random_seed();
 		let mut rand = Random::new(*seed);
 
@@ -353,9 +350,9 @@ pub trait Lottery {
 	#[callback]
 	fn transfer_from_callback(
 		&self,
-		#[call_result] result: AsyncCallResult<()>,
-		cb_lottery_name: &BoxedBytes,
-		cb_sender: &Address,
+		result: AsyncCallResult<()>,
+		#[callback_arg] cb_lottery_name: BoxedBytes,
+		#[callback_arg] cb_sender: Address,
 	) {
 		let mut info = self.get_lottery_info(&cb_lottery_name);
 
@@ -387,14 +384,15 @@ pub trait Lottery {
 	#[callback]
 	fn distribute_prizes_callback(
 		&self,
-		#[call_result] result: AsyncCallResult<()>,
-		cb_lottery_name: &BoxedBytes,
-	) -> OptionalResult<AsyncCall<BigUint>> {
+		result: AsyncCallResult<()>,
+		#[callback_arg] cb_lottery_name: BoxedBytes,
+	) {
 		match result {
-			AsyncCallResult::Ok(()) => self.distribute_prizes(cb_lottery_name),
+			AsyncCallResult::Ok(()) => {
+				self.distribute_prizes(&cb_lottery_name);
+			},
 			AsyncCallResult::Err(_) => {
 				// nothing we can do if an error occurs in the erc20 contract
-				OptionalResult::None
 			},
 		}
 	}
