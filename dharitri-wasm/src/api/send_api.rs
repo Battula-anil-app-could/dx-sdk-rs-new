@@ -27,7 +27,7 @@ where
 		gas_limit: u64,
 		function: &[u8],
 		arg_buffer: &ArgBuffer,
-	);
+	) -> Result<(), &'static [u8]>;
 
 	/// Sends an DCT token to a given address, directly.
 	/// Used especially for sending DCT to regular accounts.
@@ -39,8 +39,8 @@ where
 		token: &[u8],
 		amount: &BigUint,
 		data: &[u8],
-	) {
-		self.direct_dct_execute(to, token, amount, 0, data, &ArgBuffer::new());
+	) -> Result<(), &'static [u8]> {
+		self.direct_dct_execute(to, token, amount, 0, data, &ArgBuffer::new())
 	}
 
 	/// Sends DCT to an address and executes like an async call, but without callback.
@@ -52,7 +52,7 @@ where
 		gas_limit: u64,
 		function: &[u8],
 		arg_buffer: &ArgBuffer,
-	);
+	) -> Result<(), &'static [u8]>;
 
 	/// Sends DCT NFT to an address and executes like an async call, but without callback.
 	fn direct_dct_nft_execute(
@@ -64,7 +64,7 @@ where
 		gas_limit: u64,
 		function: &[u8],
 		arg_buffer: &ArgBuffer,
-	);
+	) -> Result<(), &'static [u8]>;
 
 	/// Sends either MOAX or an DCT token to the target address,
 	/// depending on what token identifier was specified.
@@ -72,7 +72,7 @@ where
 		if token.is_moax() {
 			self.direct_moax(to, amount, data);
 		} else {
-			self.direct_dct_via_transf_exec(to, token.as_dct_identifier(), amount, data);
+			let _ = self.direct_dct_via_transf_exec(to, token.as_dct_identifier(), amount, data);
 		}
 	}
 
@@ -105,7 +105,7 @@ where
 		data: &[u8],
 	) {
 		if token.is_moax() {
-			self.direct_moax(to, amount, data);
+			let _ = self.direct_moax(to, amount, data);
 		} else {
 			self.direct_dct_via_async_call(to, token.as_dct_identifier(), amount, data);
 		}
@@ -291,7 +291,7 @@ where
 		nonce: u64,
 		amount: &BigUint,
 		data: &[u8],
-	) {
-		self.direct_dct_nft_execute(to, token, nonce, amount, 0, data, &ArgBuffer::new());
+	) -> Result<(), &'static [u8]> {
+		self.direct_dct_nft_execute(to, token, nonce, amount, 0, data, &ArgBuffer::new())
 	}
 }

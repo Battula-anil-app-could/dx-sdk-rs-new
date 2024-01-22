@@ -4,9 +4,22 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [dharitri-wasm 0.15.0, dharitri-codec 0.5.2] - 2021-04-19
+- ABI
+	- Constructor representation
+	- Simplified ABI syntax for tuples and fixed-size arrays
+- Final cleanup for the contract APIs: split off blockchain and crypto APIs
+- Small fixes in the send API
+- `TokenIdentifier` validation
+- Minor refactoring in the dharitri-codec 
 
-## [dharitri-wasm 0.14.0, denali 0.0.3, dharitri-codec 0.0.4]
+## [dharitri-wasm 0.14.2] - 2021-03-29
+- Fixed contract call/callback logs in denali-rs
+
+## [dharitri-wasm 0.14.1] - 2021-03-25
+- Unified variadic arguments with respective variadic results
+
+## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -152,7 +165,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -165,7 +178,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.0.3, dharitri-codec 0.1.2] - 2020-08-25
+## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -178,14 +191,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
 ## [dharitri-wasm 0.5.2] - 2020-07-09
 - Queue type
 
-## [dharitri-wasm 0.0.4] - 2020-07-02
+## [dharitri-wasm 0.5.1] - 2020-07-02
 - `#[view]` attribute, same as `#[endpoint]`
 - `#[init]` attribute
 - `storage get mut` annotation + BorrowedMutStorage
@@ -250,7 +263,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.0.2] - 2020-02-05 
+## [dharitri-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

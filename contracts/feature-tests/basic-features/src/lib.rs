@@ -414,6 +414,18 @@ pub trait BasicFeatures {
 			.update(|value| *value += amount);
 	}
 
+	// Often times the update of a value is conditioned by a requirement
+	// For example, when subtracting from a balance, we must first check that we have enough funds
+	// The closure can return a Result, which can be propagated (either directly, or via sc_try!)
+	#[endpoint]
+	fn my_single_value_mapper_subtract_with_require(&self, amount: &BigInt) -> SCResult<()> {
+		self.map_my_single_value_mapper().update(|value| {
+			require!(*value >= *amount, "not enough funds");
+			*value -= amount;
+			Ok(())
+		})
+	}
+
 	#[endpoint]
 	fn clear_single_value_mapper(&self) {
 		self.map_my_single_value_mapper().clear();
@@ -535,6 +547,38 @@ pub trait BasicFeatures {
 		map_mapper.remove(&item)
 	}
 
+	#[endpoint]
+	fn map_mapper_entry_or_default_update_increment(&self, item: u32, increment: u32) -> u32 {
+		self.map_mapper().entry(item).or_default().update(|value| {
+			*value += increment;
+			*value
+		})
+	}
+
+	#[endpoint]
+	fn map_mapper_entry_or_insert_default(&self, item: u32, default: u32) -> u32 {
+		let mut mapper = self.map_mapper();
+		let entry = mapper.entry(item);
+		entry.or_insert_with(|| default).get()
+	}
+
+	#[endpoint]
+	fn map_mapper_entry_and_modify(&self, item: u32, increment: u32, otherwise: u32) -> u32 {
+		self.map_mapper()
+			.entry(item)
+			.and_modify(|value| *value += increment)
+			.or_insert(otherwise)
+			.get()
+	}
+
+	#[endpoint]
+	fn map_mapper_entry_or_insert_with_key(&self, item: u32, key_increment: u32) -> u32 {
+		self.map_mapper()
+			.entry(item)
+			.or_insert_with_key(|key| key + key_increment)
+			.get()
+	}
+
 	// MapStorageMapper
 
 	#[storage_mapper("map_storage_mapper")]
@@ -616,25 +660,76 @@ pub trait BasicFeatures {
 		map_storage_mapper.clear();
 	}
 
+	#[endpoint]
+	fn map_storage_mapper_entry_or_default_update_increment(
+		&self,
+		item: u32,
+		key: u32,
+		increment: u32,
+	) -> u32 {
+		let mut map = self.map_storage_mapper().entry(item).or_default().get();
+		map.entry(key).or_default().update(|value| {
+			*value += increment;
+			*value
+		})
+	}
+
+	#[endpoint]
+	fn map_storage_mapper_entry_and_modify_increment_or_default(
+		&self,
+		item: u32,
+		key: u32,
+		value: u32,
+		other: u32,
+	) -> u32 {
+		let map = self
+			.map_storage_mapper()
+			.entry(item)
+			.and_modify(|map| {
+				map.insert(key, value);
+			})
+			.or_default()
+			.get();
+		map.get(&key).unwrap_or(other)
+	}
+
+	#[endpoint]
+	fn map_storage_mapper_entry_or_default_update(
+		&self,
+		item: u32,
+		key: u32,
+		value: u32,
+	) -> Option<u32> {
+		self.map_storage_mapper()
+			.entry(item)
+			.or_default()
+			.update(|map| map.insert(key, value))
+	}
+
 	// BASIC API
 	#[endpoint(get_caller)]
 	fn get_caller_endpoint(&self) -> Address {
-		self.get_caller()
+		self.blockchain().get_caller()
 	}
 
 	#[endpoint(get_shard_of_address)]
 	fn get_shard_of_address_endpoint(&self, address: &Address) -> u32 {
-		self.get_shard_of_address(address)
+		self.blockchain().get_shard_of_address(address)
 	}
 
 	#[endpoint(is_smart_contract)]
 	fn is_smart_contract_endpoint(&self, address: &Address) -> bool {
-		self.is_smart_contract(address)
+		self.blockchain().is_smart_contract(address)
+	}
+
+	#[endpoint(get_owner_address)]
+	fn get_owner_address_endpoint(&self) -> Address {
+		self.blockchain().get_owner_address()
 	}
 
 	#[endpoint(get_gas_left)]
 	fn get_gas_left_endpoint(&self) -> u64 {
-		self.get_gas_left()
+		self.blockchain().get_gas_left()
 	}
 
 	// EVENTS
@@ -677,52 +772,52 @@ pub trait BasicFeatures {
 
 	#[view(get_block_timestamp)]
 	fn get_block_timestamp_view(&self) -> u64 {
-		self.get_block_timestamp()
+		self.blockchain().get_block_timestamp()
 	}
 
 	#[view(get_block_nonce)]
 	fn get_block_nonce_view(&self) -> u64 {
-		self.get_block_nonce()
+		self.blockchain().get_block_nonce()
 	}
 
 	#[view(get_block_round)]
 	fn get_block_round_view(&self) -> u64 {
-		self.get_block_round()
+		self.blockchain().get_block_round()
 	}
 
 	#[view(get_block_epoch)]
 	fn get_block_epoch_view(&self) -> u64 {
-		self.get_block_epoch()
+		self.blockchain().get_block_epoch()
 	}
 
 	#[view(get_block_random_seed)]
 	fn get_block_random_seed_view(&self) -> Box<[u8; 48]> {
-		self.get_block_random_seed()
+		self.blockchain().get_block_random_seed()
 	}
 
 	#[view(get_prev_block_timestamp)]
 	fn get_prev_block_timestamp_view(&self) -> u64 {
-		self.get_prev_block_timestamp()
+		self.blockchain().get_prev_block_timestamp()
 	}
 
 	#[view(get_prev_block_nonce)]
 	fn get_prev_block_nonce_view(&self) -> u64 {
-		self.get_prev_block_nonce()
+		self.blockchain().get_prev_block_nonce()
 	}
 
 	#[view(get_prev_block_round)]
 	fn get_prev_block_round_view(&self) -> u64 {
-		self.get_prev_block_round()
+		self.blockchain().get_prev_block_round()
 	}
 
 	#[view(get_prev_block_epoch)]
 	fn get_prev_block_epoch_view(&self) -> u64 {
-		self.get_prev_block_epoch()
+		self.blockchain().get_prev_block_epoch()
 	}
 
 	#[view(get_prev_block_random_seed)]
 	fn get_prev_block_random_seed_view(&self) -> Box<[u8; 48]> {
-		self.get_prev_block_random_seed()
+		self.blockchain().get_prev_block_random_seed()
 	}
 
 	// BIG INT OPERATIONS
@@ -1094,29 +1189,29 @@ pub trait BasicFeatures {
 
 	#[endpoint(computeSha256)]
 	fn compute_sha256(&self, input: Vec<u8>) -> H256 {
-		self.sha256(&input)
+		self.crypto().sha256(&input)
 	}
 
 	#[endpoint(computeKeccak256)]
 	fn compute_keccak256(&self, input: Vec<u8>) -> H256 {
-		self.keccak256(&input)
+		self.crypto().keccak256(&input)
 	}
 
 	// Not called, they currently just panic with "Not implemented yet!"
 
 	#[endpoint]
 	fn verify_bls_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-		self.verify_bls(key, message, signature)
+		self.crypto().verify_bls(key, message, signature)
 	}
 
 	#[endpoint]
 	fn verify_ed25519_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-		self.verify_ed25519(key, message, signature)
+		self.crypto().verify_ed25519(key, message, signature)
 	}
 
 	#[endpoint]
 	fn verify_secp256k1_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-		self.verify_secp256k1(key, message, signature)
+		self.crypto().verify_secp256k1(key, message, signature)
 	}
 
 	// MACROS
@@ -1166,5 +1261,12 @@ pub trait BasicFeatures {
 	#[view]
 	fn result_err_from_str<'a>(&self, e: &'a str) -> Result<(), &'a str> {
 		Result::Err(e)
+	}
+
+	#[endpoint]
+	fn result_echo(&self, arg: Option<String>, test: bool) -> Result<String, SCError> {
+		require!(test, "test argument is false");
+		let unwrapped = arg.ok_or("option argument is none")?;
+		Result::Ok(unwrapped)
 	}
 }

@@ -62,8 +62,6 @@ impl CallValueApi<ArwenBigUint> for ArwenApiImpl {
 	}
 
 	fn dct_token_type(&self) -> DctTokenType {
-		unsafe {
-			(getDCTTokenType() as u8).into()
-		}
+		unsafe { (getDCTTokenType() as u8).into() }
 	}
 }

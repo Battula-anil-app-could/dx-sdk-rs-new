@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-codec"
-version = "0.0.4"
+version = "0.0.6"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -18,7 +18,7 @@ derive = ["dharitri-codec-derive"]
 
 [dependencies.dharitri-codec-derive]
 path = "../dharitri-codec-derive"
-version = "0.0.4"
+version = "0.0.6"
 optional = true
 
 [dependencies]
@@ -27,4 +27,4 @@ arrayvec = { version = "0.5.2", default-features = false, features = ["array-siz
 
 [dev-dependencies.dharitri-codec-derive]
 path = "../dharitri-codec-derive"
-version = "0.0.4"
+version = "0.0.6"

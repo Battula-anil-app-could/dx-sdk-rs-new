@@ -30,13 +30,16 @@ where
 {
 	#[inline]
 	fn finish(&self, api: FA) {
-		api.direct_moax_execute(
+		let result = api.direct_moax_execute(
 			&self.to,
 			&self.moax_payment,
 			self.gas_limit,
 			self.endpoint_name.as_slice(),
 			&self.arg_buffer,
 		);
+		if let Err(e) = result {
+			api.signal_error(e);
+		}
 	}
 }
 

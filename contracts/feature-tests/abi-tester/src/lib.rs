@@ -17,6 +17,12 @@ use only_nested::*;
 /// including Rust docs.
 #[dharitri_wasm_derive::contract(AbiTesterImpl)]
 pub trait AbiTester {
+	/// Contract constructor.
+	#[init]
+	#[payable("MOAX")]
+	fn init(&self, _constructor_arg_1: i32, _constructor_arg_2: OnlyShowsUpInConstructor) {}
+
+	/// Example endpoint docs.
 	#[endpoint]
 	#[output_name("single output")]
 	#[output_name("this one doesn't show up")]
@@ -46,7 +52,7 @@ pub trait AbiTester {
 			1,
 			[2; 3],
 			BoxedBytes::empty(),
-			OnlyShowsUpAsNested03 { something: () },
+			OnlyShowsUpAsNested03(),
 		)
 			.into()
 	}
@@ -60,7 +66,7 @@ pub trait AbiTester {
 	}
 
 	#[endpoint]
-	fn multi_result_vec(&self) -> MultiResultVec<OnlyShowsUpAsNested05> {
+	fn multi_result_vec(&self) -> MultiResultVec<MultiResult3<OnlyShowsUpAsNested05, bool, ()>> {
 		MultiResultVec::new()
 	}
 

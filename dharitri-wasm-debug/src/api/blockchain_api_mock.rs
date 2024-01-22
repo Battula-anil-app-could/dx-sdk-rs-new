@@ -1,4 +1,3 @@
-use super::big_int_api_mock::*;
 use super::big_uint_api_mock::*;
 use crate::TxContext;
 use dharitri_wasm::{
@@ -6,26 +5,7 @@ use dharitri_wasm::{
 	types::{Address, DctTokenData, H256},
 };
 
-impl dharitri_wasm::api::ContractHookApi<RustBigInt, RustBigUint> for TxContext {
-	type Storage = Self;
-	type CallValue = Self;
-	type SendApi = Self;
-
-	#[inline]
-	fn get_storage_raw(&self) -> Self::Storage {
-		self.clone()
-	}
-
-	#[inline]
-	fn call_value(&self) -> Self::CallValue {
-		self.clone()
-	}
-
-	#[inline]
-	fn send(&self) -> Self::SendApi {
-		self.clone()
-	}
-
+impl dharitri_wasm::api::BlockchainApi<RustBigUint> for TxContext {
 	fn get_sc_address(&self) -> Address {
 		self.tx_input_box.to.clone()
 	}
