@@ -1,0 +1,49 @@
+[package]
+name = "multisig"
+version = "0.0.0"
+authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = [
+    "dharitri-wasm-node",
+    "dharitri-wasm-module-users-wasm",
+]
+
+default = [
+    "dharitri-wasm-module-users-default"
+]
+
+[dependencies.dharitri-wasm-module-users-wasm]
+package = "dharitri-wasm-module-users"
+version = "0.0.2"
+path = "../../modules/dharitri-wasm-module-users"
+features = ["wasm-output-mode"]
+optional = true
+
+[dependencies.dharitri-wasm-module-users-default]
+package = "dharitri-wasm-module-users"
+version = "0.0.2"
+path = "../../modules/dharitri-wasm-module-users"
+optional = true
+
+[dependencies.dharitri-wasm]
+version = "0.0.2"
+path = "../../../dharitri-wasm"
+
+[dependencies.dharitri-wasm-derive]
+version = "0.0.2"
+path = "../../../dharitri-wasm-derive"
+
+[dependencies.dharitri-wasm-node]
+version = "0.0.2"
+path = "../../../dharitri-wasm-node"
+optional = true
+
+[dev-dependencies.dharitri-wasm-debug]
+version = "0.0.2"
+path = "../../../dharitri-wasm-debug"

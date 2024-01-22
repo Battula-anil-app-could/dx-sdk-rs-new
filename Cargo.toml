@@ -1,0 +1,56 @@
+[workspace]
+members = [
+  "dharitri-wasm",
+  "dharitri-wasm-debug",
+  "dharitri-wasm-derive",
+  "denali",
+  "dharitri-codec-derive",
+
+  "contracts/benchmarks/str-repeat",
+
+  "contracts/examples/adder",
+  "contracts/examples/adder/abi",
+  "contracts/examples/adder/debug",
+  "contracts/examples/crypto-bubbles",
+  "contracts/examples/crypto-bubbles/abi",
+  "contracts/examples/factorial",
+  "contracts/examples/factorial/abi",
+  "contracts/examples/crowdfunding-moax",
+  "contracts/examples/crowdfunding-moax/abi",
+  "contracts/examples/crowdfunding-erc20",
+  "contracts/examples/crowdfunding-erc20/abi",
+  "contracts/examples/crowdfunding-dct",
+  "contracts/examples/crowdfunding-dct/abi",
+  "contracts/examples/lottery-moax",
+  "contracts/examples/lottery-moax/abi",
+  "contracts/examples/lottery-erc20",
+  "contracts/examples/lottery-erc20/abi",
+  "contracts/examples/lottery-dct",
+  "contracts/examples/lottery-dct/abi",
+  "contracts/examples/multisig",
+  "contracts/examples/multisig/abi",
+  "contracts/examples/non-fungible-tokens",
+  "contracts/examples/non-fungible-tokens/abi",
+  "contracts/examples/simple-erc20",
+  "contracts/examples/simple-erc20/abi",
+  
+  "contracts/feature-tests/abi-tester",
+  "contracts/feature-tests/abi-tester/abi",
+  "contracts/feature-tests/async",
+  "contracts/feature-tests/async/async-alice",
+  "contracts/feature-tests/async/async-bob",
+  "contracts/feature-tests/basic-features",
+  "contracts/feature-tests/basic-features/abi",
+  "contracts/feature-tests/use-module",
+  "contracts/feature-tests/use-module/abi",
+
+  "contracts/modules/dharitri-wasm-module-features",
+  "contracts/modules/dharitri-wasm-module-pause",
+  "contracts/modules/dharitri-wasm-module-users",
+]
+
+exclude = [
+  "dharitri-wasm-node",
+  "dharitri-wasm-output",
+  "tools",
+]
