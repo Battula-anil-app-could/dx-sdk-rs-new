@@ -11,6 +11,7 @@ pub struct InputAbi {
 
 #[derive(Clone, Debug)]
 pub struct OutputAbi {
+	pub output_name: &'static str,
 	pub type_name: String,
 	pub multi_result: bool,
 }
@@ -19,7 +20,7 @@ pub struct OutputAbi {
 pub struct EndpointAbi {
 	pub docs: &'static [&'static str],
 	pub name: &'static str,
-	pub payable: bool,
+	pub payable_in_tokens: &'static [&'static str],
 	pub inputs: Vec<InputAbi>,
 	pub outputs: Vec<OutputAbi>,
 }
@@ -33,7 +34,8 @@ impl EndpointAbi {
 		});
 	}
 
-	pub fn add_output<T: TypeAbi>(&mut self) {
-		self.outputs.extend_from_slice(T::output_abis().as_slice());
+	pub fn add_output<T: TypeAbi>(&mut self, output_names: &[&'static str]) {
+		self.outputs
+			.extend_from_slice(T::output_abis(output_names).as_slice());
 	}
 }

@@ -1,5 +1,5 @@
 use dharitri_wasm::Box;
-derive_imports!();
+dharitri_wasm::derive_imports!();
 
 const ARRAY_SIZE: usize = 512;
 

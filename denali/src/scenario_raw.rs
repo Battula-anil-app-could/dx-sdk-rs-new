@@ -2,6 +2,8 @@ use super::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+/// Mapped 1-on-1 with the JSON. No complex logic here, just a basic interface with the JSON.
+/// The conversion to `Scenario` adds all additional functionality.
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ScenarioRaw {
@@ -16,6 +18,11 @@ pub struct ScenarioRaw {
 	#[serde(default)]
 	#[serde(skip_serializing_if = "Option::is_none")]
 	pub check_gas: Option<bool>,
+
+	#[serde(default)]
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub gas_schedule: Option<String>,
+
 	pub steps: Vec<StepRaw>,
 }
 
@@ -56,6 +63,7 @@ pub enum StepRaw {
 
 	#[serde(rename_all = "camelCase")]
 	ScCall {
+		#[serde(default)]
 		tx_id: String,
 
 		#[serde(default)]
@@ -70,7 +78,24 @@ pub enum StepRaw {
 	},
 
 	#[serde(rename_all = "camelCase")]
+	ScQuery {
+		#[serde(default)]
+		tx_id: String,
+
+		#[serde(default)]
+		#[serde(skip_serializing_if = "Option::is_none")]
+		comment: Option<String>,
+
+		tx: TxQueryRaw,
+
+		#[serde(default)]
+		#[serde(skip_serializing_if = "Option::is_none")]
+		expect: Option<TxExpectRaw>,
+	},
+
+	#[serde(rename_all = "camelCase")]
 	ScDeploy {
+		#[serde(default)]
 		tx_id: String,
 
 		#[serde(default)]
@@ -86,6 +111,7 @@ pub enum StepRaw {
 
 	#[serde(rename_all = "camelCase")]
 	Transfer {
+		#[serde(default)]
 		tx_id: String,
 
 		#[serde(default)]
@@ -97,6 +123,7 @@ pub enum StepRaw {
 
 	#[serde(rename_all = "camelCase")]
 	ValidatorReward {
+		#[serde(default)]
 		tx_id: String,
 
 		#[serde(default)]
@@ -179,6 +206,16 @@ pub struct TxCallRaw {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TxQueryRaw {
+	pub to: ValueSubTree,
+	pub function: String,
+
+	#[serde(default)]
+	pub arguments: Vec<ValueSubTree>,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TxDeployRaw {
 	pub from: ValueSubTree,
 	pub value: ValueSubTree,
@@ -227,23 +264,23 @@ pub struct TxValidatorRewardRaw {
 #[serde(rename_all = "camelCase")]
 pub struct TxExpectRaw {
 	#[serde(default)]
-	pub out: Vec<ValueSubTree>,
+	pub out: Vec<CheckBytesValueRaw>,
 
-	pub status: ValueSubTree,
+	pub status: CheckBytesValueRaw,
 
 	#[serde(default)]
 	#[serde(skip_serializing_if = "CheckLogsRaw::is_default")]
 	pub logs: CheckLogsRaw,
 
 	#[serde(default)]
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub message: Option<ValueSubTree>,
+	#[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
+	pub message: CheckBytesValueRaw,
 
 	#[serde(default)]
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub gas: Option<ValueSubTree>,
+	#[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
+	pub gas: CheckBytesValueRaw,
 
 	#[serde(default)]
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub refund: Option<ValueSubTree>,
+	#[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
+	pub refund: CheckBytesValueRaw,
 }

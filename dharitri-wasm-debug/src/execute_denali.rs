@@ -1,16 +1,21 @@
 #![allow(unused_variables)] // for now
 
 use super::*;
-use dharitri_wasm::*;
+use dharitri_wasm::types::*;
 use denali::*;
 use num_bigint::BigUint;
 use std::path::Path;
 
 const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
 
-pub fn parse_execute_denali<P: AsRef<Path>>(path: P, contract_map: &ContractMap<TxContext>) {
+pub fn parse_execute_denali<P: AsRef<Path>>(
+	relative_path: P,
+	contract_map: &ContractMap<TxContext>,
+) {
+	let mut absolute_path = std::env::current_dir().unwrap();
+	absolute_path.push(relative_path);
 	let mut state = BlockchainMock::new();
-	parse_execute_denali_steps(path.as_ref(), &mut state, contract_map);
+	parse_execute_denali_steps(absolute_path.as_ref(), &mut state, contract_map);
 }
 
 fn parse_execute_denali_steps(
@@ -36,20 +41,25 @@ fn parse_execute_denali_steps(
 				current_block_info,
 			} => {
 				for (address, account) in accounts.iter() {
+					let storage = account
+						.storage
+						.iter()
+						.map(|(k, v)| (k.value.clone(), v.value.clone()))
+						.collect();
+					let dct = if let Some(dct_map) = &account.dct {
+						dct_map
+							.iter()
+							.map(|(k, v)| (k.value.clone(), v.value.clone()))
+							.collect()
+					} else {
+						HashMap::new()
+					};
 					state.add_account(AccountData {
 						address: address.value.into(),
 						nonce: account.nonce.value,
 						balance: account.balance.value.clone(),
-						storage: account
-							.storage
-							.iter()
-							.map(|(k, v)| (k.value.clone(), v.value.clone()))
-							.collect(),
-						dct: account.dct.as_ref().map(|tree| {
-							tree.iter()
-								.map(|(k, v)| (k.value.clone(), v.value.clone()))
-								.collect()
-						}),
+						storage,
+						dct,
 						contract_path: account
 							.code
 							.as_ref()
@@ -65,58 +75,10 @@ fn parse_execute_denali_steps(
 					)
 				}
 				if let Some(block_info_obj) = &**previous_block_info {
-					if let Some(u64_value) = &block_info_obj.block_timestamp {
-						state.previous_block_info.block_timestamp = u64_value.value;
-					}
-					if let Some(u64_value) = &block_info_obj.block_nonce {
-						state.previous_block_info.block_nonce = u64_value.value;
-					}
-					if let Some(u64_value) = &block_info_obj.block_epoch {
-						state.previous_block_info.block_epoch = u64_value.value;
-					}
-					if let Some(u64_value) = &block_info_obj.block_round {
-						state.previous_block_info.block_round = u64_value.value;
-					}
-					if let Some(bytes_value) = &block_info_obj.block_random_seed {
-						const SEED_LEN: usize = 48;
-						let val = &bytes_value.value;
-
-						assert!(
-							val.len() <= SEED_LEN,
-							"block random seed input value too long!"
-						);
-
-						let mut seed = [0u8; SEED_LEN];
-						&seed[SEED_LEN - val.len()..].copy_from_slice(val.as_slice());
-						state.previous_block_info.block_random_seed = Box::from(seed);
-					}
+					update_block_info(&mut state.previous_block_info, block_info_obj);
 				}
 				if let Some(block_info_obj) = &**current_block_info {
-					if let Some(u64_value) = &block_info_obj.block_timestamp {
-						state.current_block_info.block_timestamp = u64_value.value;
-					}
-					if let Some(u64_value) = &block_info_obj.block_nonce {
-						state.current_block_info.block_nonce = u64_value.value;
-					}
-					if let Some(u64_value) = &block_info_obj.block_epoch {
-						state.current_block_info.block_epoch = u64_value.value;
-					}
-					if let Some(u64_value) = &block_info_obj.block_round {
-						state.current_block_info.block_round = u64_value.value;
-					}
-					if let Some(bytes_value) = &block_info_obj.block_random_seed {
-						const SEED_LEN: usize = 48;
-						let val = &bytes_value.value;
-
-						assert!(
-							val.len() <= SEED_LEN,
-							"block random seed input value too long!"
-						);
-
-						let mut seed = [0u8; SEED_LEN];
-						&seed[SEED_LEN - val.len()..].copy_from_slice(val.as_slice());
-						state.current_block_info.block_random_seed = Box::from(seed);
-					}
+					update_block_info(&mut state.current_block_info, block_info_obj);
 				}
 			},
 			Step::ScCall {
@@ -130,7 +92,7 @@ fn parse_execute_denali_steps(
 					to: tx.to.value.into(),
 					call_value: tx.call_value.value.clone(),
 					dct_value: tx.dct_value.value.clone(),
-					dct_token_name: tx.dct_token_name.value.clone(),
+					dct_token_identifier: tx.dct_token_name.value.clone(),
 					func_name: tx.function.as_bytes().to_vec(),
 					args: tx
 						.arguments
@@ -143,7 +105,7 @@ fn parse_execute_denali_steps(
 				};
 				state.increase_nonce(&tx_input.from);
 				let (mut tx_result, opt_async_data) =
-					execute_sc_call(tx_input, state, contract_map);
+					execute_sc_call(tx_input, state, contract_map).unwrap();
 				if tx_result.result_status == 0 {
 					if let Some(async_data) = opt_async_data {
 						let contract_address = tx.to.value.into();
@@ -156,7 +118,7 @@ fn parse_execute_denali_steps(
 							}
 
 							let (async_result, opt_more_async) =
-								execute_sc_call(async_input, state, contract_map);
+								execute_sc_call(async_input, state, contract_map).unwrap();
 							assert!(
 								opt_more_async.is_none(),
 								"nested asyncs currently not supported"
@@ -169,26 +131,60 @@ fn parse_execute_denali_steps(
 								&async_result,
 							);
 							let (callback_result, opt_more_async) =
-								execute_sc_call(callback_input, state, contract_map);
+								execute_sc_call(callback_input, state, contract_map).unwrap();
 							assert!(
 								opt_more_async.is_none(),
 								"successive asyncs currently not supported"
 							);
 							tx_result = merge_results(tx_result, callback_result);
 						} else {
-							state.subtract_tx_payment(&contract_address, &async_data.call_value);
+							state
+								.subtract_tx_payment(&contract_address, &async_data.call_value)
+								.unwrap();
 							state.add_account(AccountData {
 								address: async_data.to.clone(),
 								nonce: 0,
 								balance: async_data.call_value.clone(),
 								storage: HashMap::new(),
-								dct: None,
+								dct: HashMap::new(),
 								contract_path: None,
 								contract_owner: None,
 							});
 							state.print_accounts();
 						}
 					}
+				}
+				if let Some(tx_expect) = expect {
+					check_tx_output(tx_id.as_str(), &tx_expect, &tx_result);
+				}
+			},
+			Step::ScQuery {
+				tx_id,
+				comment,
+				tx,
+				expect,
+			} => {
+				let tx_input = TxInput {
+					from: tx.to.value.into(),
+					to: tx.to.value.into(),
+					call_value: BigUint::from(0u32),
+					dct_value: BigUint::from(0u32),
+					dct_token_identifier: Vec::new(),
+					func_name: tx.function.as_bytes().to_vec(),
+					args: tx
+						.arguments
+						.iter()
+						.map(|scen_arg| scen_arg.value.clone())
+						.collect(),
+					gas_limit: u64::MAX,
+					gas_price: 0u64,
+					tx_hash: generate_tx_hash_dummy(tx_id.as_str()),
+				};
+
+				let (tx_result, opt_async_data) =
+					execute_sc_call(tx_input, state, contract_map).unwrap();
+				if tx_result.result_status == 0 && opt_async_data.is_some() {
+					panic!("Can't query a view function that performs an async call");
 				}
 				if let Some(tx_expect) = expect {
 					check_tx_output(tx_id.as_str(), &tx_expect, &tx_result);
@@ -205,7 +201,7 @@ fn parse_execute_denali_steps(
 					to: Address::zero(),
 					call_value: tx.call_value.value.clone(),
 					dct_value: tx.dct_value.value.clone(),
-					dct_token_name: tx.dct_token_name.value.clone(),
+					dct_token_identifier: tx.dct_token_name.value.clone(),
 					func_name: b"init".to_vec(),
 					args: tx
 						.arguments
@@ -218,7 +214,8 @@ fn parse_execute_denali_steps(
 				};
 				state.increase_nonce(&tx_input.from);
 				let (tx_result, _) =
-					execute_sc_create(tx_input, &tx.contract_code.value, state, contract_map);
+					execute_sc_create(tx_input, &tx.contract_code.value, state, contract_map)
+						.unwrap();
 				if let Some(tx_expect) = expect {
 					check_tx_output(tx_id.as_str(), &tx_expect, &tx_result);
 				}
@@ -226,17 +223,23 @@ fn parse_execute_denali_steps(
 			Step::Transfer { tx_id, comment, tx } => {
 				let sender_address = &tx.from.value.into();
 				state.increase_nonce(sender_address);
-				state.subtract_tx_payment(sender_address, &tx.value.value);
+				state
+					.subtract_tx_payment(sender_address, &tx.value.value)
+					.unwrap();
 				let recipient_address = &tx.to.value.into();
 				state.increase_balance(recipient_address, &tx.value.value);
-				let dct_token_name = tx.dct_token_name.value.clone();
+				let dct_token_identifier = tx.dct_token_name.value.clone();
 				let dct_value = tx.dct_value.value.clone();
 
-				if !dct_token_name.is_empty() && dct_value > 0u32.into() {
-					state.substract_dct_balance(sender_address, &dct_token_name[..], &dct_value);
+				if !dct_token_identifier.is_empty() && dct_value > 0u32.into() {
+					state.substract_dct_balance(
+						sender_address,
+						&dct_token_identifier[..],
+						&dct_value,
+					);
 					state.increase_dct_balance(
 						recipient_address,
-						&dct_token_name[..],
+						&dct_token_identifier[..],
 						&dct_value,
 					);
 				}
@@ -257,32 +260,32 @@ fn parse_execute_denali_steps(
 fn execute_dct_async_call(tx_input: TxInput, state: &mut BlockchainMock) {
 	let from = tx_input.from.clone();
 	let to = tx_input.to.clone();
-	let dct_token_name = tx_input.dct_token_name.clone();
+	let dct_token_identifier = tx_input.dct_token_identifier.clone();
 	let dct_value = tx_input.dct_value;
 
-	state.substract_dct_balance(&from, &dct_token_name, &dct_value);
-	state.increase_dct_balance(&to, &dct_token_name, &dct_value);
+	state.substract_dct_balance(&from, &dct_token_identifier, &dct_value);
+	state.increase_dct_balance(&to, &dct_token_identifier, &dct_value);
 }
 
 fn execute_sc_call(
 	tx_input: TxInput,
 	state: &mut BlockchainMock,
 	contract_map: &ContractMap<TxContext>,
-) -> (TxResult, Option<AsyncCallTxData>) {
+) -> Result<(TxResult, Option<AsyncCallTxData>), BlockchainMockError> {
 	let from = tx_input.from.clone();
 	let to = tx_input.to.clone();
 	let call_value = tx_input.call_value.clone();
 	let blockchain_info = state.create_tx_info(&to);
 
-	state.subtract_tx_payment(&from, &call_value);
+	state.subtract_tx_payment(&from, &call_value)?;
 	state.subtract_tx_gas(&from, tx_input.gas_limit, tx_input.gas_price);
 
-	let dct_token_name = tx_input.dct_token_name.clone();
+	let dct_token_identifier = tx_input.dct_token_identifier.clone();
 	let dct_value = tx_input.dct_value.clone();
-	let dct_used = !dct_token_name.is_empty() && dct_value > 0u32.into();
+	let dct_used = !dct_token_identifier.is_empty() && dct_value > 0u32.into();
 
 	if dct_used {
-		state.substract_dct_balance(&from, &dct_token_name, &dct_value)
+		state.substract_dct_balance(&from, &dct_token_identifier, &dct_value)
 	}
 
 	let contract_account = state
@@ -314,42 +317,42 @@ fn execute_sc_call(
 		let _ = std::mem::replace(&mut contract_account.storage, tx_output.contract_storage);
 
 		state.increase_balance(&to, &call_value);
-		state.send_balance(&to, tx_output.send_balance_list.as_slice());
-
 		if dct_used {
-			state.increase_dct_balance(&to, &dct_token_name, &dct_value);
+			state.increase_dct_balance(&to, &dct_token_identifier, &dct_value);
 		}
+
+		state.send_balance(&to, tx_output.send_balance_list.as_slice())?;
 	} else {
 		state.increase_balance(&from, &call_value);
 
 		if dct_used {
-			state.increase_dct_balance(&from, &dct_token_name, &dct_value);
+			state.increase_dct_balance(&from, &dct_token_identifier, &dct_value);
 		}
 	}
 
-	(tx_result, tx_output.async_call)
+	Ok((tx_result, tx_output.async_call))
 }
 
 fn execute_sc_create(
 	tx_input: TxInput,
-	contract_path: &Vec<u8>,
+	contract_path: &[u8],
 	state: &mut BlockchainMock,
 	contract_map: &ContractMap<TxContext>,
-) -> (TxResult, Option<AsyncCallTxData>) {
+) -> Result<(TxResult, Option<AsyncCallTxData>), BlockchainMockError> {
 	let from = tx_input.from.clone();
 	let to = tx_input.to.clone();
 	let call_value = tx_input.call_value.clone();
 	let blockchain_info = state.create_tx_info(&to);
 
-	state.subtract_tx_payment(&from, &call_value);
+	state.subtract_tx_payment(&from, &call_value)?;
 	state.subtract_tx_gas(&from, tx_input.gas_limit, tx_input.gas_price);
 
-	let dct_token_name = tx_input.dct_token_name.clone();
+	let dct_token_identifier = tx_input.dct_token_identifier.clone();
 	let dct_value = tx_input.dct_value.clone();
-	let dct_used = !dct_token_name.is_empty() && dct_value > 0u32.into();
+	let dct_used = !dct_token_identifier.is_empty() && dct_value > 0u32.into();
 
 	if dct_used {
-		state.substract_dct_balance(&from, &dct_token_name, &dct_value)
+		state.substract_dct_balance(&from, &dct_token_identifier, &dct_value)
 	}
 
 	let tx_context = TxContext::new(blockchain_info, tx_input.clone(), TxOutput::default());
@@ -359,18 +362,18 @@ fn execute_sc_create(
 		let new_address = state.create_account_after_deploy(
 			&tx_input,
 			tx_output.contract_storage,
-			contract_path.clone(),
+			contract_path.to_vec(),
 		);
-		state.send_balance(&new_address, tx_output.send_balance_list.as_slice());
+		state.send_balance(&new_address, tx_output.send_balance_list.as_slice())?;
 	} else {
 		state.increase_balance(&from, &call_value);
 
 		if dct_used {
-			state.increase_dct_balance(&from, &dct_token_name, &dct_value);
+			state.increase_dct_balance(&from, &dct_token_identifier, &dct_value);
 		}
 	}
 
-	(tx_output.result, tx_output.async_call)
+	Ok((tx_output.result, tx_output.async_call))
 }
 
 fn check_tx_output(tx_id: &str, tx_expect: &TxExpect, tx_result: &TxResult) {
@@ -393,23 +396,53 @@ fn check_tx_output(tx_id: &str, tx_expect: &TxExpect, tx_result: &TxResult) {
 		);
 	}
 
-	if let Some(expected_message) = &tx_expect.message {
-		let want_str = std::str::from_utf8(expected_message.value.as_slice()).unwrap();
-		let have_str = std::str::from_utf8(tx_result.result_message.as_slice()).unwrap();
-		assert_eq!(
-			want_str, have_str,
-			"bad error message. Tx id: {}. Want: \"{}\". Have: \"{}\"",
-			tx_id, want_str, have_str
-		);
-	}
-
+	let have_str = std::str::from_utf8(tx_result.result_message.as_slice()).unwrap();
 	assert!(
 		tx_expect.status.check(tx_result.result_status),
-		"bad tx status. Tx id: {}. Want: \"{}\". Have: \"{}\"",
+		"result code mismatch. Tx id: {}. Want: {}. Have: {}. Message: {}",
 		tx_id,
 		tx_expect.status,
-		tx_result.result_status
+		tx_result.result_status,
+		have_str,
 	);
+
+	assert!(
+		tx_expect.message.check(&tx_result.result_message),
+		"result message mismatch. Tx id: {}. Want: {}. Have: {}.",
+		tx_id,
+		&tx_expect.message,
+		have_str,
+	);
+
+	match &tx_expect.logs {
+		CheckLogs::Star => {},
+		CheckLogs::List(expected_logs) => {
+			assert!(
+				expected_logs.len() == tx_result.result_logs.len(),
+				"Log amounts do not match. Tx id: {}. Want: {}. Have: {}",
+				tx_id,
+				expected_logs.len(),
+				tx_result.result_logs.len()
+			);
+
+			for (expected_log, actual_log) in expected_logs.iter().zip(tx_result.result_logs.iter())
+			{
+				assert!(
+					actual_log.equals(&expected_log),
+					"Logs do not match. Tx id: {}.\nWant: Address: {}, Identifier: {}, Topics: {:?}, Data: {}\nHave: Address: {}, Identifier: {}, Topics: {:?}, Data: {}",
+					tx_id,
+					verbose_hex(&expected_log.address.value),
+					bytes_to_string(&expected_log.identifier.value),
+					expected_log.topics.iter().map(|topic| verbose_hex(&topic.value)).collect::<String>(),
+					verbose_hex(&expected_log.data.value),
+					address_hex(&actual_log.address),
+					bytes_to_string(&actual_log.identifier),
+					actual_log.topics.iter().map(|topic| verbose_hex(&topic)).collect::<String>(),
+					verbose_hex(&actual_log.data),
+				);
+			}
+		},
+	}
 }
 
 fn check_state(accounts: &denali::CheckAccounts, state: &mut BlockchainMock) {
@@ -465,12 +498,11 @@ fn check_state(accounts: &denali::CheckAccounts, state: &mut BlockchainMock) {
 			}
 
 			match &expected_account.dct {
-				Some(CheckDct::Equal(eq)) => {
+				CheckDct::Equal(eq) => {
 					let default_value = &BigUint::from(0u32);
-					let default_hashmap = &HashMap::new();
-					let actual_dct = account.dct.as_ref().unwrap_or(default_hashmap);
 					for (expected_key, expected_value) in eq.iter() {
-						let actual_value = actual_dct
+						let actual_value = account
+							.dct
 							.get(&expected_key.value)
 							.unwrap_or(default_value);
 						assert!(
@@ -485,9 +517,7 @@ fn check_state(accounts: &denali::CheckAccounts, state: &mut BlockchainMock) {
 
 					let default_check_value = CheckValue::Equal(BigUintValue::default());
 
-					for (actual_key, actual_value) in
-						account.dct.as_ref().unwrap_or(default_hashmap).iter()
-					{
+					for (actual_key, actual_value) in account.dct.iter() {
 						let expected_value = eq
 							.get(&actual_key.clone().into())
 							.unwrap_or(&default_check_value);
@@ -501,37 +531,16 @@ fn check_state(accounts: &denali::CheckAccounts, state: &mut BlockchainMock) {
 						);
 					}
 				},
-
-				Some(CheckDct::Star) => {
+				CheckDct::Star => {
 					// nothing to be done for *
-				},
-
-				// we still have to check that the actual storage is empty
-				None => {
-					let default_check_value = CheckValue::Equal(BigUintValue::default());
-					let default_hashmap = &HashMap::new();
-
-					for (actual_key, actual_value) in
-						account.dct.as_ref().unwrap_or(default_hashmap).iter()
-					{
-						assert!(
-							default_check_value.check(actual_value),
-							"bad dct value. Address: {}. Token: {}. Want: {}. Have: {}",
-							expected_address,
-							verbose_hex(actual_key),
-							default_check_value,
-							actual_value
-						);
-					}
 				},
 			}
 
-			if let Some(CheckDct::Equal(eq)) = &expected_account.dct {
+			if let CheckDct::Equal(eq) = &expected_account.dct {
 				let default_value = &BigUint::from(0u32);
-				let default_hashmap = &HashMap::new();
-				let actual_dct = account.dct.as_ref().unwrap_or(default_hashmap);
 				for (expected_key, expected_value) in eq.iter() {
-					let actual_value = actual_dct
+					let actual_value = account
+						.dct
 						.get(&expected_key.value)
 						.unwrap_or(default_value);
 					assert!(
@@ -546,9 +555,7 @@ fn check_state(accounts: &denali::CheckAccounts, state: &mut BlockchainMock) {
 
 				let default_check_value = CheckValue::Equal(BigUintValue::default());
 
-				for (actual_key, actual_value) in
-					account.dct.as_ref().unwrap_or(default_hashmap).iter()
-				{
+				for (actual_key, actual_value) in account.dct.iter() {
 					let expected_value = eq
 						.get(&actual_key.clone().into())
 						.unwrap_or(&default_check_value);
@@ -577,4 +584,32 @@ fn generate_tx_hash_dummy(tx_id: &str) -> H256 {
 		result[..bytes.len()].copy_from_slice(bytes);
 	}
 	result.into()
+}
+
+fn update_block_info(block_info: &mut super::BlockInfo, denali_block_info: &denali::BlockInfo) {
+	if let Some(u64_value) = &denali_block_info.block_timestamp {
+		block_info.block_timestamp = u64_value.value;
+	}
+	if let Some(u64_value) = &denali_block_info.block_nonce {
+		block_info.block_nonce = u64_value.value;
+	}
+	if let Some(u64_value) = &denali_block_info.block_epoch {
+		block_info.block_epoch = u64_value.value;
+	}
+	if let Some(u64_value) = &denali_block_info.block_round {
+		block_info.block_round = u64_value.value;
+	}
+	if let Some(bytes_value) = &denali_block_info.block_random_seed {
+		const SEED_LEN: usize = 48;
+		let val = &bytes_value.value;
+
+		assert!(
+			val.len() == SEED_LEN,
+			"block random seed input value must be exactly 48 bytes long"
+		);
+
+		let mut seed = [0u8; SEED_LEN];
+		seed[..].copy_from_slice(val.as_slice());
+		block_info.block_random_seed = Box::from(seed);
+	}
 }

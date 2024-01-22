@@ -35,10 +35,17 @@ pub trait TypeAbi {
 	/// however, MultiResultX when top-level can be seen as multiple endpoint results.
 	/// This method gives it an opportunity to dissolve into its components.
 	/// Should only be overridden by framework types.
+	/// Output names are optionally provided in contracts via the `output_name` method attribute.
 	#[doc(hidden)]
-	fn output_abis() -> Vec<OutputAbi> {
+	fn output_abis(output_names: &[&'static str]) -> Vec<OutputAbi> {
 		let mut result = Vec::with_capacity(1);
+		let output_name = if !output_names.is_empty() {
+			output_names[0]
+		} else {
+			""
+		};
 		result.push(OutputAbi {
+			output_name,
 			type_name: Self::type_name(),
 			multi_result: Self::is_multi_arg_or_result(),
 		});
@@ -49,7 +56,7 @@ pub trait TypeAbi {
 impl TypeAbi for () {
 	/// No another exception from the 1-type-1-output-abi rule:
 	/// the unit type produces no output.
-	fn output_abis() -> Vec<OutputAbi> {
+	fn output_abis(_output_names: &[&'static str]) -> Vec<OutputAbi> {
 		Vec::new()
 	}
 }
@@ -150,6 +157,21 @@ impl<T: TypeAbi> TypeAbi for Option<T> {
 		repr.push_str(T::type_name().as_str());
 		repr.push('>');
 		repr
+	}
+
+	fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {
+		T::provide_type_descriptions(accumulator);
+	}
+}
+
+impl<T: TypeAbi, E> TypeAbi for Result<T, E> {
+	fn type_name() -> String {
+		T::type_name()
+	}
+
+	/// Similar to the SCResult implementation.
+	fn output_abis(output_names: &[&'static str]) -> Vec<OutputAbi> {
+		T::output_abis(output_names)
 	}
 
 	fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

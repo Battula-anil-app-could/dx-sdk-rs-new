@@ -4,7 +4,7 @@
 #[macro_use]
 extern crate dharitri_wasm;
 
-imports!();
+dharitri_wasm::imports!();
 
 /// The module deals with temporarily pausing contract operations.
 /// It provides a flag that contracts can use to check if owner decided to users the entire contract.
