@@ -1,4 +1,4 @@
-derive_imports!();
+dharitri_wasm::derive_imports!();
 
 #[derive(TopEncode, TopDecode, TypeAbi, Clone, Copy, PartialEq)]
 pub enum UserRole {
@@ -13,6 +13,10 @@ impl UserRole {
 	}
 
 	pub fn can_perform_action(&self) -> bool {
+		self.can_propose()
+	}
+
+	pub fn can_discard_action(&self) -> bool {
 		self.can_propose()
 	}
 

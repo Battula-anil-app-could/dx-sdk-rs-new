@@ -1,6 +1,6 @@
-use super::contract_gen::*;
-use super::contract_impl::*;
-use super::*;
+use super::contract_impl::contract_implementation;
+use crate::parse::parse_contract_trait;
+use crate::validate::validate_contract;
 
 pub fn process_contract(
 	args: proc_macro::TokenStream,
@@ -9,7 +9,8 @@ pub fn process_contract(
 	let args_input = parse_macro_input!(args as syn::AttributeArgs);
 	let proc_input = &parse_macro_input!(input as syn::ItemTrait);
 
-	let contract = Contract::new(args_input, proc_input);
+	let contract = parse_contract_trait(args_input, proc_input);
+	validate_contract(&contract);
 
 	let contract_impl = contract_implementation(&contract, true);
 	let contract_impl_ident = contract.contract_impl_name;
@@ -18,10 +19,9 @@ pub fn process_contract(
 		#[cfg(feature = "wasm-output-mode")]
 		pub mod callback_endpoint {
 			use super::*;
-			use dharitri_wasm_node::*;
 
-			fn new_arwen_instance() -> #contract_impl_ident<ArwenApiImpl, ArwenBigInt, ArwenBigUint> {
-				let api = ArwenApiImpl{};
+			fn new_arwen_instance() -> #contract_impl_ident<dharitri_wasm_node::ArwenApiImpl, dharitri_wasm_node::api::ArwenBigInt, dharitri_wasm_node::api::ArwenBigUint> {
+				let api = dharitri_wasm_node::ArwenApiImpl{};
 				#contract_impl_ident::new(api)
 			}
 

@@ -1,6 +1,6 @@
 #![no_std]
 
-imports!();
+dharitri_wasm::imports!();
 
 #[dharitri_wasm_derive::contract(StrRepeatImpl)]
 pub trait StrRepeat {

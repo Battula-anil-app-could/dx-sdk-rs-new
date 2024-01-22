@@ -1,5 +1,6 @@
 extern crate factorial;
-use dharitri_wasm_debug::*;
+use dharitri_wasm_debug::api::RustBigUint;
+use dharitri_wasm_debug::TxContext;
 use factorial::*;
 
 #[test]

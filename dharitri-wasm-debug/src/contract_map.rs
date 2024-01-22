@@ -1,13 +1,15 @@
 use super::*;
 
-use dharitri_wasm::CallableContract;
+use dharitri_wasm::api::CallableContract;
 
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use std::collections::HashMap;
 
+pub type ContractCallFactory<A> = Box<dyn Fn(TxContext) -> Box<dyn CallableContract<A>>>;
+
 pub struct ContractMap<A> {
-	factories: HashMap<Vec<u8>, Box<dyn Fn(TxContext) -> Box<dyn CallableContract<A>>>>,
+	factories: HashMap<Vec<u8>, ContractCallFactory<A>>,
 }
 
 impl<A> ContractMap<A> {
@@ -19,7 +21,7 @@ impl<A> ContractMap<A> {
 
 	pub fn new_contract_instance(
 		&self,
-		contract_identifier: &Vec<u8>,
+		contract_identifier: &[u8],
 		tx_context: TxContext,
 	) -> Box<dyn CallableContract<A>> {
 		if let Some(new_contract_closure) = self.factories.get(contract_identifier) {

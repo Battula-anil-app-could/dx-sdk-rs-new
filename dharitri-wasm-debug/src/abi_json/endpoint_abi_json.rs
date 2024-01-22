@@ -1,12 +1,6 @@
 use alloc::vec::Vec;
 use dharitri_wasm::abi::*;
-
-use super::*;
-use serde::de::{self, Deserializer, MapAccess, Visitor};
-use serde::ser::{SerializeMap, Serializer};
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
-use std::fmt;
 
 #[derive(Serialize, Deserialize)]
 pub struct InputAbiJson {
@@ -65,24 +59,16 @@ pub struct EndpointAbiJson {
 
 impl From<&EndpointAbi> for EndpointAbiJson {
 	fn from(abi: &EndpointAbi) -> Self {
-		let mut payable_in_tokens = Vec::new();
-		if abi.payable {
-			payable_in_tokens.push("MOAX".to_string());
-		}
 		EndpointAbiJson {
 			docs: abi.docs.iter().map(|d| d.to_string()).collect(),
 			name: abi.name.to_string(),
-			payable_in_tokens,
-			inputs: abi
-				.inputs
+			payable_in_tokens: abi
+				.payable_in_tokens
 				.iter()
-				.map(|input| InputAbiJson::from(input))
+				.map(|d| d.to_string())
 				.collect(),
-			outputs: abi
-				.outputs
-				.iter()
-				.map(|output| OutputAbiJson::from(output))
-				.collect(),
+			inputs: abi.inputs.iter().map(InputAbiJson::from).collect(),
+			outputs: abi.outputs.iter().map(OutputAbiJson::from).collect(),
 		}
 	}
 }
