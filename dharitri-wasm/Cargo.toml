@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -19,6 +19,6 @@ arrayvec = { version = "0.5.2", default-features = false, features = ["array-siz
 hashbrown = "0.9.1"
 
 [dependencies.dharitri-codec]
-version = "0.0.2"
+version = "0.0.3"
 path = "../dharitri-codec"
 features = ["derive"]

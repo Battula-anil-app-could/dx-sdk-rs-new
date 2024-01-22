@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-codec"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -18,9 +18,13 @@ derive = ["dharitri-codec-derive"]
 
 [dependencies.dharitri-codec-derive]
 path = "../dharitri-codec-derive"
-version = "0.0.2"
+version = "0.0.3"
 optional = true
 
 [dependencies]
 wee_alloc = "0.4"
 arrayvec = { version = "0.5.2", default-features = false, features = ["array-sizes-33-128", "array-sizes-129-255"] }
+
+[dev-dependencies.dharitri-codec-derive]
+path = "../dharitri-codec-derive"
+version = "0.0.3"

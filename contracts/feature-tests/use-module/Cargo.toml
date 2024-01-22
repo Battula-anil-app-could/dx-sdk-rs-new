@@ -22,43 +22,43 @@ default = [
 
 [dependencies.dharitri-wasm-module-features-wasm]
 package = "dharitri-wasm-module-features"
-version = "0.0.2"
+version = "0.0.3"
 path = "../../modules/dharitri-wasm-module-features"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.dharitri-wasm-module-features-default]
 package = "dharitri-wasm-module-features"
-version = "0.0.2"
+version = "0.0.3"
 path = "../../modules/dharitri-wasm-module-features"
 optional = true
 
 [dependencies.dharitri-wasm-module-pause-wasm]
 package = "dharitri-wasm-module-pause"
-version = "0.0.2"
+version = "0.0.3"
 path = "../../modules/dharitri-wasm-module-pause"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.dharitri-wasm-module-pause-default]
 package = "dharitri-wasm-module-pause"
-version = "0.0.2"
+version = "0.0.3"
 path = "../../modules/dharitri-wasm-module-pause"
 optional = true
 
 [dependencies.dharitri-wasm]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-derive]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm-derive"
 
 [dependencies.dharitri-wasm-node]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm-debug"

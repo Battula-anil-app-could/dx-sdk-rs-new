@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-node"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -14,5 +14,5 @@ keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools::ffi"]
 
 [dependencies.dharitri-wasm]
-version = "0.0.2"
+version = "0.0.3"
 path = "../dharitri-wasm"

@@ -15,19 +15,19 @@ wasm-output-mode = ["dharitri-wasm-node"]
 path = "../simple-erc20"
 
 [dependencies.dharitri-wasm]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-derive]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm-derive"
 
 [dependencies.dharitri-wasm-node]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.0.2"
+version = "0.0.3"
 path = "../../../dharitri-wasm-debug"
 

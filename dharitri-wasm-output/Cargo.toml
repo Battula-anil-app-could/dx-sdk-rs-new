@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-output"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -27,5 +27,5 @@ panic-message = []
 wee_alloc = "0.4"
 
 [dependencies.dharitri-wasm-node]
-version = "0.0.2"
+version = "0.0.3"
 path = "../dharitri-wasm-node"
