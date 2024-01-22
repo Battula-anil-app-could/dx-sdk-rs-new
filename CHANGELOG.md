@@ -22,7 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
+## [dharitri-wasm 0.14.0, denali 0.0.5, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -181,7 +181,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
+## [dharitri-wasm 0.0.5, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
