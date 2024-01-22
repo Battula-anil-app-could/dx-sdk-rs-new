@@ -9,7 +9,7 @@
                     "balance": "1000",
                     "storage": {}
                 },
-                "address:contract": {
+                "sc:moax-dct-swap": {
                     "nonce": "0",
                     "balance": "0",
                     "dct": {
@@ -28,7 +28,7 @@
             "txId": "wrap-moax",
             "tx": {
                 "from": "address:user",
-                "to": "address:contract",
+                "to": "sc:moax-dct-swap",
                 "value": "500",
                 "function": "wrapMoax",
                 "arguments": [],
@@ -40,7 +40,7 @@
                 "message": "",
                 "logs": [
                     {
-                        "address": "address:contract",
+                        "address": "sc:moax-dct-swap",
                         "identifier": "str:wrap-moax",
                         "topics": [
                             "address:user"
@@ -63,7 +63,7 @@
                     },
                     "storage": {}
                 },
-                "address:contract": {
+                "sc:moax-dct-swap": {
                     "nonce": "0",
                     "balance": "500",
                     "dct": {

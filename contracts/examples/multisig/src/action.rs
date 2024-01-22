@@ -1,6 +1,9 @@
-use dharitri_wasm::api::{BigUintApi, EndpointFinishApi, ErrorApi, SendApi};
-use dharitri_wasm::io::EndpointResult;
-use dharitri_wasm::types::{Address, AsyncCall, BoxedBytes, CodeMetadata, SendMoax, Vec};
+use dharitri_wasm::{
+	api::{BigUintApi, EndpointFinishApi, SendApi},
+	io::EndpointResult,
+	types::{Address, AsyncCall, BoxedBytes, CodeMetadata, OptionalResult, SendMoax, Vec},
+};
+
 dharitri_wasm::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
@@ -47,19 +50,26 @@ pub struct ActionFullInfo<BigUint: BigUintApi> {
 }
 
 #[derive(TypeAbi)]
-pub enum PerformActionResult<BigUint: BigUintApi> {
+pub enum PerformActionResult<SA>
+where
+	SA: SendApi + 'static,
+{
 	Nothing,
-	SendMoax(SendMoax<BigUint>),
+	SendMoax(SendMoax<SA>),
 	DeployResult(Address),
-	AsyncCall(AsyncCall<BigUint>),
+	AsyncCall(AsyncCall<SA>),
 }
 
-impl<FA, BigUint> EndpointResult<FA> for PerformActionResult<BigUint>
+impl<SA> EndpointResult for PerformActionResult<SA>
 where
-	BigUint: BigUintApi + 'static,
-	FA: EndpointFinishApi + ErrorApi + SendApi<BigUint> + Clone + 'static,
+	SA: SendApi + Clone + 'static,
 {
-	fn finish(&self, api: FA) {
+	type DecodeAs = OptionalResult<Address>;
+
+	fn finish<FA>(&self, api: FA)
+	where
+		FA: EndpointFinishApi + Clone + 'static,
+	{
 		match self {
 			PerformActionResult::Nothing => (),
 			PerformActionResult::SendMoax(send_moax) => send_moax.finish(api),

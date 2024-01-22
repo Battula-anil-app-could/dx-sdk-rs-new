@@ -5,7 +5,7 @@ dharitri_wasm::imports!();
 use kitty::{kitty_genes::*, Kitty};
 use random::Random;
 
-#[dharitri_wasm_derive::contract(KittyGeneticAlgImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait KittyGeneticAlg {
 	#[init]
 	fn init(&self) {}

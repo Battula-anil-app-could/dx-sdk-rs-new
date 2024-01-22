@@ -13,6 +13,7 @@ use dharitri_codec::TopDecodeInput;
 /// As a principle, optional arguments or results should come last,
 /// otherwise there is ambiguity as to how to interpret what comes after.
 #[must_use]
+#[derive(Clone)]
 pub enum OptionalArg<T> {
 	Some(T),
 	None,
@@ -58,13 +59,17 @@ where
 	}
 }
 
-impl<FA, T> EndpointResult<FA> for OptionalArg<T>
+impl<T> EndpointResult for OptionalArg<T>
 where
-	FA: EndpointFinishApi + Clone + 'static,
-	T: EndpointResult<FA>,
+	T: EndpointResult,
 {
+	type DecodeAs = OptionalArg<T::DecodeAs>;
+
 	#[inline]
-	fn finish(&self, api: FA) {
+	fn finish<FA>(&self, api: FA)
+	where
+		FA: EndpointFinishApi + Clone + 'static,
+	{
 		if let OptionalResult::Some(t) = self {
 			t.finish(api);
 		}

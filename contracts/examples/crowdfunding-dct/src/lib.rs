@@ -11,57 +11,55 @@ pub enum Status {
 	Failed,
 }
 
-#[dharitri_wasm_derive::contract(CrowdfundingImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait Crowdfunding {
 	#[init]
-	fn init(&self, target: BigUint, deadline: u64, dct_token_name: TokenIdentifier) {
-		let my_address: Address = self.blockchain().get_caller();
-		self.set_owner(&my_address);
-		self.set_target(&target);
-		self.set_deadline(deadline);
-		self.set_cf_dct_token_name(&dct_token_name);
+	fn init(&self, target: Self::BigUint, deadline: u64, token_name: TokenIdentifier) {
+		self.target().set(&target);
+		self.deadline().set(&deadline);
+		self.cf_token_name().set(&token_name);
 	}
 
 	#[endpoint]
 	#[payable("*")]
 	fn fund(
 		&self,
-		#[payment] payment: BigUint,
+		#[payment] payment: Self::BigUint,
 		#[payment_token] token: TokenIdentifier,
 	) -> SCResult<()> {
-		if self.blockchain().get_block_nonce() > self.get_deadline() {
-			return sc_error!("cannot fund after deadline");
-		}
-
-		require!(token == self.get_cf_dct_token_name(), "wrong dct token");
+		require!(
+			self.status() == Status::FundingPeriod,
+			"cannot fund after deadline"
+		);
+		require!(token == self.cf_token_name().get(), "wrong token");
 
 		let caller = self.blockchain().get_caller();
-		let mut deposit = self.get_deposit(&caller);
-		let mut balance = self.get_dct_balance_storage();
-
-		deposit += payment.clone();
-		balance += payment;
-
-		self.set_deposit(&caller, &deposit);
-		self.set_dct_balance_storage(&balance);
+		self.deposit(&caller).update(|deposit| *deposit += payment);
 
 		Ok(())
 	}
 
 	#[view]
 	fn status(&self) -> Status {
-		if self.blockchain().get_block_nonce() <= self.get_deadline() {
+		if self.get_current_time() < self.deadline().get() {
 			Status::FundingPeriod
-		} else if self.get_dct_balance_storage() >= self.get_target() {
+		} else if self.get_current_funds() >= self.target().get() {
 			Status::Successful
 		} else {
 			Status::Failed
 		}
 	}
 
-	#[view(currentFunds)]
-	fn current_funds(&self) -> SCResult<BigUint> {
-		Ok(self.get_dct_balance_storage())
+	#[view(getCurrentFunds)]
+	fn get_current_funds(&self) -> Self::BigUint {
+		let token = self.cf_token_name().get();
+		let sc_address = self.blockchain().get_sc_address();
+
+		if token.is_moax() {
+			self.blockchain().get_sc_balance()
+		} else {
+			self.blockchain().get_dct_balance(&sc_address, &token, 0)
+		}
 	}
 
 	#[endpoint]
@@ -70,79 +68,55 @@ pub trait Crowdfunding {
 			Status::FundingPeriod => sc_error!("cannot claim before deadline"),
 			Status::Successful => {
 				let caller = self.blockchain().get_caller();
-				if caller != self.get_owner() {
-					return sc_error!("only owner can claim successful funding");
-				}
+				require!(
+					caller == self.blockchain().get_owner_address(),
+					"only owner can claim successful funding"
+				);
 
-				let dct_token_name = self.get_cf_dct_token_name();
-				let dct_balance = self.get_dct_balance_storage();
+				let token_name = self.cf_token_name().get();
+				let sc_balance = self.get_current_funds();
 
-				self.set_dct_balance_storage(&BigUint::zero());
-				self.send()
-					.direct(&caller, &dct_token_name, &dct_balance, &[]);
+				self.send().direct(&caller, &token_name, &sc_balance, &[]);
 
 				Ok(())
 			},
 			Status::Failed => {
 				let caller = self.blockchain().get_caller();
-				let deposit = self.get_deposit(&caller);
+				let deposit = self.deposit(&caller).get();
 
 				if deposit > 0 {
-					let dct_token_name = self.get_cf_dct_token_name();
-					let mut dct_balance = self.get_dct_balance_storage();
+					let token_name = self.cf_token_name().get();
 
-					dct_balance -= deposit.clone();
-
-					self.set_dct_balance_storage(&dct_balance);
-					self.set_deposit(&caller, &BigUint::zero());
-					self.send().direct(&caller, &dct_token_name, &deposit, &[]);
+					self.deposit(&caller).clear();
+					self.send().direct(&caller, &token_name, &deposit, &[]);
 				}
+
 				Ok(())
 			},
 		}
 	}
 
+	// private
+
+	fn get_current_time(&self) -> u64 {
+		self.blockchain().get_block_timestamp()
+	}
+
 	// storage
 
-	#[storage_set("owner")]
-	fn set_owner(&self, address: &Address);
+	#[view(getTarget)]
+	#[storage_mapper("target")]
+	fn target(&self) -> SingleValueMapper<Self::Storage, Self::BigUint>;
 
-	#[view]
-	#[storage_get("owner")]
-	fn get_owner(&self) -> Address;
+	#[view(getDeadline)]
+	#[storage_mapper("deadline")]
+	fn deadline(&self) -> SingleValueMapper<Self::Storage, u64>;
 
-	#[storage_set("target")]
-	fn set_target(&self, target: &BigUint);
+	#[view(getDeposit)]
+	#[storage_mapper("deposit")]
+	fn deposit(&self, donor: &Address) -> SingleValueMapper<Self::Storage, Self::BigUint>;
 
-	#[view]
-	#[storage_get("target")]
-	fn get_target(&self) -> BigUint;
-
-	#[storage_set("dctBalance")]
-	fn set_dct_balance_storage(&self, dct_balance: &BigUint);
-
-	#[view]
-	#[storage_get("dctBalance")]
-	fn get_dct_balance_storage(&self) -> BigUint;
-
-	#[storage_set("deadline")]
-	fn set_deadline(&self, deadline: u64);
-
-	#[view]
-	#[storage_get("deadline")]
-	fn get_deadline(&self) -> u64;
-
-	#[storage_set("deposit")]
-	fn set_deposit(&self, donor: &Address, amount: &BigUint);
-
-	#[view]
-	#[storage_get("deposit")]
-	fn get_deposit(&self, donor: &Address) -> BigUint;
-
-	#[storage_set("dctTokenName")]
-	fn set_cf_dct_token_name(&self, dct_token_name: &TokenIdentifier);
-
-	#[view]
-	#[storage_get("dctTokenName")]
-	fn get_cf_dct_token_name(&self) -> TokenIdentifier;
+	#[view(getCrowdfundingTokenName)]
+	#[storage_mapper("tokenName")]
+	fn cf_token_name(&self) -> SingleValueMapper<Self::Storage, TokenIdentifier>;
 }

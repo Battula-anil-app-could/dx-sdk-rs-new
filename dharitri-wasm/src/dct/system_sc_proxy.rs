@@ -2,7 +2,7 @@ use super::properties::*;
 use hex_literal::hex;
 
 use crate::{
-	api::BigUintApi,
+	api::{BigUintApi, SendApi},
 	types::{Address, BoxedBytes, ContractCall, DctLocalRole, DctTokenType, TokenIdentifier},
 };
 
@@ -22,35 +22,38 @@ const ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issueSemiFungible";
 /// Proxy for the DCT system smart contract.
 /// Unlike other contract proxies, this one has a fixed address,
 /// so the proxy object doesn't really contain any data, it is more of a placeholder.
-pub struct DCTSystemSmartContractProxy<BigUint: BigUintApi> {
-	_phantom: core::marker::PhantomData<BigUint>,
+pub struct DCTSystemSmartContractProxy<SA>
+where
+	SA: SendApi + 'static,
+{
+	pub api: SA,
 }
 
-impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
-	pub fn new() -> Self {
-		DCTSystemSmartContractProxy {
-			_phantom: core::marker::PhantomData,
-		}
+impl<SA> DCTSystemSmartContractProxy<SA>
+where
+	SA: SendApi + 'static,
+{
+	/// Constructor.
+	/// TODO: consider moving this to a new Proxy contructor trait (bonus: better proxy constructor syntax).
+	pub fn new_proxy_obj(api: SA) -> Self {
+		DCTSystemSmartContractProxy { api }
 	}
 }
 
-impl<BigUint: BigUintApi> Default for DCTSystemSmartContractProxy<BigUint> {
-	fn default() -> Self {
-		DCTSystemSmartContractProxy::new()
-	}
-}
-
-impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
+impl<SA> DCTSystemSmartContractProxy<SA>
+where
+	SA: SendApi + 'static,
+{
 	/// Produces a contract call to the DCT system SC,
 	/// which causes it to issue a new fungible DCT token.
 	pub fn issue_fungible(
-		&self,
-		issue_cost: BigUint,
+		self,
+		issue_cost: SA::AmountType,
 		token_display_name: &BoxedBytes,
 		token_ticker: &BoxedBytes,
-		initial_supply: &BigUint,
+		initial_supply: &SA::AmountType,
 		properties: FungibleTokenProperties,
-	) -> ContractCall<BigUint, ()> {
+	) -> ContractCall<SA, ()> {
 		self.issue(
 			issue_cost,
 			DctTokenType::Fungible,
@@ -64,18 +67,18 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// Produces a contract call to the DCT system SC,
 	/// which causes it to issue a new non-fungible DCT token.
 	pub fn issue_non_fungible(
-		&self,
-		issue_cost: BigUint,
+		self,
+		issue_cost: SA::AmountType,
 		token_display_name: &BoxedBytes,
 		token_ticker: &BoxedBytes,
 		properties: NonFungibleTokenProperties,
-	) -> ContractCall<BigUint, ()> {
+	) -> ContractCall<SA, ()> {
 		self.issue(
 			issue_cost,
 			DctTokenType::NonFungible,
 			token_display_name,
 			token_ticker,
-			&BigUint::zero(),
+			&SA::AmountType::zero(),
 			TokenProperties {
 				num_decimals: 0,
 				can_freeze: properties.can_freeze,
@@ -93,18 +96,18 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// Produces a contract call to the DCT system SC,
 	/// which causes it to issue a new semi-fungible DCT token.
 	pub fn issue_semi_fungible(
-		&self,
-		issue_cost: BigUint,
+		self,
+		issue_cost: SA::AmountType,
 		token_display_name: &BoxedBytes,
 		token_ticker: &BoxedBytes,
 		properties: SemiFungibleTokenProperties,
-	) -> ContractCall<BigUint, ()> {
+	) -> ContractCall<SA, ()> {
 		self.issue(
 			issue_cost,
 			DctTokenType::SemiFungible,
 			token_display_name,
 			token_ticker,
-			&BigUint::zero(),
+			&SA::AmountType::zero(),
 			TokenProperties {
 				num_decimals: 0,
 				can_freeze: properties.can_freeze,
@@ -121,14 +124,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 
 	/// Deduplicates code from all the possible issue functions
 	fn issue(
-		&self,
-		issue_cost: BigUint,
+		self,
+		issue_cost: SA::AmountType,
 		token_type: DctTokenType,
 		token_display_name: &BoxedBytes,
 		token_ticker: &BoxedBytes,
-		initial_supply: &BigUint,
+		initial_supply: &SA::AmountType,
 		properties: TokenProperties,
-	) -> ContractCall<BigUint, ()> {
+	) -> ContractCall<SA, ()> {
 		let endpoint_name = match token_type {
 			DctTokenType::Fungible => ISSUE_FUNGIBLE_ENDPOINT_NAME,
 			DctTokenType::NonFungible => ISSUE_NON_FUNGIBLE_ENDPOINT_NAME,
@@ -137,11 +140,11 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 		};
 
 		let mut contract_call = ContractCall::new(
+			self.api,
 			dct_system_sc_address(),
-			TokenIdentifier::moax(),
-			issue_cost,
 			BoxedBytes::from(endpoint_name),
-		);
+		)
+		.with_token_transfer(TokenIdentifier::moax(), issue_cost);
 
 		contract_call.push_argument_raw_bytes(token_display_name.as_slice());
 		contract_call.push_argument_raw_bytes(token_ticker.as_slice());
@@ -182,10 +185,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// Produces a contract call to the DCT system SC,
 	/// which causes it to mint more fungible DCT tokens.
 	/// It will fail if the SC is not the owner of the token.
-	pub fn mint(&self, token_identifier: &[u8], amount: &BigUint) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"mint");
+	pub fn mint(
+		self,
+		token_identifier: &TokenIdentifier,
+		amount: &SA::AmountType,
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"mint");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(&amount.to_bytes_be());
 
 		contract_call
@@ -193,10 +200,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 
 	/// Produces a contract call to the DCT system SC,
 	/// which causes it to burn fungible DCT tokens owned by the SC.
-	pub fn burn(&self, token_identifier: &[u8], amount: &BigUint) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"DCTBurn");
+	pub fn burn(
+		self,
+		token_identifier: &TokenIdentifier,
+		amount: &SA::AmountType,
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"DCTBurn");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(&amount.to_bytes_be());
 
 		contract_call
@@ -204,19 +215,19 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 
 	/// The manager of an DCT token may choose to suspend all transactions of the token,
 	/// except minting, freezing/unfreezing and wiping.
-	pub fn pause(&self, token_identifier: &[u8]) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"pause");
+	pub fn pause(self, token_identifier: &TokenIdentifier) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"pause");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 
 		contract_call
 	}
 
 	/// The reverse operation of `pause`.
-	pub fn unpause(&self, token_identifier: &[u8]) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"unPause");
+	pub fn unpause(self, token_identifier: &TokenIdentifier) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"unPause");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 
 		contract_call
 	}
@@ -224,10 +235,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// The manager of an DCT token may freeze the tokens held by a specific account.
 	/// As a consequence, no tokens may be transferred to or from the frozen account.
 	/// Freezing and unfreezing the tokens of an account are operations designed to help token managers to comply with regulations.
-	pub fn freeze(&self, token_identifier: &[u8], address: &Address) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"freeze");
+	pub fn freeze(
+		self,
+		token_identifier: &TokenIdentifier,
+		address: &Address,
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"freeze");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(address.as_bytes());
 
 		contract_call
@@ -235,13 +250,13 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 
 	/// The reverse operation of `freeze`, unfreezing, will allow further transfers to and from the account.
 	pub fn unfreeze(
-		&self,
-		token_identifier: &[u8],
+		self,
+		token_identifier: &TokenIdentifier,
 		address: &Address,
-	) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"unFreeze");
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"unFreeze");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(address.as_bytes());
 
 		contract_call
@@ -251,10 +266,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// This operation is similar to burning the tokens, but the account must have been frozen beforehand,
 	/// and it must be done by the token manager.
 	/// Wiping the tokens of an account is an operation designed to help token managers to comply with regulations.
-	pub fn wipe(&self, token_identifier: &[u8], address: &Address) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"wipe");
+	pub fn wipe(
+		self,
+		token_identifier: &TokenIdentifier,
+		address: &Address,
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"wipe");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(address.as_bytes());
 
 		contract_call
@@ -265,14 +284,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// This will be actually a cross shard call.
 	/// This function as almost all in case of DCT can be called only by the owner.
 	pub fn set_special_roles(
-		&self,
+		self,
 		address: &Address,
-		token_identifier: &[u8],
+		token_identifier: &TokenIdentifier,
 		roles: &[DctLocalRole],
-	) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"setSpecialRole");
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"setSpecialRole");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(address.as_bytes());
 		for role in roles {
 			if role != &DctLocalRole::None {
@@ -288,14 +307,14 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	/// This will be actually a cross shard call.
 	/// This function as almost all in case of DCT can be called only by the owner.
 	pub fn unset_special_roles(
-		&self,
+		self,
 		address: &Address,
-		token_identifier: &[u8],
+		token_identifier: &TokenIdentifier,
 		roles: &[DctLocalRole],
-	) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"unSetSpecialRole");
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"unSetSpecialRole");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(address.as_bytes());
 		for role in roles {
 			if role != &DctLocalRole::None {
@@ -307,43 +326,36 @@ impl<BigUint: BigUintApi> DCTSystemSmartContractProxy<BigUint> {
 	}
 
 	pub fn transfer_ownership(
-		&self,
-		token_identifier: &[u8],
+		self,
+		token_identifier: &TokenIdentifier,
 		new_owner: &Address,
-	) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"transferOwnership");
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"transferOwnership");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(new_owner.as_bytes());
 
 		contract_call
 	}
 
 	pub fn transfer_nft_create_role(
-		&self,
-		token_identifier: &[u8],
+		self,
+		token_identifier: &TokenIdentifier,
 		old_creator: &Address,
 		new_creator: &Address,
-	) -> ContractCall<BigUint, ()> {
-		let mut contract_call = dct_system_sc_call_no_args(b"transferNFTCreateRole");
+	) -> ContractCall<SA, ()> {
+		let mut contract_call = self.dct_system_sc_call_no_args(b"transferNFTCreateRole");
 
-		contract_call.push_argument_raw_bytes(token_identifier);
+		contract_call.push_argument_raw_bytes(token_identifier.as_dct_identifier());
 		contract_call.push_argument_raw_bytes(old_creator.as_bytes());
 		contract_call.push_argument_raw_bytes(new_creator.as_bytes());
 
 		contract_call
 	}
-}
 
-fn dct_system_sc_call_no_args<BigUint: BigUintApi>(
-	endpoint_name: &[u8],
-) -> ContractCall<BigUint, ()> {
-	ContractCall::new(
-		dct_system_sc_address(),
-		TokenIdentifier::moax(),
-		BigUint::zero(),
-		endpoint_name.into(),
-	)
+	fn dct_system_sc_call_no_args(self, endpoint_name: &[u8]) -> ContractCall<SA, ()> {
+		ContractCall::new(self.api, dct_system_sc_address(), endpoint_name.into())
+	}
 }
 
 const TRUE_BYTES: &[u8] = b"true";
@@ -357,11 +369,10 @@ fn bool_name_bytes(b: bool) -> &'static [u8] {
 	}
 }
 
-fn set_token_property<BigUint: BigUintApi, R>(
-	contract_call: &mut ContractCall<BigUint, R>,
-	name: &[u8],
-	value: bool,
-) {
+fn set_token_property<SA, R>(contract_call: &mut ContractCall<SA, R>, name: &[u8], value: bool)
+where
+	SA: SendApi + 'static,
+{
 	contract_call.push_argument_raw_bytes(name);
 	contract_call.push_argument_raw_bytes(bool_name_bytes(value));
 }

@@ -182,18 +182,26 @@ pub struct BlockInfoRaw {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TxDCTRaw {
+	#[serde(default)]
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub token_identifier: Option<ValueSubTree>,
+
+	#[serde(default)]
+	#[serde(skip_serializing_if = "ValueSubTree::is_empty_string")]
+	pub value: ValueSubTree,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TxCallRaw {
 	pub from: ValueSubTree,
 	pub to: ValueSubTree,
 	pub value: ValueSubTree,
 
 	#[serde(default)]
-	#[serde(skip_serializing_if = "ValueSubTree::is_empty_string")]
-	pub dct_value: ValueSubTree,
-
-	#[serde(default)]
 	#[serde(skip_serializing_if = "Option::is_none")]
-	pub dct_token_name: Option<ValueSubTree>,
+	pub dct: Option<TxDCTRaw>,
 
 	pub function: String,
 
@@ -266,6 +274,7 @@ pub struct TxExpectRaw {
 	#[serde(default)]
 	pub out: Vec<CheckBytesValueRaw>,
 
+	#[serde(default)]
 	pub status: CheckBytesValueRaw,
 
 	#[serde(default)]

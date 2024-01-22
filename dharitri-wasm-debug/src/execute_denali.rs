@@ -1,17 +1,16 @@
 #![allow(unused_variables)] // for now
 
-use super::*;
+use crate::*;
 use dharitri_wasm::types::*;
 use denali::*;
 use num_bigint::BigUint;
+use num_traits::Zero;
 use std::path::Path;
 
-const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
-
-pub fn parse_execute_denali<P: AsRef<Path>>(
-	relative_path: P,
-	contract_map: &ContractMap<TxContext>,
-) {
+/// Runs denali test using the Rust infrastructure and the debug mode.
+/// Uses a contract map to replace the references to the wasm bytecode
+/// with the contracts running in debug mode.
+pub fn denali_rs<P: AsRef<Path>>(relative_path: P, contract_map: &ContractMap<TxContext>) {
 	let mut absolute_path = std::env::current_dir().unwrap();
 	absolute_path.push(relative_path);
 	let mut state = BlockchainMock::new();
@@ -58,13 +57,21 @@ fn parse_execute_denali_steps(
 						address: address.value.into(),
 						nonce: account.nonce.value,
 						balance: account.balance.value.clone(),
-						storage,
 						dct,
+						username: account
+							.username
+							.as_ref()
+							.map(|bytes_value| bytes_value.value.clone())
+							.unwrap_or_default(),
+						storage,
 						contract_path: account
 							.code
 							.as_ref()
 							.map(|bytes_value| bytes_value.value.clone()),
-						contract_owner: None, // TODO: add contract owner in denali
+						contract_owner: account
+							.owner
+							.as_ref()
+							.map(|address_value| address_value.value.into()),
 					});
 				}
 				for new_address in new_addresses.iter() {
@@ -91,8 +98,18 @@ fn parse_execute_denali_steps(
 					from: tx.from.value.into(),
 					to: tx.to.value.into(),
 					call_value: tx.call_value.value.clone(),
-					dct_value: tx.dct_value.value.clone(),
-					dct_token_identifier: tx.dct_token_name.value.clone(),
+					dct_value: if let Some(dct) = &tx.dct_value {
+						// TODO: clean this up
+						dct.dct_value.value.clone()
+					} else {
+						BigUint::zero()
+					},
+					dct_token_identifier: if let Some(dct) = &tx.dct_value {
+						// TODO: clean this up
+						dct.dct_token_name.value.clone()
+					} else {
+						Vec::new()
+					},
 					func_name: tx.function.as_bytes().to_vec(),
 					args: tx
 						.arguments
@@ -104,56 +121,8 @@ fn parse_execute_denali_steps(
 					tx_hash: generate_tx_hash_dummy(tx_id.as_str()),
 				};
 				state.increase_nonce(&tx_input.from);
-				let (mut tx_result, opt_async_data) =
-					execute_sc_call(tx_input, state, contract_map).unwrap();
-				if tx_result.result_status == 0 {
-					if let Some(async_data) = opt_async_data {
-						let contract_address = tx.to.value.into();
-						if state.accounts.contains_key(&async_data.to) {
-							let async_input = async_call_tx_input(&async_data, &contract_address);
-
-							if async_input.func_name == DCT_TRANSFER_STRING {
-								execute_dct_async_call(async_input, state);
-								return;
-							}
-
-							let (async_result, opt_more_async) =
-								execute_sc_call(async_input, state, contract_map).unwrap();
-							assert!(
-								opt_more_async.is_none(),
-								"nested asyncs currently not supported"
-							);
-							tx_result = merge_results(tx_result, async_result.clone());
-
-							let callback_input = async_callback_tx_input(
-								&async_data,
-								&contract_address,
-								&async_result,
-							);
-							let (callback_result, opt_more_async) =
-								execute_sc_call(callback_input, state, contract_map).unwrap();
-							assert!(
-								opt_more_async.is_none(),
-								"successive asyncs currently not supported"
-							);
-							tx_result = merge_results(tx_result, callback_result);
-						} else {
-							state
-								.subtract_tx_payment(&contract_address, &async_data.call_value)
-								.unwrap();
-							state.add_account(AccountData {
-								address: async_data.to.clone(),
-								nonce: 0,
-								balance: async_data.call_value.clone(),
-								storage: HashMap::new(),
-								dct: HashMap::new(),
-								contract_path: None,
-								contract_owner: None,
-							});
-							state.print_accounts();
-						}
-					}
-				}
+				let tx_result =
+					execute_sc_call_with_async_and_callback(tx_input, state, contract_map).unwrap();
 				if let Some(tx_expect) = expect {
 					check_tx_output(tx_id.as_str(), &tx_expect, &tx_result);
 				}
@@ -257,21 +226,15 @@ fn parse_execute_denali_steps(
 	}
 }
 
-fn execute_dct_async_call(tx_input: TxInput, state: &mut BlockchainMock) {
-	let from = tx_input.from.clone();
-	let to = tx_input.to.clone();
-	let dct_token_identifier = tx_input.dct_token_identifier.clone();
-	let dct_value = tx_input.dct_value;
-
-	state.substract_dct_balance(&from, &dct_token_identifier, &dct_value);
-	state.increase_dct_balance(&to, &dct_token_identifier, &dct_value);
-}
-
 fn execute_sc_call(
 	tx_input: TxInput,
 	state: &mut BlockchainMock,
 	contract_map: &ContractMap<TxContext>,
 ) -> Result<(TxResult, Option<AsyncCallTxData>), BlockchainMockError> {
+	if let Some(tx_result) = try_execute_builtin_function(&tx_input, state) {
+		return Ok((tx_result, None));
+	}
+
 	let from = tx_input.from.clone();
 	let to = tx_input.to.clone();
 	let call_value = tx_input.call_value.clone();
@@ -331,6 +294,52 @@ fn execute_sc_call(
 	}
 
 	Ok((tx_result, tx_output.async_call))
+}
+
+fn execute_sc_call_with_async_and_callback(
+	tx_input: TxInput,
+	state: &mut BlockchainMock,
+	contract_map: &ContractMap<TxContext>,
+) -> Result<TxResult, BlockchainMockError> {
+	let contract_address = tx_input.to.clone();
+	let (mut tx_result, opt_async_data) = execute_sc_call(tx_input, state, contract_map)?;
+	if tx_result.result_status == 0 {
+		if let Some(async_data) = opt_async_data {
+			if state.accounts.contains_key(&async_data.to) {
+				let async_input = async_call_tx_input(&async_data, &contract_address);
+
+				let async_result =
+					execute_sc_call_with_async_and_callback(async_input, state, contract_map)?;
+
+				tx_result = merge_results(tx_result, async_result.clone());
+
+				let callback_input =
+					async_callback_tx_input(&async_data, &contract_address, &async_result);
+				let (callback_result, opt_more_async) =
+					execute_sc_call(callback_input, state, contract_map)?;
+				assert!(
+					opt_more_async.is_none(),
+					"successive asyncs currently not supported"
+				);
+				tx_result = merge_results(tx_result, callback_result);
+			} else {
+				state
+					.subtract_tx_payment(&contract_address, &async_data.call_value)
+					.unwrap();
+				state.add_account(AccountData {
+					address: async_data.to.clone(),
+					nonce: 0,
+					balance: async_data.call_value,
+					dct: HashMap::new(),
+					username: Vec::new(),
+					storage: HashMap::new(),
+					contract_path: None,
+					contract_owner: None,
+				});
+			}
+		}
+	}
+	Ok(tx_result)
 }
 
 fn execute_sc_create(
@@ -462,6 +471,14 @@ fn check_state(accounts: &denali::CheckAccounts, state: &mut BlockchainMock) {
 				expected_address,
 				expected_account.balance,
 				account.balance
+			);
+
+			assert!(
+				expected_account.username.check(&account.username),
+				"bad account username. Address: {}. Want: {}. Have: {}",
+				expected_address,
+				expected_account.username,
+				std::str::from_utf8(account.username.as_slice()).unwrap()
 			);
 
 			if let CheckStorage::Equal(eq) = &expected_account.storage {

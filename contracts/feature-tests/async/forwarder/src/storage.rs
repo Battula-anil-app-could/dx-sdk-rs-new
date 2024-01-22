@@ -1,6 +1,6 @@
 dharitri_wasm::imports!();
 
-#[dharitri_wasm_derive::module(ForwarderStorageModuleImpl)]
+#[dharitri_wasm_derive::module]
 pub trait ForwarderStorageModule {
 	#[view(lastIssuedToken)]
 	#[storage_mapper("lastIssuedToken")]

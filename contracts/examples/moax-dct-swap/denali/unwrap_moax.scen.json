@@ -10,10 +10,12 @@
             "txId": "unwrap-moax",
             "tx": {
                 "from": "address:user",
-                "to": "address:contract",
+                "to": "sc:moax-dct-swap",
                 "value": "0",
-                "dctTokenName": "str:WMOAX-abcdef",
-                "dctValue": "300",
+                "dct": {
+                    "tokenIdentifier": "str:WMOAX-abcdef",
+                    "value": "300"
+                },
                 "function": "unwrapMoax",
                 "arguments": [],
                 "gasLimit": "100,000,000",
@@ -24,7 +26,7 @@
                 "message": "",
                 "logs": [
                     {
-                        "address": "address:contract",
+                        "address": "sc:moax-dct-swap",
                         "identifier": "str:unwrap-moax",
                         "topics": [
                             "address:user"
@@ -47,7 +49,7 @@
                     },
                     "storage": {}
                 },
-                "address:contract": {
+                "sc:moax-dct-swap": {
                     "nonce": "0",
                     "balance": "200",
                     "dct": {

@@ -1,11 +1,5 @@
-/// Handy way of casting to a contract proxy trait.
-/// Would make more sense to be in dharitri-wasm-derive, but Rust "cannot export macro_rules! macros from a `proc-macro` crate type currently".
-#[macro_export]
-macro_rules! contract_call {
-	($s:expr, $address:expr, $proxy_trait:ident) => {
-		$proxy_trait::<Self::SendApi, BigInt, BigUint>::new($s.send(), $address)
-	};
-}
+// Note: Simple macros cannot be placed in dharitri-wasm-derive,
+// because Rust "cannot export macro_rules! macros from a `proc-macro` crate type currently".
 
 /// Getting all imports needed for a smart contract.
 #[macro_export]
@@ -16,8 +10,10 @@ macro_rules! imports {
 		use core::ops::{BitAnd, BitOr, BitXor, Shl, Shr};
 		use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
 		use dharitri_wasm::api::{
-			BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractSelfApi, CryptoApi, SendApi,
+			BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractBase, CryptoApi,
+			ProxyObjApi, SendApi,
 		};
+		use dharitri_wasm::api::{ErrorApi, LogApi}; // TODO: remove at some point, they shouldn't be public
 		use dharitri_wasm::dharitri_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode};
 		use dharitri_wasm::err_msg;
 		use dharitri_wasm::dct::*;
@@ -26,6 +22,7 @@ macro_rules! imports {
 		use dharitri_wasm::storage::mappers::*;
 		use dharitri_wasm::types::*;
 		use dharitri_wasm::types::{SCResult::Err, SCResult::Ok};
+		use dharitri_wasm::{non_zero_usize, only_owner, require, sc_error};
 		use dharitri_wasm::{Box, Vec};
 	};
 }
@@ -51,7 +48,11 @@ macro_rules! sc_error {
 	};
 }
 
-/// Equivalent of the ? operator for SCResult.
+/// Equivalent to the `?` operator for SCResult.
+#[deprecated(
+	since = "0.16.0",
+	note = "The `?` operator can now be used on `SCResult`, please use it instead."
+)]
 #[macro_export]
 macro_rules! sc_try {
 	($s:expr) => {
@@ -72,9 +73,9 @@ macro_rules! sc_try {
 /// # use dharitri_wasm::*;
 /// # use dharitri_wasm::api::BlockchainApi;
 /// # use dharitri_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractSelfApi<BigInt, BigUint>
+/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractBase
 /// # where
-/// #   BigInt: dharitri_wasm::api::BigIntApi<BigUint> + 'static,
+/// #   BigInt: dharitri_wasm::api::BigIntApi + 'static,
 /// #   BigUint: dharitri_wasm::api::BigUintApi + 'static,
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
@@ -100,9 +101,9 @@ macro_rules! require {
 /// # use dharitri_wasm::*;
 /// # use dharitri_wasm::api::BlockchainApi;
 /// # use dharitri_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractSelfApi<BigInt, BigUint>
+/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractBase
 /// # where
-/// #   BigInt: dharitri_wasm::api::BigIntApi<BigUint> + 'static,
+/// #   BigInt: dharitri_wasm::api::BigIntApi + 'static,
 /// #   BigUint: dharitri_wasm::api::BigUintApi + 'static,
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
@@ -119,14 +120,6 @@ macro_rules! only_owner {
 		}
 	};
 }
-
-/// Compact way to represent the BorrowedMutStorage type.
-#[macro_export]
-macro_rules! mut_storage (
-    ($t:ty) => (
-        BorrowedMutStorage<T, $t>
-    )
-);
 
 /// Converts usize to NonZeroUsize or returns SCError.
 #[macro_export]

@@ -2,7 +2,7 @@
 
 dharitri_wasm::imports!();
 
-#[dharitri_wasm_derive::contract(NonFungibleTokensImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait NonFungibleTokens {
 	#[init]
 	fn init(&self, initial_minted: u64) {

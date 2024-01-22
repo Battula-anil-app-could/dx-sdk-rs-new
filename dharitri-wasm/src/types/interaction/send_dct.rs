@@ -1,34 +1,42 @@
 use crate::abi::{OutputAbi, TypeAbi, TypeDescriptionContainer};
-use crate::api::{BigUintApi, EndpointFinishApi, ErrorApi, SendApi};
+use crate::api::SendApi;
 use crate::io::EndpointResult;
-use crate::types::{Address, BoxedBytes};
+use crate::types::{Address, BoxedBytes, TokenIdentifier};
 use alloc::string::String;
 use alloc::vec::Vec;
 
-pub struct SendDct<BigUint: BigUintApi> {
-	pub to: Address,
-	pub token_name: BoxedBytes,
-	pub amount: BigUint,
-	pub data: BoxedBytes,
+pub struct SendDct<SA>
+where
+	SA: SendApi + 'static,
+{
+	pub(super) api: SA,
+	pub(super) to: Address,
+	pub(super) token_name: BoxedBytes,
+	pub(super) amount: SA::AmountType,
+	pub(super) data: BoxedBytes,
 }
 
-impl<FA, BigUint> EndpointResult<FA> for SendDct<BigUint>
+impl<SA> EndpointResult for SendDct<SA>
 where
-	BigUint: BigUintApi + 'static,
-	FA: EndpointFinishApi + SendApi<BigUint> + ErrorApi + Clone + 'static,
+	SA: SendApi + 'static,
 {
+	type DecodeAs = ();
+
 	#[inline]
-	fn finish(&self, api: FA) {
-		api.direct_dct_via_async_call(
+	fn finish<FA>(&self, _api: FA) {
+		self.api.transfer_dct_via_async_call(
 			&self.to,
-			&self.token_name.as_slice(),
+			&TokenIdentifier::from(self.token_name.clone()),
 			&self.amount,
 			self.data.as_slice(),
 		);
 	}
 }
 
-impl<BigUint: BigUintApi> TypeAbi for SendDct<BigUint> {
+impl<SA> TypeAbi for SendDct<SA>
+where
+	SA: SendApi + 'static,
+{
 	fn type_name() -> String {
 		"SendDct".into()
 	}

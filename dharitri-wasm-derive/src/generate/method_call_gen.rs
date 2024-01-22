@@ -67,7 +67,7 @@ pub fn generate_call_method_body_fixed_args(m: &Method) -> proc_macro2::TokenStr
 
 	quote! {
 		#payable_snippet
-		self.api.check_num_arguments(#nr_args);
+		dharitri_wasm::api::EndpointArgumentApi::check_num_arguments(&self.argument_api(), #nr_args);
 		#(#arg_init_snippets)*
 		#body_with_result
 	}
@@ -94,7 +94,7 @@ fn generate_call_method_body_variable_nr_args(m: &Method) -> proc_macro2::TokenS
 	quote! {
 		#payable_snippet
 
-		let mut ___arg_loader = EndpointDynArgLoader::new(self.api.clone());
+		let mut ___arg_loader = EndpointDynArgLoader::new(self.argument_api());
 
 		#(#arg_init_snippets)*
 
@@ -112,26 +112,10 @@ pub fn generate_body_with_result(
 		syn::ReturnType::Default => quote! {
 			#mbody;
 		},
-		syn::ReturnType::Type(_, ty) => {
-			// Because of Rust's orphan rules, Result cannot be made to implement EndpointResult.
-			// To still allow developers to use it as an endpoint result,
-			// we set up a manual conversion via macro magic.
-			// We still let the EndpointResult trait to do the heavy lifting.
-			if let syn::Type::Path(type_path) = ty.as_ref() {
-				let type_path_segment = type_path.path.segments.last().unwrap();
-				let type_str = type_path_segment.ident.to_string();
-				if type_str == "Result" {
-					return quote! {
-						let result = dharitri_wasm::types::SCResult::from_result(#mbody);
-						EndpointResult::<T>::finish(&result, self.api.clone());
-					};
-				}
-			}
-
-			// default implementation, using the EndpointResult trait
+		syn::ReturnType::Type(_, _) => {
 			quote! {
 				let result = #mbody;
-				EndpointResult::<T>::finish(&result, self.api.clone());
+				dharitri_wasm::io::EndpointResult::finish(&result, self.finish_api());
 			}
 		},
 	}

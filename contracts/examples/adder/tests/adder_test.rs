@@ -1,11 +1,10 @@
-extern crate adder;
 use adder::*;
 use dharitri_wasm_debug::api::RustBigInt;
 use dharitri_wasm_debug::TxContext;
 
 #[test]
 fn test_add() {
-	let adder = AdderImpl::new(TxContext::dummy());
+	let adder = adder::contract_obj(TxContext::dummy());
 
 	adder.init(&RustBigInt::from(5));
 	assert_eq!(RustBigInt::from(5), adder.get_sum());

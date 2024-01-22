@@ -8,7 +8,7 @@ const MOAX_NUM_DECIMALS: usize = 18;
 /// Converts between MOAX and a wrapped MOAX DCT token.
 ///	1 MOAX = 1 wrapped MOAX and is interchangeable at all times.
 /// Also manages the supply of wrapped MOAX tokens.
-#[dharitri_wasm_derive::contract(MoaxDctSwapImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait MoaxDctSwap {
 	#[init]
 	fn init(&self) {}
@@ -21,9 +21,9 @@ pub trait MoaxDctSwap {
 		&self,
 		token_display_name: BoxedBytes,
 		token_ticker: BoxedBytes,
-		initial_supply: BigUint,
-		#[payment] issue_cost: BigUint,
-	) -> SCResult<AsyncCall<BigUint>> {
+		initial_supply: Self::BigUint,
+		#[payment] issue_cost: Self::BigUint,
+	) -> SCResult<AsyncCall<Self::SendApi>> {
 		only_owner!(self, "only owner may call this function");
 
 		require!(
@@ -35,7 +35,7 @@ pub trait MoaxDctSwap {
 
 		self.issue_started_event(&caller, token_ticker.as_slice(), &initial_supply);
 
-		Ok(DCTSystemSmartContractProxy::new()
+		Ok(DCTSystemSmartContractProxy::new_proxy_obj(self.send())
 			.issue_fungible(
 				issue_cost,
 				&token_display_name,
@@ -62,7 +62,7 @@ pub trait MoaxDctSwap {
 		&self,
 		caller: &Address,
 		#[payment_token] token_identifier: TokenIdentifier,
-		#[payment] returned_tokens: BigUint,
+		#[payment] returned_tokens: Self::BigUint,
 		#[call_result] result: AsyncCallResult<()>,
 	) {
 		// callback is called with DCTTransfer of the newly issued token, with the amount requested,
@@ -86,7 +86,7 @@ pub trait MoaxDctSwap {
 	}
 
 	#[endpoint(mintWrappedMoax)]
-	fn mint_wrapped_moax(&self, amount: BigUint) -> SCResult<AsyncCall<BigUint>> {
+	fn mint_wrapped_moax(&self, amount: Self::BigUint) -> SCResult<AsyncCall<Self::SendApi>> {
 		only_owner!(self, "only owner may call this function");
 
 		require!(
@@ -95,12 +95,12 @@ pub trait MoaxDctSwap {
 		);
 
 		let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
-		let dct_token_id = wrapped_moax_token_id.as_dct_identifier();
+		let dct_token_id = wrapped_moax_token_id;
 		let caller = self.blockchain().get_caller();
 		self.mint_started_event(&caller, &amount);
 
-		Ok(DCTSystemSmartContractProxy::new()
-			.mint(dct_token_id, &amount)
+		Ok(DCTSystemSmartContractProxy::new_proxy_obj(self.send())
+			.mint(&dct_token_id, &amount)
 			.async_call()
 			.with_callback(self.callbacks().dct_mint_callback(&caller, &amount)))
 	}
@@ -109,7 +109,7 @@ pub trait MoaxDctSwap {
 	fn dct_mint_callback(
 		&self,
 		caller: &Address,
-		amount: &BigUint,
+		amount: &Self::BigUint,
 		#[call_result] result: AsyncCallResult<()>,
 	) {
 		match result {
@@ -128,7 +128,7 @@ pub trait MoaxDctSwap {
 
 	#[payable("MOAX")]
 	#[endpoint(wrapMoax)]
-	fn wrap_moax(&self, #[payment] payment: BigUint) -> SCResult<()> {
+	fn wrap_moax(&self, #[payment] payment: Self::BigUint) -> SCResult<()> {
 		require!(payment > 0, "Payment must be more than 0");
 		require!(
 			!self.wrapped_moax_token_id().is_empty(),
@@ -144,9 +144,9 @@ pub trait MoaxDctSwap {
 		self.unused_wrapped_moax().set(&unused_wrapped_moax);
 
 		let caller = self.blockchain().get_caller();
-		let _ = self.send().direct_dct_via_transf_exec(
+		let _ = self.send().direct(
 			&caller,
-			self.wrapped_moax_token_id().get().as_dct_identifier(),
+			&self.wrapped_moax_token_id().get(),
 			&payment,
 			b"wrapping",
 		);
@@ -160,7 +160,7 @@ pub trait MoaxDctSwap {
 	#[endpoint(unwrapMoax)]
 	fn unwrap_moax(
 		&self,
-		#[payment] wrapped_moax_payment: BigUint,
+		#[payment] wrapped_moax_payment: Self::BigUint,
 		#[payment_token] token_identifier: TokenIdentifier,
 	) -> SCResult<()> {
 		require!(
@@ -197,7 +197,7 @@ pub trait MoaxDctSwap {
 	}
 
 	#[view(getLockedMoaxBalance)]
-	fn get_locked_moax_balance(&self) -> BigUint {
+	fn get_locked_moax_balance(&self) -> Self::BigUint {
 		self.blockchain().get_sc_balance()
 	}
 
@@ -209,7 +209,7 @@ pub trait MoaxDctSwap {
 
 	#[view(getUnusedWrappedMoax)]
 	#[storage_mapper("unused_wrapped_moax")]
-	fn unused_wrapped_moax(&self) -> SingleValueMapper<Self::Storage, BigUint>;
+	fn unused_wrapped_moax(&self) -> SingleValueMapper<Self::Storage, Self::BigUint>;
 
 	// events
 
@@ -218,7 +218,7 @@ pub trait MoaxDctSwap {
 		&self,
 		#[indexed] caller: &Address,
 		#[indexed] token_ticker: &[u8],
-		initial_supply: &BigUint,
+		initial_supply: &Self::BigUint,
 	);
 
 	#[event("issue-success")]
@@ -226,14 +226,14 @@ pub trait MoaxDctSwap {
 		&self,
 		#[indexed] caller: &Address,
 		#[indexed] token_identifier: &TokenIdentifier,
-		initial_supply: &BigUint,
+		initial_supply: &Self::BigUint,
 	);
 
 	#[event("issue-failure")]
 	fn issue_failure_event(&self, #[indexed] caller: &Address, message: &[u8]);
 
 	#[event("mint-started")]
-	fn mint_started_event(&self, #[indexed] caller: &Address, amount: &BigUint);
+	fn mint_started_event(&self, #[indexed] caller: &Address, amount: &Self::BigUint);
 
 	#[event("mint-success")]
 	fn mint_success_event(&self, #[indexed] caller: &Address);
@@ -242,8 +242,8 @@ pub trait MoaxDctSwap {
 	fn mint_failure_event(&self, #[indexed] caller: &Address, message: &[u8]);
 
 	#[event("wrap-moax")]
-	fn wrap_moax_event(&self, #[indexed] user: &Address, amount: &BigUint);
+	fn wrap_moax_event(&self, #[indexed] user: &Address, amount: &Self::BigUint);
 
 	#[event("unwrap-moax")]
-	fn unwrap_moax_event(&self, #[indexed] user: &Address, amount: &BigUint);
+	fn unwrap_moax_event(&self, #[indexed] user: &Address, amount: &Self::BigUint);
 }
