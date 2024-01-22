@@ -34,7 +34,7 @@ The function requires the following arguments: (Note: Optional arguments still h
         Example: Option&lt;u32&gt; want to pass 4 as value, pass 0x0100000004)  
 
 - lottery_name: Each lottery has to have a unique, case-sensitive name, using ASCII characters only.
-- ticket_price: The price of the ticket in MOAX wei (1 MOAX/MOAX = 10^18 MOAX wei). For example, 2000000000000000000 for 2 MOAX ticket price.
+- ticket_price: The price of the ticket in ERD wei (1 ERD/MOAX = 10^18 ERD wei). For example, 2000000000000000000 for 2 MOAX ticket price.
 - total_tickets (Optional): The total available tickets for the lottery. If they're sold out, the lottery can be ended. Default is "unlimited"
 - deadline (Optional): The deadline for the lottery, expressed as a timestamp. The default and the maximum is 30 days in the future.
 - max_entries_per_user (Optional): The max number of tickets each user can buy. The default is unlimited.
