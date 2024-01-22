@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.15.0, dharitri-codec 0.5.2] - 2021-04-19
+## [dharitri-wasm 0.1.1] - 2021-04-30
+- Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
+
+## [dharitri-wasm 0.15.0, dharitri-codec 0.0.6] - 2021-04-19
 - ABI
 	- Constructor representation
 	- Simplified ABI syntax for tuples and fixed-size arrays
@@ -195,7 +198,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
-## [dharitri-wasm 0.5.2] - 2020-07-09
+## [dharitri-wasm 0.0.6] - 2020-07-09
 - Queue type
 
 ## [dharitri-wasm 0.5.1] - 2020-07-02

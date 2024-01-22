@@ -1,6 +1,6 @@
 {
     "name": "send_dct",
-    "gasSchedule": "v2",
+    "gasSchedule": "v3",
     "steps": [
         {
             "step": "setState",

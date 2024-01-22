@@ -270,7 +270,7 @@ dependencies = [
 
 [[package]]
 name = "denali"
-version = "0.0.5"
+version = "0.6.0"
 dependencies = [
  "hex",
  "num-bigint",
@@ -311,7 +311,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "arrayvec",
  "dharitri-codec",
@@ -322,7 +322,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -337,7 +337,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -347,7 +347,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -357,7 +357,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -367,7 +367,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -377,7 +377,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dharitri-wasm",
 ]
