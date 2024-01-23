@@ -1,9 +1,11 @@
-use crate::types::{Address, ArgBuffer, AsyncCall, BoxedBytes, TokenIdentifier};
 use crate::{
-    api::{BigUintApi, SendApi, DCT_NFT_TRANSFER_STRING, DCT_TRANSFER_STRING},
-    BytesArgLoader, DynArg,
+    api::{SendApi, DCT_MULTI_TRANSFER_STRING, DCT_NFT_TRANSFER_STRING, DCT_TRANSFER_STRING},
+    types::{
+        AsyncCall, BigUint, DctTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
+        ManagedVec, TokenIdentifier,
+    },
+    ArgId, ContractCallArg, DynArg, ManagedResultArgLoader,
 };
-use crate::{hex_call_data::HexCallDataSerializer, ArgId};
 use core::marker::PhantomData;
 
 /// Using max u64 to represent maximum possible gas,
@@ -22,13 +24,12 @@ where
     SA: SendApi + 'static,
 {
     api: SA,
-    to: Address,
-    payment_token: TokenIdentifier,
-    payment_amount: SA::AmountType,
-    payment_nonce: u64,
-    endpoint_name: BoxedBytes,
+    to: ManagedAddress<SA>,
+    moax_payment: BigUint<SA>,
+    payments: ManagedVec<SA, DctTokenPayment<SA>>,
+    endpoint_name: ManagedBuffer<SA>,
     explicit_gas_limit: u64,
-    pub arg_buffer: ArgBuffer, // TODO: make private and find a better way to serialize
+    arg_buffer: ManagedArgBuffer<SA>,
     _return_type: PhantomData<R>,
 }
 
@@ -36,52 +37,65 @@ where
 /// Unlike calling `ContractCall::<SA, R>::new`, here types can be inferred from the context.
 pub fn new_contract_call<SA, R>(
     api: SA,
-    to: Address,
-    payment_token: TokenIdentifier,
-    payment_amount: SA::AmountType,
-    payment_nonce: u64,
-    endpoint_name: BoxedBytes,
+    to: ManagedAddress<SA>,
+    endpoint_name_slice: &'static [u8],
 ) -> ContractCall<SA, R>
 where
     SA: SendApi + 'static,
 {
-    let mut contract_call = ContractCall::<SA, R>::new(api, to, endpoint_name);
-    contract_call.payment_token = payment_token;
-    contract_call.payment_amount = payment_amount;
-    contract_call.payment_nonce = payment_nonce;
-    contract_call
+    let endpoint_name = ManagedBuffer::new_from_bytes(api.clone(), endpoint_name_slice);
+    ContractCall::<SA, R>::new(api, to, endpoint_name)
 }
 
 impl<SA, R> ContractCall<SA, R>
 where
     SA: SendApi + 'static,
 {
-    pub fn new(api: SA, to: Address, endpoint_name: BoxedBytes) -> Self {
+    pub fn new(api: SA, to: ManagedAddress<SA>, endpoint_name: ManagedBuffer<SA>) -> Self {
+        let arg_buffer = ManagedArgBuffer::new_empty(api.clone());
+        let moax_payment = BigUint::zero(api.clone());
+        let payments = ManagedVec::new_empty(api.clone());
         ContractCall {
             api,
             to,
-            payment_token: TokenIdentifier::moax(),
-            payment_amount: SA::AmountType::zero(),
-            payment_nonce: 0,
+            moax_payment,
+            payments,
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
             endpoint_name,
-            arg_buffer: ArgBuffer::new(),
+            arg_buffer,
             _return_type: PhantomData,
         }
     }
 
-    pub fn with_token_transfer(
+    pub fn add_token_transfer(
         mut self,
-        payment_token: TokenIdentifier,
-        payment_amount: SA::AmountType,
+        payment_token: TokenIdentifier<SA>,
+        payment_nonce: u64,
+        payment_amount: BigUint<SA>,
     ) -> Self {
-        self.payment_token = payment_token;
-        self.payment_amount = payment_amount;
+        self.payments.push(DctTokenPayment::from(
+            payment_token,
+            payment_nonce,
+            payment_amount,
+        ));
         self
     }
 
-    pub fn with_nft_nonce(mut self, payment_nonce: u64) -> Self {
-        self.payment_nonce = payment_nonce;
+    pub fn with_moax_transfer(mut self, moax_amount: BigUint<SA>) -> Self {
+        self.payments
+            .overwrite_with_single_item(DctTokenPayment::from(
+                TokenIdentifier::moax(self.api.clone()),
+                0,
+                moax_amount,
+            ));
+        self
+    }
+
+    pub fn with_multi_token_transfer(
+        mut self,
+        payments: ManagedVec<SA, DctTokenPayment<SA>>,
+    ) -> Self {
+        self.payments = payments;
         self
     }
 
@@ -90,80 +104,134 @@ where
         self
     }
 
-    pub fn get_mut_arg_buffer(&mut self) -> &mut ArgBuffer {
-        &mut self.arg_buffer
+    /// Provided for cases where we build the contract call by hand.
+    pub fn push_arg_managed_buffer(&mut self, m_buffer: ManagedBuffer<SA>) {
+        self.arg_buffer.push_arg_raw(m_buffer)
     }
 
     /// Provided for cases where we build the contract call by hand.
+    /// Convenience method, also creates the new managed buffer from bytes.
     pub fn push_argument_raw_bytes(&mut self, bytes: &[u8]) {
-        self.arg_buffer.push_argument_bytes(bytes);
+        self.arg_buffer
+            .push_arg_raw(ManagedBuffer::new_from_bytes(self.api.clone(), bytes));
+    }
+
+    pub fn push_endpoint_arg<D: ContractCallArg>(&mut self, endpoint_arg: D) {
+        endpoint_arg.push_dyn_arg(&mut self.arg_buffer);
+    }
+
+    fn no_payments(&self) -> ManagedVec<SA, DctTokenPayment<SA>> {
+        ManagedVec::new_empty(self.api.clone())
     }
 
     /// If this is an DCT call, it converts it to a regular call to DCTTransfer.
     /// Async calls require this step, but not `transfer_dct_execute`.
     fn convert_to_dct_transfer_call(self) -> Self {
-        if self.payment_token.is_moax() {
-            self
-        } else if self.payment_nonce == 0 {
-            // fungible DCT
-            let mut new_arg_buffer = ArgBuffer::new();
-            new_arg_buffer.push_argument_bytes(self.payment_token.as_dct_identifier());
-            new_arg_buffer.push_argument_bytes(self.payment_amount.to_bytes_be().as_slice());
-            new_arg_buffer.push_argument_bytes(self.endpoint_name.as_slice());
-
-            ContractCall {
-                api: self.api,
-                to: self.to,
-                payment_token: TokenIdentifier::moax(),
-                payment_amount: SA::AmountType::zero(),
-                payment_nonce: 0,
-                explicit_gas_limit: self.explicit_gas_limit,
-                endpoint_name: BoxedBytes::from(DCT_TRANSFER_STRING),
-                arg_buffer: new_arg_buffer.concat(self.arg_buffer),
-                _return_type: PhantomData,
-            }
-        } else {
-            // NFT
-            // `DCTNFTTransfer` takes 4 arguments:
-            // arg0 - token identifier
-            // arg1 - nonce
-            // arg2 - quantity to transfer
-            // arg3 - destination address
-            let mut new_arg_buffer = ArgBuffer::new();
-            new_arg_buffer.push_argument_bytes(self.payment_token.as_dct_identifier());
-            new_arg_buffer.push_argument_bytes(
-                dharitri_codec::top_encode_no_err(&self.payment_nonce).as_slice(),
-            );
-            new_arg_buffer.push_argument_bytes(self.payment_amount.to_bytes_be().as_slice());
-            new_arg_buffer.push_argument_bytes(self.to.as_bytes());
-            new_arg_buffer.push_argument_bytes(self.endpoint_name.as_slice());
-
-            let recipient_addr = Self::nft_transfer_recipient_address(&self.api, self.to);
-
-            ContractCall {
-                api: self.api,
-                to: recipient_addr,
-                payment_token: TokenIdentifier::moax(),
-                payment_amount: SA::AmountType::zero(),
-                payment_nonce: 0,
-                explicit_gas_limit: self.explicit_gas_limit,
-                endpoint_name: BoxedBytes::from(DCT_NFT_TRANSFER_STRING),
-                arg_buffer: new_arg_buffer.concat(self.arg_buffer),
-                _return_type: PhantomData,
-            }
+        match self.payments.len() {
+            0 => self,
+            1 => self.convert_to_single_transfer_dct_call(),
+            _ => self.convert_to_multi_transfer_dct_call(),
         }
     }
 
-    /// nft transfer is sent to self, sender = receiver
-    #[cfg(not(feature = "legacy-nft-transfer"))]
-    fn nft_transfer_recipient_address(api: &SA, _to: Address) -> Address {
-        api.get_sc_address()
+    fn convert_to_single_transfer_dct_call(mut self) -> Self {
+        if let Some(payment) = self.payments.get(0) {
+            if payment.token_name.is_moax() {
+                self.moax_payment = payment.amount;
+                self.payments.clear();
+                self
+            } else if payment.token_nonce == 0 {
+                let no_payments = self.no_payments();
+
+                // fungible DCT
+                let mut new_arg_buffer = ManagedArgBuffer::new_empty(self.api.clone());
+                new_arg_buffer.push_arg(&payment.token_name);
+                new_arg_buffer.push_arg(&payment.amount);
+                new_arg_buffer.push_arg(&self.endpoint_name);
+
+                let zero = BigUint::zero(self.api.clone());
+                let endpoint_name =
+                    ManagedBuffer::new_from_bytes(self.api.clone(), DCT_TRANSFER_STRING);
+
+                ContractCall {
+                    api: self.api.clone(),
+                    to: self.to,
+                    moax_payment: zero,
+                    payments: no_payments,
+                    explicit_gas_limit: self.explicit_gas_limit,
+                    endpoint_name,
+                    arg_buffer: new_arg_buffer.concat(self.arg_buffer),
+                    _return_type: PhantomData,
+                }
+            } else {
+                let payments = self.no_payments();
+
+                // NFT
+                // `DCTNFTTransfer` takes 4 arguments:
+                // arg0 - token identifier
+                // arg1 - nonce
+                // arg2 - quantity to transfer
+                // arg3 - destination address
+                let mut new_arg_buffer = ManagedArgBuffer::new_empty(self.api.clone());
+                new_arg_buffer.push_arg(&payment.token_name);
+                new_arg_buffer.push_arg(&payment.token_nonce);
+                new_arg_buffer.push_arg(&payment.amount);
+                new_arg_buffer.push_arg(&self.to);
+                new_arg_buffer.push_arg(&self.endpoint_name);
+
+                // nft transfer is sent to self, sender = receiver
+                let recipient_addr = self.api.get_sc_address();
+                let zero = BigUint::zero(self.api.clone());
+                let endpoint_name =
+                    ManagedBuffer::new_from_bytes(self.api.clone(), DCT_NFT_TRANSFER_STRING);
+
+                ContractCall {
+                    api: self.api,
+                    to: recipient_addr,
+                    moax_payment: zero,
+                    payments,
+                    explicit_gas_limit: self.explicit_gas_limit,
+                    endpoint_name,
+                    arg_buffer: new_arg_buffer.concat(self.arg_buffer),
+                    _return_type: PhantomData,
+                }
+            }
+        } else {
+            self
+        }
     }
 
-    /// legacy nft transfer is sent to the actual intended destination
-    #[cfg(feature = "legacy-nft-transfer")]
-    fn nft_transfer_recipient_address(_api: &SA, to: Address) -> Address {
-        to
+    fn convert_to_multi_transfer_dct_call(self) -> Self {
+        let payments = self.no_payments();
+
+        let mut new_arg_buffer = ManagedArgBuffer::new_empty(self.api.clone());
+        new_arg_buffer.push_arg(self.to);
+        new_arg_buffer.push_arg(self.payments.len());
+
+        for payment in self.payments.into_iter() {
+            // TODO: check that `!token_name.is_moax()` or let Arwen throw the error?
+            new_arg_buffer.push_arg(payment.token_name);
+            new_arg_buffer.push_arg(payment.token_nonce);
+            new_arg_buffer.push_arg(payment.amount);
+        }
+        new_arg_buffer.push_arg(self.endpoint_name);
+
+        // multi transfer is sent to self, sender = receiver
+        let recipient_addr = self.api.get_sc_address();
+        let zero = BigUint::zero(self.api.clone());
+        let endpoint_name =
+            ManagedBuffer::new_from_bytes(self.api.clone(), DCT_MULTI_TRANSFER_STRING);
+
+        ContractCall {
+            api: self.api,
+            to: recipient_addr,
+            moax_payment: zero,
+            payments,
+            explicit_gas_limit: self.explicit_gas_limit,
+            endpoint_name,
+            arg_buffer: new_arg_buffer.concat(self.arg_buffer),
+            _return_type: PhantomData,
+        }
     }
 
     fn resolve_gas_limit(&self) -> u64 {
@@ -179,12 +247,10 @@ where
         AsyncCall {
             api: self.api,
             to: self.to,
-            moax_payment: self.payment_amount,
-            hex_data: HexCallDataSerializer::from_arg_buffer(
-                self.endpoint_name.as_slice(),
-                &self.arg_buffer,
-            ),
-            callback_data: HexCallDataSerializer::new(&[]),
+            moax_payment: self.moax_payment,
+            endpoint_name: self.endpoint_name,
+            arg_buffer: self.arg_buffer,
+            callback_call: None,
         }
     }
 }
@@ -201,12 +267,12 @@ where
         let raw_result = self.api.execute_on_dest_context_raw(
             self.resolve_gas_limit(),
             &self.to,
-            &self.payment_amount,
-            self.endpoint_name.as_slice(),
+            &self.moax_payment,
+            &self.endpoint_name,
             &self.arg_buffer,
         );
 
-        let mut loader = BytesArgLoader::new(raw_result.as_slice(), self.api);
+        let mut loader = ManagedResultArgLoader::new(self.api, raw_result);
         R::dyn_load(&mut loader, ArgId::from(&b"sync result"[..]))
     }
 
@@ -225,13 +291,26 @@ where
         let raw_result = self.api.execute_on_dest_context_raw_custom_result_range(
             self.resolve_gas_limit(),
             &self.to,
-            &self.payment_amount,
-            self.endpoint_name.as_slice(),
+            &self.moax_payment,
+            &self.endpoint_name,
             &self.arg_buffer,
             range_closure,
         );
 
-        let mut loader = BytesArgLoader::new(raw_result.as_slice(), self.api);
+        let mut loader = ManagedResultArgLoader::new(self.api, raw_result);
+        R::dyn_load(&mut loader, ArgId::from(&b"sync result"[..]))
+    }
+
+    pub fn execute_on_dest_context_readonly(mut self) -> R {
+        self = self.convert_to_dct_transfer_call();
+        let raw_result = self.api.execute_on_dest_context_readonly_raw(
+            self.resolve_gas_limit(),
+            &self.to,
+            &self.endpoint_name,
+            &self.arg_buffer,
+        );
+
+        let mut loader = ManagedResultArgLoader::new(self.api, raw_result);
         R::dyn_load(&mut loader, ArgId::from(&b"sync result"[..]))
     }
 }
@@ -248,8 +327,19 @@ where
         let _ = self.api.execute_on_dest_context_raw(
             self.resolve_gas_limit(),
             &self.to,
-            &self.payment_amount,
-            self.endpoint_name.as_slice(),
+            &self.moax_payment,
+            &self.endpoint_name,
+            &self.arg_buffer,
+        );
+    }
+
+    pub fn execute_on_same_context(mut self) {
+        self = self.convert_to_dct_transfer_call();
+        let _ = self.api.execute_on_same_context_raw(
+            self.resolve_gas_limit(),
+            &self.to,
+            &self.moax_payment,
+            &self.endpoint_name,
             &self.arg_buffer,
         );
     }
@@ -270,37 +360,71 @@ where
     /// This is similar to an async call, but there is no callback
     /// and there can be more than one such call per transaction.
     pub fn transfer_execute(self) {
+        match self.payments.len() {
+            0 => self.no_payment_transfer_execute(),
+            1 => self.single_transfer_execute(),
+            _ => self.multi_transfer_execute(),
+        }
+    }
+
+    fn no_payment_transfer_execute(&self) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
-        let result = if self.payment_token.is_moax() {
-            self.api.direct_moax_execute(
+
+        let _ = self.api.direct_moax_execute(
+            &self.to,
+            &BigUint::zero(self.api.clone()),
+            gas_limit,
+            &self.endpoint_name,
+            &self.arg_buffer,
+        );
+    }
+
+    fn single_transfer_execute(self) {
+        let gas_limit = self.resolve_gas_limit_with_leftover();
+        let payment = &self.payments.get(0).unwrap();
+
+        if payment.token_name.is_moax() {
+            let _ = self.api.direct_moax_execute(
                 &self.to,
-                &self.payment_amount,
+                &payment.amount,
                 gas_limit,
-                self.endpoint_name.as_slice(),
+                &self.endpoint_name,
                 &self.arg_buffer,
-            )
-        } else if self.payment_nonce == 0 {
+            );
+        } else if payment.token_nonce == 0 {
             // fungible DCT
-            self.api.direct_dct_execute(
+            let _ = self.api.direct_dct_execute(
                 &self.to,
-                &self.payment_token,
-                &self.payment_amount,
+                &payment.token_name,
+                &payment.amount,
                 gas_limit,
-                self.endpoint_name.as_slice(),
+                &self.endpoint_name,
                 &self.arg_buffer,
-            )
+            );
         } else {
             // non-fungible/semi-fungible DCT
-            self.api.direct_dct_nft_execute(
+            let _ = self.api.direct_dct_nft_execute(
                 &self.to,
-                &self.payment_token,
-                self.payment_nonce,
-                &self.payment_amount,
+                &payment.token_name,
+                payment.token_nonce,
+                &payment.amount,
                 gas_limit,
-                self.endpoint_name.as_slice(),
+                &self.endpoint_name,
                 &self.arg_buffer,
-            )
-        };
+            );
+        }
+    }
+
+    fn multi_transfer_execute(self) {
+        let gas_limit = self.resolve_gas_limit_with_leftover();
+        let result = self.api.direct_multi_dct_transfer_execute(
+            &self.to,
+            &self.payments,
+            gas_limit,
+            &self.endpoint_name,
+            &self.arg_buffer,
+        );
+
         if let Err(e) = result {
             self.api.signal_error(e);
         }

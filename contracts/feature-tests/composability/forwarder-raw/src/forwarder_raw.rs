@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(clippy::type_complexity)]
 
 dharitri_wasm::imports!();
 
@@ -15,16 +16,16 @@ pub trait ForwarderRaw {
     #[payable("*")]
     fn forward_payment(
         &self,
-        to: Address,
+        to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
-    ) -> SendToken<Self::SendApi> {
+        #[payment] payment: BigUint,
+    ) -> SendToken<Self::Api> {
         SendToken {
-            api: self.send(),
+            api: self.raw_vm_api(),
             to,
             token,
             amount: payment,
-            data: BoxedBytes::empty(),
+            data: self.types().managed_buffer_empty(),
         }
     }
 
@@ -32,25 +33,27 @@ pub trait ForwarderRaw {
     #[payable("*")]
     fn forward_direct_dct_via_transf_exec(
         &self,
-        to: Address,
+        to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
+        #[payment] payment: BigUint,
     ) {
         let _ = self.send().direct(&to, &token, 0, &payment, &[]);
     }
 
     fn forward_contract_call(
         &self,
-        to: Address,
+        to: ManagedAddress,
         payment_token: TokenIdentifier,
-        payment_amount: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        args: VarArgs<BoxedBytes>,
-    ) -> ContractCall<Self::SendApi, ()> {
-        let mut contract_call = ContractCall::new(self.send(), to, endpoint_name)
-            .with_token_transfer(payment_token, payment_amount);
+        payment_amount: BigUint,
+        endpoint_name: ManagedBuffer,
+        args: VarArgs<ManagedBuffer>,
+    ) -> ContractCall<Self::Api, ()> {
+        let mut contract_call = self
+            .send()
+            .contract_call(to, endpoint_name)
+            .add_token_transfer(payment_token, 0, payment_amount);
         for arg in args.into_vec() {
-            contract_call.push_argument_raw_bytes(arg.as_slice());
+            contract_call.push_endpoint_arg(arg);
         }
         contract_call
     }
@@ -59,12 +62,12 @@ pub trait ForwarderRaw {
     #[payable("*")]
     fn forward_async_call(
         &self,
-        to: Address,
+        to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
-    ) -> AsyncCall<Self::SendApi> {
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
+    ) -> AsyncCall {
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .async_call()
     }
@@ -73,13 +76,13 @@ pub trait ForwarderRaw {
     #[payable("*")]
     fn forward_async_call_half_payment(
         &self,
-        to: Address,
+        to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
-    ) -> AsyncCall<Self::SendApi> {
-        let half_payment = payment / 2u32.into();
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
+    ) -> AsyncCall {
+        let half_payment = payment / 2u32;
         self.forward_async_call(to, token, half_payment, endpoint_name, args)
     }
 
@@ -87,25 +90,31 @@ pub trait ForwarderRaw {
     #[payable("MOAX")]
     fn forward_transf_exec_moax(
         &self,
-        to: Address,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
+        to: ManagedAddress,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
     ) {
-        self.forward_contract_call(to, TokenIdentifier::moax(), payment, endpoint_name, args)
-            .with_gas_limit(self.blockchain().get_gas_left() / 2)
-            .transfer_execute();
+        self.forward_contract_call(
+            to,
+            self.types().token_identifier_moax(),
+            payment,
+            endpoint_name,
+            args,
+        )
+        .with_gas_limit(self.blockchain().get_gas_left() / 2)
+        .transfer_execute();
     }
 
     #[endpoint]
     #[payable("*")]
     fn forward_transf_exec_dct(
         &self,
-        to: Address,
+        to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
     ) {
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .with_gas_limit(self.blockchain().get_gas_left() / 2)
@@ -116,11 +125,11 @@ pub trait ForwarderRaw {
     #[payable("*")]
     fn forward_transf_exec(
         &self,
-        to: Address,
+        to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
     ) {
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .with_gas_limit(self.blockchain().get_gas_left() / 2)
@@ -129,15 +138,13 @@ pub trait ForwarderRaw {
 
     #[view]
     #[storage_mapper("callback_data")]
-    fn callback_data(
-        &self,
-    ) -> VecMapper<Self::Storage, (TokenIdentifier, Self::BigUint, Vec<BoxedBytes>)>;
+    fn callback_data(&self) -> VecMapper<(TokenIdentifier, BigUint, Vec<ManagedBuffer>)>;
 
     #[view]
     fn callback_data_at_index(
         &self,
         index: usize,
-    ) -> MultiResult3<TokenIdentifier, Self::BigUint, MultiResultVec<BoxedBytes>> {
+    ) -> MultiResult3<TokenIdentifier, BigUint, MultiResultVec<ManagedBuffer>> {
         let (token, payment, args) = self.callback_data().get(index);
         (token, payment, args.into()).into()
     }
@@ -151,8 +158,8 @@ pub trait ForwarderRaw {
     fn callback_raw(
         &self,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
-        #[var_args] args: VarArgs<BoxedBytes>,
+        #[payment] payment: BigUint,
+        #[var_args] args: VarArgs<ManagedBuffer>,
     ) {
         let args_vec = args.into_vec();
         self.callback_raw_event(&token, &payment, args_vec.as_slice().to_vec());
@@ -164,8 +171,8 @@ pub trait ForwarderRaw {
     fn callback_raw_event(
         &self,
         #[indexed] token: &TokenIdentifier,
-        #[indexed] payment: &Self::BigUint,
-        arguments: Vec<BoxedBytes>,
+        #[indexed] payment: &BigUint,
+        arguments: Vec<ManagedBuffer>,
     );
 
     // SYNC CALLS
@@ -174,75 +181,135 @@ pub trait ForwarderRaw {
     #[payable("MOAX")]
     fn call_execute_on_dest_context(
         &self,
-        to: Address,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
+        to: ManagedAddress,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
     ) {
         let half_gas = self.blockchain().get_gas_left() / 2;
-        let result = self.send().execute_on_dest_context_raw(
+        let result = self.raw_vm_api().execute_on_dest_context_raw(
             half_gas,
             &to,
             &payment,
-            endpoint_name.as_slice(),
-            &ArgBuffer::from(args.into_vec().as_slice()),
+            &endpoint_name,
+            &args.into_vec().managed_into(),
         );
 
-        self.execute_on_dest_context_result(result.as_slice());
+        self.execute_on_dest_context_result(result);
     }
 
     #[endpoint]
     #[payable("MOAX")]
     fn call_execute_on_dest_context_twice(
         &self,
-        to: Address,
-        #[payment] payment: Self::BigUint,
-        endpoint_name: BoxedBytes,
-        #[var_args] args: VarArgs<BoxedBytes>,
+        to: ManagedAddress,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
     ) {
         let one_third_gas = self.blockchain().get_gas_left() / 3;
-        let half_payment = payment / 2u32.into();
-        let arg_buffer = ArgBuffer::from(args.into_vec().as_slice());
+        let half_payment = payment / 2u32;
+        let arg_buffer = args.into_vec().managed_into();
 
-        let result = self.send().execute_on_dest_context_raw(
+        let result = self.raw_vm_api().execute_on_dest_context_raw(
             one_third_gas,
             &to,
             &half_payment,
-            endpoint_name.as_slice(),
+            &endpoint_name,
             &arg_buffer,
         );
-        self.execute_on_dest_context_result(result.as_slice());
+        self.execute_on_dest_context_result(result);
 
-        let result = self.send().execute_on_dest_context_raw(
+        let result = self.raw_vm_api().execute_on_dest_context_raw(
             one_third_gas,
             &to,
             &half_payment,
-            endpoint_name.as_slice(),
+            &endpoint_name,
             &arg_buffer,
         );
-        self.execute_on_dest_context_result(result.as_slice());
+        self.execute_on_dest_context_result(result);
+    }
+
+    #[endpoint]
+    #[payable("MOAX")]
+    fn call_execute_on_dest_context_by_caller(
+        &self,
+        to: ManagedAddress,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
+    ) {
+        let half_gas = self.blockchain().get_gas_left() / 2;
+        let result = self.raw_vm_api().execute_on_dest_context_by_caller_raw(
+            half_gas,
+            &to,
+            &payment,
+            &endpoint_name,
+            &args.into_vec().managed_into(),
+        );
+
+        self.execute_on_dest_context_result(result);
+    }
+
+    #[endpoint]
+    #[payable("MOAX")]
+    fn call_execute_on_same_context(
+        &self,
+        to: ManagedAddress,
+        #[payment] payment: BigUint,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
+    ) {
+        let half_gas = self.blockchain().get_gas_left() / 2;
+        let result = self.raw_vm_api().execute_on_same_context_raw(
+            half_gas,
+            &to,
+            &payment,
+            &endpoint_name,
+            &args.into_vec().managed_into(),
+        );
+
+        self.execute_on_same_context_result(result);
+    }
+
+    #[endpoint]
+    fn call_execute_on_dest_context_readonly(
+        &self,
+        to: ManagedAddress,
+        endpoint_name: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
+    ) {
+        let half_gas = self.blockchain().get_gas_left() / 2;
+        let result = self.raw_vm_api().execute_on_dest_context_readonly_raw(
+            half_gas,
+            &to,
+            &endpoint_name,
+            &args.into_vec().managed_into(),
+        );
+
+        self.execute_on_dest_context_result(result);
     }
 
     #[event("execute_on_dest_context_result")]
-    fn execute_on_dest_context_result(&self, result: &[BoxedBytes]);
+    fn execute_on_dest_context_result(&self, result: ManagedVec<Self::Api, ManagedBuffer>);
+
+    #[event("execute_on_same_context_result")]
+    fn execute_on_same_context_result(&self, result: ManagedVec<Self::Api, ManagedBuffer>);
 
     #[endpoint]
     fn deploy_contract(
         &self,
-        code: BoxedBytes,
-        #[var_args] arguments: VarArgs<BoxedBytes>,
-    ) -> SCResult<Address> {
-        let deployed_contract_address = self
-            .send()
+        code: ManagedBuffer,
+        #[var_args] args: VarArgs<ManagedBuffer>,
+    ) -> MultiResult2<ManagedAddress, ManagedVec<Self::Api, ManagedBuffer>> {
+        self.raw_vm_api()
             .deploy_contract(
                 self.blockchain().get_gas_left(),
-                &Self::BigUint::zero(),
+                &self.types().big_uint_zero(),
                 &code,
                 CodeMetadata::DEFAULT,
-                &arguments.as_slice().into(),
+                &args.into_vec().managed_into(),
             )
-            .ok_or("Deploy failed")?;
-
-        Ok(deployed_contract_address)
+            .into()
     }
 }

@@ -1,5 +1,10 @@
-use crate::api::{BigUintApi, SendApi};
-use crate::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata};
+use crate::{
+    api::SendApi,
+    types::{BigUint, CodeMetadata, ManagedAddress, ManagedBuffer, ManagedVec},
+    ContractCallArg,
+};
+
+use super::ManagedArgBuffer;
 
 /// Using max u64 to represent maximum possible gas,
 /// so that the value zero is not reserved and can be specified explicitly.
@@ -12,20 +17,20 @@ where
     SA: SendApi + 'static,
 {
     api: SA,
-    payment_amount: SA::AmountType,
+    to: ManagedAddress<SA>, // only used for Upgrade, ignored for Deploy
+    moax_payment: BigUint<SA>,
     explicit_gas_limit: u64,
-    pub arg_buffer: ArgBuffer, // TODO: make private and find a better way to serialize
+    arg_buffer: ManagedArgBuffer<SA>,
 }
 
 /// Syntactical sugar to help macros to generate code easier.
 /// Unlike calling `ContractDeploy::<SA>::new`, here types can be inferred from the context.
-pub fn new_contract_deploy<SA>(api: SA, payment_amount: SA::AmountType) -> ContractDeploy<SA>
+pub fn new_contract_deploy<SA>(api: SA, to: ManagedAddress<SA>) -> ContractDeploy<SA>
 where
     SA: SendApi + 'static,
 {
     let mut contract_deploy = ContractDeploy::<SA>::new(api);
-    contract_deploy.payment_amount = payment_amount;
-
+    contract_deploy.to = to;
     contract_deploy
 }
 
@@ -34,16 +39,20 @@ where
     SA: SendApi + 'static,
 {
     pub fn new(api: SA) -> Self {
+        let zero = BigUint::zero(api.clone());
+        let zero_address = ManagedAddress::zero_address(api.clone());
+        let arg_buffer = ManagedArgBuffer::new_empty(api.clone());
         ContractDeploy {
             api,
-            payment_amount: SA::AmountType::zero(),
+            to: zero_address,
+            moax_payment: zero,
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
-            arg_buffer: ArgBuffer::new(),
+            arg_buffer,
         }
     }
 
-    pub fn with_moax_transfer(mut self, payment_amount: SA::AmountType) -> Self {
-        self.payment_amount = payment_amount;
+    pub fn with_moax_transfer(mut self, payment_amount: BigUint<SA>) -> Self {
+        self.moax_payment = payment_amount;
         self
     }
 
@@ -52,14 +61,18 @@ where
         self
     }
 
-    pub fn get_mut_arg_buffer(&mut self) -> &mut ArgBuffer {
-        &mut self.arg_buffer
+    pub fn push_endpoint_arg<D: ContractCallArg>(&mut self, endpoint_arg: D) {
+        endpoint_arg.push_dyn_arg(&mut self.arg_buffer);
     }
 
-    /// Provided for cases where we build the contract deploy by hand.
-    pub fn push_argument_raw_bytes(&mut self, bytes: &[u8]) {
-        self.arg_buffer.push_argument_bytes(bytes);
-    }
+    // pub fn get_mut_arg_buffer(&mut self) -> &mut ArgBuffer {
+    //     &mut self.arg_buffer
+    // }
+
+    // /// Provided for cases where we build the contract deploy by hand.
+    // pub fn push_argument_raw_bytes(&mut self, bytes: &[u8]) {
+    //     self.arg_buffer.push_argument_bytes(bytes);
+    // }
 
     fn resolve_gas_limit(&self) -> u64 {
         if self.explicit_gas_limit == UNSPECIFIED_GAS_LIMIT {
@@ -78,17 +91,40 @@ where
     /// Will return None if the deploy fails.  
     pub fn deploy_contract(
         self,
-        code: &BoxedBytes,
+        code: &ManagedBuffer<SA>,
         code_metadata: CodeMetadata,
-    ) -> Option<Address> {
+    ) -> (ManagedAddress<SA>, ManagedVec<SA, ManagedBuffer<SA>>) {
         self.api.deploy_contract(
             self.resolve_gas_limit(),
-            &self.payment_amount,
+            &self.moax_payment,
             code,
             code_metadata,
             &self.arg_buffer,
         )
     }
 
-    // TODO: deploy contract with code from another contract
+    pub fn deploy_from_source(
+        self,
+        source_address: &ManagedAddress<SA>,
+        code_metadata: CodeMetadata,
+    ) -> (ManagedAddress<SA>, ManagedVec<SA, ManagedBuffer<SA>>) {
+        self.api.deploy_from_source_contract(
+            self.resolve_gas_limit(),
+            &self.moax_payment,
+            source_address,
+            code_metadata,
+            &self.arg_buffer,
+        )
+    }
+
+    pub fn upgrade_contract(self, code: &ManagedBuffer<SA>, code_metadata: CodeMetadata) {
+        self.api.upgrade_contract(
+            &self.to,
+            self.resolve_gas_limit(),
+            &self.moax_payment,
+            code,
+            code_metadata,
+            &self.arg_buffer,
+        );
+    }
 }

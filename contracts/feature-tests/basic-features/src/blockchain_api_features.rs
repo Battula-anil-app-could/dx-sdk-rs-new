@@ -4,8 +4,13 @@ dharitri_wasm::imports!();
 #[dharitri_wasm::module]
 pub trait BlockchainApiFeatures {
     #[endpoint]
-    fn get_caller(&self) -> Address {
+    fn get_caller(&self) -> ManagedAddress {
         self.blockchain().get_caller()
+    }
+
+    #[endpoint]
+    fn get_owner_address(&self) -> ManagedAddress {
+        self.blockchain().get_owner_address()
     }
 
     #[endpoint]
@@ -19,8 +24,13 @@ pub trait BlockchainApiFeatures {
     }
 
     #[endpoint]
-    fn get_owner_address(&self) -> Address {
-        self.blockchain().get_owner_address()
+    fn get_state_root_hash(&self) -> ManagedByteArray<Self::Api, 32> {
+        self.blockchain().get_state_root_hash_managed()
+    }
+
+    #[endpoint]
+    fn get_tx_hash(&self) -> ManagedByteArray<Self::Api, 32> {
+        self.blockchain().get_tx_hash_managed()
     }
 
     #[endpoint]
@@ -29,7 +39,7 @@ pub trait BlockchainApiFeatures {
     }
 
     #[endpoint]
-    fn get_cumulated_validator_rewards(&self) -> Self::BigUint {
+    fn get_cumulated_validator_rewards(&self) -> BigUint {
         self.blockchain().get_cumulated_validator_rewards()
     }
 

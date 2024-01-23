@@ -1,9 +1,13 @@
-use dharitri_wasm::storage::mappers::{LinkedListMapper, StorageClearable, StorageMapper};
-use dharitri_wasm::types::BoxedBytes;
+use dharitri_wasm::storage::{
+    mappers::{LinkedListMapper, StorageClearable, StorageMapper},
+    StorageKey,
+};
 use dharitri_wasm_debug::TxContext;
 
 fn create_list() -> LinkedListMapper<TxContext, u64> {
-    LinkedListMapper::new(TxContext::dummy(), BoxedBytes::from_concat(&[b"my_list"]))
+    let api = TxContext::dummy();
+    let base_key = StorageKey::new(api.clone(), &b"my_list"[..]);
+    LinkedListMapper::new(api, base_key)
 }
 
 #[test]

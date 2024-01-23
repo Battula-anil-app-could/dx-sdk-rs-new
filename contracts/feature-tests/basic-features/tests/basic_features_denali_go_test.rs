@@ -19,13 +19,28 @@ fn boxed_bytes_zeros_go() {
 }
 
 #[test]
+fn codec_err_go() {
+    dharitri_wasm_debug::denali_go("denali/codec_err.scen.json");
+}
+
+#[test]
 fn count_ones_go() {
     dharitri_wasm_debug::denali_go("denali/count_ones.scen.json");
 }
 
 #[test]
+fn crypto_elliptic_curves_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_elliptic_curves.scen.json");
+}
+
+#[test]
 fn crypto_keccak256_go() {
     dharitri_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+}
+
+#[test]
+fn crypto_ripemd160_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_ripemd160.scen.json");
 }
 
 #[test]
@@ -49,8 +64,13 @@ fn echo_async_result_empty_go() {
 }
 
 #[test]
-fn echo_big_int_go() {
-    dharitri_wasm_debug::denali_go("denali/echo_big_int.scen.json");
+fn echo_big_int_nested_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_big_int_nested.scen.json");
+}
+
+#[test]
+fn echo_big_int_top_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_big_int_top.scen.json");
 }
 
 #[test]
@@ -71,6 +91,11 @@ fn echo_i32_go() {
 #[test]
 fn echo_i64_go() {
     dharitri_wasm_debug::denali_go("denali/echo_i64.scen.json");
+}
+
+#[test]
+fn echo_managed_bytes_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_managed_bytes.scen.json");
 }
 
 #[test]
@@ -154,6 +179,51 @@ fn get_dct_local_roles_go() {
 }
 
 #[test]
+fn log2_func_go() {
+    dharitri_wasm_debug::denali_go("denali/log2_func.scen.json");
+}
+
+#[test]
+fn managed_buffer_concat_1_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_concat_1.scen.json");
+}
+
+#[test]
+fn managed_buffer_concat_2_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_concat_2.scen.json");
+}
+
+#[test]
+fn managed_buffer_eq_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_eq.scen.json");
+}
+
+#[test]
+fn managed_buffer_overwrite_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_overwrite.scen.json");
+}
+
+#[test]
+fn managed_buffer_slice_1_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_slice_1.scen.json");
+}
+
+#[test]
+fn managed_buffer_slice_2_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_slice_2.scen.json");
+}
+
+#[test]
+fn managed_vec_address_push_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_vec_address_push.scen.json");
+}
+
+#[test]
+fn managed_vec_biguint_push_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_vec_biguint_push.scen.json");
+}
+
+#[test]
 fn only_owner_go() {
     dharitri_wasm_debug::denali_go("denali/only_owner.scen.json");
 }
@@ -169,6 +239,11 @@ fn panic_go() {
 }
 
 #[test]
+fn pow_func_go() {
+    dharitri_wasm_debug::denali_go("denali/pow_func.scen.json");
+}
+
+#[test]
 fn return_codes_go() {
     dharitri_wasm_debug::denali_go("denali/return_codes.scen.json");
 }
@@ -181,6 +256,11 @@ fn sc_properties_go() {
 #[test]
 fn sc_result_go() {
     dharitri_wasm_debug::denali_go("denali/sc_result.scen.json");
+}
+
+#[test]
+fn sqrt_go() {
+    dharitri_wasm_debug::denali_go("denali/sqrt.scen.json");
 }
 
 #[test]
@@ -259,6 +339,11 @@ fn storage_mapper_single_value_go() {
 }
 
 #[test]
+fn storage_mapper_token_attributes_go() {
+    dharitri_wasm_debug::denali_go("denali/storage_mapper_token_attributes.scen.json");
+}
+
+#[test]
 fn storage_mapper_vec_go() {
     dharitri_wasm_debug::denali_go("denali/storage_mapper_vec.scen.json");
 }
@@ -296,19 +381,4 @@ fn storage_usize_bad_go() {
 #[test]
 fn storage_vec_u8_go() {
     dharitri_wasm_debug::denali_go("denali/storage_vec_u8.scen.json");
-}
-
-#[test]
-fn sqrt() {
-    dharitri_wasm_debug::denali_go("denali/sqrt.scen.json");
-}
-
-#[test]
-fn log2() {
-    dharitri_wasm_debug::denali_go("denali/log2_func.scen.json");
-}
-
-#[test]
-fn pow() {
-    dharitri_wasm_debug::denali_go("denali/pow_func.scen.json");
 }

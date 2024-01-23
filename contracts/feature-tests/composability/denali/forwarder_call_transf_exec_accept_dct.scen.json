@@ -54,6 +54,7 @@
                         "endpoint": "str:DCTTransfer",
                         "topics": [
                             "str:TEST-TOKEN",
+                            "",
                             "1000",
                             "sc:vault"
                         ],

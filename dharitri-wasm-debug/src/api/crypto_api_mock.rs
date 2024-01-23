@@ -1,13 +1,12 @@
-use crate::api::RustBigUint;
 use crate::TxContext;
-use dharitri_wasm::api::CryptoApi;
-use dharitri_wasm::types::{BoxedBytes, H256, MessageHashType};
+use dharitri_wasm::{
+    api::CryptoApi,
+    types::{BoxedBytes, MessageHashType, H256},
+};
 use sha2::Sha256;
 use sha3::{Digest, Keccak256};
 
 impl CryptoApi for TxContext {
-    type BigUint = RustBigUint;
-
     fn sha256(&self, data: &[u8]) -> H256 {
         let mut hasher = Sha256::new();
         hasher.update(data);

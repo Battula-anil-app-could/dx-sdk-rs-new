@@ -30,8 +30,8 @@ fn execute_dct_transfer(tx_input: &TxInput, state: &mut BlockchainMock) -> TxRes
         result_message: Vec::new(),
         result_values: Vec::new(),
         result_logs: vec![dct_transfer_event_log(
-            from.clone(),
-            to.clone(),
+            from,
+            to,
             dct_token_identifier,
             &dct_value,
         )],
@@ -44,10 +44,16 @@ pub fn dct_transfer_event_log(
     dct_token_identifier: Vec<u8>,
     dct_value: &BigUint,
 ) -> TxLog {
+    let nonce_topic = Vec::<u8>::new();
     TxLog {
         address: from,
         endpoint: b"DCTTransfer".to_vec(),
-        topics: vec![dct_token_identifier, dct_value.to_bytes_be(), to.to_vec()],
+        topics: vec![
+            dct_token_identifier,
+            nonce_topic,
+            dct_value.to_bytes_be(),
+            to.to_vec(),
+        ],
         data: vec![],
     }
 }

@@ -1,15 +1,17 @@
 use super::{StorageClearable, StorageMapper};
-use crate::abi::{TypeAbi, TypeDescriptionContainer, TypeName};
-use crate::api::{EndpointFinishApi, ErrorApi, StorageReadApi, StorageWriteApi};
-use crate::io::EndpointResult;
-use crate::storage::{storage_get, storage_set};
-use crate::types::{BoxedBytes, MultiResultVec};
+use crate::{
+    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
+    api::{EndpointFinishApi, ErrorApi, ManagedTypeApi, StorageReadApi, StorageWriteApi},
+    io::EndpointResult,
+    storage::{storage_get, storage_set, StorageKey},
+    types::{BoxedBytes, MultiResultVec},
+};
 use alloc::vec::Vec;
 use core::marker::PhantomData;
-use dharitri_codec::dharitri_codec_derive::{
-    TopDecode, TopDecodeOrDefault, TopEncode, TopEncodeOrDefault,
+use dharitri_codec::{
+    dharitri_codec_derive::{TopDecode, TopDecodeOrDefault, TopEncode, TopEncodeOrDefault},
+    DecodeDefault, EncodeDefault, TopDecode, TopEncode,
 };
-use dharitri_codec::{DecodeDefault, EncodeDefault, TopDecode, TopEncode};
 
 const NULL_ENTRY: u32 = 0;
 const INFO_IDENTIFIER: &[u8] = b".info";
@@ -60,23 +62,23 @@ impl LinkedListMapperInfo {
 /// in constant time.
 pub struct LinkedListMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode + 'static,
 {
     api: SA,
-    main_key: BoxedBytes,
+    base_key: StorageKey<SA>,
     _phantom: core::marker::PhantomData<T>,
 }
 
 impl<SA, T> StorageMapper<SA> for LinkedListMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode,
 {
-    fn new(api: SA, main_key: BoxedBytes) -> Self {
+    fn new(api: SA, base_key: StorageKey<SA>) -> Self {
         LinkedListMapper {
             api,
-            main_key,
+            base_key,
             _phantom: PhantomData,
         }
     }
@@ -84,7 +86,7 @@ where
 
 impl<SA, T> StorageClearable for LinkedListMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode,
 {
     fn clear(&mut self) {
@@ -102,28 +104,30 @@ where
 
 impl<SA, T> LinkedListMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode,
 {
-    fn build_node_id_named_key(&self, name: &[u8], node_id: u32) -> BoxedBytes {
-        BoxedBytes::from_concat(&[self.main_key.as_slice(), name, &node_id.to_be_bytes()])
+    fn build_node_id_named_key(&self, name: &[u8], node_id: u32) -> StorageKey<SA> {
+        let mut named_key = self.base_key.clone();
+        named_key.append_bytes(name);
+        named_key.append_item(&node_id);
+        named_key
     }
 
-    fn build_name_key(&self, name: &[u8]) -> BoxedBytes {
-        BoxedBytes::from_concat(&[self.main_key.as_slice(), name])
+    fn build_name_key(&self, name: &[u8]) -> StorageKey<SA> {
+        let mut name_key = self.base_key.clone();
+        name_key.append_bytes(name);
+        name_key
     }
 
     fn get_info(&self) -> LinkedListMapperInfo {
-        storage_get(
-            self.api.clone(),
-            self.build_name_key(INFO_IDENTIFIER).as_slice(),
-        )
+        storage_get(self.api.clone(), &self.build_name_key(INFO_IDENTIFIER))
     }
 
     fn set_info(&mut self, value: LinkedListMapperInfo) {
         storage_set(
             self.api.clone(),
-            self.build_name_key(INFO_IDENTIFIER).as_slice(),
+            &self.build_name_key(INFO_IDENTIFIER),
             &value,
         );
     }
@@ -131,16 +135,14 @@ where
     fn get_node(&self, node_id: u32) -> Node {
         storage_get(
             self.api.clone(),
-            self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
-                .as_slice(),
+            &self.build_node_id_named_key(NODE_IDENTIFIER, node_id),
         )
     }
 
     fn set_node(&mut self, node_id: u32, item: Node) {
         storage_set(
             self.api.clone(),
-            self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
-                .as_slice(),
+            &self.build_node_id_named_key(NODE_IDENTIFIER, node_id),
             &item,
         );
     }
@@ -148,8 +150,7 @@ where
     fn clear_node(&mut self, node_id: u32) {
         storage_set(
             self.api.clone(),
-            self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
-                .as_slice(),
+            &self.build_node_id_named_key(NODE_IDENTIFIER, node_id),
             &BoxedBytes::empty(),
         );
     }
@@ -157,8 +158,7 @@ where
     fn get_value(&self, node_id: u32) -> T {
         storage_get(
             self.api.clone(),
-            self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
-                .as_slice(),
+            &self.build_node_id_named_key(VALUE_IDENTIFIER, node_id),
         )
     }
 
@@ -172,8 +172,7 @@ where
     fn set_value(&mut self, node_id: u32, value: &T) {
         storage_set(
             self.api.clone(),
-            self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
-                .as_slice(),
+            &self.build_node_id_named_key(VALUE_IDENTIFIER, node_id),
             value,
         )
     }
@@ -181,8 +180,7 @@ where
     fn clear_value(&mut self, node_id: u32) {
         storage_set(
             self.api.clone(),
-            self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
-                .as_slice(),
+            &self.build_node_id_named_key(VALUE_IDENTIFIER, node_id),
             &BoxedBytes::empty(),
         )
     }
@@ -415,7 +413,7 @@ where
 /// documentation for more.
 pub struct Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode + 'static,
 {
     node_id: u32,
@@ -424,7 +422,7 @@ where
 
 impl<'a, SA, T> Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode + 'static,
 {
     fn new(linked_list: &'a LinkedListMapper<SA, T>) -> Iter<'a, SA, T> {
@@ -437,7 +435,7 @@ where
 
 impl<'a, SA, T> Iterator for Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode + 'static,
 {
     type Item = T;
@@ -456,14 +454,14 @@ where
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> EndpointResult for LinkedListMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode + EndpointResult,
 {
     type DecodeAs = MultiResultVec<T::DecodeAs>;
 
     fn finish<FA>(&self, api: FA)
     where
-        FA: EndpointFinishApi + Clone + 'static,
+        FA: ManagedTypeApi + EndpointFinishApi + Clone + 'static,
     {
         let v: Vec<T> = self.iter().collect();
         MultiResultVec::<T>::from(v).finish(api);
@@ -473,7 +471,7 @@ where
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> TypeAbi for LinkedListMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
+    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
     T: TopEncode + TopDecode + TypeAbi,
 {
     fn type_name() -> TypeName {

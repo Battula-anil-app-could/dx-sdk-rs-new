@@ -13,12 +13,7 @@ pub enum Status {
 #[dharitri_wasm::contract]
 pub trait Crowdfunding {
     #[init]
-    fn init(
-        &self,
-        target: Self::BigUint,
-        deadline: u64,
-        token_name: TokenIdentifier,
-    ) -> SCResult<()> {
+    fn init(&self, target: BigUint, deadline: u64, token_name: TokenIdentifier) -> SCResult<()> {
         require!(target > 0, "Target must be more than 0");
         self.target().set(&target);
 
@@ -41,7 +36,7 @@ pub trait Crowdfunding {
     #[payable("*")]
     fn fund(
         &self,
-        #[payment] payment: Self::BigUint,
+        #[payment] payment: BigUint,
         #[payment_token] token: TokenIdentifier,
     ) -> SCResult<()> {
         require!(
@@ -68,7 +63,7 @@ pub trait Crowdfunding {
     }
 
     #[view(getCurrentFunds)]
-    fn get_current_funds(&self) -> Self::BigUint {
+    fn get_current_funds(&self) -> BigUint {
         let token = self.cf_token_name().get();
 
         self.blockchain().get_sc_balance(&token, 0)
@@ -119,17 +114,17 @@ pub trait Crowdfunding {
 
     #[view(getTarget)]
     #[storage_mapper("target")]
-    fn target(&self) -> SingleValueMapper<Self::Storage, Self::BigUint>;
+    fn target(&self) -> SingleValueMapper<BigUint>;
 
     #[view(getDeadline)]
     #[storage_mapper("deadline")]
-    fn deadline(&self) -> SingleValueMapper<Self::Storage, u64>;
+    fn deadline(&self) -> SingleValueMapper<u64>;
 
     #[view(getDeposit)]
     #[storage_mapper("deposit")]
-    fn deposit(&self, donor: &Address) -> SingleValueMapper<Self::Storage, Self::BigUint>;
+    fn deposit(&self, donor: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
     #[view(getCrowdfundingTokenName)]
     #[storage_mapper("tokenName")]
-    fn cf_token_name(&self) -> SingleValueMapper<Self::Storage, TokenIdentifier>;
+    fn cf_token_name(&self) -> SingleValueMapper<TokenIdentifier>;
 }

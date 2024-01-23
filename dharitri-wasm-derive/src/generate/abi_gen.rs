@@ -90,7 +90,7 @@ fn generate_abi_method_body(
 			.map(|supertrait| {
 				let module_path = &supertrait.module_path;
 				quote! {
-					contract_abi.coalesce(<#module_path AbiProvider as dharitri_wasm::api::ContractAbiProvider>::abi());
+					contract_abi.coalesce(<#module_path AbiProvider as dharitri_wasm::contract_base::ContractAbiProvider>::abi());
 				}
 			})
 			.collect()
@@ -122,12 +122,8 @@ pub fn generate_abi_provider(
     quote! {
         pub struct AbiProvider {}
 
-        impl dharitri_wasm::api::ContractAbiProvider for AbiProvider {
-            type BigUint = dharitri_wasm::api::uncallable::BigUintUncallable;
-            type BigInt = dharitri_wasm::api::uncallable::BigIntUncallable;
-            type EllipticCurve = dharitri_wasm::api::uncallable::EllipticCurveUncallable;
-            type Storage = dharitri_wasm::api::uncallable::UncallableApi;
-            type SendApi = dharitri_wasm::api::uncallable::UncallableApi;
+        impl dharitri_wasm::contract_base::ContractAbiProvider for AbiProvider {
+            type Api = dharitri_wasm::api::uncallable::UncallableApi;
 
             fn abi() -> dharitri_wasm::abi::ContractAbi {
                 #abi_body

@@ -65,6 +65,7 @@
                         "endpoint": "str:DCTTransfer",
                         "topics": [
                             "str:REC-TOKEN",
+                            "",
                             "1",
                             "sc:vault"
                         ],

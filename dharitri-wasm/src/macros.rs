@@ -5,25 +5,31 @@
 #[macro_export]
 macro_rules! imports {
     () => {
-        use core::ops::{Add, Div, Mul, Rem, Sub};
-        use core::ops::{AddAssign, DivAssign, MulAssign, RemAssign, SubAssign};
-        use core::ops::{BitAnd, BitOr, BitXor, Shl, Shr};
-        use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
-        use dharitri_wasm::api::{
-            BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractBase, CryptoApi,
-            EllipticCurveApi, ProxyObjApi, SendApi,
+        use core::ops::{
+            Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div,
+            DivAssign, Mul, MulAssign, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
+            SubAssign,
         };
-        use dharitri_wasm::api::{ErrorApi, LogApi}; // TODO: remove at some point, they shouldn't be public
-        use dharitri_wasm::dharitri_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode};
-        use dharitri_wasm::err_msg;
-        use dharitri_wasm::dct::*;
-        use dharitri_wasm::io::*;
-        use dharitri_wasm::non_zero_util::*;
-        use dharitri_wasm::storage::mappers::*;
-        use dharitri_wasm::types::*;
-        use dharitri_wasm::types::{SCResult::Err, SCResult::Ok};
-        use dharitri_wasm::{non_zero_usize, only_owner, require, sc_error};
-        use dharitri_wasm::{Box, Vec};
+        use dharitri_wasm::{
+            api::{
+                BigIntApi, BlockchainApi, CallValueApi, CryptoApi, EllipticCurveApi, ErrorApi,
+                LogApi, ManagedTypeApi, SendApi,
+            },
+            contract_base::{ContractBase, ProxyObjBase},
+            dharitri_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode},
+            err_msg,
+            dct::*,
+            io::*,
+            non_zero_usize,
+            non_zero_util::*,
+            only_owner, require, sc_error,
+            storage::mappers::*,
+            types::{
+                SCResult::{Err, Ok},
+                *,
+            },
+            Box, Vec,
+        }; // TODO: remove at some point, they shouldn't be public
     };
 }
 
@@ -31,11 +37,13 @@ macro_rules! imports {
 #[macro_export]
 macro_rules! derive_imports {
     () => {
-        use dharitri_wasm::derive::TypeAbi;
-        use dharitri_wasm::dharitri_codec;
-        use dharitri_wasm::dharitri_codec::dharitri_codec_derive::{
-            NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
-            TopEncodeOrDefault,
+        use dharitri_wasm::{
+            derive::TypeAbi,
+            dharitri_codec,
+            dharitri_codec::dharitri_codec_derive::{
+                NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
+                TopEncodeOrDefault,
+            },
         };
     };
 }
@@ -44,7 +52,7 @@ macro_rules! derive_imports {
 #[macro_export]
 macro_rules! sc_error {
     ($s:expr) => {
-        dharitri_wasm::types::SCResult::Err(dharitri_wasm::types::SCError::from($s)).into()
+        dharitri_wasm::types::SCResult::Err(dharitri_wasm::types::StaticSCError::from($s)).into()
     };
 }
 
@@ -73,10 +81,7 @@ macro_rules! sc_try {
 /// # use dharitri_wasm::*;
 /// # use dharitri_wasm::api::BlockchainApi;
 /// # use dharitri_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractBase
-/// # where
-/// #   BigInt: dharitri_wasm::api::BigIntApi + 'static,
-/// #   BigUint: dharitri_wasm::api::BigUintApi + 'static,
+/// # pub trait ExampleContract: dharitri_wasm::contract_base::ContractBase
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
 ///     require!(self.blockchain().get_caller() == self.blockchain().get_owner_address(), "Caller must be owner");
@@ -101,10 +106,7 @@ macro_rules! require {
 /// # use dharitri_wasm::*;
 /// # use dharitri_wasm::api::BlockchainApi;
 /// # use dharitri_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractBase
-/// # where
-/// #   BigInt: dharitri_wasm::api::BigIntApi + 'static,
-/// #   BigUint: dharitri_wasm::api::BigUintApi + 'static,
+/// # pub trait ExampleContract: dharitri_wasm::contract_base::ContractBase
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
 ///     only_owner!(self, "Caller must be owner");

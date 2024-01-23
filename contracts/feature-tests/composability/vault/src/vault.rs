@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(clippy::type_complexity)]
 
 dharitri_wasm::imports!();
 
@@ -7,7 +8,12 @@ dharitri_wasm::imports!();
 #[dharitri_wasm::contract]
 pub trait Vault {
     #[init]
-    fn init(&self) {}
+    fn init(
+        &self,
+        #[var_args] opt_arg_to_echo: OptionalArg<ManagedBuffer>,
+    ) -> OptionalResult<ManagedBuffer> {
+        opt_arg_to_echo
+    }
 
     #[endpoint]
     fn echo_arguments(
@@ -18,14 +24,19 @@ pub trait Vault {
         Ok(args.into_vec().into())
     }
 
+    #[endpoint]
+    fn echo_caller(&self) -> ManagedAddress {
+        self.blockchain().get_caller()
+    }
+
     #[payable("*")]
     #[endpoint]
     fn accept_funds(
         &self,
         #[payment_token] token: TokenIdentifier,
-        #[payment_amount] payment: Self::BigUint,
+        #[payment_nonce] nonce: u64,
+        #[payment_amount] payment: BigUint,
     ) {
-        let nonce = self.call_value().dct_token_nonce();
         let token_type = self.call_value().dct_token_type();
 
         self.accept_funds_event(&token, token_type.as_type_name(), &payment, nonce);
@@ -35,12 +46,43 @@ pub trait Vault {
 
     #[payable("*")]
     #[endpoint]
+    fn accept_funds_multi_transfer(&self) {
+        let payments = self.call_value().all_dct_transfers();
+
+        for payment in payments.into_iter() {
+            self.accept_funds_event(
+                &payment.token_name,
+                payment.token_type.as_type_name(),
+                &payment.amount,
+                payment.token_nonce,
+            );
+        }
+
+        self.call_counts(b"accept_funds_multi_transfer")
+            .update(|c| *c += 1);
+    }
+
+    #[payable("*")]
+    #[endpoint]
+    fn accept_multi_funds_echo(&self) -> MultiResultVec<MultiArg3<TokenIdentifier, u64, BigUint>> {
+        let payments = self.call_value().all_dct_transfers();
+        let mut result = Vec::new();
+
+        for payment in payments.into_iter() {
+            result.push((payment.token_name, payment.token_nonce, payment.amount).into());
+        }
+
+        result.into()
+    }
+
+    #[payable("*")]
+    #[endpoint]
     fn accept_funds_echo_payment(
         &self,
         #[payment_token] token_identifier: TokenIdentifier,
-        #[payment_amount] token_payment: Self::BigUint,
+        #[payment_amount] token_payment: BigUint,
         #[payment_nonce] token_nonce: u64,
-    ) -> SCResult<MultiResult4<TokenIdentifier, BoxedBytes, Self::BigUint, u64>> {
+    ) -> SCResult<MultiResult4<TokenIdentifier, BoxedBytes, BigUint, u64>> {
         let token_type = self.call_value().dct_token_type();
 
         self.accept_funds_event(
@@ -67,7 +109,7 @@ pub trait Vault {
     fn reject_funds(
         &self,
         #[payment_token] token: TokenIdentifier,
-        #[payment] payment: Self::BigUint,
+        #[payment] payment: BigUint,
     ) -> SCResult<()> {
         self.reject_funds_event(&token, &payment);
         sc_error!("reject_funds")
@@ -78,15 +120,15 @@ pub trait Vault {
         &self,
         token: TokenIdentifier,
         nonce: u64,
-        amount: Self::BigUint,
-        #[var_args] return_message: OptionalArg<BoxedBytes>,
+        amount: BigUint,
+        #[var_args] return_message: OptionalArg<ManagedBuffer>,
     ) {
         self.retrieve_funds_event(&token, nonce, &amount);
 
         let caller = self.blockchain().get_caller();
-        let data = match &return_message {
-            OptionalArg::Some(data) => data.as_slice(),
-            OptionalArg::None => &[],
+        let data = match return_message {
+            OptionalArg::Some(data) => data,
+            OptionalArg::None => self.types().managed_buffer_empty(),
         };
 
         if token.is_moax() {
@@ -102,27 +144,23 @@ pub trait Vault {
         &self,
         #[indexed] token_identifier: &TokenIdentifier,
         #[indexed] token_type: &[u8],
-        #[indexed] token_payment: &Self::BigUint,
+        #[indexed] token_payment: &BigUint,
         #[indexed] token_nonce: u64,
     );
 
     #[event("reject_funds")]
-    fn reject_funds_event(
-        &self,
-        #[indexed] token: &TokenIdentifier,
-        #[indexed] payment: &Self::BigUint,
-    );
+    fn reject_funds_event(&self, #[indexed] token: &TokenIdentifier, #[indexed] payment: &BigUint);
 
     #[event("retrieve_funds")]
     fn retrieve_funds_event(
         &self,
         #[indexed] token: &TokenIdentifier,
         #[indexed] nonce: u64,
-        #[indexed] amount: &Self::BigUint,
+        #[indexed] amount: &BigUint,
     );
 
     #[endpoint]
-    fn get_owner_address(&self) -> Address {
+    fn get_owner_address(&self) -> ManagedAddress {
         self.blockchain().get_owner_address()
     }
 
@@ -130,5 +168,5 @@ pub trait Vault {
     /// this additional counter has the role of showing that storage also gets saved correctly.
     #[view]
     #[storage_mapper("call_counts")]
-    fn call_counts(&self, endpoint: &[u8]) -> SingleValueMapper<Self::Storage, usize>;
+    fn call_counts(&self, endpoint: &[u8]) -> SingleValueMapper<usize>;
 }

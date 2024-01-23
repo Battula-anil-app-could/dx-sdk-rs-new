@@ -41,13 +41,11 @@
                     "0",
                     "1000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "70,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [
-                    "str:DCTTransfer@544553542d544f4b454e@03e8"
-                ],
+                "out": [],
                 "status": "0",
                 "logs": [
                     {
@@ -66,6 +64,7 @@
                         "endpoint": "str:DCTTransfer",
                         "topics": [
                             "str:TEST-TOKEN",
+                            "",
                             "1000",
                             "sc:forwarder"
                         ],

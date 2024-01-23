@@ -9,21 +9,30 @@ publish = false
 path = "src/recursive_caller.rs"
 
 [features]
-wasm-output-mode = ["dharitri-wasm-node"]
+wasm-output-mode = [
+    "dharitri-wasm-node",
+]
+wasm-output-mode-managed-ei = [
+    "wasm-output-mode",
+]
+wasm-output-mode-unmanaged-ei = [
+    "wasm-output-mode",
+    "dharitri-wasm-node/unmanaged-ei"
+]
 
 [dependencies.vault]
 path = "../vault"
 
 [dependencies.dharitri-wasm]
-version = "0.1.6"
+version = "0.1.7"
 path = "../../../../dharitri-wasm"
 features = ["derive"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.1.6"
+version = "0.1.7"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.1.6"
+version = "0.1.7"
 path = "../../../../dharitri-wasm-debug"

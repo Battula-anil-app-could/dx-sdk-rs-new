@@ -1,84 +1,79 @@
-#!/bin/sh
+#!/bin/bash
 
 # copies wasm & denali files to the Arwen test folder
 # expects 1 argument: the path to the Arwen repo root
 
 ARWEN_PATH=$1
 
-# building all contracts takes a lot of time, here are just the ones for Arwen:
-erdpy --verbose contract build ./contracts/examples/adder || return 1
-erdpy --verbose contract build ./contracts/examples/crowdfunding-dct || return 1
-erdpy --verbose contract build ./contracts/examples/ping-pong-moax || return 1
-erdpy --verbose contract build ./contracts/examples/multisig || return 1
-erdpy --verbose contract build ./contracts/examples/moax-dct-swap || return 1
-erdpy --verbose contract build ./contracts/examples/erc20 || return 1
-erdpy --verbose contract build ./contracts/feature-tests/basic-features || return 1
-erdpy --verbose contract build ./contracts/feature-tests/composability/forwarder || return 1
-erdpy --verbose contract build ./contracts/feature-tests/composability/forwarder-raw || return 1
-erdpy --verbose contract build ./contracts/feature-tests/composability/proxy-test-first || return 1
-erdpy --verbose contract build ./contracts/feature-tests/composability/proxy-test-second || return 1
-erdpy --verbose contract build ./contracts/feature-tests/composability/recursive-caller || return 1
-erdpy --verbose contract build ./contracts/feature-tests/composability/vault || return 1
-erdpy --verbose contract build ./contracts/feature-tests/payable-features || return 1
+build_and_copy() {
+   contract_path=$1
+   contract_name=${contract_path##*/}
+   arwen_contract_path=$2
 
+   erdpy --verbose contract build $contract_path || return 1
+   mkdir -p $arwen_contract_path/output
+   cp -R $contract_path/output/$contract_name.wasm \
+      $arwen_contract_path/output/$contract_name.wasm
+   cp -R $contract_path/denali \
+      $arwen_contract_path
+}
+
+# building all contracts takes a lot of time, only the ones for Arwen are built below
 # if you still want to build all:
 # ./build-wasm.sh
 
+build_and_copy ./contracts/examples/adder $ARWEN_PATH/test/adder
+build_and_copy ./contracts/examples/crowdfunding-dct $ARWEN_PATH/test/crowdfunding-dct
+build_and_copy ./contracts/examples/ping-pong-moax $ARWEN_PATH/test/ping-pong-moax
+build_and_copy ./contracts/examples/multisig $ARWEN_PATH/test/multisig
+build_and_copy ./contracts/examples/moax-dct-swap $ARWEN_PATH/test/moax-dct-swap
+build_and_copy ./contracts/examples/erc20 $ARWEN_PATH/test/erc20-rust
+build_and_copy ./contracts/feature-tests/basic-features $ARWEN_PATH/test/features/basic-features
+build_and_copy ./contracts/feature-tests/payable-features $ARWEN_PATH/test/features/payable-features
 
-# copying the files to arwen here:
-cp contracts/examples/adder/output/adder.wasm \
-   $ARWEN_PATH/test/adder/output/adder.wasm
-cp -R contracts/examples/adder/denali \
-   $ARWEN_PATH/test/adder
+build_and_copy_composability() {
+   contract=$1
+   contract_with_underscores="${contract//-/_}"
 
-cp contracts/examples/crowdfunding-dct/output/crowdfunding-dct.wasm \
-   $ARWEN_PATH/test/crowdfunding-dct/output/crowdfunding-dct.wasm
-cp -R contracts/examples/crowdfunding-dct/denali \
-   $ARWEN_PATH/test/crowdfunding-dct
+   # with managed-ei
+   erdpy --verbose contract build ./contracts/feature-tests/composability/$contract || return 1
+   cp -R contracts/feature-tests/composability/$contract/output/${contract}.wasm \
+      $ARWEN_PATH/test/features/composability/$contract/output/${contract}.wasm
 
-cp contracts/examples/ping-pong-moax/output/ping-pong-moax.wasm \
-   $ARWEN_PATH/test/ping-pong-moax/output/ping-pong-moax.wasm
-cp -R contracts/examples/ping-pong-moax/denali \
-   $ARWEN_PATH/test/ping-pong-moax
+   # without managed-ei
+   export RUSTFLAGS=${RUSTFLAGS-'-C link-arg=-s'}
+   cd contracts/feature-tests/composability/$contract/wasm-no-managed-ei
+   cargo build --target=wasm32-unknown-unknown --release
+   cd ..
+   mkdir -p output
+   cp \
+      wasm-no-managed-ei/target/wasm32-unknown-unknown/release/${contract_with_underscores}_wasm.wasm \
+      output/${contract}-unmanaged.wasm
+   cd ../../../..
 
-cp contracts/examples/multisig/output/multisig.wasm \
-   $ARWEN_PATH/test/multisig/output/multisig.wasm
-cp -R contracts/examples/multisig/denali \
-   $ARWEN_PATH/test/multisig
-cp -R contracts/examples/multisig/test-contracts \
-   $ARWEN_PATH/test/multisig
+   cp -R contracts/feature-tests/composability/$contract/output/${contract}-unmanaged.wasm \
+      $ARWEN_PATH/test/features/composability/$contract/output/${contract}-unmanaged.wasm
+}
 
-cp -R contracts/examples/moax-dct-swap/output/moax-dct-swap.wasm \
-   $ARWEN_PATH/test/moax-dct-swap/output/moax-dct-swap.wasm
-cp -R contracts/examples/moax-dct-swap/denali \
-   $ARWEN_PATH/test/moax-dct-swap
+build_and_copy_composability forwarder
+build_and_copy_composability forwarder-raw
+build_and_copy_composability proxy-test-first
+build_and_copy_composability proxy-test-second
+build_and_copy_composability recursive-caller
 
-cp -R contracts/examples/erc20/output/erc20.wasm \
-   $ARWEN_PATH/test/erc20-rust/output/erc20.wasm
-cp -R contracts/examples/erc20/denali \
-   $ARWEN_PATH/test/erc20-rust
-
-cp -R contracts/feature-tests/basic-features/output/basic-features.wasm \
-   $ARWEN_PATH/test/features/basic-features/output/basic-features.wasm
-cp -R contracts/feature-tests/basic-features/denali \
-   $ARWEN_PATH/test/features/basic-features
-
-cp -R contracts/feature-tests/payable-features/output/payable-features.wasm \
-   $ARWEN_PATH/test/features/payable-features/output/payable-features.wasm
-cp -R contracts/feature-tests/payable-features/denali \
-   $ARWEN_PATH/test/features/payable-features
-
-cp -R contracts/feature-tests/composability/forwarder/output/forwarder.wasm \
-   $ARWEN_PATH/test/features/composability/forwarder/output/forwarder.wasm
-cp -R contracts/feature-tests/composability/forwarder-raw/output/forwarder-raw.wasm \
-   $ARWEN_PATH/test/features/composability/forwarder-raw/output/forwarder-raw.wasm
-cp -R contracts/feature-tests/composability/proxy-test-first/output/proxy-test-first.wasm \
-   $ARWEN_PATH/test/features/composability/proxy-test-first/output/proxy-test-first.wasm
-cp -R contracts/feature-tests/composability/proxy-test-second/output/proxy-test-second.wasm \
-   $ARWEN_PATH/test/features/composability/proxy-test-second/output/proxy-test-second.wasm
-cp -R contracts/feature-tests/composability/recursive-caller/output/recursive-caller.wasm \
-   $ARWEN_PATH/test/features/composability/recursive-caller/output/recursive-caller.wasm
+erdpy --verbose contract build ./contracts/feature-tests/composability/vault || return 1
 cp -R contracts/feature-tests/composability/vault/output/vault.wasm \
    $ARWEN_PATH/test/features/composability/vault/output/vault.wasm
+
 cp -R contracts/feature-tests/composability/denali \
    $ARWEN_PATH/test/features/composability
+rm -f $ARWEN_PATH/test/features/composability/denali-legacy/*
+mmv -c 'contracts/feature-tests/composability/denali/*.scen.json' \
+   $ARWEN_PATH/test/features/composability/denali-legacy/l_'#1.scen.json'
+
+sed -i 's/forwarder.wasm/forwarder-unmanaged.wasm/g' $ARWEN_PATH/test/features/composability/denali-legacy/*
+sed -i 's/forwarder-raw.wasm/forwarder-raw-unmanaged.wasm/g' $ARWEN_PATH/test/features/composability/denali-legacy/*
+sed -i 's/proxy-test-first.wasm/proxy-test-first-unmanaged.wasm/g' $ARWEN_PATH/test/features/composability/denali-legacy/*
+sed -i 's/proxy-test-second.wasm/proxy-test-second-unmanaged.wasm/g' $ARWEN_PATH/test/features/composability/denali-legacy/*
+sed -i 's/recursive-caller.wasm/recursive-caller-unmanaged.wasm/g' $ARWEN_PATH/test/features/composability/denali-legacy/*
+sed -i 's/proxy_test_init.scen.json/l_proxy_test_init.scen.json/g' $ARWEN_PATH/test/features/composability/denali-legacy/*
