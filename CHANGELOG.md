@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.1.5] - 2021-08-5
+## [dharitri-wasm 0.1.6] - 2021-08-20
+- Crypto API: `ripemd160` function, custom secp256k1 signature verification (`verify_custom_secp256k1`) and signature generation (`encode_secp256k1_der_signature`).
+
+## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
 ## [dharitri-wasm 0.18.0, denali 0.0.7] - 2021-07-28
@@ -213,9 +216,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
-- Completely ditched the approach from dharitri-wasm 0.8.0.
+- Completely ditched the approach from dharitri-wasm 0.0.7.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.0.7, dharitri-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -228,7 +231,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -254,7 +257,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.0.7, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.0.7, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -326,7 +329,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

@@ -275,7 +275,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "arrayvec",
  "dharitri-codec",
@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -302,7 +302,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -312,7 +312,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-bonding-curve"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -321,7 +321,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-dct"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -330,7 +330,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-dns"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -339,7 +339,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -348,7 +348,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-governance"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -357,7 +357,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -366,7 +366,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -375,7 +375,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "dharitri-wasm",
 ]
