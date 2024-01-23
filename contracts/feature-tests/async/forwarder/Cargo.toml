@@ -17,18 +17,19 @@ wasm-output-mode = [
 path = "../vault"
 
 [dependencies.dharitri-wasm]
-version = "0.1.2"
+version = "0.1.3"
 path = "../../../../dharitri-wasm"
+# features = ["legacy-nft-transfer"] # only use on Arwen v1.2.*
 
 [dependencies.dharitri-wasm-derive]
-version = "0.1.2"
+version = "0.1.3"
 path = "../../../../dharitri-wasm-derive"
 
 [dependencies.dharitri-wasm-node]
-version = "0.1.2"
+version = "0.1.3"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.1.2"
+version = "0.1.3"
 path = "../../../../dharitri-wasm-debug"
