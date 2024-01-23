@@ -21,15 +21,15 @@ wasm-output-mode-unmanaged-ei = [
 ]
 
 [dependencies.dharitri-wasm]
-version = "0.1.8"
+version = "0.1.9"
 path = "../../../../dharitri-wasm"
 features = ["derive", "cb_closure_managed_deser"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.1.8"
+version = "0.1.9"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.1.8"
+version = "0.1.9"
 path = "../../../../dharitri-wasm-debug"

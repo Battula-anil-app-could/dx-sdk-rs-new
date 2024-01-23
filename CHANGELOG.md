@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.1.8, dharitri-codec 0.0.9, denali 0.0.9] - 2021-10-02
+## [dharitri-wasm 0.1.9]
+- Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
+- Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
+
+## [dharitri-wasm 0.20.0, dharitri-codec 0.0.9, denali 0.0.9] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -90,7 +94,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [dharitri-wasm 0.16.0, denali 0.0.9, dharitri-codec 0.5.3] - 2021-05-14
+## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -219,7 +223,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.10.1, dharitri-codec 0.4.1, denali 0.4.1] - 2020-12-23
 - Minor fixes, support for strings
 
-## [dharitri-wasm 0.0.9, dharitri-codec 0.4.0] - 2020-12-21
+## [dharitri-wasm 0.10.0, dharitri-codec 0.4.0] - 2020-12-21
 - Codec derive
 - ABI generation framework
 - New example contracts
@@ -270,7 +274,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.0.9, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
