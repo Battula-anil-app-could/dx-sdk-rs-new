@@ -4,6 +4,16 @@ fn big_int_to_i64_go() {
 }
 
 #[test]
+fn big_num_conversions_go() {
+    dharitri_wasm_debug::denali_go("denali/big_num_conversions.scen.json");
+}
+
+#[test]
+fn big_uint_sqrt_go() {
+    dharitri_wasm_debug::denali_go("denali/big_uint_sqrt.scen.json");
+}
+
+#[test]
 fn big_uint_to_u64_go() {
     dharitri_wasm_debug::denali_go("denali/big_uint_to_u64.scen.json");
 }
@@ -64,6 +74,11 @@ fn echo_async_result_empty_go() {
 }
 
 #[test]
+fn echo_async_result_empty_managed_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_async_result_empty_managed.scen.json");
+}
+
+#[test]
 fn echo_big_int_nested_go() {
     dharitri_wasm_debug::denali_go("denali/echo_big_int_nested.scen.json");
 }
@@ -99,6 +114,11 @@ fn echo_managed_bytes_go() {
 }
 
 #[test]
+fn echo_managed_vec_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_managed_vec.scen.json");
+}
+
+#[test]
 fn echo_nothing_go() {
     dharitri_wasm_debug::denali_go("denali/echo_nothing.scen.json");
 }
@@ -126,6 +146,11 @@ fn echo_str_box_go() {
 #[test]
 fn echo_string_go() {
     dharitri_wasm_debug::denali_go("denali/echo_string.scen.json");
+}
+
+#[test]
+fn echo_tuple_into_multiresult_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_tuple_into_multiresult.scen.json");
 }
 
 #[test]
@@ -176,11 +201,6 @@ fn get_cumulated_validator_rewards_go() {
 #[test]
 fn get_dct_local_roles_go() {
     dharitri_wasm_debug::denali_go("denali/get_dct_local_roles.scen.json");
-}
-
-#[test]
-fn log2_func_go() {
-    dharitri_wasm_debug::denali_go("denali/log2_func.scen.json");
 }
 
 #[test]
@@ -239,11 +259,6 @@ fn panic_go() {
 }
 
 #[test]
-fn pow_func_go() {
-    dharitri_wasm_debug::denali_go("denali/pow_func.scen.json");
-}
-
-#[test]
 fn return_codes_go() {
     dharitri_wasm_debug::denali_go("denali/return_codes.scen.json");
 }
@@ -256,11 +271,6 @@ fn sc_properties_go() {
 #[test]
 fn sc_result_go() {
     dharitri_wasm_debug::denali_go("denali/sc_result.scen.json");
-}
-
-#[test]
-fn sqrt_go() {
-    dharitri_wasm_debug::denali_go("denali/sqrt.scen.json");
 }
 
 #[test]
@@ -326,6 +336,11 @@ fn storage_mapper_map_go() {
 #[test]
 fn storage_mapper_map_storage_go() {
     dharitri_wasm_debug::denali_go("denali/storage_mapper_map_storage.scen.json");
+}
+
+#[test]
+fn storage_mapper_queue_go() {
+    dharitri_wasm_debug::denali_go("denali/storage_mapper_queue.scen.json");
 }
 
 #[test]

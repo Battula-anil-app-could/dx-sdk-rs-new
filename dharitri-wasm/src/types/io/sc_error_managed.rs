@@ -32,7 +32,7 @@ where
     #[inline]
     pub fn new_empty(api: M) -> Self {
         ManagedSCError {
-            buffer: ManagedBuffer::new_empty(api),
+            buffer: ManagedBuffer::new(api),
         }
     }
 
@@ -103,5 +103,15 @@ where
     #[inline]
     fn managed_from(api: M, message: Vec<u8>) -> Self {
         Self::new_from_bytes(api, message.as_slice())
+    }
+}
+
+impl<M> From<ManagedBuffer<M>> for ManagedSCError<M>
+where
+    M: ManagedTypeApi,
+{
+    #[inline]
+    fn from(message: ManagedBuffer<M>) -> Self {
+        ManagedSCError { buffer: message }
     }
 }

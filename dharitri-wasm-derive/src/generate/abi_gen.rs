@@ -102,6 +102,13 @@ fn generate_abi_method_body(
     let contract_name = &contract.trait_name.to_string();
     quote! {
         let mut contract_abi = dharitri_wasm::abi::ContractAbi{
+            build_info: dharitri_wasm::abi::BuildInfoAbi {
+                contract_crate: dharitri_wasm::abi::ContractCrateBuildAbi {
+                    name: env!("CARGO_PKG_NAME"),
+                    version: env!("CARGO_PKG_VERSION"),
+                },
+                framework: dharitri_wasm::abi::FrameworkBuildAbi::create(),
+            },
             docs: &[ #(#contract_docs),* ],
             name: #contract_name,
             constructor: None,

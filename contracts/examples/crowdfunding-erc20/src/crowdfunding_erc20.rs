@@ -98,12 +98,12 @@ pub trait Crowdfunding {
     #[callback]
     fn transfer_from_callback(
         &self,
-        #[call_result] result: AsyncCallResult<()>,
+        #[call_result] result: ManagedAsyncCallResult<()>,
         cb_sender: ManagedAddress,
         cb_amount: BigUint,
     ) -> OptionalResult<AsyncCall> {
         match result {
-            AsyncCallResult::Ok(()) => {
+            ManagedAsyncCallResult::Ok(()) => {
                 // transaction started before deadline, ended after -> refund
                 if self.blockchain().get_block_nonce() > self.deadline().get() {
                     let erc20_address = self.erc20_contract_address().get();
@@ -120,7 +120,7 @@ pub trait Crowdfunding {
 
                 OptionalResult::None
             },
-            AsyncCallResult::Err(_) => OptionalResult::None,
+            ManagedAsyncCallResult::Err(_) => OptionalResult::None,
         }
     }
 
@@ -144,10 +144,10 @@ pub trait Crowdfunding {
     fn deposit(&self, donor: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
     #[view(get_erc20_contract_address)]
-    #[storage_mapper("erc20_contract_address")]
+    #[storage_mapper("erc20ContractAddress")]
     fn erc20_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
 
     #[view(get_total_balance)]
-    #[storage_mapper("erc20_balance")]
+    #[storage_mapper("erc20Balance")]
     fn total_balance(&self) -> SingleValueMapper<BigUint>;
 }

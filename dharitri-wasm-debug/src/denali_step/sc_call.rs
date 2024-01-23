@@ -15,7 +15,7 @@ pub fn execute(
     let mut dct_token_identifier = Vec::new();
     if let Some(value) = tx.dct_value.as_ref() {
         dct_value = value.dct_value.value.clone();
-        dct_token_identifier = value.dct_token_name.value.clone();
+        dct_token_identifier = value.dct_token_identifier.value.clone();
     };
     let tx_input = TxInput {
         from: tx.from.value.into(),

@@ -38,8 +38,8 @@ fn payable_snippet_for_metadata(
                 #nonce_init
             }
         },
-        MethodPayableMetadata::SingleDctToken(token_name) => {
-            let token_literal = byte_str_slice_literal(token_name.as_bytes());
+        MethodPayableMetadata::SingleDctToken(token_identifier) => {
+            let token_literal = byte_str_slice_literal(token_identifier.as_bytes());
             let payment_var_name = var_name_or_underscore(payment_amount_arg);
             let token_init = if let Some(arg) = payment_token_arg {
                 let pat = &arg.pat;

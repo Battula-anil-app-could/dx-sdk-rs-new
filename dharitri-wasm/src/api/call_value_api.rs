@@ -75,17 +75,17 @@ pub trait CallValueApi: ManagedTypeApi + ErrorApi + Sized {
 
     fn get_all_dct_transfers(&self) -> ManagedVec<Self, DctTokenPayment<Self>> {
         let num_transfers = self.dct_num_transfers();
-        let mut transfers = ManagedVec::new_empty(self.clone());
+        let mut transfers = ManagedVec::new(self.clone());
 
         for i in 0..num_transfers {
             let token_type = self.dct_token_type_by_index(i);
-            let token_name = self.token_by_index(i);
+            let token_identifier = self.token_by_index(i);
             let token_nonce = self.dct_token_nonce_by_index(i);
             let amount = self.dct_value_by_index(i);
 
             transfers.push(DctTokenPayment::<Self> {
                 token_type,
-                token_name,
+                token_identifier,
                 token_nonce,
                 amount,
             });
