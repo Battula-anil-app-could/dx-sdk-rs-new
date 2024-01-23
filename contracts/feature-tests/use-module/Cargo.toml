@@ -19,35 +19,35 @@ wasm-output-mode = [
 ]
 
 [dependencies.dharitri-wasm-module-dns]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../modules/dharitri-wasm-module-dns"
 
 [dependencies.dharitri-wasm-module-dct]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../modules/dharitri-wasm-module-dct"
 
 [dependencies.dharitri-wasm-module-features]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../modules/dharitri-wasm-module-features"
 
 [dependencies.dharitri-wasm-module-governance]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../modules/dharitri-wasm-module-governance"
 
 [dependencies.dharitri-wasm-module-pause]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../modules/dharitri-wasm-module-pause"
 
 [dependencies.dharitri-wasm]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../dharitri-wasm"
 features = ["derive"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../dharitri-wasm-debug"

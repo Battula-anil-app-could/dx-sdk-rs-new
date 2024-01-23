@@ -4,6 +4,7 @@ members = [
   "dharitri-wasm-debug",
   "dharitri-wasm-derive",
   "denali",
+  "dharitri-codec",
   "dharitri-codec-derive",
 
   "contracts/benchmarks/str-repeat",

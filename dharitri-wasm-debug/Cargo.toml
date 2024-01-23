@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-debug"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -26,9 +26,9 @@ serde_json = "1.0"
 arwen-tests = []
 
 [dependencies.dharitri-wasm]
-version = "0.1.4"
+version = "0.1.5"
 path = "../dharitri-wasm"
 
 [dependencies.denali]
-version = "0.8.0"
+version = "0.0.7"
 path = "../denali"

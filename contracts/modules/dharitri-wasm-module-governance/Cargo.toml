@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-module-governance"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2018"
 
 authors = ["Dorin Iancu <dorin.iancu@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -17,15 +17,15 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 wasm-output-mode = ["dharitri-wasm-node"]
 
 [dependencies.dharitri-wasm]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../dharitri-wasm"
 features = ["derive"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../dharitri-wasm-debug"

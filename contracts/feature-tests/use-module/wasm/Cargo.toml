@@ -21,7 +21,7 @@ default-features = false
 features=["wasm-output-mode"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.1.4"
+version = "0.1.5"
 path = "../../../../dharitri-wasm-output"
 features=["wasm-output-mode"]
 
