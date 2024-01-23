@@ -1,8 +1,8 @@
 dharitri_wasm::imports!();
 
-#[dharitri_wasm_derive::proxy]
+#[dharitri_wasm::proxy]
 pub trait Dns {
-	#[payable("MOAX")]
-	#[endpoint]
-	fn register(&self, name: BoxedBytes, #[payment] payment: Self::BigUint);
+    #[payable("MOAX")]
+    #[endpoint]
+    fn register(&self, name: BoxedBytes, #[payment] payment: Self::BigUint);
 }

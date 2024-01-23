@@ -68,7 +68,7 @@ getDeadline() {
 
 # BOB's deposit
 getDeposit() {
-    local BOB_ADDRESS_BECH32=moa1932zgy2qh0snh4g8nhvsujzd95jz6fyv3ldmynlf97tscs9nvm2skfndgz
+    local BOB_ADDRESS_BECH32=moa1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruq0yu4wk
     local BOB_ADDRESS_HEX=0x$(erdpy wallet bech32 --decode ${BOB_ADDRESS_BECH32})
 
     erdpy --verbose contract query ${ADDRESS} --function="getDeposit" --arguments ${BOB_ADDRESS_HEX} --proxy=${PROXY} --chain=T

@@ -41,8 +41,19 @@
                 "logs": [
                     {
                         "address": "sc:moax-dct-swap",
-                        "identifier": "str:wrap-moax",
+                        "endpoint": "str:DCTTransfer",
                         "topics": [
+                            "str:WMOAX-abcdef",
+                            "500",
+                            "address:user"
+                        ],
+                        "data": ""
+                    },
+                    {
+                        "address": "sc:moax-dct-swap",
+                        "endpoint": "str:wrapMoax",
+                        "topics": [
+                            "str:wrap-moax",
                             "address:user"
                         ],
                         "data": "500"
