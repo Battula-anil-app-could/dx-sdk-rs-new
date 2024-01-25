@@ -1,17 +1,17 @@
 use crate::{
-    api::{BlockchainApi, ManagedTypeApi, SendApi, StorageReadApi},
+    api::{
+        BlockchainApi, ManagedTypeApi, SendApi, StorageReadApi, CHANGE_OWNER_BUILTIN_FUNC_NAME,
+        DCT_LOCAL_BURN_FUNC_NAME, DCT_LOCAL_MINT_FUNC_NAME, DCT_MULTI_TRANSFER_FUNC_NAME,
+        DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_BURN_FUNC_NAME, DCT_NFT_CREATE_FUNC_NAME,
+        DCT_NFT_TRANSFER_FUNC_NAME, DCT_TRANSFER_FUNC_NAME,
+    },
     dct::DCTSystemSmartContractProxy,
     types::{
-        BigUint, ContractCall, DctTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
-        ManagedInto, ManagedVec, TokenIdentifier,
+        AsManagedRef, BigUint, ContractCall, DctTokenPayment, ManagedAddress, ManagedArgBuffer,
+        ManagedBuffer, ManagedInto, ManagedVec, TokenIdentifier,
     },
 };
 use dharitri_codec::TopDecode;
-
-pub const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
-pub const DCT_NFT_TRANSFER_STRING: &[u8] = b"DCTNFTTransfer";
-pub const DCT_MULTI_TRANSFER_STRING: &[u8] = b"MultiDCTNFTTransfer";
-pub const CHANGE_ADDRESS_BUILTIN_FUNC_NAME: &[u8] = b"ChangeOwnerAddress";
 
 const PERCENTAGE_TOTAL: u64 = 10_000;
 
@@ -70,16 +70,40 @@ where
     ) where
         D: ManagedInto<A, ManagedBuffer<A>>,
     {
+        self.direct_with_gas_limit(to, token, nonce, amount, 0, data, &[]);
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn direct_with_gas_limit<D>(
+        &self,
+        to: &ManagedAddress<A>,
+        token: &TokenIdentifier<A>,
+        nonce: u64,
+        amount: &BigUint<A>,
+        gas: u64,
+        endpoint_name: D,
+        arguments: &[ManagedBuffer<A>],
+    ) where
+        D: ManagedInto<A, ManagedBuffer<A>>,
+    {
+        let endpoint_name_managed = endpoint_name.managed_into(self.type_manager());
+        let mut arg_buffer = ManagedArgBuffer::new_empty(self.type_manager());
+        for arg in arguments {
+            arg_buffer.push_arg(arg);
+        }
+
         if token.is_moax() {
-            self.direct_moax(to, amount, data);
+            let _ =
+                self.api
+                    .direct_moax_execute(to, amount, gas, &endpoint_name_managed, &arg_buffer);
         } else if nonce == 0 {
             let _ = self.api.direct_dct_execute(
                 to,
                 token,
                 amount,
-                0,
-                &data.managed_into(self.type_manager()),
-                &ManagedArgBuffer::new_empty(self.type_manager()),
+                gas,
+                &endpoint_name_managed,
+                &arg_buffer,
             );
         } else {
             let _ = self.api.direct_dct_nft_execute(
@@ -87,9 +111,9 @@ where
                 token,
                 nonce,
                 amount,
-                0,
-                &data.managed_into(self.type_manager()),
-                &ManagedArgBuffer::new_empty(self.type_manager()),
+                gas,
+                &endpoint_name_managed,
+                &arg_buffer,
             );
         }
     }
@@ -122,7 +146,7 @@ where
             self.api.async_call_raw(
                 to,
                 &BigUint::zero(self.type_manager()),
-                &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_TRANSFER_STRING),
+                &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_TRANSFER_FUNC_NAME),
                 &arg_buffer,
             )
         } else {
@@ -136,7 +160,7 @@ where
             self.api.async_call_raw(
                 &self.api.get_sc_address(),
                 &BigUint::zero(self.type_manager()),
-                &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_NFT_TRANSFER_STRING),
+                &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_NFT_TRANSFER_FUNC_NAME),
                 &arg_buffer,
             )
         }
@@ -169,7 +193,7 @@ where
         self.api.async_call_raw(
             &self.api.get_sc_address(),
             &BigUint::zero(self.type_manager()),
-            &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_MULTI_TRANSFER_STRING),
+            &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_MULTI_TRANSFER_FUNC_NAME),
             &arg_buffer,
         );
     }
@@ -184,7 +208,7 @@ where
         let mut contract_call = ContractCall::new(
             self.api.clone(),
             child_sc_address,
-            ManagedBuffer::new_from_bytes(self.type_manager(), CHANGE_ADDRESS_BUILTIN_FUNC_NAME),
+            ManagedBuffer::new_from_bytes(self.type_manager(), CHANGE_OWNER_BUILTIN_FUNC_NAME),
         );
         contract_call.push_endpoint_arg(&new_owner);
         contract_call
@@ -215,9 +239,9 @@ where
         arg_buffer.push_arg(token);
 
         if nonce == 0 {
-            func_name = b"DCTLocalMint";
+            func_name = DCT_LOCAL_MINT_FUNC_NAME;
         } else {
-            func_name = b"DCTNFTAddQuantity";
+            func_name = DCT_NFT_ADD_QUANTITY_FUNC_NAME;
             arg_buffer.push_arg(nonce);
         }
 
@@ -239,9 +263,9 @@ where
 
         arg_buffer.push_arg(token);
         if nonce == 0 {
-            func_name = b"DCTLocalBurn";
+            func_name = DCT_LOCAL_BURN_FUNC_NAME;
         } else {
-            func_name = b"DCTNFTBurn";
+            func_name = DCT_NFT_BURN_FUNC_NAME;
             arg_buffer.push_arg(&nonce);
         }
 
@@ -278,20 +302,25 @@ where
         arg_buffer.push_arg(hash);
         arg_buffer.push_arg(attributes);
 
-        // The API function has the last argument as variadic,
-        // so we top-encode each and send as separate argument
-        for uri in uris {
-            arg_buffer.push_arg(uri);
+        if uris.is_empty() {
+            // at least one URI is required, so we push an empty one
+            arg_buffer.push_arg(ManagedBuffer::new(self.api.clone()));
+        } else {
+            // The API function has the last argument as variadic,
+            // so we top-encode each and send as separate argument
+            for uri in uris {
+                arg_buffer.push_arg(uri);
+            }
         }
 
         let output = self.call_local_dct_built_in_function(
             self.api.get_gas_left(),
-            &ManagedBuffer::new_from_bytes(self.type_manager(), b"DCTNFTCreate"),
+            &ManagedBuffer::new_from_bytes(self.type_manager(), DCT_NFT_CREATE_FUNC_NAME),
             &arg_buffer,
         );
 
         if let Some(first_result_bytes) = output.get(0) {
-            u64::top_decode(&first_result_bytes).unwrap_or_default()
+            u64::top_decode(first_result_bytes.as_managed_ref()).unwrap_or_default()
         } else {
             0
         }

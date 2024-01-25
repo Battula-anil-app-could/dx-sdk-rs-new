@@ -6,8 +6,7 @@
             "accounts": {
                 "address:user": {
                     "nonce": "0",
-                    "balance": "1000",
-                    "storage": {}
+                    "balance": "1000"
                 },
                 "sc:moax-dct-swap": {
                     "nonce": "0",
@@ -29,13 +28,14 @@
             "tx": {
                 "from": "address:user",
                 "to": "sc:moax-dct-swap",
-                "value": "500",
+                "moaxValue": "500",
                 "function": "wrapMoax",
                 "arguments": [],
                 "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
+                "out": [],
                 "status": "0",
                 "message": "",
                 "logs": [

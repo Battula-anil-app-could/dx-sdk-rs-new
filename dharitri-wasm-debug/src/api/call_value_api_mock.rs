@@ -1,11 +1,22 @@
-use crate::{TxContext, TxPanic};
+use crate::{tx_mock::TxPanic, DebugApi};
 use dharitri_wasm::{
     api::CallValueApi,
     err_msg,
-    types::{BigUint, DctTokenType, ManagedBuffer, TokenIdentifier},
+    types::{BigUint, DctTokenType, TokenIdentifier},
 };
 
-impl CallValueApi for TxContext {
+impl DebugApi {
+    fn fail_if_more_than_one_dct_transfer(&self) {
+        if self.dct_num_transfers() > 1 {
+            std::panic::panic_any(TxPanic {
+                status: 10,
+                message: err_msg::TOO_MANY_DCT_TRANSFERS.to_vec(),
+            });
+        }
+    }
+}
+
+impl CallValueApi for DebugApi {
     fn check_not_payable(&self) {
         if self.moax_value() > 0 {
             std::panic::panic_any(TxPanic {
@@ -23,59 +34,73 @@ impl CallValueApi for TxContext {
 
     #[inline]
     fn moax_value(&self) -> BigUint<Self> {
-        self.insert_new_big_uint(self.tx_input_box.call_value.clone())
+        self.insert_new_big_uint(self.input_ref().moax_value.clone())
     }
 
     #[inline]
     fn dct_value(&self) -> BigUint<Self> {
-        self.insert_new_big_uint(self.tx_input_box.dct_value.clone())
+        self.fail_if_more_than_one_dct_transfer();
+        self.dct_value_by_index(0)
     }
 
     #[inline]
     fn token(&self) -> TokenIdentifier<Self> {
-        ManagedBuffer::new_from_bytes(
-            self.clone(),
-            self.tx_input_box.dct_token_identifier.as_slice(),
-        )
-        .into()
+        self.fail_if_more_than_one_dct_transfer();
+        self.token_by_index(0)
     }
 
     #[inline]
     fn dct_token_nonce(&self) -> u64 {
-        // TODO: Add DCT nonce in mock
-        0u64
+        self.fail_if_more_than_one_dct_transfer();
+        self.dct_token_nonce_by_index(0)
     }
 
     #[inline]
     fn dct_token_type(&self) -> DctTokenType {
-        // TODO: Add DCT token type in mock
-        DctTokenType::Fungible
+        self.fail_if_more_than_one_dct_transfer();
+        self.dct_token_type_by_index(0)
     }
-
-    // TODO: Mock multi-transfers
 
     #[inline]
     fn dct_num_transfers(&self) -> usize {
-        0
+        self.input_ref().dct_values.len()
     }
 
     #[inline]
-    fn dct_value_by_index(&self, _index: usize) -> BigUint<Self> {
-        self.insert_new_big_uint_zero()
+    fn dct_value_by_index(&self, index: usize) -> BigUint<Self> {
+        if let Some(dct_value) = self.input_ref().dct_values.get(index) {
+            self.insert_new_big_uint(dct_value.value.clone())
+        } else {
+            self.insert_new_big_uint_zero()
+        }
     }
 
     #[inline]
-    fn token_by_index(&self, _index: usize) -> TokenIdentifier<Self> {
-        TokenIdentifier::moax(self.clone())
+    fn token_by_index(&self, index: usize) -> TokenIdentifier<Self> {
+        if let Some(dct_value) = self.input_ref().dct_values.get(index) {
+            TokenIdentifier::from(
+                self.insert_new_managed_buffer(dct_value.token_identifier.clone()),
+            )
+        } else {
+            TokenIdentifier::moax(self.clone())
+        }
     }
 
     #[inline]
-    fn dct_token_nonce_by_index(&self, _index: usize) -> u64 {
-        0
+    fn dct_token_nonce_by_index(&self, index: usize) -> u64 {
+        if let Some(dct_value) = self.input_ref().dct_values.get(index) {
+            dct_value.nonce
+        } else {
+            0
+        }
     }
 
     #[inline]
-    fn dct_token_type_by_index(&self, _index: usize) -> DctTokenType {
-        DctTokenType::Fungible
+    fn dct_token_type_by_index(&self, index: usize) -> DctTokenType {
+        if self.dct_token_nonce_by_index(index) == 0 {
+            DctTokenType::Fungible
+        } else {
+            DctTokenType::NonFungible
+        }
     }
 }

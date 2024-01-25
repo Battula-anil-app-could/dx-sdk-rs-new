@@ -1,10 +1,10 @@
 use dharitri_wasm::contract_base::ContractBase;
-use dharitri_wasm_debug::TxContext;
+use dharitri_wasm_debug::DebugApi;
 use factorial::*;
 
 #[test]
 fn test_factorial() {
-    let factorial = factorial::contract_obj(TxContext::dummy());
+    let factorial = factorial::contract_obj(DebugApi::dummy());
 
     assert_eq!(
         factorial.types().big_uint_from(1u32),

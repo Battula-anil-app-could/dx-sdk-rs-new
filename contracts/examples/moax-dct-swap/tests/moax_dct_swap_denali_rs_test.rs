@@ -1,7 +1,8 @@
 use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+#[allow(unused)]
+fn contract_map() -> ContractMap<DebugApi> {
     let mut contract_map = ContractMap::new();
     contract_map.register_contract(
         "file:../output/moax-dct-swap.wasm",
@@ -12,10 +13,10 @@ fn contract_map() -> ContractMap<TxContext> {
 
 #[test]
 fn unwrap_moax_rs() {
-    dharitri_wasm_debug::denali_rs("denali/unwrap_moax.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/unwrap_moax.scen.json", contract_map());
 }
 
 #[test]
 fn wrap_moax_rs() {
-    dharitri_wasm_debug::denali_rs("denali/wrap_moax.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/wrap_moax.scen.json", contract_map());
 }

@@ -1,7 +1,7 @@
 use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+fn contract_map() -> ContractMap<DebugApi> {
     let mut contract_map = ContractMap::new();
     contract_map.register_contract(
         "file:../first-contract/output/first-contract.wasm",
@@ -17,29 +17,29 @@ fn contract_map() -> ContractMap<TxContext> {
 
 #[test]
 fn init_rs() {
-    dharitri_wasm_debug::denali_rs("denali/init.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/init.scen.json", contract_map());
 }
 
 #[test]
 fn simple_transfer_full_rs() {
-    dharitri_wasm_debug::denali_rs("denali/simple_transfer_full.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/simple_transfer_full.scen.json", contract_map());
 }
 
 #[test]
 fn simple_transfer_half_rs() {
-    dharitri_wasm_debug::denali_rs("denali/simple_transfer_half.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/simple_transfer_half.scen.json", contract_map());
 }
 
 #[test]
 fn simple_transfer_full_wrong_token_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/simple_transfer_full_wrong_token.scen.json",
-        &contract_map(),
+        contract_map(),
     );
 }
 
 // TODO: implement DCTTransfer + async call
 // #[test]
 // fn rejected_transfer_rs() {
-// 	dharitri_wasm_debug::denali_rs("denali/reject_transfer.scen.json", &contract_map());
+// 	dharitri_wasm_debug::denali_rs("denali/reject_transfer.scen.json", contract_map());
 // }

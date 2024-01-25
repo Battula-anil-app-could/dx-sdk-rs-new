@@ -1,20 +1,24 @@
-use denali::TxTransfer;
+use std::rc::Rc;
 
-use crate::BlockchainMock;
+use dharitri_wasm::types::H256;
+use denali::model::TxTransfer;
 
-pub fn execute(state: &mut BlockchainMock, tx: &TxTransfer) {
-    let sender_address = &tx.from.value.into();
-    state.increase_nonce(sender_address);
-    state
-        .subtract_tx_payment(sender_address, &tx.value.value)
-        .unwrap();
-    let recipient_address = &tx.to.value.into();
-    state.increase_balance(recipient_address, &tx.value.value);
-    let dct_token_identifier = tx.dct_token_identifier.value.clone();
-    let dct_value = tx.dct_value.value.clone();
+use crate::{
+    sc_call::tx_dct_transfers_from_denali, tx_execution::sc_call, tx_mock::TxInput,
+    world_mock::BlockchainMock,
+};
 
-    if !dct_token_identifier.is_empty() && dct_value > 0u32.into() {
-        state.substract_dct_balance(sender_address, &dct_token_identifier[..], &dct_value);
-        state.increase_dct_balance(recipient_address, &dct_token_identifier[..], &dct_value);
-    }
+pub fn execute(state: &mut Rc<BlockchainMock>, tx_transfer: &TxTransfer) {
+    let tx_input = TxInput {
+        from: tx_transfer.from.value.into(),
+        to: tx_transfer.to.value.into(),
+        moax_value: tx_transfer.moax_value.value.clone(),
+        dct_values: tx_dct_transfers_from_denali(tx_transfer.dct_value.as_slice()),
+        func_name: Vec::new(),
+        args: Vec::new(),
+        gas_limit: tx_transfer.gas_limit.value,
+        gas_price: tx_transfer.gas_price.value,
+        tx_hash: H256::zero(),
+    };
+    sc_call(tx_input, state, true);
 }

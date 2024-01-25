@@ -1,24 +1,24 @@
 use dharitri_wasm::types::{BoxedBytes, TokenIdentifier};
-use dharitri_wasm_debug::{check_managed_top_decode, check_managed_top_encode_decode, TxContext};
+use dharitri_wasm_debug::{check_managed_top_decode, check_managed_top_encode_decode, DebugApi};
 
 #[test]
 fn test_moax() {
-    let api = TxContext::dummy();
+    let api = DebugApi::dummy();
     assert!(TokenIdentifier::moax(api).is_moax());
 }
 
 #[test]
 fn test_codec() {
-    let api = TxContext::dummy();
+    let api = DebugApi::dummy();
     check_managed_top_encode_decode(
         api.clone(),
         TokenIdentifier::moax(api.clone()),
-        TokenIdentifier::<TxContext>::MOAX_REPRESENTATION,
+        TokenIdentifier::<DebugApi>::MOAX_REPRESENTATION,
     );
 
     let expected = BoxedBytes::from_concat(&[
         &[0, 0, 0, 4],
-        &TokenIdentifier::<TxContext>::MOAX_REPRESENTATION[..],
+        &TokenIdentifier::<DebugApi>::MOAX_REPRESENTATION[..],
     ]);
     check_managed_top_encode_decode(
         api.clone(),
@@ -29,18 +29,18 @@ fn test_codec() {
     // also allowed
     assert_eq!(
         TokenIdentifier::moax(api.clone()),
-        check_managed_top_decode::<TokenIdentifier<TxContext>>(api.clone(), &[])
+        check_managed_top_decode::<TokenIdentifier<DebugApi>>(api.clone(), &[])
     );
     assert_eq!(
         vec![TokenIdentifier::moax(api.clone())],
-        check_managed_top_decode::<Vec<TokenIdentifier<TxContext>>>(api, &[0, 0, 0, 0])
+        check_managed_top_decode::<Vec<TokenIdentifier<DebugApi>>>(api, &[0, 0, 0, 0])
     );
 }
 
 #[test]
 #[rustfmt::skip]
 fn test_is_valid_dct_identifier() {
-    let api = TxContext::dummy();
+    let api = DebugApi::dummy();
 
     // valid identifier
     assert!(TokenIdentifier::from_dct_bytes(api.clone(), &b"ALC-6258d2"[..]).is_valid_dct_identifier());

@@ -11,17 +11,19 @@
             "tx": {
                 "from": "address:user",
                 "to": "sc:moax-dct-swap",
-                "value": "0",
-                "dct": {
-                    "tokenIdentifier": "str:WMOAX-abcdef",
-                    "value": "300"
-                },
+                "dctValue": [
+                    {
+                        "tokenIdentifier": "str:WMOAX-abcdef",
+                        "value": "300"
+                    }
+                ],
                 "function": "unwrapMoax",
                 "arguments": [],
                 "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
+                "out": [],
                 "status": "0",
                 "message": "",
                 "logs": [

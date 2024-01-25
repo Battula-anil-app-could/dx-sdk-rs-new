@@ -1,5 +1,6 @@
+use denali::{interpret_trait::InterpreterContext, value_interpreter::interpret_string};
+
 extern crate denali;
-use denali::*;
 
 const EMPTY: Vec<u8> = Vec::<u8>::new();
 

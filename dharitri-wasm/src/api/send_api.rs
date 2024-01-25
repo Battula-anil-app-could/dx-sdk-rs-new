@@ -4,10 +4,6 @@ use crate::types::{
     ManagedInto, ManagedVec, TokenIdentifier,
 };
 
-pub const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
-pub const DCT_NFT_TRANSFER_STRING: &[u8] = b"DCTNFTTransfer";
-pub const DCT_MULTI_TRANSFER_STRING: &[u8] = b"MultiDCTNFTTransfer";
-
 /// API that groups methods that either send MOAX or DCT, or that call other contracts.
 pub trait SendApi: ManagedTypeApi + BlockchainApi + Clone + Sized {
     /// Sends MOAX to a given address, directly.
@@ -97,6 +93,16 @@ pub trait SendApi: ManagedTypeApi + BlockchainApi + Clone + Sized {
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<Self>,
     ) -> (ManagedAddress<Self>, ManagedVec<Self, ManagedBuffer<Self>>);
+
+    fn upgrade_from_source_contract(
+        &self,
+        sc_address: &ManagedAddress<Self>,
+        gas: u64,
+        amount: &BigUint<Self>,
+        source_contract_address: &ManagedAddress<Self>,
+        code_metadata: CodeMetadata,
+        arg_buffer: &ManagedArgBuffer<Self>,
+    );
 
     /// Upgrades a child contract of the currently executing contract.
     /// The upgrade is synchronous, and the current transaction will fail if the upgrade fails.

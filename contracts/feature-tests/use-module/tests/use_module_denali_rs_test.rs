@@ -29,7 +29,7 @@ mod dns_mock {
 
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+fn contract_map() -> ContractMap<DebugApi> {
     let mut contract_map = ContractMap::new();
     contract_map.register_contract(
         "file:../output/use-module.wasm",
@@ -44,7 +44,7 @@ fn contract_map() -> ContractMap<TxContext> {
     contract_map
 }
 
-fn _gov_contract_map() -> ContractMap<TxContext> {
+fn _gov_contract_map() -> ContractMap<DebugApi> {
     let mut contract_map = ContractMap::new();
     contract_map.register_contract(
         "file:../../output/use-module.wasm",
@@ -56,22 +56,22 @@ fn _gov_contract_map() -> ContractMap<TxContext> {
 
 #[test]
 fn use_module_dns_register_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_dns_register.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_dns_register.scen.json", contract_map());
 }
 
 #[test]
 fn use_module_features_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_features.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_features.scen.json", contract_map());
 }
 
 #[test]
 fn use_module_internal_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_internal.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_internal.scen.json", contract_map());
 }
 
 #[test]
 fn use_module_pause_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_pause.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_pause.scen.json", contract_map());
 }
 
 // Governance module tests

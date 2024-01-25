@@ -1,6 +1,7 @@
 pub const NON_PAYABLE_FUNC_MOAX: &[u8] = b"function does not accept MOAX payment";
 pub const NON_PAYABLE_FUNC_DCT: &[u8] = b"function does not accept DCT payment";
 pub const BAD_TOKEN_PROVIDED: &[u8] = b"bad call value token provided";
+pub const TOO_MANY_DCT_TRANSFERS: &[u8] = b"too many DCT transfers";
 
 pub const ARG_WRONG_NUMBER: &[u8] = b"wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";
