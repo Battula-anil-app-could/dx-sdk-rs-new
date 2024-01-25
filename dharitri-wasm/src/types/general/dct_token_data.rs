@@ -1,16 +1,17 @@
 use crate::{
-    abi::TypeAbi,
     api::ManagedTypeApi,
     types::{AsManagedRef, BigUint, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec},
 };
-use alloc::string::String;
 use dharitri_codec::*;
 
 use super::DctTokenType;
 
 use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
+use crate as dharitri_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
+
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
 pub struct DctTokenData<M: ManagedTypeApi> {
     pub token_type: DctTokenType,
     pub amount: BigUint<M>,
@@ -30,11 +31,5 @@ impl<M: ManagedTypeApi> DctTokenData<M> {
 
     pub fn decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
         T::top_decode(self.attributes.as_managed_ref())
-    }
-}
-
-impl<M: ManagedTypeApi> TypeAbi for DctTokenData<M> {
-    fn type_name() -> String {
-        "DctTokenData".into()
     }
 }

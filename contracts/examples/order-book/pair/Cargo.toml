@@ -11,15 +11,14 @@ path = "src/lib.rs"
 wasm-output-mode = [ "dharitri-wasm-node",]
 
 [dependencies.dharitri-wasm]
-version = "0.2.0"
+version = "0.2.1"
 path = "../../../../dharitri-wasm"
-features = ["derive"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.2.0"
+version = "0.2.1"
 optional = true
 path = "../../../../dharitri-wasm-node"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.2.0"
+version = "0.2.1"
 path = "../../../../dharitri-wasm-debug"

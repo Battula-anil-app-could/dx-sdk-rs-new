@@ -1,18 +1,21 @@
-use crate::abi::TypeAbi;
-use alloc::string::String;
 use dharitri_codec::*;
 
 const DCT_TYPE_FUNGIBLE: &[u8] = b"FungibleDCT";
 const DCT_TYPE_NON_FUNGIBLE: &[u8] = b"NonFungibleDCT";
 const DCT_TYPE_SEMI_FUNGIBLE: &[u8] = b"SemiFungibleDCT";
+const DCT_TYPE_META: &[u8] = b"MetaDCT";
 const DCT_TYPE_INVALID: &[u8] = &[];
 
+use crate as dharitri_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
+
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, TypeAbi)]
 pub enum DctTokenType {
     Fungible,
     NonFungible,
     SemiFungible,
+    Meta,
     Invalid,
 }
 
@@ -30,7 +33,8 @@ impl DctTokenType {
             Self::Fungible => 0,
             Self::NonFungible => 1,
             Self::SemiFungible => 2,
-            Self::Invalid => 3,
+            Self::Meta => 3,
+            Self::Invalid => 4,
         }
     }
 
@@ -39,6 +43,7 @@ impl DctTokenType {
             Self::Fungible => DCT_TYPE_FUNGIBLE,
             Self::NonFungible => DCT_TYPE_NON_FUNGIBLE,
             Self::SemiFungible => DCT_TYPE_SEMI_FUNGIBLE,
+            Self::Meta => DCT_TYPE_META,
             Self::Invalid => DCT_TYPE_INVALID,
         }
     }
@@ -51,6 +56,7 @@ impl From<u8> for DctTokenType {
             0 => Self::Fungible,
             1 => Self::NonFungible,
             2 => Self::SemiFungible,
+            3 => Self::Meta,
             _ => Self::Invalid,
         }
     }
@@ -65,6 +71,8 @@ impl<'a> From<&'a [u8]> for DctTokenType {
             Self::NonFungible
         } else if byte_slice == DCT_TYPE_SEMI_FUNGIBLE {
             Self::SemiFungible
+        } else if byte_slice == DCT_TYPE_META {
+            Self::Meta
         } else {
             Self::Invalid
         }
@@ -130,11 +138,5 @@ impl TopDecode for DctTokenType {
         exit: fn(ExitCtx, DecodeError) -> !,
     ) -> Self {
         Self::from(u8::top_decode_or_exit(input, c, exit))
-    }
-}
-
-impl TypeAbi for DctTokenType {
-    fn type_name() -> String {
-        "DctTokenType".into()
     }
 }

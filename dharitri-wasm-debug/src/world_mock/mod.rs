@@ -3,6 +3,7 @@ mod account_dct;
 mod block_info;
 mod blockchain_mock;
 mod blockchain_mock_account_util;
+mod blockchain_mock_init;
 mod blockchain_tx_info;
 mod dct_instance;
 mod dct_instance_metadata;
