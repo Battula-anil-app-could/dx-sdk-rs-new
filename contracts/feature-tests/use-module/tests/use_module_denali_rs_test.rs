@@ -29,7 +29,7 @@ mod dns_mock {
 
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> BlockchainMock {
+fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.register_contract(
         "file:output/use-module.wasm",
@@ -44,69 +44,59 @@ fn contract_map() -> BlockchainMock {
     blockchain
 }
 
-fn _gov_contract_map() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
-    blockchain.register_contract(
-        "file:../output/use-module.wasm",
-        Box::new(|context| Box::new(use_module::contract_obj(context))),
-    );
-
-    blockchain
-}
-
 #[test]
 fn use_module_dns_register_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_dns_register.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_dns_register.scen.json", world());
 }
 
 #[test]
 fn use_module_features_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_features.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_features.scen.json", world());
 }
 
 #[test]
 fn use_module_internal_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_internal.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_internal.scen.json", world());
+}
+
+#[test]
+fn use_module_no_endpoint_rs() {
+    dharitri_wasm_debug::denali_rs("denali/use_module_no_endpoint.scen.json", world());
 }
 
 #[test]
 fn use_module_pause_rs() {
-    dharitri_wasm_debug::denali_rs("denali/use_module_pause.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/use_module_pause.scen.json", world());
 }
 
 // Governance module tests
-
-/*
 
 #[test]
 fn cancel_defeated_proposal_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/use_module_governance/cancel_defeated_proposal.scen.json",
-        &gov_contract_map(),
+        world(),
     );
 }
 
 #[test]
 fn change_configuration_rs() {
     dharitri_wasm_debug::denali_rs(
-        "/home/dharitri/dharitri-wasm-rs/contracts/feature-tests/use-module/denali/use_module_governance/change_configuration.scen.json",
-        &gov_contract_map(),
+        "denali/use_module_governance/change_configuration.scen.json",
+        world(),
     );
 }
 
 #[test]
 fn init_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/use_module_governance/init.scen.json",
-        &gov_contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/use_module_governance/init.scen.json", world());
 }
 
 #[test]
 fn invalid_proposals_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/use_module_governance/invalid_proposals.scen.json",
-        &gov_contract_map(),
+        world(),
     );
 }
 
@@ -114,8 +104,6 @@ fn invalid_proposals_rs() {
 fn withdraw_governance_tokens_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/use_module_governance/withdraw_governance_tokens.scen.json",
-        &gov_contract_map(),
+        world(),
     );
 }
-
-*/

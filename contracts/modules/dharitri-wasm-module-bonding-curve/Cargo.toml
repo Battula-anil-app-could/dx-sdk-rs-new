@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-module-bonding-curve"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2018"
 
 authors = ["Alin Cruceat <alin.cruceat@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -13,18 +13,10 @@ description = "Dharitri Webassembly smart contract module that allows an address
 keywords = ["dharitri", "wasm", "bonding-curve", "blockchain", "contract"]
 categories = ["no-std", "wasm"]
 
-[features]
-wasm-output-mode = ["dharitri-wasm-node"]
-
 [dependencies.dharitri-wasm]
-version = "0.2.1"
+version = "0.2.2"
 path = "../../../dharitri-wasm"
 
-[dependencies.dharitri-wasm-node]
-version = "0.2.1"
-path = "../../../dharitri-wasm-node"
-optional = true
-
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.2.1"
+version = "0.2.2"
 path = "../../../dharitri-wasm-debug"

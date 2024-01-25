@@ -1,4 +1,4 @@
-use crate::ArwenApiImpl;
+use super::VmApiImpl;
 use dharitri_wasm::{
     api::CallValueApi,
     types::{BigUint, DctTokenType, ManagedType, TokenIdentifier},
@@ -33,7 +33,7 @@ extern "C" {
     fn getCallValueTokenName(callValueOffset: *const u8, resultOffset: *const u8) -> i32;
 }
 
-impl CallValueApi for ArwenApiImpl {
+impl CallValueApi for VmApiImpl {
     #[inline]
     fn check_not_payable(&self) {
         unsafe {

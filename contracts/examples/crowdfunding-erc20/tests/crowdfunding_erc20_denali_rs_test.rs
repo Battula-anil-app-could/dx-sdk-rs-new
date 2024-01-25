@@ -1,7 +1,7 @@
 use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> BlockchainMock {
+fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/crowdfunding-erc20");
 
@@ -20,29 +20,20 @@ fn contract_map() -> BlockchainMock {
 
 #[test]
 fn deploy_erc20_and_crowdfunding_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/deploy_erc20_and_crowdfunding.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/deploy_erc20_and_crowdfunding.scen.json", world());
 }
 
 #[test]
 fn fund_with_insufficient_allowance_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/fund_with_insufficient_allowance.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/fund_with_insufficient_allowance.scen.json", world());
 }
 
 #[test]
 fn fund_with_sufficient_allowance_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/fund_with_sufficient_allowance.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/fund_with_sufficient_allowance.scen.json", world());
 }
 
 #[test]
 fn fund_without_allowance_rs() {
-    dharitri_wasm_debug::denali_rs("denali/fund_without_allowance.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/fund_without_allowance.scen.json", world());
 }

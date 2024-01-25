@@ -485,7 +485,7 @@ fn test_add() {
     let _ = dharitri_wasm_debug::abi_json::contract_abi::<sample_adder::AbiProvider>();
 }
 
-fn contract_map() -> dharitri_wasm_debug::BlockchainMock {
+fn world() -> dharitri_wasm_debug::BlockchainMock {
     let mut blockchain = dharitri_wasm_debug::BlockchainMock::new();
     blockchain.register_contract(
         "file:../contracts/examples/adder/output/adder.wasm",
@@ -498,6 +498,6 @@ fn contract_map() -> dharitri_wasm_debug::BlockchainMock {
 fn test_denali() {
     dharitri_wasm_debug::denali_rs(
         "../contracts/examples/adder/denali/adder.scen.json",
-        contract_map(),
+        world(),
     );
 }

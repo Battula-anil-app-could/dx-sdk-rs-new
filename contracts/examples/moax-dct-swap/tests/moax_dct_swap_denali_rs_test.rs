@@ -2,7 +2,7 @@ use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
 #[allow(unused)]
-fn contract_map() -> BlockchainMock {
+fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.register_contract(
         "file:output/moax-dct-swap.wasm",
@@ -13,10 +13,10 @@ fn contract_map() -> BlockchainMock {
 
 #[test]
 fn unwrap_moax_rs() {
-    dharitri_wasm_debug::denali_rs("denali/unwrap_moax.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/unwrap_moax.scen.json", world());
 }
 
 #[test]
 fn wrap_moax_rs() {
-    dharitri_wasm_debug::denali_rs("denali/wrap_moax.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/wrap_moax.scen.json", world());
 }

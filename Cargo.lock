@@ -8,11 +8,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "abi-tester-abi"
+name = "abi-tester-meta"
 version = "0.0.0"
 dependencies = [
  "abi-tester",
@@ -26,11 +25,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "adder-abi"
+name = "adder-meta"
 version = "0.0.0"
 dependencies = [
  "adder",
@@ -61,7 +59,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "forwarder",
  "forwarder-raw",
  "proxy-test-first",
@@ -82,14 +79,21 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "basic-features-abi"
+name = "basic-features-meta"
 version = "0.0.0"
 dependencies = [
  "basic-features",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "benchmark-common"
+version = "0.0.0"
+dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
 ]
@@ -117,11 +121,10 @@ dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "dharitri-wasm-module-bonding-curve",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "bonding-curve-contract-abi"
+name = "bonding-curve-contract-meta"
 version = "0.0.0"
 dependencies = [
  "bonding-curve-contract",
@@ -147,7 +150,15 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "child-meta"
+version = "0.0.0"
+dependencies = [
+ "child",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
 ]
 
 [[package]]
@@ -165,11 +176,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "crowdfunding-dct-abi"
+name = "crowdfunding-dct-meta"
 version = "0.0.0"
 dependencies = [
  "crowdfunding-dct",
@@ -183,12 +193,11 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "erc20",
 ]
 
 [[package]]
-name = "crowdfunding-erc20-abi"
+name = "crowdfunding-erc20-meta"
 version = "0.0.0"
 dependencies = [
  "crowdfunding-erc20",
@@ -202,11 +211,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "crypto-bubbles-abi"
+name = "crypto-bubbles-meta"
 version = "0.0.0"
 dependencies = [
  "crypto-bubbles",
@@ -220,7 +228,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "first-contract",
  "second-contract",
 ]
@@ -258,7 +265,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "arrayvec",
  "dharitri-codec",
@@ -270,7 +277,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -286,7 +293,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -297,70 +304,63 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-bonding-curve"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-dct"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-dns"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-governance"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -386,17 +386,7 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "erc1155-user-mock",
-]
-
-[[package]]
-name = "erc1155-abi"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "erc1155",
 ]
 
 [[package]]
@@ -405,12 +395,11 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "erc1155",
 ]
 
 [[package]]
-name = "erc1155-marketplace-abi"
+name = "erc1155-marketplace-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -419,16 +408,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "erc1155-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "erc1155",
+]
+
+[[package]]
 name = "erc1155-user-mock"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "erc1155-user-mock-abi"
+name = "erc1155-user-mock-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -442,11 +439,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "erc20-abi"
+name = "erc20-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -460,11 +456,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "erc721-abi"
+name = "erc721-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -478,11 +473,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "factorial-abi"
+name = "factorial-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -491,7 +485,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "factory-abi"
+name = "factory-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -505,7 +499,15 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "first-contract-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "first-contract",
 ]
 
 [[package]]
@@ -514,8 +516,16 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "vault",
+]
+
+[[package]]
+name = "forwarder-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "forwarder",
 ]
 
 [[package]]
@@ -525,6 +535,15 @@ dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "dharitri-wasm-node",
+]
+
+[[package]]
+name = "forwarder-raw-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "forwarder-raw",
 ]
 
 [[package]]
@@ -598,9 +617,17 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "kitty",
  "kitty-ownership",
+]
+
+[[package]]
+name = "kitty-auction-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "kitty-auction",
 ]
 
 [[package]]
@@ -609,9 +636,17 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "kitty",
  "random",
+]
+
+[[package]]
+name = "kitty-genetic-alg-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "kitty-genetic-alg",
 ]
 
 [[package]]
@@ -620,10 +655,18 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
  "kitty",
  "kitty-genetic-alg",
  "random",
+]
+
+[[package]]
+name = "kitty-ownership-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "kitty-ownership",
 ]
 
 [[package]]
@@ -633,12 +676,38 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13e3bf6590cbc649f4d1a3eefc9d5d6eb746f5200ffb04e5e142700b8faa56e7"
 
 [[package]]
+name = "linked-list-repeat"
+version = "0.0.0"
+dependencies = [
+ "benchmark-common",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "linked-list-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "linked-list-repeat",
+]
+
+[[package]]
 name = "local-dct-and-nft"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "local-dct-and-nft-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "local-dct-and-nft",
 ]
 
 [[package]]
@@ -647,11 +716,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "lottery-dct-abi"
+name = "lottery-dct-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -670,12 +738,30 @@ dependencies = [
 ]
 
 [[package]]
-name = "lottery-erc20-abi"
+name = "lottery-erc20-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "lottery-erc20",
+]
+
+[[package]]
+name = "map-repeat"
+version = "0.0.0"
+dependencies = [
+ "benchmark-common",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "map-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "map-repeat",
 ]
 
 [[package]]
@@ -690,11 +776,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "moax-dct-swap-abi"
+name = "moax-dct-swap-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -706,13 +791,14 @@ dependencies = [
 name = "multisig"
 version = "0.0.0"
 dependencies = [
+ "adder",
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+ "factorial",
 ]
 
 [[package]]
-name = "multisig-abi"
+name = "multisig-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -726,11 +812,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "nft-minter-abi"
+name = "nft-minter-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -744,11 +829,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "nft-storage-prepay-abi"
+name = "nft-storage-prepay-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -810,7 +894,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
@@ -823,7 +906,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "pair-abi"
+name = "pair-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -837,7 +920,15 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "panic-message-features-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "panic-message-features",
 ]
 
 [[package]]
@@ -847,7 +938,15 @@ dependencies = [
  "child",
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "parent-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "parent",
 ]
 
 [[package]]
@@ -856,11 +955,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "payable-features-abi"
+name = "payable-features-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -874,11 +972,10 @@ version = "0.0.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "ping-pong-moax-abi"
+name = "ping-pong-moax-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -906,12 +1003,47 @@ dependencies = [
 ]
 
 [[package]]
+name = "proxy-test-first-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "proxy-test-first",
+]
+
+[[package]]
 name = "proxy-test-second"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "proxy-test-second-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "proxy-test-second",
+]
+
+[[package]]
+name = "queue-repeat"
+version = "0.0.0"
+dependencies = [
+ "benchmark-common",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "queue-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "queue-repeat",
 ]
 
 [[package]]
@@ -948,6 +1080,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "recursive-caller-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "recursive-caller",
+]
+
+[[package]]
 name = "rustc_version"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -968,7 +1109,15 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "second-contract-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "second-contract",
 ]
 
 [[package]]
@@ -983,7 +1132,15 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "send-tx-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "send-tx-repeat",
 ]
 
 [[package]]
@@ -1018,6 +1175,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "set-repeat"
+version = "0.0.0"
+dependencies = [
+ "benchmark-common",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "set-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "set-repeat",
+]
+
+[[package]]
 name = "sha2"
 version = "0.9.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1043,12 +1218,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "single-value-repeat"
+version = "0.0.0"
+dependencies = [
+ "benchmark-common",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "single-value-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "single-value-repeat",
+]
+
+[[package]]
 name = "str-repeat"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "str-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "str-repeat",
 ]
 
 [[package]]
@@ -1100,11 +1301,10 @@ dependencies = [
  "dharitri-wasm-module-features",
  "dharitri-wasm-module-governance",
  "dharitri-wasm-module-pause",
- "dharitri-wasm-node",
 ]
 
 [[package]]
-name = "use-module-abi"
+name = "use-module-meta"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
@@ -1118,7 +1318,33 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-node",
+]
+
+[[package]]
+name = "vault-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "vault",
+]
+
+[[package]]
+name = "vec-repeat"
+version = "0.0.0"
+dependencies = [
+ "benchmark-common",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "vec-repeat-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "vec-repeat",
 ]
 
 [[package]]

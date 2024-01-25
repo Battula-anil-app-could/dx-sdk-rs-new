@@ -8,21 +8,14 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
-[features]
-wasm-output-mode = ["dharitri-wasm-node"]
 
 [dependencies.erc1155]
 path = "../erc1155"
 
 [dependencies.dharitri-wasm]
-version = "0.2.1"
+version = "0.2.2"
 path = "../../../dharitri-wasm"
 
-[dependencies.dharitri-wasm-node]
-version = "0.2.1"
-path = "../../../dharitri-wasm-node"
-optional = true
-
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.2.1"
+version = "0.2.2"
 path = "../../../dharitri-wasm-debug"

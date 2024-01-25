@@ -12,6 +12,14 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
             .get_dct_balance(&self.blockchain().get_sc_address(), token_identifier, 0)
     }
 
+    #[view(getCurrentNftNonce)]
+    fn get_current_nft_nonce(&self, token_identifier: &TokenIdentifier) -> u64 {
+        self.blockchain().get_current_dct_nft_nonce(
+            &self.blockchain().get_sc_address_legacy(),
+            token_identifier,
+        )
+    }
+
     #[endpoint]
     fn send_dct(
         &self,

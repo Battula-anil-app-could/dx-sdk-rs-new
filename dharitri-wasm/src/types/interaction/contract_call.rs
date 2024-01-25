@@ -86,7 +86,7 @@ where
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
     ) -> Self {
-        self.payments.push(DctTokenPayment::from(
+        self.payments.push(DctTokenPayment::new(
             payment_token,
             payment_nonce,
             payment_amount,
@@ -96,7 +96,7 @@ where
 
     pub fn with_moax_transfer(mut self, moax_amount: BigUint<SA>) -> Self {
         self.payments
-            .overwrite_with_single_item(DctTokenPayment::from(
+            .overwrite_with_single_item(DctTokenPayment::new(
                 TokenIdentifier::moax(self.api.clone()),
                 0,
                 moax_amount,

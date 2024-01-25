@@ -268,6 +268,11 @@ fn forwarder_nft_transfer_exec_go() {
 }
 
 #[test]
+fn forwarder_send_no_endpoint_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_no_endpoint.scen.json");
+}
+
+#[test]
 fn forwarder_send_dct_multi_transfer_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_send_dct_multi_transfer.scen.json");
 }
