@@ -5,10 +5,9 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   first_contract
-   (
+    first_contract
+    (
         init
-        callBack
         getSecondContractAddress
         getdctTokenName
         transferToSecondContractFull
@@ -16,5 +15,7 @@ dharitri_wasm_node::wasm_endpoints! {
         transferToSecondContractHalf
         transferToSecondContractRejected
         transferToSecondContractRejectedWithTransferAndExecute
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

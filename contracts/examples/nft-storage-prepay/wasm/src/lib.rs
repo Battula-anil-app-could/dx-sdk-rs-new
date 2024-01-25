@@ -5,10 +5,9 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   nft_storage_prepay
-   (
+    nft_storage_prepay
+    (
         init
-        callBack
         claim
         depositPaymentForStorage
         getCostForSize
@@ -17,5 +16,7 @@ dharitri_wasm_node::wasm_endpoints! {
         reserveFunds
         setCostPerByte
         withdraw
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

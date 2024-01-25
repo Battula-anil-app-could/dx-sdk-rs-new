@@ -4,7 +4,7 @@ DEPLOY_TRANSACTION=$(erdpy data load --key=deployTransaction-testnet)
 PROXY=https://testnet-api.dharitri.com
 CHAIN_ID=T
 
-SC_PARENT_ADDRESS_BECH32=moa1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ssz682hq
+SC_PARENT_ADDRESS_BECH32=erd1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ss0zp9ts
 
 SC_CHILD_ADDRESS_HEX=0000000000000000050011d9d2104d1bb4703accbf6dd06b4ffa87a125bd69e1
 SC_CHILD_ADDRESS_BECH32=$(erdpy wallet bech32 --encode ${SC_CHILD_ADDRESS_HEX})

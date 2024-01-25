@@ -10,7 +10,7 @@ use crate::{
 };
 
 /// Address of the system smart contract that manages DCT.
-/// Bech32: moa1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls29jpxv
+/// Bech32: erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
 pub const DCT_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
     hex!("000000000000000000010000000000000000000000000000000000000002ffff");
 

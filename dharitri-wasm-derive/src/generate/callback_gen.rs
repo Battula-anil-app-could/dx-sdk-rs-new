@@ -23,7 +23,10 @@ pub fn generate_callback_selector_and_main(
             dharitri_wasm::types::CallbackSelectorResult::Processed
         };
         let cb_main_body = quote! {
-            let _ = self.callback_selector(dharitri_wasm::types::CallbackClosureForDeser::new_empty(self.raw_vm_api()));
+            let _ = self::EndpointWrappers::callback_selector(
+                self,
+                dharitri_wasm::types::CallbackClosureForDeser::new_empty(self.raw_vm_api()),
+            );
         };
         (cb_selector_body, cb_main_body)
     } else {

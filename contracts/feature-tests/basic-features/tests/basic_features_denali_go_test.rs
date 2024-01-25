@@ -109,6 +109,11 @@ fn echo_i64_go() {
 }
 
 #[test]
+fn echo_ignore_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_ignore.scen.json");
+}
+
+#[test]
 fn echo_managed_bytes_go() {
     dharitri_wasm_debug::denali_go("denali/echo_managed_bytes.scen.json");
 }

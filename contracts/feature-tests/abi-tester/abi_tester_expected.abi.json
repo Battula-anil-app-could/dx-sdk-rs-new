@@ -13,7 +13,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.2.3"
+            "version": "0.2.4"
         }
     },
     "docs": [
@@ -285,6 +285,7 @@
             "outputs": []
         }
     ],
+    "hasCallback": false,
     "types": {
         "AbiEnum": {
             "type": "enum",

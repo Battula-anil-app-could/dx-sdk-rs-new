@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-module-pause"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -14,9 +14,9 @@ keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
 [dependencies.dharitri-wasm]
-version = "0.2.3"
+version = "0.2.4"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.2.3"
+version = "0.2.4"
 path = "../../../dharitri-wasm-debug"

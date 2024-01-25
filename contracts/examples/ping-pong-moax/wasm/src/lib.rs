@@ -5,10 +5,9 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   ping_pong_moax
-   (
+    ping_pong_moax
+    (
         init
-        callBack
         getActivationTimestamp
         getDeadline
         getMaxFunds
@@ -19,5 +18,7 @@ dharitri_wasm_node::wasm_endpoints! {
         pong
         pongAll
         pongAllLastUser
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

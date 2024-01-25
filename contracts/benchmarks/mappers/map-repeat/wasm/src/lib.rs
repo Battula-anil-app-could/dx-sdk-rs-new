@@ -5,12 +5,13 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   map_repeat
-   (
+    map_repeat
+    (
         init
-        callBack
         add
         count
         remove
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

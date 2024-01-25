@@ -5,10 +5,9 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   multisig
-   (
+    multisig
+    (
         init
-        callBack
         deposit
         discardAction
         getActionData
@@ -25,18 +24,18 @@ dharitri_wasm_node::wasm_endpoints! {
         performAction
         proposeAddBoardMember
         proposeAddProposer
+        proposeAsyncCall
         proposeChangeQuorum
         proposeRemoveUser
-        proposeSCDeploy
         proposeSCDeployFromSource
-        proposeSCUpgrade
         proposeSCUpgradeFromSource
-        proposeSendMoax
-        proposeSendDct
+        proposeTransferExecute
         quorumReached
         sign
         signed
         unsign
         userRole
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

@@ -55,6 +55,22 @@ fn forw_raw_async_echo_rs() {
 //     );
 // }
 
+#[test]
+fn forw_raw_builtin_nft_local_mint_via_async_call_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forw_raw_builtin_nft_local_mint_via_async_call.scen.json",
+        world(),
+    );
+}
+
+#[test]
+fn forw_raw_builtin_nft_local_mint_via_sync_call_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forw_raw_builtin_nft_local_mint_via_sync_call.scen.json",
+        world(),
+    );
+}
+
 // #[test]
 // fn forw_raw_call_async_retrieve_multi_transfer_rs() {
 //     dharitri_wasm_debug::denali_rs(
@@ -71,6 +87,11 @@ fn forw_raw_contract_deploy_rs() {
 #[test]
 fn forw_raw_contract_upgrade_rs() {
     dharitri_wasm_debug::denali_rs("denali/forw_raw_contract_upgrade.scen.json", world());
+}
+
+#[test]
+fn forw_raw_contract_upgrade_self_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forw_raw_contract_upgrade_self.scen.json", world());
 }
 
 #[test]
@@ -105,18 +126,12 @@ fn forw_raw_sync_moax_rs() {
 
 // #[test]
 // fn forw_raw_sync_same_context_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forw_raw_sync_same_context.scen.json",
-//         world(),
-//     );
+//     dharitri_wasm_debug::denali_rs("denali/forw_raw_sync_same_context.scen.json", world());
 // }
 
 // #[test]
 // fn forw_raw_sync_same_context_moax_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forw_raw_sync_same_context_moax.scen.json",
-//         world(),
-//     );
+//     dharitri_wasm_debug::denali_rs("denali/forw_raw_sync_same_context_moax.scen.json", world());
 // }
 
 #[test]
@@ -352,6 +367,11 @@ fn forwarder_nft_create_and_send_rs() {
 }
 
 #[test]
+fn forwarder_nft_current_nonce_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forwarder_nft_current_nonce.scen.json", world());
+}
+
+#[test]
 fn forwarder_nft_decode_complex_attributes_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/forwarder_nft_decode_complex_attributes.scen.json",
@@ -370,7 +390,7 @@ fn forwarder_nft_transfer_exec_rs() {
 }
 
 #[test]
-fn forwarder_send_no_endpoint_rs() {
+fn forwarder_no_endpoint_rs() {
     dharitri_wasm_debug::denali_rs("denali/forwarder_no_endpoint.scen.json", world());
 }
 
@@ -464,10 +484,10 @@ fn proxy_test_payment_sameshard_callback_rs() {
     );
 }
 
-// #[test]
-// fn proxy_test_upgrade_rs() {
-//     dharitri_wasm_debug::denali_rs("denali/proxy_test_upgrade.scen.json", world());
-// }
+#[test]
+fn proxy_test_upgrade_rs() {
+    dharitri_wasm_debug::denali_rs("denali/proxy_test_upgrade.scen.json", world());
+}
 
 #[test]
 fn recursive_caller_moax_1_rs() {

@@ -5,8 +5,8 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   moax_dct_swap
-   (
+    moax_dct_swap
+    (
         init
         callBack
         getLockedMoaxBalance
@@ -16,5 +16,5 @@ dharitri_wasm_node::wasm_endpoints! {
         mintWrappedMoax
         unwrapMoax
         wrapMoax
-   )
+    )
 }

@@ -18,6 +18,11 @@ fn big_int_to_i64_rs() {
 }
 
 #[test]
+fn echo_ignore_go() {
+    dharitri_wasm_debug::denali_rs("denali/echo_ignore.scen.json", world());
+}
+
+#[test]
 fn big_num_conversions_rs() {
     dharitri_wasm_debug::denali_rs("denali/big_num_conversions.scen.json", world());
 }

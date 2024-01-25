@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-debug"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -27,7 +27,7 @@ rustc_version = "0.4"
 denali-go-tests = []
 
 [dependencies.dharitri-wasm]
-version = "=0.2.3"
+version = "=0.2.4"
 path = "../dharitri-wasm"
 
 [dependencies.denali]

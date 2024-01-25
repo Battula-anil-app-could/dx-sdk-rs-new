@@ -5,10 +5,9 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   order_book_pair
-   (
+    order_book_pair
+    (
         init
-        callBack
         cancelAllOrders
         cancelOrders
         createBuyOrder
@@ -22,5 +21,7 @@ dharitri_wasm_node::wasm_endpoints! {
         matchOrders
         startGlobalOperation
         stopGlobalOperation
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

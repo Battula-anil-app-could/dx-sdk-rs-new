@@ -5,8 +5,8 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   lottery_erc20
-   (
+    lottery_erc20
+    (
         init
         callBack
         buy_ticket
@@ -16,5 +16,5 @@ dharitri_wasm_node::wasm_endpoints! {
         lotteryInfo
         start
         status
-   )
+    )
 }
