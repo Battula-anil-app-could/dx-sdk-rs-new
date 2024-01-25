@@ -5,9 +5,20 @@ use crate::{
 
 dharitri_wasm::imports!();
 
+/// Gas required to finsh transaction after transfer-execute.
+const PERFORM_ACTION_FINISH_GAS: u64 = 300_000;
+
 /// Contains all events that can be emitted by the contract.
 #[dharitri_wasm::module]
 pub trait MultisigPerformModule: crate::multisig_state::MultisigStateModule {
+    fn gas_for_transfer_exec(&self) -> u64 {
+        let gas_left = self.blockchain().get_gas_left();
+        if gas_left <= PERFORM_ACTION_FINISH_GAS {
+            self.raw_vm_api().signal_error(b"insufficient gas for call");
+        }
+        gas_left - PERFORM_ACTION_FINISH_GAS
+    }
+
     /// Can be used to:
     /// - create new user (board member / proposer)
     /// - remove user (board member / proposer)
@@ -137,7 +148,7 @@ pub trait MultisigPerformModule: crate::multisig_state::MultisigStateModule {
                 let result = self.raw_vm_api().direct_moax_execute(
                     &to,
                     &amount,
-                    self.blockchain().get_gas_left(),
+                    self.gas_for_transfer_exec(),
                     &endpoint_name,
                     &arguments.into(),
                 );
@@ -155,7 +166,7 @@ pub trait MultisigPerformModule: crate::multisig_state::MultisigStateModule {
                 let result = self.raw_vm_api().direct_multi_dct_transfer_execute(
                     &to,
                     &dct_payments,
-                    self.blockchain().get_gas_left(),
+                    self.gas_for_transfer_exec(),
                     &endpoint_name,
                     &arguments.into(),
                 );

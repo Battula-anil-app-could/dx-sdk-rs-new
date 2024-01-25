@@ -21,6 +21,17 @@ fn world() -> BlockchainMock {
 
     blockchain
 }
+
+// #[test]
+// fn call_other_shard_1_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/call_other_shard-1.scen.json", world());
+// }
+
+// #[test]
+// fn call_other_shard_2_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/call_other_shard-2.scen.json", world());
+// }
+
 #[test]
 fn changeboard_rs() {
     dharitri_wasm_debug::denali_rs("denali/changeBoard.scen.json", world());
