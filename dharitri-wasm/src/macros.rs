@@ -13,7 +13,7 @@ macro_rules! imports {
         use dharitri_wasm::{
             api::{
                 BigIntApi, BlockchainApi, CallValueApi, CryptoApi, EllipticCurveApi, ErrorApi,
-                LogApi, ManagedTypeApi, SendApi,
+                LogApi, ManagedTypeApi, PrintApi, SendApi,
             },
             contract_base::{ContractBase, ProxyObjBase},
             dharitri_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode},
