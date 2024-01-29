@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.2.5] - 2021-11-11
+## [dharitri-wasm 0.2.6] - 2021-11-11
+- Implemented `ManagedVecItem` for `bool`.
+- Substitution for `ManagedMultiResultVec::new()`.
+
+## [dharitri-wasm 0.22.4] - 2021-11-11
 - Derive `ManagedVecItem`.
 - Nested encode and decode from ManagedBuffers cached in a static singleton buffer.
 - Implemented `ExactSizeIterator` for `ManagedVecIterator`.

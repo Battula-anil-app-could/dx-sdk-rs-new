@@ -25,5 +25,5 @@ python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway
 Interact with existing contract:
 
 ```
-python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway.dharitri.com --contract=moa1s...
+python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway.dharitri.com --contract=moa1...
 ```
