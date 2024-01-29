@@ -4,7 +4,15 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.3.0] - 2021-11-12
+
+## [dharitri-wasm 0.3.1] - 2021-11-17
+- Derive `ManagedVecItem` generics fix
+- Constructor can reside in module
+
+## [dharitri-wasm 0.22.10] - 2021-11-12
+- `ManagedMultiResultVec` push accepts multi result
+
+## [dharitri-wasm 0.22.9] - 2021-11-12
 - `ManagedVarArgsEager` implementation
 - `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
 

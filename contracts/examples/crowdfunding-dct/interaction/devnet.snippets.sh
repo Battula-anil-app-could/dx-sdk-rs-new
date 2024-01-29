@@ -7,7 +7,7 @@ DEPLOY_TRANSACTION=$(erdpy data load --key=deployTransaction-devnet)
 DEPLOY_GAS="80000000"
 TARGET=10
 DEADLINE_UNIX_TIMESTAMP=1609452000 # Fri Jan 01 2021 00:00:00 GMT+0200 (Eastern European Standard Time)
-MOAX_TOKEN_ID=0x45474c44 # "MOAX"
+MOAX_TOKEN_ID=0x4d4f4158 # "MOAX"
 
 deploy() {
     erdpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
