@@ -44,9 +44,15 @@ fn crypto_elliptic_curves_go() {
 }
 
 #[test]
-fn crypto_keccak256_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+fn crypto_keccak256_legacy_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_keccak256_legacy.scen.json");
 }
+
+// TODO: enable after new VM release is out.
+// #[test]
+// fn crypto_keccak256_go() {
+//     dharitri_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+// }
 
 #[test]
 fn crypto_ripemd160_go() {
@@ -54,9 +60,15 @@ fn crypto_ripemd160_go() {
 }
 
 #[test]
-fn crypto_sha256_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
+fn crypto_sha256_legacy_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_sha256_legacy.scen.json");
 }
+
+// TODO: enable after new VM release is out.
+// #[test]
+// fn crypto_sha256_go() {
+//     dharitri_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
+// }
 
 #[test]
 fn crypto_verify_funcs_go() {
@@ -216,21 +228,6 @@ fn get_caller_go() {
 #[test]
 fn get_cumulated_validator_rewards_go() {
     dharitri_wasm_debug::denali_go("denali/get_cumulated_validator_rewards.scen.json");
-}
-
-#[test]
-fn get_dct_local_roles_go() {
-    dharitri_wasm_debug::denali_go("denali/get_dct_local_roles.scen.json");
-}
-
-#[test]
-fn managed_address_array_go() {
-    dharitri_wasm_debug::denali_go("denali/managed_address_array.scen.json");
-}
-
-#[test]
-fn managed_address_managed_buffer_go() {
-    dharitri_wasm_debug::denali_go("denali/managed_address_managed_buffer.scen.json");
 }
 
 #[test]

@@ -10,9 +10,9 @@ path = "src/erc721.rs"
 
 
 [dependencies.dharitri-wasm]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../dharitri-wasm-debug"

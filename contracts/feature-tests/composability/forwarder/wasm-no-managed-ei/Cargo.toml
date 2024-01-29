@@ -19,14 +19,18 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-wasm-node]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../../../dharitri-wasm-node"
-features=["unmanaged-ei"]
+features = [
+    "unmanaged-ei",
+    "vm-validate-token-identifier",
+    "vm-dct-local-roles",
+]
 
 [dependencies.dharitri-wasm-output]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../../../dharitri-wasm-output"
-features=["wasm-output-mode"]
+features = ["wasm-output-mode"]
 
 [workspace]
 members = ["."]

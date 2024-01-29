@@ -43,6 +43,21 @@ impl AccountDct {
     pub fn get_roles(&self, identifier: &[u8]) -> Vec<Vec<u8>> {
         self.get_by_identifier_or_default(identifier).get_roles()
     }
+
+    pub fn set_roles(&mut self, token_identifier: Vec<u8>, roles: Vec<Vec<u8>>) {
+        let dct_data = self
+            .0
+            .entry(token_identifier.clone())
+            .or_insert_with(|| DctData {
+                token_identifier,
+                instances: DctInstances::new(),
+                last_nonce: 0,
+                roles: DctRoles::default(),
+                frozen: false,
+            });
+        dct_data.roles = DctRoles::new(roles);
+    }
+
     /// Will provide a clone.
     pub fn get_by_identifier_or_default(&self, identifier: &[u8]) -> DctData {
         if let Some(value) = self.0.get(identifier) {
@@ -78,6 +93,26 @@ impl AccountDct {
                 frozen: false,
             });
         dct_data.instances.increase_balance(nonce, value, metadata);
+    }
+
+    pub fn set_dct_balance(
+        &mut self,
+        token_identifier: Vec<u8>,
+        nonce: u64,
+        value: &BigUint,
+        metadata: DctInstanceMetadata,
+    ) {
+        let dct_data = self
+            .0
+            .entry(token_identifier.clone())
+            .or_insert_with(|| DctData {
+                token_identifier,
+                instances: DctInstances::new(),
+                last_nonce: nonce,
+                roles: DctRoles::default(),
+                frozen: false,
+            });
+        dct_data.instances.set_balance(nonce, value, metadata);
     }
 
     pub fn get_dct_balance(&self, token_identifier: &[u8], nonce: u64) -> BigUint {

@@ -116,6 +116,8 @@ extern "C" {
         nonce: i64,
     ) -> i32;
 
+    fn getDCTLocalRoles(tokenhandle: i32) -> i64;
+
     #[cfg(not(feature = "unmanaged-ei"))]
     fn managedGetDCTTokenData(
         addressHandle: i32,
@@ -528,6 +530,19 @@ impl BlockchainApi for crate::VmApiImpl {
                 royalties: BigUint::from_raw_handle(royalties_handle),
                 uris: ManagedVec::from_raw_handle(uris_handle),
             }
+        }
+    }
+
+    #[cfg(feature = "vm-dct-local-roles")]
+    fn get_dct_local_roles(
+        &self,
+        token_id: &TokenIdentifier<Self>,
+    ) -> dharitri_wasm::types::DctLocalRoleFlags {
+        let managed_token_id = token_id.as_managed_buffer();
+        unsafe {
+            dharitri_wasm::types::DctLocalRoleFlags::from_bits_unchecked(getDCTLocalRoles(
+                managed_token_id.get_raw_handle(),
+            ) as u64)
         }
     }
 }

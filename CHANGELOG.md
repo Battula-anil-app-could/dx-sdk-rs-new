@@ -4,7 +4,13 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.3.3, dharitri-codec 0.1.3] - 2021-11-25
+## [dharitri-wasm 0.3.4] - 2021-12-07
+- Rust testing framework
+- Managed Crypto API - keccak256 and sha256
+- New hook for DCT local roles
+- Only-owner module annotation
+
+## [dharitri-wasm 0.23.1, dharitri-codec 0.1.3] - 2021-11-25
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 
@@ -353,7 +359,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -379,7 +385,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -451,7 +457,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.0.2] - 2020-02-05 
+## [dharitri-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

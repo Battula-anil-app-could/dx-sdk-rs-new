@@ -12,15 +12,15 @@ path = "src/recursive_caller.rs"
 path = "../vault"
 
 [dependencies.dharitri-wasm]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../../dharitri-wasm"
 features = ["cb_closure_managed_deser"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.3"
+version = "0.3.4"
 path = "../../../../dharitri-wasm-debug"
