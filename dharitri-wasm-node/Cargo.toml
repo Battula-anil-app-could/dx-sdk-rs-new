@@ -1,12 +1,12 @@
 [package]
 name = "dharitri-wasm-node"
-version = "0.2.7"
+version = "0.2.8"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
+repository = "https://github.com/DharitriNetwork/dharitri-wasm-rs"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri WebAssembly VM API wrapper"
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 unmanaged-ei = []
 
 [dependencies.dharitri-wasm]
-version = "=0.2.7"
+version = "=0.2.8"
 path = "../dharitri-wasm"
