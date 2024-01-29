@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.22.78, dharitri-codec 0.1.2] - 2021-11-12
+## [dharitri-wasm 0.3.0] - 2021-11-12
+- `ManagedVarArgsEager` implementation
+- `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
+
+## [dharitri-wasm 0.22.8, dharitri-codec 0.1.2] - 2021-11-12
 - Optimized decode unsigned number from slice
 
 ## [dharitri-wasm 0.22.7] - 2021-11-12

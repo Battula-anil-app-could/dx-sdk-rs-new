@@ -9,9 +9,9 @@ publish = false
 path = "src/send_tx_repeat.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.2.9"
+version = "0.3.0"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.2.9"
+version = "0.3.0"
 path = "../../../dharitri-wasm-debug"

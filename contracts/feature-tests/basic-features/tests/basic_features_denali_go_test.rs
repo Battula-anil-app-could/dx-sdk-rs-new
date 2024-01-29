@@ -179,6 +179,11 @@ fn echo_varargs_u32_go() {
 }
 
 #[test]
+fn echo_varargs_u32_managed_eager_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_varargs_u32_managed_eager.scen.json");
+}
+
+#[test]
 fn echo_vec_u8_go() {
     dharitri_wasm_debug::denali_go("denali/echo_vec_u8.scen.json");
 }

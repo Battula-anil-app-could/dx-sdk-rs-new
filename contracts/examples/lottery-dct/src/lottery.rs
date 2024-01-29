@@ -132,7 +132,7 @@ pub trait Lottery {
 
                 let roles = self.blockchain().get_dct_local_roles(&token_identifier);
                 require!(
-                    roles.contains(&DctLocalRole::Burn),
+                    roles.has_role(&DctLocalRole::Burn),
                     "The contract can't burn the selected token!"
                 );
 
@@ -263,7 +263,7 @@ pub trait Lottery {
             let roles = self
                 .blockchain()
                 .get_dct_local_roles(&info.token_identifier);
-            if roles.contains(&DctLocalRole::Burn) {
+            if roles.has_role(&DctLocalRole::Burn) {
                 self.send()
                     .dct_local_burn(&info.token_identifier, 0, &burn_amount);
             }
