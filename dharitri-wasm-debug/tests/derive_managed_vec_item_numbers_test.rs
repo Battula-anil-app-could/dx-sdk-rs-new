@@ -1,12 +1,7 @@
-use dharitri_wasm::{
-    derive::ManagedVecItem,
-    dharitri_codec,
-    dharitri_codec::{
-        dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-        test_util::{check_dep_encode_decode, check_top_encode_decode},
-    },
-};
+use dharitri_wasm::dharitri_codec::test_util::{check_dep_encode_decode, check_top_encode_decode};
 use dharitri_wasm_debug::DebugApi;
+
+dharitri_wasm::derive_imports!();
 
 // to test, run the following command in dharitri-wasm-debug folder:
 // cargo expand --test derive_managed_vec_item_numbers_test > expanded.rs
