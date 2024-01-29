@@ -62,7 +62,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `dharitri-wasm-debug`
 
-## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.11.1] - 2021-10-26
+## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.1.1] - 2021-10-26
 - Relative path improvements and fixes in `dharitri-wasm-debug`:
 	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
 	- debugging now works seamlessly, without needing to temporarily change paths in the tests
