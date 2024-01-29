@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-module-bonding-curve"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2018"
 
 authors = ["Alin Cruceat <alin.cruceat@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -14,9 +14,9 @@ keywords = ["dharitri", "wasm", "bonding-curve", "blockchain", "contract"]
 categories = ["no-std", "wasm"]
 
 [dependencies.dharitri-wasm]
-version = "0.3.1"
+version = "0.3.2"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.1"
+version = "0.3.2"
 path = "../../../dharitri-wasm-debug"

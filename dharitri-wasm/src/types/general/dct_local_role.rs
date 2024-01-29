@@ -2,7 +2,7 @@ use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecod
 
 use super::DctLocalRoleFlags;
 use crate as dharitri_wasm;
-use crate::{api::ManagedTypeApi, derive::TypeAbi, types::ManagedVecItem};
+use crate::{derive::TypeAbi, types::ManagedVecItem};
 
 const DCT_ROLE_NONE: &[u8] = &[];
 const DCT_ROLE_LOCAL_MINT: &[u8] = b"DCTRoleLocalMint";
@@ -107,15 +107,15 @@ impl<'a> From<&'a [u8]> for DctLocalRole {
     }
 }
 
-impl<M: ManagedTypeApi> ManagedVecItem<M> for DctLocalRole {
+impl ManagedVecItem for DctLocalRole {
     const PAYLOAD_SIZE: usize = 1;
     const SKIPS_RESERIALIZATION: bool = false; // TODO: might be ok to be true, but needs testing
 
-    fn from_byte_reader<Reader: FnMut(&mut [u8])>(api: M, reader: Reader) -> Self {
-        u8::from_byte_reader(api, reader).into()
+    fn from_byte_reader<Reader: FnMut(&mut [u8])>(reader: Reader) -> Self {
+        u8::from_byte_reader(reader).into()
     }
 
     fn to_byte_writer<R, Writer: FnMut(&[u8]) -> R>(&self, writer: Writer) -> R {
-        <u8 as ManagedVecItem<M>>::to_byte_writer(&self.as_u8(), writer)
+        <u8 as ManagedVecItem>::to_byte_writer(&self.as_u8(), writer)
     }
 }

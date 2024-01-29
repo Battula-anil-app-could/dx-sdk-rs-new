@@ -4,8 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [dharitri-wasm 0.3.2] - 2021-11-23
+- Static access to API. Static thread-local context stack in the debugger.
 
-## [dharitri-wasm 0.3.1] - 2021-11-17
+## [dharitri-wasm 0.22.11] - 2021-11-17
 - Derive `ManagedVecItem` generics fix
 - Constructor can reside in module
 
@@ -347,7 +349,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -373,7 +375,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -445,7 +447,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

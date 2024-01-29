@@ -82,7 +82,7 @@ impl CallValueApi for DebugApi {
                 self.insert_new_managed_buffer(dct_value.token_identifier.clone()),
             )
         } else {
-            TokenIdentifier::moax(self.clone())
+            TokenIdentifier::moax()
         }
     }
 
