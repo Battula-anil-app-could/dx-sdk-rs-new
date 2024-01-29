@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-node"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 unmanaged-ei = []
 
 [dependencies.dharitri-wasm]
-version = "=0.3.2"
+version = "=0.3.3"
 path = "../dharitri-wasm"

@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.3.2] - 2021-11-23
+## [dharitri-wasm 0.3.3, dharitri-codec 0.1.3] - 2021-11-25
+- `ArrayVec` serialization
+- `ManagedAddress` additional conversions
+
+## [dharitri-wasm 0.23.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
 ## [dharitri-wasm 0.22.11] - 2021-11-17
@@ -18,7 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - `ManagedVarArgsEager` implementation
 - `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
 
-## [dharitri-wasm 0.22.8, dharitri-codec 0.1.2] - 2021-11-12
+## [dharitri-wasm 0.22.8, dharitri-codec 0.8.2] - 2021-11-12
 - Optimized decode unsigned number from slice
 
 ## [dharitri-wasm 0.22.7] - 2021-11-12
@@ -58,7 +62,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `dharitri-wasm-debug`
 
-## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.1.1] - 2021-10-26
+## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.11.1] - 2021-10-26
 - Relative path improvements and fixes in `dharitri-wasm-debug`:
 	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
 	- debugging now works seamlessly, without needing to temporarily change paths in the tests
