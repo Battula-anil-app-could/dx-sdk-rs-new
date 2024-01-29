@@ -69,6 +69,7 @@ impl<T: NestedEncode> NestedEncode for &T {
 }
 
 impl<T: NestedEncode> NestedEncode for Box<T> {
+    #[inline(never)]
     fn dep_encode<O: NestedEncodeOutput>(&self, dest: &mut O) -> Result<(), EncodeError> {
         self.as_ref().dep_encode(dest)
     }
