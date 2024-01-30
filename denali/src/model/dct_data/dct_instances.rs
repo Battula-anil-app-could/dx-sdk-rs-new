@@ -31,7 +31,6 @@ impl CheckDctInstances {
     }
 }
 
-#[allow(clippy::derivable_impls)]
 impl Default for CheckDctInstances {
     fn default() -> Self {
         CheckDctInstances::Equal(Vec::new())

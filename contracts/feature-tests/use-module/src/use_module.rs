@@ -26,10 +26,10 @@ pub trait UseModule:
     + only_owner_mod::OnlyOwnerModule
     + only_owner_derived_mod::OnlyOwnerDerivedModule
     + dharitri_wasm_module_dns::DnsModule
-    + dharitri_wasm_module_dct::DctModule
+    + dharitri_wasm_modules::dct::DctModule
     + dharitri_wasm_module_features::FeaturesModule
-    + dharitri_wasm_module_governance::GovernanceModule
-    + dharitri_wasm_module_governance::governance_configurable::GovernanceConfigurablePropertiesModule
+    + dharitri_wasm_modules::governance::GovernanceModule
+    + dharitri_wasm_modules::governance::governance_configurable::GovernanceConfigurablePropertiesModule
     + dharitri_wasm_module_pause::PauseModule
 {
     /// Validates that the "featureName" feature is on.

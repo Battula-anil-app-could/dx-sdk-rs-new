@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.3.4] - 2021-12-07
+## [dharitri-wasm 0.3.5] - 2021-12-14
+- Rust testing framework - denali generation fixes and some more getters
+- Standard modules moved to `dharitri-wasm-modules` crates
+
+## [dharitri-wasm 0.24.0] - 2021-12-07
 - Rust testing framework
 - Managed Crypto API - keccak256 and sha256
 - New hook for DCT local roles

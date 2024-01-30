@@ -2,6 +2,7 @@ use std::{collections::HashMap, path::PathBuf, rc::Rc, str::FromStr};
 
 use dharitri_wasm::{
     contract_base::{CallableContract, ContractBase},
+    dharitri_codec::TopDecode,
     types::{Address, DctLocalRole, H256},
 };
 
@@ -285,6 +286,8 @@ impl BlockchainStateWrapper {
                     balance,
                     DctInstanceMetadata::default(),
                 );
+
+                self.add_denali_set_account(address);
             },
             None => panic!(
                 "set_dct_balance: Account {:?} does not exist",
@@ -632,6 +635,60 @@ impl BlockchainStateWrapper {
                 updates.apply(b_mock_ref);
             },
             StateChange::Revert => {},
+        }
+    }
+
+    pub fn execute_in_managed_environment<Func: FnOnce()>(&self, f: Func) {
+        let _ = DebugApi::dummy();
+        f();
+        let _ = TxContextStack::static_pop();
+    }
+}
+
+impl BlockchainStateWrapper {
+    pub fn get_moax_balance(&self, address: &Address) -> num_bigint::BigUint {
+        match self.rc_b_mock.accounts.get(address) {
+            Some(acc) => acc.moax_balance.clone(),
+            None => panic!(
+                "get_moax_balance: Account {:?} does not exist",
+                address_to_hex(address)
+            ),
+        }
+    }
+
+    pub fn get_dct_balance(
+        &self,
+        address: &Address,
+        token_id: &[u8],
+        token_nonce: u64,
+    ) -> num_bigint::BigUint {
+        match self.rc_b_mock.accounts.get(address) {
+            Some(acc) => acc.dct.get_dct_balance(token_id, token_nonce),
+            None => panic!(
+                "get_dct_balance: Account {:?} does not exist",
+                address_to_hex(address)
+            ),
+        }
+    }
+
+    pub fn get_nft_attributes<T: TopDecode>(
+        &self,
+        address: &Address,
+        token_id: &[u8],
+        token_nonce: u64,
+    ) -> Option<T> {
+        match self.rc_b_mock.accounts.get(address) {
+            Some(acc) => match acc.dct.get_by_identifier(token_id) {
+                Some(dct_data) => dct_data
+                    .instances
+                    .get_by_nonce(token_nonce)
+                    .map(|inst| T::top_decode(inst.metadata.attributes.clone()).unwrap()),
+                None => None,
+            },
+            None => panic!(
+                "get_nft_attributes: Account {:?} does not exist",
+                address_to_hex(address)
+            ),
         }
     }
 }

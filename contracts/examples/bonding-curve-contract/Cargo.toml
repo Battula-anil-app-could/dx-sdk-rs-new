@@ -8,15 +8,15 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
-[dependencies.dharitri-wasm-module-bonding-curve]
-version = "0.3.4"
-path = "../../modules/dharitri-wasm-module-bonding-curve"
-
 [dependencies.dharitri-wasm]
-version = "0.3.4"
+version = "0.3.5"
 path = "../../../dharitri-wasm"
 
+[dependencies.dharitri-wasm-modules]
+version = "0.3.5"
+path = "../../../dharitri-wasm-modules"
+
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.4"
+version = "0.3.5"
 path = "../../../dharitri-wasm-debug"
 
