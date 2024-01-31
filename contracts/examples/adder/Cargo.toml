@@ -9,9 +9,9 @@ publish = false
 path = "src/adder.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.3.6"
+version = "0.3.7"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.6"
+version = "0.3.7"
 path = "../../../dharitri-wasm-debug"
