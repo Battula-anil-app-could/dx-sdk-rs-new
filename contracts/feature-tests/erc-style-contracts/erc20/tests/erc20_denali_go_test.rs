@@ -210,9 +210,7 @@ fn transferfrom_fromeqto_entireallowancemorethanbalance_go() {
 
 #[test]
 fn transferfrom_fromeqto_entirebalanceeqallowance_go() {
-    dharitri_wasm_debug::denali_go(
-        "denali/transferFrom_FromEqTo-EntireBalanceEqAllowance.scen.json",
-    );
+    dharitri_wasm_debug::denali_go("denali/transferFrom_FromEqTo-EntireBalanceEqAllowance.scen.json");
 }
 
 #[test]

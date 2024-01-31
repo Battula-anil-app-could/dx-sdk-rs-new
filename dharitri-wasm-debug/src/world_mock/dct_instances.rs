@@ -34,7 +34,12 @@ impl DctInstances {
         self.0.insert(instance.nonce, instance);
     }
 
-    pub fn increase_balance(&mut self, nonce: u64, value: &BigUint, metadata: DctInstanceMetadata) {
+    pub fn increase_balance(
+        &mut self,
+        nonce: u64,
+        value: &BigUint,
+        metadata: DctInstanceMetadata,
+    ) {
         let instance = self.0.entry(nonce).or_insert_with(|| DctInstance {
             nonce,
             balance: BigUint::zero(),
@@ -95,7 +100,7 @@ impl fmt::Display for DctInstances {
                 "".to_string()
             };
             write!(
-                &mut instance_buf,
+                instance_buf,
                 "{{
                     nonce: {},
                     balance: {},

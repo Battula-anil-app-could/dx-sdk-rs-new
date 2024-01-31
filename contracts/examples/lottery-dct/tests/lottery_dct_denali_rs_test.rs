@@ -4,8 +4,10 @@ fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/lottery-dct");
 
-    blockchain
-        .register_contract_builder("file:output/lottery-dct.wasm", lottery_dct::ContractBuilder);
+    blockchain.register_contract_builder(
+        "file:output/lottery-dct.wasm",
+        lottery_dct::ContractBuilder,
+    );
     blockchain
 }
 

@@ -7,9 +7,9 @@ use super::{
     change_owner_mock::execute_change_owner, dct_local_burn::execute_local_burn,
     dct_local_mint::execute_local_mint, dct_multi_transfer_mock::execute_dct_multi_transfer,
     dct_nft_add_quantity_mock::execute_nft_add_quantity, dct_nft_burn_mock::execute_nft_burn,
-    dct_nft_create_mock::execute_dct_nft_create, dct_nft_transfer_mock::execute_dct_nft_transfer,
-    dct_transfer_mock::execute_dct_transfer, set_username_mock::execute_set_username,
-    upgrade_contract::execute_upgrade_contract,
+    dct_nft_create_mock::execute_dct_nft_create,
+    dct_nft_transfer_mock::execute_dct_nft_transfer, dct_transfer_mock::execute_dct_transfer,
+    set_username_mock::execute_set_username, upgrade_contract::execute_upgrade_contract,
 };
 
 use dharitri_wasm::api::{

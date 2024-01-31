@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use denali::model::{Account, AddressKey, BlockInfo, NewAddress};
 use dharitri_wasm::types::Address;
+use denali::model::{Account, AddressKey, BlockInfo, NewAddress};
 use num_bigint::BigUint;
 
 use crate::world_mock::{
@@ -135,7 +135,9 @@ fn convert_denali_dct_to_world_mock(
     }
 }
 
-fn convert_denali_dct_instance_to_world_mock(denali_dct: &denali::model::Instance) -> DctInstance {
+fn convert_denali_dct_instance_to_world_mock(
+    denali_dct: &denali::model::Instance,
+) -> DctInstance {
     DctInstance {
         nonce: denali_dct
             .nonce

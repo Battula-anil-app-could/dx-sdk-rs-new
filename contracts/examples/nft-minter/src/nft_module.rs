@@ -59,7 +59,7 @@ pub trait NftModule {
             .set_special_roles(
                 &self.blockchain().get_sc_address(),
                 &self.nft_token_id().get(),
-                (&[DctLocalRole::NftCreate][..]).iter().cloned(),
+                [DctLocalRole::NftCreate][..].iter().cloned(),
             )
             .async_call())
     }

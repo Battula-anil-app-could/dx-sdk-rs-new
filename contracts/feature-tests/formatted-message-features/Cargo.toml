@@ -9,9 +9,9 @@ publish = false
 path = "src/formatted_message_features.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.3.9"
+version = "0.4.0"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.9"
+version = "0.4.0"
 path = "../../../dharitri-wasm-debug"

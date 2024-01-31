@@ -71,9 +71,12 @@ impl TxCache {
         dct_metadata: DctInstanceMetadata,
     ) {
         self.with_account_mut(address, |account| {
-            account
-                .dct
-                .increase_balance(dct_token_identifier.to_vec(), nonce, value, dct_metadata);
+            account.dct.increase_balance(
+                dct_token_identifier.to_vec(),
+                nonce,
+                value,
+                dct_metadata,
+            );
         });
     }
 

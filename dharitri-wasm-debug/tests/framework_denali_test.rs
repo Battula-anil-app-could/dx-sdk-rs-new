@@ -194,7 +194,10 @@ fn dct_non_zero_balance_check_err_rs() {
 #[test]
 #[should_panic]
 fn dct_zero_balance_check_err_rs() {
-    dharitri_wasm_debug::denali_rs("tests/denali/dct-zero-balance-check-err.scen.json", world());
+    dharitri_wasm_debug::denali_rs(
+        "tests/denali/dct-zero-balance-check-err.scen.json",
+        world(),
+    );
 }
 
 #[test]

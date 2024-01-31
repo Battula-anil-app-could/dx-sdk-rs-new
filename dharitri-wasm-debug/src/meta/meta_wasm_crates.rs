@@ -38,11 +38,7 @@ fn write_endpoints_macro<'a, I>(
 
 fn write_wasm_empty_callback_macro(wasm_lib_file: &mut File) {
     writeln!(wasm_lib_file).unwrap();
-    writeln!(
-        wasm_lib_file,
-        "dharitri_wasm_node::wasm_empty_callback! {{}}"
-    )
-    .unwrap();
+    writeln!(wasm_lib_file, "dharitri_wasm_node::wasm_empty_callback! {{}}").unwrap();
 }
 
 fn write_wasm_src_lib(contract_metadata: &ContractMetadata) {
