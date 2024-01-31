@@ -71,8 +71,8 @@ pub trait MoaxDctSwap {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.issue_success_event(caller, &token_identifier, &returned_tokens);
-                self.unused_wrapped_moax().set(&returned_tokens);
-                self.wrapped_moax_token_id().set(&token_identifier);
+                self.unused_wrapped_moax().set(returned_tokens.as_ref());
+                self.wrapped_moax_token_id().set(token_identifier.as_ref());
             },
             ManagedAsyncCallResult::Err(message) => {
                 self.issue_failure_event(caller, &message.err_msg);

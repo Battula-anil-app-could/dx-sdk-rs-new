@@ -1,13 +1,12 @@
-use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/crowdfunding-dct");
 
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/crowdfunding-dct.wasm",
-        Box::new(|context| Box::new(crowdfunding_dct::contract_obj(context))),
+        crowdfunding_dct::ContractBuilder,
     );
     blockchain
 }

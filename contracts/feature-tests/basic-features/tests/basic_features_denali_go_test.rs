@@ -261,6 +261,11 @@ fn managed_buffer_slice_2_go() {
 }
 
 #[test]
+fn managed_buffer_random_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_buffer_set_random.scen.json");
+}
+
+#[test]
 fn managed_vec_address_push_go() {
     dharitri_wasm_debug::denali_go("denali/managed_vec_address_push.scen.json");
 }
@@ -328,6 +333,11 @@ fn storage_clear_go() {
 #[test]
 fn storage_i64_go() {
     dharitri_wasm_debug::denali_go("denali/storage_i64.scen.json");
+}
+
+#[test]
+fn storage_load_from_address_go() {
+    dharitri_wasm_debug::denali_go("denali/storage_load_from_address.scen.json");
 }
 
 #[test]

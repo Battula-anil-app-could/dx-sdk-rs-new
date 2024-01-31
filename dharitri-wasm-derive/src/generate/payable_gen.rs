@@ -28,7 +28,7 @@ fn payable_single_snippet_for_metadata(
             let token_init = moax_token_init(payment_token_arg);
             let nonce_init = zero_nonce_init(payment_nonce_arg);
             quote! {
-                dharitri_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
+                dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
                 #amount_init
                 #token_init
                 #nonce_init
@@ -39,7 +39,7 @@ fn payable_single_snippet_for_metadata(
             let token_init = moax_token_init(payment_token_arg);
             let nonce_init = zero_nonce_init(payment_nonce_arg);
             quote! {
-                let #payment_var_name = dharitri_wasm::api::CallValueApi::require_moax(&self.raw_vm_api());
+                let #payment_var_name = dharitri_wasm::contract_base::CallValueWrapper::<Self::Api>::new().require_moax();
                 #token_init
                 #nonce_init
             }
@@ -58,7 +58,7 @@ fn payable_single_snippet_for_metadata(
             let nonce_init = nonce_getter_init(payment_nonce_arg);
 
             quote! {
-                let #payment_var_name = dharitri_wasm::api::CallValueApi::require_dct(&self.raw_vm_api(), #token_literal);
+                let #payment_var_name = dharitri_wasm::contract_base::CallValueWrapper::<Self::Api>::new().require_dct(#token_literal);
                 #token_init
                 #nonce_init
             }
@@ -72,7 +72,7 @@ fn payable_single_snippet_for_metadata(
                 let token_var_name = var_name_or_underscore(payment_token_arg);
 
                 quote! {
-                    let (#payment_var_name, #token_var_name) = dharitri_wasm::api::CallValueApi::payment_token_pair(&self.raw_vm_api());
+                    let (#payment_var_name, #token_var_name) = dharitri_wasm::contract_base::CallValueWrapper::<Self::Api>::new().payment_token_pair();
                     #nonce_init
                 }
             }

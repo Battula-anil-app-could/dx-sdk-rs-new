@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     erc721
     (
-        init
         approval
         approve
         mint

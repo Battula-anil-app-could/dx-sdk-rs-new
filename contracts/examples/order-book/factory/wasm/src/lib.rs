@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     order_book_factory
     (
-        init
         createPair
         getPair
     )

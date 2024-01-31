@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     ping_pong_moax
     (
-        init
         getActivationTimestamp
         getDeadline
         getMaxFunds

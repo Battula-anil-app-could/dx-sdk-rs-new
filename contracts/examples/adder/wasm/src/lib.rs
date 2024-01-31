@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     adder
     (
-        init
         add
         getSum
     )

@@ -206,6 +206,11 @@ fn forwarder_call_sync_accept_then_read_nft_go() {
 }
 
 #[test]
+fn forwarder_retrieve_funds_with_accept_func_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_retrieve_funds_with_accept_func.scen.json");
+}
+
+#[test]
 fn forwarder_call_sync_retrieve_moax_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_call_sync_retrieve_moax.scen.json");
 }

@@ -106,13 +106,13 @@ pub trait FirstContract {
         let second_contract_address = self.get_second_contract_address();
         let expected_token_identifier = self.get_contract_dct_token_identifier();
 
-        require!(dct_value > 0, "no dct transfered!");
+        require!(dct_value > 0u32, "no dct transfered!");
         require!(
             actual_token_identifier == expected_token_identifier,
             "Wrong dct token"
         );
 
-        let _ = self.raw_vm_api().direct_dct_execute(
+        let _ = Self::Api::send_api_impl().direct_dct_execute(
             &second_contract_address,
             &expected_token_identifier,
             &dct_value,
@@ -134,13 +134,13 @@ pub trait FirstContract {
         let second_contract_address = self.get_second_contract_address();
         let expected_token_identifier = self.get_contract_dct_token_identifier();
 
-        require!(dct_value > 0, "no dct transfered!");
+        require!(dct_value > 0u32, "no dct transfered!");
         require!(
             actual_token_identifier == expected_token_identifier,
             "Wrong dct token"
         );
 
-        let _ = self.raw_vm_api().direct_dct_execute(
+        let _ = Self::Api::send_api_impl().direct_dct_execute(
             &second_contract_address,
             &expected_token_identifier,
             &dct_value,
@@ -168,7 +168,7 @@ pub trait FirstContract {
             arg_buffer.push_arg_raw(arg);
         }
 
-        self.raw_vm_api().async_call_raw(
+        Self::Api::send_api_impl().async_call_raw(
             to,
             &BigUint::zero(),
             &ManagedBuffer::from(DCT_TRANSFER_STRING),

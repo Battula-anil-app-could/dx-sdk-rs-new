@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     panic_message_features
     (
-        init
         panicWithMessage
     )
 }

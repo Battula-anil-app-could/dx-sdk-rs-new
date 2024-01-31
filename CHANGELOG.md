@@ -4,7 +4,23 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.3.5] - 2021-12-14
+## [dharitri-wasm 0.3.6] - 2022-01-19
+- Major VM API trait refactoring. All API methods can be accessed from a static context. Removed api instance variables from all objects.
+- External view contracts
+	- Annotating one or more endpoints with `#[external_view]` triggers the framework to create a second "external view" contract where all these endpoints are placed. This is primarily to reduce the main contract size.
+	- General `meta` crate functionality refactor to allow multiple contract generation.
+- `ManagedRef` type
+	- Provided as a more efficient alternative to regular references to managed types
+	- Has `Copy` semantics
+	- `ManagedVec` iterators made safer by the proper use of lifetimes
+	- `ManagedVec` `get_mut` offers a safe mutable reference, using lifetimes
+	- Some initial optimizations in storage mappers
+- First version of a message formatter based on `ManagedBuffer`s
+	- `sc_print!` macro
+	- `sc_panic!` macro
+- Random number generator wrapper over randomness source from the VM
+
+## [dharitri-wasm 0.25.0] - 2021-12-14
 - Rust testing framework - denali generation fixes and some more getters
 - Standard modules moved to `dharitri-wasm-modules` crates
 
@@ -363,7 +379,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -389,7 +405,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -461,7 +477,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

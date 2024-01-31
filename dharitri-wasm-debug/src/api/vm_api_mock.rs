@@ -1,7 +1,9 @@
-use dharitri_wasm::{api::VMApi, dharitri_codec::TryStaticCast};
+use dharitri_wasm::api::{CallTypeApi, StorageMapperApi, VMApi};
 
 use crate::DebugApi;
 
-impl TryStaticCast for DebugApi {}
+impl CallTypeApi for DebugApi {}
+
+impl StorageMapperApi for DebugApi {}
 
 impl VMApi for DebugApi {}

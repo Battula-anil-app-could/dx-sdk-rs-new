@@ -5,9 +5,9 @@ use dharitri_wasm::storage::{
 use dharitri_wasm_debug::DebugApi;
 
 fn create_list() -> LinkedListMapper<DebugApi, u64> {
-    let api = DebugApi::dummy();
-    let base_key = StorageKey::new(api.clone(), &b"my_list"[..]);
-    LinkedListMapper::new(api, base_key)
+    let _ = DebugApi::dummy();
+    let base_key = StorageKey::new(&b"my_list"[..]);
+    LinkedListMapper::new(base_key)
 }
 
 #[test]
