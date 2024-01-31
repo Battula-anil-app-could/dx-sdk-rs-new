@@ -32,7 +32,9 @@ fn use_module_pause_go() {
 
 #[test]
 fn cancel_defeated_proposal_go() {
-    dharitri_wasm_debug::denali_go("denali/use_module_governance/cancel_defeated_proposal.scen.json");
+    dharitri_wasm_debug::denali_go(
+        "denali/use_module_governance/cancel_defeated_proposal.scen.json",
+    );
 }
 
 #[test]

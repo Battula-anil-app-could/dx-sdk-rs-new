@@ -1,10 +1,10 @@
 use std::path::{Path, PathBuf};
 
+use denali::{interpret_trait::InterpreterContext, value_interpreter::interpret_string};
 use dharitri_wasm::{
     api::ExternalViewApi,
     contract_base::{CallableContract, CallableContractBuilder},
 };
-use denali::{interpret_trait::InterpreterContext, value_interpreter::interpret_string};
 
 use crate::DebugApi;
 

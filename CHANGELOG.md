@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.3.8] - 2022-01-27
+## [dharitri-wasm 0.3.9, dharitri-codec 0.1.4] - 2022-01-27
+- Added missing non-specialized decode implementations for managed types.
+
+## [dharitri-wasm 0.27.1] - 2022-01-27
 - Deriving `PartialEq` now works on structs that contain managed types.
 
 ## [dharitri-wasm 0.27.0] - 2022-01-25
@@ -45,7 +48,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - New hook for DCT local roles
 - Only-owner module annotation
 
-## [dharitri-wasm 0.23.1, dharitri-codec 0.1.3] - 2021-11-25
+## [dharitri-wasm 0.23.1, dharitri-codec 0.8.3] - 2021-11-25
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 

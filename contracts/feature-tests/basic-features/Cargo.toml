@@ -9,10 +9,10 @@ publish = false
 path = "src/basic_features_main.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.3.8"
+version = "0.3.9"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.3.8"
+version = "0.3.9"
 path = "../../../dharitri-wasm-debug"
 

@@ -15,9 +15,7 @@ pub enum Dct {
 impl InterpretableFrom<DctRaw> for Dct {
     fn interpret_from(from: DctRaw, context: &InterpreterContext) -> Self {
         match from {
-            DctRaw::Short(short_dct) => {
-                Dct::Short(BytesKey::interpret_from(short_dct, context))
-            },
+            DctRaw::Short(short_dct) => Dct::Short(BytesKey::interpret_from(short_dct, context)),
             DctRaw::Full(full_dct) => Dct::Full(DctObject {
                 token_identifier: full_dct
                     .token_identifier

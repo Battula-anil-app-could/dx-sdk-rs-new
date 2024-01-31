@@ -1,6 +1,6 @@
 use alloc::vec::Vec;
-use dharitri_wasm::types::Address;
 use denali::model::Checkable;
+use dharitri_wasm::types::Address;
 
 #[derive(Clone, Debug)]
 pub struct TxLog {
