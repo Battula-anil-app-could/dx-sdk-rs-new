@@ -7,10 +7,6 @@ publish = false
 [dependencies.kitty-ownership]
 path = ".."
 
-[dependencies.dharitri-wasm]
-version = "0.4.2"
-path = "../../../../../dharitri-wasm"
-
 [dependencies.dharitri-wasm-debug]
-version = "0.4.2"
+version = "0.4.3"
 path = "../../../../../dharitri-wasm-debug"

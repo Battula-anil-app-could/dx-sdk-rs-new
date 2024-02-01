@@ -18,7 +18,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: ManagedVarArgs<DctLocalRole>,
+        #[var_args] roles: MultiValueEncoded<DctLocalRole>,
     ) {
         self.send()
             .dct_system_sc_proxy()
@@ -33,7 +33,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: ManagedVarArgs<DctLocalRole>,
+        #[var_args] roles: MultiValueEncoded<DctLocalRole>,
     ) {
         self.send()
             .dct_system_sc_proxy()

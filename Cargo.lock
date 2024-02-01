@@ -228,7 +228,6 @@ name = "crowdfunding-erc20-meta"
 version = "0.0.0"
 dependencies = [
  "crowdfunding-erc20",
- "dharitri-wasm",
  "dharitri-wasm-debug",
 ]
 
@@ -237,6 +236,22 @@ name = "crypto-bubbles"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "crypto-bubbles-legacy"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "crypto-bubbles-legacy-meta"
+version = "0.0.0"
+dependencies = [
+ "crypto-bubbles-legacy",
  "dharitri-wasm-debug",
 ]
 
@@ -309,11 +324,12 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "bitflags",
  "dharitri-codec",
  "dharitri-wasm-derive",
+ "git-version",
  "hashbrown 0.11.2",
  "hex-literal",
  "wee_alloc",
@@ -321,7 +337,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "cargo_toml",
  "denali",
@@ -343,7 +359,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -353,44 +369,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "dharitri-wasm-module-dns"
-version = "0.4.2"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-modules",
-]
-
-[[package]]
-name = "dharitri-wasm-module-features"
-version = "0.4.2"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-modules",
-]
-
-[[package]]
-name = "dharitri-wasm-module-pause"
-version = "0.4.2"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-modules",
-]
-
-[[package]]
-name = "dharitri-wasm-module-users"
-version = "0.4.2"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-modules",
-]
-
-[[package]]
 name = "dharitri-wasm-modules"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -398,7 +378,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -481,7 +461,6 @@ dependencies = [
 name = "erc1155-marketplace-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "erc1155-marketplace",
 ]
@@ -490,7 +469,6 @@ dependencies = [
 name = "erc1155-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "erc1155",
 ]
@@ -507,7 +485,6 @@ dependencies = [
 name = "erc1155-user-mock-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "erc1155-user-mock",
 ]
@@ -524,7 +501,6 @@ dependencies = [
 name = "erc20-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "erc20",
 ]
@@ -541,7 +517,6 @@ dependencies = [
 name = "erc721-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "erc721",
 ]
@@ -579,7 +554,6 @@ dependencies = [
 name = "factory-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "order-book-factory",
 ]
@@ -631,7 +605,6 @@ dependencies = [
 name = "forwarder-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "forwarder",
 ]
@@ -649,7 +622,6 @@ dependencies = [
 name = "forwarder-raw-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "forwarder-raw",
 ]
@@ -673,6 +645,26 @@ dependencies = [
  "cfg-if 1.0.0",
  "libc",
  "wasi",
+]
+
+[[package]]
+name = "git-version"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1ad568aa3db0fcbc81f2f116137f263d7304f512a1209b35b85150d3ef88ad19"
+dependencies = [
+ "git-version-macro",
+]
+
+[[package]]
+name = "git-version-macro"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "53010ccb100b96a67bc32c0175f0ed1426b31b655d562898e57325f81c023ac0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.48",
 ]
 
 [[package]]
@@ -749,7 +741,6 @@ dependencies = [
 name = "kitty-auction-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "kitty-auction",
 ]
@@ -768,7 +759,6 @@ dependencies = [
 name = "kitty-genetic-alg-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "kitty-genetic-alg",
 ]
@@ -788,7 +778,6 @@ dependencies = [
 name = "kitty-ownership-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "kitty-ownership",
 ]
@@ -812,7 +801,6 @@ dependencies = [
 name = "linked-list-repeat-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "linked-list-repeat",
 ]
@@ -829,7 +817,6 @@ dependencies = [
 name = "local-dct-and-nft-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "local-dct-and-nft",
 ]
@@ -865,7 +852,6 @@ dependencies = [
 name = "lottery-erc20-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "lottery-erc20",
 ]
@@ -883,7 +869,6 @@ dependencies = [
 name = "map-repeat-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "map-repeat",
 ]
@@ -1056,7 +1041,6 @@ dependencies = [
 name = "pair-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "order-book-pair",
 ]
@@ -1184,7 +1168,6 @@ dependencies = [
 name = "proxy-test-first-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "proxy-test-first",
 ]
@@ -1201,7 +1184,6 @@ dependencies = [
 name = "proxy-test-second-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "proxy-test-second",
 ]
@@ -1219,7 +1201,6 @@ dependencies = [
 name = "queue-repeat-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "queue-repeat",
 ]
@@ -1318,7 +1299,6 @@ dependencies = [
 name = "recursive-caller-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "recursive-caller",
 ]
@@ -1454,7 +1434,6 @@ dependencies = [
 name = "set-repeat-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "set-repeat",
 ]
@@ -1497,7 +1476,6 @@ dependencies = [
 name = "single-value-repeat-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "single-value-repeat",
 ]
@@ -1623,9 +1601,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-module-dns",
- "dharitri-wasm-module-features",
- "dharitri-wasm-module-pause",
  "dharitri-wasm-modules",
 ]
 
@@ -1650,7 +1625,6 @@ dependencies = [
 name = "vault-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "vault",
 ]
@@ -1668,7 +1642,6 @@ dependencies = [
 name = "vec-repeat-meta"
 version = "0.0.0"
 dependencies = [
- "dharitri-wasm",
  "dharitri-wasm-debug",
  "vec-repeat",
 ]
