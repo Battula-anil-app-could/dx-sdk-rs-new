@@ -14,13 +14,13 @@ use crate::types::{ManagedVec, ManagedVecItem, ManagedVecRefIterator};
 pub struct MultiValueManagedVec<M: ManagedTypeApi, T: ManagedVecItem>(ManagedVec<M, T>);
 
 #[deprecated(
-    since = "0.4.3",
+    since = "0.29.0",
     note = "Alias kept for backwards compatibility. Replace with `MultiValueManagedVec`"
 )]
 pub type ManagedVarArgsEager<M, T> = MultiValueManagedVec<M, T>;
 
 #[deprecated(
-    since = "0.4.3",
+    since = "0.29.0",
     note = "Alias kept for backwards compatibility. Replace with `MultiValueManagedVec`"
 )]
 pub type ManagedMultiResultVecEager<M, T> = MultiValueManagedVec<M, T>;
