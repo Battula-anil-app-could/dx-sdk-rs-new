@@ -18,11 +18,11 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn moax_value(&self) -> Handle {
+    fn load_moax_value(&self, _dest: Handle) {
         unreachable!()
     }
 
-    fn dct_value(&self) -> Handle {
+    fn load_single_dct_value(&self, _dest: Handle) {
         unreachable!()
     }
 

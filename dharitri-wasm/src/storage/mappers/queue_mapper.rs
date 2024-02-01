@@ -10,8 +10,8 @@ use crate::{
 use alloc::vec::Vec;
 use dharitri_codec::{
     dharitri_codec_derive::{TopDecode, TopDecodeOrDefault, TopEncode, TopEncodeOrDefault},
-    multi_encode_iter_or_handle_err, DecodeDefault, EncodeDefault, EncodeErrorHandler, TopDecode,
-    TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+    multi_encode_iter_or_handle_err, CodecFrom, DecodeDefault, EncodeDefault, EncodeErrorHandler,
+    TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 const NULL_ENTRY: u32 = 0;
@@ -148,7 +148,7 @@ where
         storage_set(
             self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
                 .as_ref(),
-            &(),
+            &dharitri_codec::Empty,
         );
     }
 
@@ -178,7 +178,7 @@ where
         storage_set(
             self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
                 .as_ref(),
-            &(),
+            &dharitri_codec::Empty,
         )
     }
 
@@ -454,8 +454,6 @@ where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
-    type DecodeAs = MultiValueEncoded<SA, T>;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -463,6 +461,13 @@ where
     {
         multi_encode_iter_or_handle_err(self.iter(), output, h)
     }
+}
+
+impl<SA, T> CodecFrom<QueueMapper<SA, T>> for MultiValueEncoded<SA, T>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
+{
 }
 
 /// Behaves like a MultiResultVec when an endpoint result.

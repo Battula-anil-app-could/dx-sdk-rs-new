@@ -1,5 +1,5 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     serde_raw::CheckDctMapRaw,
 };
 
@@ -10,6 +10,18 @@ pub enum CheckDctMap {
     Unspecified,
     Star,
     Equal(CheckDctMapContents),
+}
+
+impl Default for CheckDctMap {
+    fn default() -> Self {
+        CheckDctMap::Unspecified
+    }
+}
+
+impl CheckDctMap {
+    pub fn is_star(&self) -> bool {
+        matches!(self, CheckDctMap::Star)
+    }
 }
 
 impl InterpretableFrom<CheckDctMapRaw> for CheckDctMap {
@@ -24,8 +36,12 @@ impl InterpretableFrom<CheckDctMapRaw> for CheckDctMap {
     }
 }
 
-impl CheckDctMap {
-    pub fn is_star(&self) -> bool {
-        matches!(self, CheckDctMap::Star)
+impl IntoRaw<CheckDctMapRaw> for CheckDctMap {
+    fn into_raw(self) -> CheckDctMapRaw {
+        match self {
+            CheckDctMap::Unspecified => CheckDctMapRaw::Unspecified,
+            CheckDctMap::Star => CheckDctMapRaw::Star,
+            CheckDctMap::Equal(value) => CheckDctMapRaw::Equal(value.into_raw()),
+        }
     }
 }

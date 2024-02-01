@@ -1,5 +1,5 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     serde_raw::CheckDctInstancesRaw,
 };
 
@@ -47,6 +47,17 @@ impl InterpretableFrom<CheckDctInstancesRaw> for CheckDctInstances {
                     .map(|v| CheckDctInstance::interpret_from(v, context))
                     .collect(),
             ),
+        }
+    }
+}
+
+impl IntoRaw<CheckDctInstancesRaw> for CheckDctInstances {
+    fn into_raw(self) -> CheckDctInstancesRaw {
+        match self {
+            CheckDctInstances::Equal(eq) => {
+                CheckDctInstancesRaw::Equal(eq.into_iter().map(|cei| cei.into_raw()).collect())
+            },
+            CheckDctInstances::Star => CheckDctInstancesRaw::Star,
         }
     }
 }

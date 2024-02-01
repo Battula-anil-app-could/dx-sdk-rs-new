@@ -297,6 +297,11 @@ fn forwarder_get_dct_local_roles_go() {
 }
 
 #[test]
+fn forwarder_get_dct_token_data_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_get_dct_token_data.scen.json");
+}
+
+#[test]
 fn forwarder_nft_add_uri_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_nft_add_uri.scen.json");
 }
@@ -367,11 +372,6 @@ fn forwarder_sync_echo_go() {
 }
 
 #[test]
-fn forwarder_sync_echo_range_go() {
-    dharitri_wasm_debug::denali_go("denali/forwarder_sync_echo_range.scen.json");
-}
-
-#[test]
 fn forwarder_tranfer_dct_with_fees_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_tranfer_dct_with_fees.scen.json");
 }
@@ -380,6 +380,16 @@ fn forwarder_tranfer_dct_with_fees_go() {
 fn forwarder_validate_token_identifier_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_validate_token_identifier.scen.json");
 }
+
+// #[test]
+// fn promises_multi_transfer_go() {
+//     dharitri_wasm_debug::denali_go("denali-promises/promises_multi_transfer.scen.json");
+// }
+
+// #[test]
+// fn promises_single_transfer_go() {
+//     dharitri_wasm_debug::denali_go("denali-promises/promises_single_transfer.scen.json");
+// }
 
 #[test]
 fn proxy_test_init_go() {

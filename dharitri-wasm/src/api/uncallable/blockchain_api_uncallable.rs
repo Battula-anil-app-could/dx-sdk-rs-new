@@ -4,7 +4,7 @@ use crate::{
     api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedTypeApi},
     types::{
         heap::{Address, H256},
-        BigUint, DctTokenData, ManagedAddress, TokenIdentifier,
+        DctTokenData, ManagedAddress, TokenIdentifier,
     },
 };
 
@@ -39,7 +39,7 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_balance_legacy(&self, _address: &Address) -> Handle {
+    fn load_balance_legacy(&self, _dest: Handle, _address: &Address) {
         unreachable!()
     }
 
@@ -95,20 +95,17 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_current_dct_nft_nonce<M: ManagedTypeApi>(
-        &self,
-        _address: &ManagedAddress<M>,
-        _token: &TokenIdentifier<M>,
-    ) -> u64 {
+    fn get_current_dct_nft_nonce(&self, _address_handle: Handle, _token_id_handle: Handle) -> u64 {
         unreachable!()
     }
 
-    fn get_dct_balance<M: ManagedTypeApi>(
+    fn load_dct_balance(
         &self,
-        _address: &ManagedAddress<M>,
-        _token: &TokenIdentifier<M>,
+        _address_handle: Handle,
+        _token_id_handle: Handle,
         _nonce: u64,
-    ) -> BigUint<M> {
+        _dest: Handle,
+    ) {
         unreachable!()
     }
 
@@ -121,10 +118,16 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_dct_local_roles<M: ManagedTypeApi>(
+    fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
-        _token_id: &TokenIdentifier<M>,
-    ) -> crate::types::DctLocalRoleFlags {
+        _address: &ManagedAddress<M>,
+        _token: &TokenIdentifier<M>,
+        _nonce: u64,
+    ) -> DctTokenData<M> {
+        unreachable!()
+    }
+
+    fn get_dct_local_roles(&self, _token_id_handle: Handle) -> crate::types::DctLocalRoleFlags {
         unreachable!()
     }
 }

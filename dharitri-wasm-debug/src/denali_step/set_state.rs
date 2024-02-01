@@ -1,22 +1,21 @@
-use std::collections::BTreeMap;
-
 use dharitri_wasm::types::heap::Address;
-use denali::model::{Account, AddressKey, BlockInfo, NewAddress};
-use num_bigint::BigUint;
+use denali::model::{SetStateStep, Step};
 
 use crate::world_mock::{
     is_smart_contract_address, AccountData, AccountDct, BlockInfo as CrateBlockInfo,
     BlockchainMock, DctData, DctInstance, DctInstanceMetadata, DctInstances, DctRoles,
 };
 
-pub fn execute(
-    state: &mut BlockchainMock,
-    accounts: &BTreeMap<AddressKey, Account>,
-    new_addresses: &[NewAddress],
-    previous_block_info: &Option<BlockInfo>,
-    current_block_info: &Option<BlockInfo>,
-) {
-    for (address, account) in accounts.iter() {
+impl BlockchainMock {
+    pub fn denali_set_state(&mut self, set_state_step: SetStateStep) -> &mut Self {
+        execute(self, &set_state_step);
+        self.denali_trace.steps.push(Step::SetState(set_state_step));
+        self
+    }
+}
+
+fn execute(state: &mut BlockchainMock, set_state_step: &SetStateStep) {
+    for (address, account) in set_state_step.accounts.iter() {
         let storage = account
             .storage
             .iter()
@@ -26,17 +25,12 @@ pub fn execute(
             account
                 .dct
                 .iter()
-                .map(|(k, v)| {
-                    (
-                        k.value.clone(),
-                        convert_denali_dct_to_world_mock(k.value.as_slice(), v),
-                    )
-                })
+                .map(|(k, v)| (k.value.clone(), convert_denali_dct_to_world_mock(v)))
                 .collect(),
         );
 
         state.validate_and_add_account(AccountData {
-            address: address.value.into(),
+            address: address.to_address(),
             nonce: account
                 .nonce
                 .as_ref()
@@ -61,48 +55,37 @@ pub fn execute(
             contract_owner: account
                 .owner
                 .as_ref()
-                .map(|address_value| address_value.value.into()),
+                .map(|address_value| address_value.value.clone()),
         });
     }
-    for new_address in new_addresses.iter() {
+    for new_address in set_state_step.new_addresses.iter() {
         assert!(
-            is_smart_contract_address(&new_address.new_address.value.into()),
+            is_smart_contract_address(&new_address.new_address.value),
             "field should have SC format"
         );
         state.put_new_address(
-            new_address.creator_address.value.into(),
+            new_address.creator_address.value.clone(),
             new_address.creator_nonce.value,
-            new_address.new_address.value.into(),
+            new_address.new_address.value.clone(),
         )
     }
-    if let Some(block_info_obj) = &*previous_block_info {
+    if let Some(block_info_obj) = &*set_state_step.previous_block_info {
         update_block_info(&mut state.previous_block_info, block_info_obj);
     }
-    if let Some(block_info_obj) = &*current_block_info {
+    if let Some(block_info_obj) = &*set_state_step.current_block_info {
         update_block_info(&mut state.current_block_info, block_info_obj);
     }
 }
 
-fn convert_denali_dct_to_world_mock(
-    token_identifier: &[u8],
-    denali_dct: &denali::model::Dct,
-) -> DctData {
+fn convert_denali_dct_to_world_mock(denali_dct: &denali::model::Dct) -> DctData {
     match denali_dct {
         denali::model::Dct::Short(short_dct) => {
-            let balance = BigUint::from_bytes_be(short_dct.value.as_slice());
-            let mut dct_data = DctData {
-                token_identifier: token_identifier.to_vec(),
-                ..Default::default()
-            };
+            let balance = short_dct.value.clone();
+            let mut dct_data = DctData::default();
             dct_data.instances.add(0, balance);
             dct_data
         },
         denali::model::Dct::Full(full_dct) => DctData {
-            token_identifier: full_dct
-                .token_identifier
-                .as_ref()
-                .map(|token_identifier| token_identifier.value.clone())
-                .unwrap_or_default(),
             instances: DctInstances::new_from_hash(
                 full_dct
                     .instances
@@ -123,7 +106,7 @@ fn convert_denali_dct_to_world_mock(
                 full_dct
                     .roles
                     .iter()
-                    .map(|role| role.value.clone())
+                    .map(|role| role.as_bytes().to_vec())
                     .collect(),
             ),
             frozen: if let Some(u64_value) = &full_dct.frozen {

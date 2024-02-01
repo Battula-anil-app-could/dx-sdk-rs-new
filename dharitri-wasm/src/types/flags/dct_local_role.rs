@@ -12,6 +12,7 @@ const DCT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCTRoleNFTAddQuantity";
 const DCT_ROLE_NFT_BURN: &[u8] = b"DCTRoleNFTBurn";
 const DCT_ROLE_NFT_ADD_URI: &[u8] = b"DCTRoleNFTAddURI";
 const DCT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCTRoleNFTUpdateAttributes";
+const DCT_ROLE_TRANSFER: &[u8] = b"DCTRoleTransfer";
 
 #[derive(
     TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug, Copy,
@@ -25,10 +26,11 @@ pub enum DctLocalRole {
     NftBurn,
     NftAddUri,
     NftUpdateAttributes,
+    Transfer,
 }
 
 impl DctLocalRole {
-    pub fn as_u8(&self) -> u8 {
+    pub fn as_u16(&self) -> u16 {
         match self {
             Self::None => 0,
             Self::Mint => 1,
@@ -38,6 +40,7 @@ impl DctLocalRole {
             Self::NftBurn => 5,
             Self::NftAddUri => 6,
             Self::NftUpdateAttributes => 7,
+            Self::Transfer => 8,
         }
     }
 
@@ -51,6 +54,7 @@ impl DctLocalRole {
             Self::NftBurn => DCT_ROLE_NFT_BURN,
             Self::NftAddUri => DCT_ROLE_NFT_ADD_URI,
             Self::NftUpdateAttributes => DCT_ROLE_NFT_UPDATE_ATTRIBUTES,
+            Self::Transfer => DCT_ROLE_TRANSFER,
         }
     }
 
@@ -64,13 +68,14 @@ impl DctLocalRole {
             Self::NftBurn => DctLocalRoleFlags::NFT_BURN,
             Self::NftAddUri => DctLocalRoleFlags::NFT_ADD_URI,
             Self::NftUpdateAttributes => DctLocalRoleFlags::NFT_UPDATE_ATTRIBUTES,
+            Self::Transfer => DctLocalRoleFlags::TRANSFER,
         }
     }
 }
 
 // TODO: can be done with macros, but I didn't find a public library that does it and is no_std
 // we can implement it, it's easy
-const ALL_ROLES: [DctLocalRole; 7] = [
+const ALL_ROLES: [DctLocalRole; 8] = [
     DctLocalRole::Mint,
     DctLocalRole::Burn,
     DctLocalRole::NftCreate,
@@ -78,6 +83,7 @@ const ALL_ROLES: [DctLocalRole; 7] = [
     DctLocalRole::NftBurn,
     DctLocalRole::NftAddUri,
     DctLocalRole::NftUpdateAttributes,
+    DctLocalRole::Transfer,
 ];
 
 impl DctLocalRole {
@@ -86,15 +92,18 @@ impl DctLocalRole {
     }
 }
 
-impl From<u8> for DctLocalRole {
+impl From<u16> for DctLocalRole {
     #[inline]
-    fn from(value: u8) -> Self {
+    fn from(value: u16) -> Self {
         match value {
             1 => Self::Mint,
             2 => Self::Burn,
             3 => Self::NftCreate,
             4 => Self::NftAddQuantity,
             5 => Self::NftBurn,
+            6 => Self::NftAddUri,
+            7 => Self::NftUpdateAttributes,
+            8 => Self::Transfer,
             _ => Self::None,
         }
     }
@@ -113,6 +122,12 @@ impl<'a> From<&'a [u8]> for DctLocalRole {
             Self::NftAddQuantity
         } else if byte_slice == DCT_ROLE_NFT_BURN {
             Self::NftBurn
+        } else if byte_slice == DCT_ROLE_NFT_ADD_URI {
+            Self::NftAddUri
+        } else if byte_slice == DCT_ROLE_NFT_UPDATE_ATTRIBUTES {
+            Self::NftUpdateAttributes
+        } else if byte_slice == DCT_ROLE_TRANSFER {
+            Self::Transfer
         } else {
             Self::None
         }
@@ -125,7 +140,7 @@ impl ManagedVecItem for DctLocalRole {
     type Ref<'a> = Self;
 
     fn from_byte_reader<Reader: FnMut(&mut [u8])>(reader: Reader) -> Self {
-        u8::from_byte_reader(reader).into()
+        u16::from_byte_reader(reader).into()
     }
 
     unsafe fn from_byte_reader_as_borrow<'a, Reader: FnMut(&mut [u8])>(
@@ -135,6 +150,6 @@ impl ManagedVecItem for DctLocalRole {
     }
 
     fn to_byte_writer<R, Writer: FnMut(&[u8]) -> R>(&self, writer: Writer) -> R {
-        <u8 as ManagedVecItem>::to_byte_writer(&self.as_u8(), writer)
+        <u16 as ManagedVecItem>::to_byte_writer(&self.as_u16(), writer)
     }
 }

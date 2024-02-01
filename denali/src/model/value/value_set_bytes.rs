@@ -1,10 +1,12 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     serde_raw::ValueSubTree,
-    value_interpreter::interpret_subtree,
+    value_interpreter::{interpret_string, interpret_subtree},
 };
 
 use std::fmt;
+
+use super::BytesKey;
 
 #[derive(Clone, Debug)]
 pub struct BytesValue {
@@ -39,11 +41,44 @@ impl InterpretableFrom<ValueSubTree> for BytesValue {
     }
 }
 
-impl InterpretableFrom<String> for BytesValue {
-    fn interpret_from(from: String, _context: &InterpreterContext) -> Self {
+impl IntoRaw<ValueSubTree> for BytesValue {
+    fn into_raw(self) -> ValueSubTree {
+        self.original
+    }
+}
+
+impl InterpretableFrom<&str> for BytesValue {
+    fn interpret_from(from: &str, context: &InterpreterContext) -> Self {
         BytesValue {
-            value: from.clone().into_bytes(),
+            value: interpret_string(from, context),
+            original: ValueSubTree::Str(from.to_string()),
+        }
+    }
+}
+
+impl InterpretableFrom<String> for BytesValue {
+    fn interpret_from(from: String, context: &InterpreterContext) -> Self {
+        BytesValue {
+            value: interpret_string(from.as_str(), context),
             original: ValueSubTree::Str(from),
+        }
+    }
+}
+
+impl InterpretableFrom<BytesKey> for BytesValue {
+    fn interpret_from(from: BytesKey, _context: &InterpreterContext) -> Self {
+        BytesValue {
+            value: from.value,
+            original: ValueSubTree::Str(from.original),
+        }
+    }
+}
+
+impl InterpretableFrom<&BytesKey> for BytesValue {
+    fn interpret_from(from: &BytesKey, _context: &InterpreterContext) -> Self {
+        BytesValue {
+            value: from.value.clone(),
+            original: ValueSubTree::Str(from.original.clone()),
         }
     }
 }

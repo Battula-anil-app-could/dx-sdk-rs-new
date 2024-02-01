@@ -1,5 +1,5 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     model::{CheckValue, U64Value},
     serde_raw::CheckDctDataRaw,
 };
@@ -19,6 +19,17 @@ impl InterpretableFrom<CheckDctDataRaw> for CheckDctData {
             instances: CheckDctInstances::interpret_from(from.instances, context),
             last_nonce: CheckValue::<U64Value>::interpret_from(from.last_nonce, context),
             frozen: CheckValue::<U64Value>::interpret_from(from.frozen, context),
+        }
+    }
+}
+
+impl IntoRaw<CheckDctDataRaw> for CheckDctData {
+    fn into_raw(self) -> CheckDctDataRaw {
+        CheckDctDataRaw {
+            instances: self.instances.into_raw(),
+            last_nonce: self.last_nonce.into_raw(),
+            roles: Vec::new(),
+            frozen: self.frozen.into_raw(),
         }
     }
 }

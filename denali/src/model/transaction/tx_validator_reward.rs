@@ -1,5 +1,5 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     model::{AddressValue, BigUintValue},
     serde_raw::TxValidatorRewardRaw,
 };
@@ -17,6 +17,16 @@ impl InterpretableFrom<TxValidatorRewardRaw> for TxValidatorReward {
         TxValidatorReward {
             to: AddressValue::interpret_from(from.to, context),
             moax_value: interpret_moax_value(from.value, from.moax_value, context),
+        }
+    }
+}
+
+impl IntoRaw<TxValidatorRewardRaw> for TxValidatorReward {
+    fn into_raw(self) -> TxValidatorRewardRaw {
+        TxValidatorRewardRaw {
+            to: self.to.into_raw(),
+            value: None,
+            moax_value: Some(self.moax_value.into_raw()),
         }
     }
 }

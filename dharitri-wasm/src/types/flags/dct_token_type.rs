@@ -24,7 +24,7 @@ impl DctTokenType {
         if token_nonce == 0 {
             DctTokenType::Fungible
         } else {
-            DctTokenType::SemiFungible
+            DctTokenType::NonFungible
         }
     }
 

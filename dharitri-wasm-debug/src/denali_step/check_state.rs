@@ -1,8 +1,7 @@
 use denali::model::{
     AddressKey, BytesValue, CheckDct, CheckDctData, CheckDctInstance, CheckDctInstances,
-    CheckDctMap, CheckStorage, CheckValue, Checkable,
+    CheckDctMap, CheckStateStep, CheckStorage, CheckValue, Checkable, Step,
 };
-use num_bigint::BigUint;
 use num_traits::Zero;
 
 use crate::{
@@ -10,9 +9,24 @@ use crate::{
     world_mock::{AccountDct, BlockchainMock, DctData, DctInstance, DctInstances},
 };
 
-pub fn execute(accounts: &denali::model::CheckAccounts, state: &mut BlockchainMock) {
+impl BlockchainMock {
+    pub fn denali_check_state(&mut self, check_state_step: CheckStateStep) -> &mut Self {
+        execute(self, &check_state_step.accounts);
+        self.denali_trace
+            .steps
+            .push(Step::CheckState(check_state_step));
+        self
+    }
+
+    pub fn denali_dump_state(&mut self) -> &mut Self {
+        self.print_accounts();
+        self
+    }
+}
+
+fn execute(state: &BlockchainMock, accounts: &denali::model::CheckAccounts) {
     for (expected_address, expected_account) in accounts.accounts.iter() {
-        if let Some(account) = state.accounts.get(&expected_address.value.into()) {
+        if let Some(account) = state.accounts.get(&expected_address.value) {
             assert!(
                 expected_account.nonce.check(account.nonce),
                 "bad account nonce. Address: {}. Want: {}. Have: {}",
@@ -45,7 +59,6 @@ pub fn execute(accounts: &denali::model::CheckAccounts, state: &mut BlockchainMo
                 expected_account.code,
                 std::str::from_utf8(actual_code.as_slice()).unwrap()
             );
-
             if let CheckStorage::Equal(eq) = &expected_account.storage {
                 let default_value = &Vec::new();
                 for (expected_key, expected_value) in eq.storages.iter() {
@@ -100,10 +113,8 @@ pub fn check_account_dct(address: &AddressKey, expected: &CheckDctMap, actual: &
             for (key, expected_value) in contents.contents.iter() {
                 let actual_value = actual.get_by_identifier_or_default(key.value.as_slice());
                 match expected_value {
-                    CheckDct::Short(expected_balance_bytes) => {
-                        let expected_balance =
-                            BigUint::from_bytes_be(expected_balance_bytes.value.as_slice());
-                        if expected_balance.is_zero() {
+                    CheckDct::Short(expected_balance) => {
+                        if expected_balance.value.is_zero() {
                             assert!(
                                 actual_value.is_empty(),
                                 "No balance expected for DCT token address: {}. token name: {}. nonce: {}.",
@@ -124,8 +135,8 @@ pub fn check_account_dct(address: &AddressKey, expected: &CheckDctMap, actual: &
                                 .unwrap_or_else(|| panic!("Expected fungible DCT with none 0"));
                             assert_eq!(
                                 single_instance.balance,
-                                expected_balance,
-                                "Unexpected fungible token balancefor address: {}. token name: {}.",
+                                expected_balance.value,
+                                "Unexpected fungible token balance for address: {}. token name: {}.",
                                 address,
                                 bytes_to_string(key.value.as_slice()),
                             );

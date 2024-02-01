@@ -3,13 +3,13 @@ use core::convert::{TryFrom, TryInto};
 use crate::{
     abi::{TypeAbi, TypeName},
     api::{Handle, ManagedTypeApi},
-    hex_util::encode_bytes_as_hex,
+    formatter::{hex_util::encode_bytes_as_hex, FormatByteReceiver, SCLowerHex},
     types::{heap::Address, ManagedBuffer, ManagedByteArray, ManagedType},
 };
 use dharitri_codec::{
-    DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput,
-    NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
-    TryStaticCast,
+    CodecFrom, CodecFromSelf, DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
+    NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
+    TopEncodeOutput, TryStaticCast,
 };
 
 #[repr(transparent)]
@@ -93,6 +93,16 @@ where
     #[inline]
     fn from(bytes: &[u8; 32]) -> Self {
         Self::new_from_bytes(bytes)
+    }
+}
+
+impl<M> From<[u8; 32]> for ManagedAddress<M>
+where
+    M: ManagedTypeApi,
+{
+    #[inline]
+    fn from(bytes: [u8; 32]) -> Self {
+        Self::new_from_bytes(&bytes)
     }
 }
 
@@ -233,6 +243,12 @@ where
     }
 }
 
+impl<M: ManagedTypeApi> SCLowerHex for ManagedAddress<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        SCLowerHex::fmt(&self.bytes, f)
+    }
+}
+
 impl<M: ManagedTypeApi> core::fmt::Debug for ManagedAddress<M> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("ManagedAddress")
@@ -241,3 +257,19 @@ impl<M: ManagedTypeApi> core::fmt::Debug for ManagedAddress<M> {
             .finish()
     }
 }
+
+impl<M> CodecFromSelf for ManagedAddress<M> where M: ManagedTypeApi {}
+
+impl<M> CodecFrom<[u8; 32]> for ManagedAddress<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<Address> for ManagedAddress<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<&Address> for ManagedAddress<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<ManagedAddress<M>> for Address where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<&ManagedAddress<M>> for Address where M: ManagedTypeApi {}

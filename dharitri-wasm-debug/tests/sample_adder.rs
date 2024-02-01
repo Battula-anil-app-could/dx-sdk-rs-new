@@ -88,13 +88,8 @@ mod module_1 {
     }
 
     pub trait ProxyTrait: dharitri_wasm::contract_base::ProxyObjBase + Sized {
-        fn version(
-            self,
-        ) -> ContractCall<
-            Self::Api,
-            <BigInt<Self::Api> as dharitri_wasm::dharitri_codec::TopEncodeMulti>::DecodeAs,
-        > {
-            let ___address___ = self.into_fields();
+        fn version(&mut self) -> ContractCall<Self::Api, BigInt<Self::Api>> {
+            let ___address___ = self.extract_address();
             let mut ___contract_call___ = dharitri_wasm::types::new_contract_call(
                 ___address___,
                 &b"version"[..],
@@ -162,38 +157,30 @@ mod sample_adder {
     {
         #[inline]
         fn call_get_sum(&self) {
+            <Self::Api as dharitri_wasm::api::VMApi>::init_static();
             dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
-            dharitri_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
-                &<Self::Api as dharitri_wasm::api::EndpointArgumentApi>::argument_api_impl(),
-                0i32,
-            );
+            let () = dharitri_wasm::io::load_endpoint_args::<Self::Api, ()>(());
             let result = self.get_sum();
             dharitri_wasm::io::finish_multi::<Self::Api, _>(&result);
         }
         #[inline]
         fn call_init(&self) {
+            <Self::Api as dharitri_wasm::api::VMApi>::init_static();
             dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
-            dharitri_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
-                &<Self::Api as dharitri_wasm::api::EndpointArgumentApi>::argument_api_impl(),
-                1i32,
-            );
-            let initial_value = dharitri_wasm::load_single_arg::<Self::Api, BigInt<Self::Api>>(
-                0i32,
-                ArgId::from(&b"initial_value"[..]),
-            );
+            let (initial_value, ()) = dharitri_wasm::io::load_endpoint_args::<
+                Self::Api,
+                (dharitri_wasm::types::BigInt<Self::Api>, ()),
+            >(("initial_value", ()));
             self.init(&initial_value);
         }
         #[inline]
         fn call_add(&self) {
+            <Self::Api as dharitri_wasm::api::VMApi>::init_static();
             dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
-            dharitri_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
-                &<Self::Api as dharitri_wasm::api::EndpointArgumentApi>::argument_api_impl(),
-                1i32,
-            );
-            let value = dharitri_wasm::load_single_arg::<Self::Api, BigInt<Self::Api>>(
-                0i32,
-                ArgId::from(&b"value"[..]),
-            );
+            let (value, ()) = dharitri_wasm::io::load_endpoint_args::<
+                Self::Api,
+                (dharitri_wasm::types::BigInt<Self::Api>, ()),
+            >(("value", ()));
             let result = self.add(value);
             dharitri_wasm::io::finish_multi::<Self::Api, _>(&result);
         }
@@ -230,13 +217,8 @@ mod sample_adder {
     pub trait ProxyTrait:
         dharitri_wasm::contract_base::ProxyObjBase + super::module_1::ProxyTrait
     {
-        fn get_sum(
-            self,
-        ) -> dharitri_wasm::types::ContractCall<
-            Self::Api,
-            <BigInt<Self::Api> as dharitri_wasm::dharitri_codec::TopEncodeMulti>::DecodeAs,
-        > {
-            let ___address___ = self.into_fields();
+        fn get_sum(&mut self) -> dharitri_wasm::types::ContractCall<Self::Api, BigInt<Self::Api>> {
+            let ___address___ = self.extract_address();
             let mut ___contract_call___ = dharitri_wasm::types::new_contract_call(
                 ___address___,
                 &b"get_sum"[..],
@@ -244,14 +226,8 @@ mod sample_adder {
             );
             ___contract_call___
         }
-        fn add(
-            self,
-            amount: &BigInt<Self::Api>,
-        ) -> ContractCall<
-            Self::Api,
-            <SCResult<()> as dharitri_wasm::dharitri_codec::TopEncodeMulti>::DecodeAs,
-        > {
-            let ___address___ = self.into_fields();
+        fn add(&mut self, amount: &BigInt<Self::Api>) -> ContractCall<Self::Api, ()> {
+            let ___address___ = self.extract_address();
             let mut ___contract_call___ = dharitri_wasm::types::new_contract_call(
                 ___address___,
                 &b"add"[..],
@@ -344,7 +320,7 @@ mod sample_adder {
     where
         A: dharitri_wasm::api::VMApi + 'static,
     {
-        pub address: dharitri_wasm::types::ManagedAddress<A>,
+        pub address: core::option::Option<dharitri_wasm::types::ManagedAddress<A>>,
     }
 
     impl<A> dharitri_wasm::contract_base::ProxyObjBase for Proxy<A>
@@ -354,20 +330,28 @@ mod sample_adder {
         type Api = A;
 
         fn new_proxy_obj() -> Self {
-            let zero_address = ManagedAddress::zero();
             Proxy {
-                address: zero_address,
+                address: core::option::Option::None,
             }
         }
 
         fn contract(mut self, address: ManagedAddress<Self::Api>) -> Self {
-            self.address = address;
+            self.address = Some(address);
             self
         }
 
-        #[inline]
-        fn into_fields(self) -> ManagedAddress<Self::Api> {
-            self.address
+        fn extract_address(&mut self) -> ManagedAddress<Self::Api> {
+            let address = core::mem::replace(&mut self.address, core::option::Option::None);
+            address.unwrap_or_else(|| {
+                dharitri_wasm::api::ErrorApiImpl::signal_error(
+                    &A::error_api_impl(),
+                    dharitri_wasm::err_msg::RECIPIENT_ADDRESS_NOT_SET,
+                )
+            })
+        }
+
+        fn extract_opt_address(&mut self) -> core::option::Option<ManagedAddress<Self::Api>> {
+            core::mem::replace(&mut self.address, core::option::Option::None)
         }
     }
 
@@ -433,7 +417,7 @@ fn test_add() {
 
     assert!(adder.call(b"version"));
 
-    let own_proxy =
+    let mut own_proxy =
         sample_adder::Proxy::<DebugApi>::new_proxy_obj().contract(ManagedAddress::zero());
     let _ = own_proxy.get_sum();
 

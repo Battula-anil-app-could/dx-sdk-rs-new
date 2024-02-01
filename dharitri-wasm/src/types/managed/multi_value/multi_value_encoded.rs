@@ -7,8 +7,9 @@ use crate::{
 };
 use core::marker::PhantomData;
 use dharitri_codec::{
-    try_cast_execute_or_else, DecodeErrorHandler, EncodeErrorHandler, TopDecode, TopDecodeMulti,
-    TopDecodeMultiInput, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+    try_cast_execute_or_else, CodecFromSelf, DecodeErrorHandler, EncodeErrorHandler, TopDecode,
+    TopDecodeMulti, TopDecodeMultiInput, TopDecodeMultiLength, TopEncode, TopEncodeMulti,
+    TopEncodeMultiOutput,
 };
 
 /// A multi-value container, that keeps raw values as ManagedBuffer
@@ -145,12 +146,12 @@ where
 impl<M, T> MultiValueEncoded<M, T>
 where
     M: ManagedTypeApi + ErrorApi,
-    T: TopEncode + TopDecode,
+    T: TopDecodeMultiLength,
 {
-    /// Number of items. Only available for single-encode items.
+    /// Number of items. Only available for multi-encode items.
     #[inline]
     pub fn len(&self) -> usize {
-        self.raw_len()
+        self.raw_len() / T::get_len()
     }
 }
 
@@ -174,8 +175,6 @@ where
     M: ManagedTypeApi + ErrorApi,
     T: TopEncodeMulti,
 {
-    type DecodeAs = MultiValueEncoded<M, T>;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -193,8 +192,6 @@ where
     M: ManagedTypeApi + ErrorApi,
     T: TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -241,4 +238,27 @@ where
     fn is_variadic() -> bool {
         true
     }
+}
+
+impl<M, T> CodecFromSelf for MultiValueEncoded<M, T> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+use dharitri_codec::{multi_types::MultiValueVec, CodecFrom};
+
+#[cfg(feature = "alloc")]
+impl<M, T, U> CodecFrom<MultiValueVec<T>> for MultiValueEncoded<M, U>
+where
+    M: ManagedTypeApi + ErrorApi,
+    T: TopEncodeMulti + TopDecodeMulti,
+    U: CodecFrom<T>,
+{
+}
+
+#[cfg(feature = "alloc")]
+impl<M, T, U> CodecFrom<MultiValueEncoded<M, T>> for MultiValueVec<U>
+where
+    M: ManagedTypeApi + ErrorApi,
+    T: TopEncodeMulti + TopDecodeMulti,
+    U: CodecFrom<T>,
+{
 }

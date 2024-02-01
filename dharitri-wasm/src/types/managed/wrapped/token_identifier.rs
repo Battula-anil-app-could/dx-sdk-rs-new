@@ -1,6 +1,7 @@
 use crate::{
     abi::{TypeAbi, TypeName},
     api::{Handle, ManagedTypeApi, ManagedTypeApiImpl},
+    formatter::{FormatByteReceiver, SCDisplay, SCLowerHex},
     types::{heap::BoxedBytes, ManagedBuffer, ManagedType},
 };
 use dharitri_codec::*;
@@ -195,8 +196,40 @@ impl<M: ManagedTypeApi> TopDecode for TokenIdentifier<M> {
     }
 }
 
+impl<M: ManagedTypeApi> CodecFromSelf for TokenIdentifier<M> {}
+
+impl<M: ManagedTypeApi> CodecFrom<&[u8]> for TokenIdentifier<M> {}
+
+impl<M: ManagedTypeApi> CodecFrom<Vec<u8>> for TokenIdentifier<M> {}
+
 impl<M: ManagedTypeApi> TypeAbi for TokenIdentifier<M> {
     fn type_name() -> TypeName {
         "TokenIdentifier".into()
+    }
+}
+
+impl<M: ManagedTypeApi> SCDisplay for TokenIdentifier<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        if self.is_moax() {
+            f.append_bytes(Self::MOAX_REPRESENTATION);
+        } else {
+            f.append_managed_buffer(&ManagedBuffer::from_raw_handle(
+                self.buffer.get_raw_handle(),
+            ));
+        }
+    }
+}
+
+const MOAX_REPRESENTATION_HEX: &[u8] = b"45474C44";
+
+impl<M: ManagedTypeApi> SCLowerHex for TokenIdentifier<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        if self.is_moax() {
+            f.append_bytes(MOAX_REPRESENTATION_HEX);
+        } else {
+            f.append_managed_buffer_lower_hex(&ManagedBuffer::from_raw_handle(
+                self.buffer.get_raw_handle(),
+            ));
+        }
     }
 }

@@ -1,7 +1,10 @@
 use crate::DebugApi;
 use ed25519_dalek::*;
 use dharitri_wasm::{
-    api::{CryptoApi, CryptoApiImpl, KECCAK256_RESULT_LEN, RIPEMD_RESULT_LEN, SHA256_RESULT_LEN},
+    api::{
+        CryptoApi, CryptoApiImpl, Handle, ManagedBufferApi, KECCAK256_RESULT_LEN,
+        RIPEMD_RESULT_LEN, SHA256_RESULT_LEN,
+    },
     types::{heap::BoxedBytes, MessageHashType},
 };
 use sha2::Sha256;
@@ -22,13 +25,11 @@ impl CryptoApiImpl for DebugApi {
         hasher.finalize().into()
     }
 
-    #[cfg(feature = "ei-1-1")]
-    fn sha256(&self, data_handle: dharitri_wasm::api::Handle) -> dharitri_wasm::api::Handle {
+    fn sha256_managed(&self, dest: Handle, data_handle: Handle) {
         // default implementation used in debugger
         // the VM has a dedicated hook
-        use dharitri_wasm::api::ManagedBufferApi;
         let result_bytes = self.sha256_legacy(self.mb_to_boxed_bytes(data_handle).as_slice());
-        self.mb_new_from_bytes(&result_bytes[..])
+        self.mb_overwrite(dest, &result_bytes[..]);
     }
 
     fn keccak256_legacy(&self, data: &[u8]) -> [u8; KECCAK256_RESULT_LEN] {
@@ -37,13 +38,11 @@ impl CryptoApiImpl for DebugApi {
         hasher.finalize().into()
     }
 
-    #[cfg(feature = "ei-1-1")]
-    fn keccak256(&self, data_handle: dharitri_wasm::api::Handle) -> dharitri_wasm::api::Handle {
+    fn keccak256_managed(&self, dest: Handle, data_handle: Handle) {
         // default implementation used in debugger
         // the VM has a dedicated hook
-        use dharitri_wasm::api::ManagedBufferApi;
         let result_bytes = self.keccak256_legacy(self.mb_to_boxed_bytes(data_handle).as_slice());
-        self.mb_new_from_bytes(&result_bytes[..])
+        self.mb_overwrite(dest, &result_bytes[..]);
     }
 
     fn ripemd160(&self, _data: &[u8]) -> [u8; RIPEMD_RESULT_LEN] {

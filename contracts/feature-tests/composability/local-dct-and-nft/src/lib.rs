@@ -154,7 +154,7 @@ pub trait LocalDctAndDctNft {
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
-        #[var_args] arguments: MultiValueEncoded<ManagedBuffer>,
+        arguments: MultiValueEncoded<ManagedBuffer>,
     ) {
         let mut arg_buffer = ManagedArgBuffer::new_empty();
         for arg in arguments.into_iter() {
@@ -211,7 +211,7 @@ pub trait LocalDctAndDctNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: MultiValueEncoded<DctLocalRole>,
+        roles: MultiValueEncoded<DctLocalRole>,
     ) {
         self.send()
             .dct_system_sc_proxy()
@@ -226,7 +226,7 @@ pub trait LocalDctAndDctNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: MultiValueEncoded<DctLocalRole>,
+        roles: MultiValueEncoded<DctLocalRole>,
     ) {
         self.send()
             .dct_system_sc_proxy()
