@@ -12,14 +12,14 @@ path = "src/lottery.rs"
 path = "../erc20"
 
 [dependencies.dharitri-wasm]
-version = "0.4.4"
+version = "0.4.5"
 path = "../../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-node]
-version = "0.4.4"
+version = "0.4.5"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.4.4"
+version = "0.4.5"
 path = "../../../../dharitri-wasm-debug"

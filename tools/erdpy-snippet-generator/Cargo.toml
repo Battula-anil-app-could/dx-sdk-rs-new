@@ -9,11 +9,11 @@ name = "erdpy-snippet-generator"
 path = "src/erdpy_snippet_generator.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.4.4"
+version = "0.4.5"
 path = "../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-debug]
-version = "0.4.4"
+version = "0.4.5"
 path = "../../dharitri-wasm-debug"
 
 [dependencies]

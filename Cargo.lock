@@ -324,7 +324,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.4.4"
+version = "0.4.5"
 dependencies = [
  "bitflags",
  "dharitri-codec",
@@ -336,7 +336,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.4.4"
+version = "0.4.5"
 dependencies = [
  "cargo_toml",
  "denali",
@@ -358,7 +358,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.4.4"
+version = "0.4.5"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -369,14 +369,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.4.4"
+version = "0.4.5"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.4.4"
+version = "0.4.5"
 dependencies = [
  "dharitri-wasm",
 ]
