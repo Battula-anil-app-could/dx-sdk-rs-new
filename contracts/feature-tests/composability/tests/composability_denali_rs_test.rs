@@ -136,8 +136,13 @@ fn forw_raw_sync_moax_rs() {
 // }
 
 #[test]
-fn forw_raw_transf_exec_moax_rs() {
-    dharitri_wasm_debug::denali_rs("denali/forw_raw_transf_exec_moax.scen.json", world());
+fn forw_raw_transf_exec_accept_moax_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forw_raw_transf_exec_accept_moax.scen.json", world());
+}
+
+#[test]
+fn forw_raw_transf_exec_reject_moax_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forw_raw_transf_exec_reject_moax.scen.json", world());
 }
 
 #[test]
@@ -324,6 +329,14 @@ fn forwarder_call_transf_exec_accept_dct_twice_rs() {
 }
 
 #[test]
+fn forwarder_call_transf_exec_accept_multi_transfer_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_call_transf_exec_accept_multi_transfer.scen.json",
+        world(),
+    );
+}
+
+#[test]
 fn forwarder_call_transf_exec_accept_nft_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/forwarder_call_transf_exec_accept_nft.scen.json",
@@ -348,9 +361,17 @@ fn forwarder_call_transf_exec_accept_sft_twice_rs() {
 }
 
 #[test]
-fn forwarder_call_transf_exec_multi_transfer_dct_rs() {
+fn forwarder_call_transf_exec_reject_multi_transfer_rs() {
     dharitri_wasm_debug::denali_rs(
-        "denali/forwarder_call_transf_exec_multi_transfer_dct.scen.json",
+        "denali/forwarder_call_transf_exec_reject_multi_transfer.scen.json",
+        world(),
+    );
+}
+
+#[test]
+fn forwarder_call_transf_exec_reject_nft_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_call_transf_exec_reject_nft.scen.json",
         world(),
     );
 }

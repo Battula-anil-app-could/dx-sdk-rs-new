@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use crate::world_mock::{AccountData, BlockInfo, DctData};
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use denali::serde_raw::{
     AccountRaw, BlockInfoRaw, CheckAccountRaw, CheckAccountsRaw, CheckBytesValueRaw,
     CheckDctDataRaw, CheckDctInstanceRaw, CheckDctInstancesRaw, CheckDctMapContentsRaw,

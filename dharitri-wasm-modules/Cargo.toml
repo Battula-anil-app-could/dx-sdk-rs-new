@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-modules"
-version = "0.4.5"
+version = "0.4.6"
 edition = "2018"
 
 authors = ["Dharitri Network <contact@dharitri.com>"]
@@ -13,6 +13,9 @@ description = "Dharitri WebAssembly standard smart contract modules"
 keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
+[features]
+alloc = ["dharitri-wasm/alloc"]
+
 [dependencies.dharitri-wasm]
-version = "0.4.5"
+version = "0.4.6"
 path = "../dharitri-wasm"

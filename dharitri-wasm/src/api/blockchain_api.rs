@@ -1,9 +1,8 @@
 use super::{Handle, ManagedTypeApi, ManagedTypeApiImpl};
 use crate::types::{
-    Address, BigUint, DctLocalRoleFlags, DctTokenData, ManagedAddress, ManagedByteArray,
-    TokenIdentifier, H256,
+    heap::{Address, Box, H256},
+    BigUint, DctLocalRoleFlags, DctTokenData, ManagedAddress, ManagedByteArray, TokenIdentifier,
 };
-use alloc::boxed::Box;
 
 pub trait BlockchainApi: ManagedTypeApi {
     type BlockchainApiImpl: BlockchainApiImpl;

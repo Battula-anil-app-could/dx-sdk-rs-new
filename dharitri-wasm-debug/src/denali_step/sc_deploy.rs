@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use denali::model::{TxDeploy, TxExpect};
 
 use crate::{

@@ -1,14 +1,14 @@
 use core::marker::PhantomData;
 
 use crate::{
+    abi::TypeName,
     api::{ErrorApiImpl, Handle, InvalidSliceError, ManagedBufferApi, ManagedTypeApi},
     hex_util::encode_bytes_as_hex,
-    types::{BoxedBytes, ManagedType},
+    types::{heap::BoxedBytes, ManagedType},
 };
-use alloc::string::String;
 use dharitri_codec::{
     DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode,
-    NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput, TryStaticCast, Vec,
+    NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput, TryStaticCast,
 };
 
 /// A byte buffer managed by an external API.
@@ -88,12 +88,12 @@ where
     }
 }
 
-impl<M> From<Vec<u8>> for ManagedBuffer<M>
+impl<M> From<crate::types::heap::Vec<u8>> for ManagedBuffer<M>
 where
     M: ManagedTypeApi,
 {
     #[inline]
-    fn from(bytes: Vec<u8>) -> Self {
+    fn from(bytes: crate::types::heap::Vec<u8>) -> Self {
         Self::new_from_bytes(bytes.as_slice())
     }
 }
@@ -162,6 +162,7 @@ impl<M: ManagedTypeApi> ManagedBuffer<M> {
         M::managed_type_impl().mb_overwrite(self.handle, value);
     }
 
+    #[cfg(feature = "ei-1-1")]
     pub fn set_slice(
         &mut self,
         starting_position: usize,
@@ -174,6 +175,56 @@ impl<M: ManagedTypeApi> ManagedBuffer<M> {
         } else {
             Err(InvalidSliceError)
         }
+    }
+
+    /// Alternate implementation that uses copies and appends to achieve the slice replacement.
+    /// Should be used until EI version 1.1 is shipped to mainnet.
+    #[cfg(not(feature = "ei-1-1"))]
+    pub fn set_slice(
+        &mut self,
+        starting_position: usize,
+        source_slice: &[u8],
+    ) -> Result<(), InvalidSliceError> {
+        let api = M::managed_type_impl();
+        let self_len = self.len();
+        let slice_len = source_slice.len();
+        if starting_position + slice_len > self_len {
+            return Err(InvalidSliceError);
+        }
+
+        // copy part after update -> temporary managed buffer
+        let part_after_handle = api.mb_new_empty();
+        let part_after_start = starting_position + slice_len;
+        let part_after_len = self_len - part_after_start;
+        if part_after_len > 0 {
+            if api
+                .mb_copy_slice(
+                    self.handle,
+                    part_after_start,
+                    part_after_len,
+                    part_after_handle,
+                )
+                .is_err()
+            {
+                return Err(InvalidSliceError);
+            }
+        }
+
+        // trim self to length of part before update
+        if api
+            .mb_copy_slice(self.handle, 0, starting_position, self.handle)
+            .is_err()
+        {
+            return Err(InvalidSliceError);
+        }
+
+        // append updated slice
+        api.mb_append_bytes(self.handle, source_slice);
+
+        // copy temporary managed buffer -> part after update (using append)
+        api.mb_append(self.handle, part_after_handle);
+
+        Ok(())
     }
 
     pub fn set_random(&mut self, nr_bytes: usize) {
@@ -195,6 +246,9 @@ impl<M: ManagedTypeApi> ManagedBuffer<M> {
         M::managed_type_impl().mb_append_bytes(self.handle, &item.to_be_bytes()[..]);
     }
 
+    /// Convenience method for quickly getting a top-decoded u64 from the managed buffer.
+    ///
+    /// TODO: remove this method once TopDecodeInput is implemented for ManagedBuffer reference.
     pub fn parse_as_u64(&self) -> Option<u64> {
         const U64_NUM_BYTES: usize = 8;
         let l = self.len();
@@ -315,7 +369,7 @@ impl<M: ManagedTypeApi> NestedDecode for ManagedBuffer<M> {
 }
 
 impl<M: ManagedTypeApi> crate::abi::TypeAbi for ManagedBuffer<M> {
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         "bytes".into()
     }
 }

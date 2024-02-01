@@ -1,4 +1,4 @@
-use dharitri_wasm::{api::DCT_TRANSFER_FUNC_NAME, types::Address};
+use dharitri_wasm::{api::DCT_TRANSFER_FUNC_NAME, types::heap::Address};
 use num_bigint::BigUint;
 use num_traits::Zero;
 

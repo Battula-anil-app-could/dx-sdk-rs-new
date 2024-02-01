@@ -12,10 +12,10 @@ path = "src/crowdfunding_erc20.rs"
 path = "../erc20"
 
 [dependencies.dharitri-wasm]
-version = "0.4.5"
+version = "0.4.6"
 path = "../../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.4.5"
+version = "0.4.6"
 path = "../../../../dharitri-wasm-debug"
 

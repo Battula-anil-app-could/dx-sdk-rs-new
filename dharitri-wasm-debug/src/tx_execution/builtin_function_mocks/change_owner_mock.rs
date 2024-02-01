@@ -1,4 +1,4 @@
-use dharitri_wasm::{dharitri_codec::TopDecode, types::Address};
+use dharitri_wasm::{dharitri_codec::TopDecode, types::heap::Address};
 
 use crate::tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult};
 

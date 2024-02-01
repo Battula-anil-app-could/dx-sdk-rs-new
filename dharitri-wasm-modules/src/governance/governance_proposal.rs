@@ -1,8 +1,7 @@
 use dharitri_wasm::{
     api::ManagedTypeApi,
     dharitri_codec::multi_types::MultiValue7,
-    types::{BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, TokenIdentifier},
-    Vec,
+    types::{BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, TokenIdentifier, Vec},
 };
 
 dharitri_wasm::derive_imports!();

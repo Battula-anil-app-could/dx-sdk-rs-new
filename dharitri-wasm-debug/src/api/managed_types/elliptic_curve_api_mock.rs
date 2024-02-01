@@ -1,6 +1,6 @@
 use dharitri_wasm::{
     api::{EllipticCurveApi, Handle},
-    types::BoxedBytes,
+    types::heap::BoxedBytes,
 };
 
 use crate::DebugApi;

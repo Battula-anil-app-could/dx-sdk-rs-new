@@ -42,11 +42,6 @@ fn block_info_rs() {
 }
 
 #[test]
-fn boxed_bytes_zeros_rs() {
-    dharitri_wasm_debug::denali_rs("denali/boxed_bytes_zeros.scen.json", world());
-}
-
-#[test]
 fn codec_err_rs() {
     dharitri_wasm_debug::denali_rs("denali/codec_err.scen.json", world());
 }
@@ -56,25 +51,15 @@ fn count_ones_rs() {
     dharitri_wasm_debug::denali_rs("denali/count_ones.scen.json", world());
 }
 
-// #[test]
-// fn crypto_elliptic_curves_rs() {
-//     dharitri_wasm_debug::denali_rs("denali/crypto_elliptic_curves.scen.json", world());
-// }
-
 #[test]
 fn crypto_keccak256_rs() {
     dharitri_wasm_debug::denali_rs("denali/crypto_keccak256.scen.json", world());
 }
 
 #[test]
-fn crypto_keccak256_legacy_rs() {
-    dharitri_wasm_debug::denali_rs("denali/crypto_keccak256_legacy.scen.json", world());
+fn crypto_keccak256_legacy_managed_rs() {
+    dharitri_wasm_debug::denali_rs("denali/crypto_keccak256_legacy_managed.scen.json", world());
 }
-
-// #[test]
-// fn crypto_ripemd160_rs() {
-//     dharitri_wasm_debug::denali_rs("denali/crypto_ripemd160.scen.json", world());
-// }
 
 #[test]
 fn crypto_sha256_rs() {
@@ -82,14 +67,9 @@ fn crypto_sha256_rs() {
 }
 
 #[test]
-fn crypto_sha256_legacy_rs() {
-    dharitri_wasm_debug::denali_rs("denali/crypto_sha256_legacy.scen.json", world());
+fn crypto_sha256_legacy_managed_rs() {
+    dharitri_wasm_debug::denali_rs("denali/crypto_sha256_legacy_managed.scen.json", world());
 }
-
-// #[test]
-// fn crypto_verify_funcs_rs() {
-//     dharitri_wasm_debug::denali_rs("denali/crypto_verify_funcs.scen.json", world());
-// }
 
 #[test]
 fn echo_array_u8_rs() {
@@ -99,16 +79,6 @@ fn echo_array_u8_rs() {
 #[test]
 fn echo_arrayvec_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_arrayvec.scen.json", world());
-}
-
-#[test]
-fn echo_async_result_empty_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_async_result_empty.scen.json", world());
-}
-
-#[test]
-fn echo_async_result_empty_managed_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_async_result_empty_managed.scen.json", world());
 }
 
 #[test]
@@ -127,11 +97,6 @@ fn echo_big_uint_rs() {
 }
 
 #[test]
-fn echo_boxed_bytes_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_boxed_bytes.scen.json", world());
-}
-
-#[test]
 fn echo_i32_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_i32.scen.json", world());
 }
@@ -147,6 +112,11 @@ fn echo_ignore_rs() {
 }
 
 #[test]
+fn echo_managed_async_result_empty_rs() {
+    dharitri_wasm_debug::denali_rs("denali/echo_managed_async_result_empty.scen.json", world());
+}
+
+#[test]
 fn echo_managed_bytes_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_managed_bytes.scen.json", world());
 }
@@ -157,33 +127,13 @@ fn echo_managed_vec_rs() {
 }
 
 #[test]
+fn echo_multi_value_tuples_rs() {
+    dharitri_wasm_debug::denali_rs("denali/echo_multi_value_tuples.scen.json", world());
+}
+
+#[test]
 fn echo_nothing_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_nothing.scen.json", world());
-}
-
-#[test]
-fn echo_ser_ex_1_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_ser_ex_1.scen.json", world());
-}
-
-#[test]
-fn echo_slice_u8_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_slice_u8.scen.json", world());
-}
-
-#[test]
-fn echo_str_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_str.scen.json", world());
-}
-
-#[test]
-fn echo_str_box_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_str_box.scen.json", world());
-}
-
-#[test]
-fn echo_string_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_string.scen.json", world());
 }
 
 #[test]
@@ -202,11 +152,6 @@ fn echo_usize_rs() {
 }
 
 #[test]
-fn echo_varags_tuples_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_varags_tuples.scen.json", world());
-}
-
-#[test]
 fn echo_varargs_managed_eager_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_varargs_managed_eager.scen.json", world());
 }
@@ -222,18 +167,8 @@ fn echo_varargs_u32_rs() {
 }
 
 #[test]
-fn echo_vec_u8_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_vec_u8.scen.json", world());
-}
-
-#[test]
 fn events_rs() {
     dharitri_wasm_debug::denali_rs("denali/events.scen.json", world());
-}
-
-#[test]
-fn events_legacy_rs() {
-    dharitri_wasm_debug::denali_rs("denali/events_legacy.scen.json", world());
 }
 
 #[test]
@@ -257,13 +192,13 @@ fn managed_address_managed_buffer_rs() {
 }
 
 #[test]
-fn managed_buffer_concat_1_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_concat_1.scen.json", world());
+fn managed_buffer_concat_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_buffer_concat.scen.json", world());
 }
 
 #[test]
-fn managed_buffer_concat_2_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_concat_2.scen.json", world());
+fn managed_buffer_copy_slice_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_buffer_copy_slice.scen.json", world());
 }
 
 #[test]
@@ -271,32 +206,10 @@ fn managed_buffer_eq_rs() {
     dharitri_wasm_debug::denali_rs("denali/managed_buffer_eq.scen.json", world());
 }
 
-#[test]
-fn managed_buffer_overwrite_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_overwrite.scen.json", world());
-}
-
-/*
-#[test]
-fn managed_buffer_random_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_set_random.scen.json", world());
-}
-*/
-
-#[test]
-fn managed_buffer_slice_1_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_slice_1.scen.json", world());
-}
-
-#[test]
-fn managed_buffer_slice_2_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_slice_2.scen.json", world());
-}
-
-#[test]
-fn managed_buffer_slice_3_rs() {
-    dharitri_wasm_debug::denali_rs("denali/managed_buffer_slice_3.scen.json", world());
-}
+// #[test]
+// fn managed_buffer_set_random_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/managed_buffer_set_random.scen.json", world());
+// }
 
 #[test]
 fn managed_vec_address_push_rs() {
@@ -335,16 +248,6 @@ fn sc_properties_rs() {
 }
 
 #[test]
-fn sc_result_rs() {
-    dharitri_wasm_debug::denali_rs("denali/sc_result.scen.json", world());
-}
-
-#[test]
-fn storage_addr_rs() {
-    dharitri_wasm_debug::denali_rs("denali/storage_addr.scen.json", world());
-}
-
-#[test]
 fn storage_big_int_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_big_int.scen.json", world());
 }
@@ -380,6 +283,11 @@ fn storage_load_from_address_rs() {
 }
 
 #[test]
+fn storage_managed_address_rs() {
+    dharitri_wasm_debug::denali_rs("denali/storage_managed_address.scen.json", world());
+}
+
+#[test]
 fn storage_map1_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_map1.scen.json", world());
 }
@@ -394,12 +302,10 @@ fn storage_map3_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_map3.scen.json", world());
 }
 
-/*
-#[test]
-fn storage_mapper_fungible_token_rs() {
-    dharitri_wasm_debug::denali_rs("denali/storage_mapper_fungible_token.scen.json", world());
-}
-*/
+// #[test]
+// fn storage_mapper_fungible_token_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/storage_mapper_fungible_token.scen.json", world());
+// }
 
 #[test]
 fn storage_mapper_linked_list_rs() {
@@ -416,15 +322,13 @@ fn storage_mapper_map_storage_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_mapper_map_storage.scen.json", world());
 }
 
-/*
-#[test]
-fn storage_mapper_non_fungible_token_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/storage_mapper_non_fungible_token.scen.json",
-        world(),
-    );
-}
-*/
+// #[test]
+// fn storage_mapper_non_fungible_token_rs() {
+//     dharitri_wasm_debug::denali_rs(
+//         "denali/storage_mapper_non_fungible_token.scen.json",
+//         world(),
+//     );
+// }
 
 #[test]
 fn storage_mapper_queue_rs() {
@@ -457,8 +361,8 @@ fn storage_mapper_whitelist_rs() {
 }
 
 #[test]
-fn storage_opt_addr_rs() {
-    dharitri_wasm_debug::denali_rs("denali/storage_opt_addr.scen.json", world());
+fn storage_opt_managed_addr_rs() {
+    dharitri_wasm_debug::denali_rs("denali/storage_opt_managed_addr.scen.json", world());
 }
 
 #[test]
@@ -484,11 +388,6 @@ fn storage_usize_rs() {
 #[test]
 fn storage_usize_bad_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_usize_bad.scen.json", world());
-}
-
-#[test]
-fn storage_vec_u8_rs() {
-    dharitri_wasm_debug::denali_rs("denali/storage_vec_u8.scen.json", world());
 }
 
 #[test]

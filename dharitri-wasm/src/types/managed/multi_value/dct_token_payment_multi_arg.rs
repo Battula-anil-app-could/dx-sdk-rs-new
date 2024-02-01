@@ -1,11 +1,10 @@
-use alloc::string::String;
 use dharitri_codec::{
     multi_types::MultiValue3, DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti,
     TopDecodeMultiInput, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 use crate::{
-    abi::TypeAbi,
+    abi::{TypeAbi, TypeName},
     api::ManagedTypeApi,
     types::{BigUint, DctTokenPayment, ManagedVecItem, TokenIdentifier},
 };
@@ -14,24 +13,30 @@ use crate::{
 /// - as input, is built from 3 arguments instead of 1: token identifier, nonce, value
 /// - as output, it becomes 3 results instead of 1: token identifier, nonce, value
 #[derive(Clone, PartialEq, Debug)]
-pub struct DctTokenPaymentMultiArg<M: ManagedTypeApi> {
+pub struct DctTokenPaymentMultiValue<M: ManagedTypeApi> {
     obj: DctTokenPayment<M>,
 }
 
-impl<M: ManagedTypeApi> From<DctTokenPayment<M>> for DctTokenPaymentMultiArg<M> {
+#[deprecated(
+    since = "0.29.3",
+    note = "Alias kept for backwards compatibility. Replace with `DctTokenPaymentMultiValue`"
+)]
+pub type DctTokenPaymentMultiArg<M> = DctTokenPaymentMultiValue<M>;
+
+impl<M: ManagedTypeApi> From<DctTokenPayment<M>> for DctTokenPaymentMultiValue<M> {
     #[inline]
     fn from(obj: DctTokenPayment<M>) -> Self {
-        DctTokenPaymentMultiArg { obj }
+        DctTokenPaymentMultiValue { obj }
     }
 }
 
-impl<M: ManagedTypeApi> DctTokenPaymentMultiArg<M> {
+impl<M: ManagedTypeApi> DctTokenPaymentMultiValue<M> {
     pub fn into_dct_token_payment(self) -> DctTokenPayment<M> {
         self.obj
     }
 }
 
-impl<M: ManagedTypeApi> ManagedVecItem for DctTokenPaymentMultiArg<M> {
+impl<M: ManagedTypeApi> ManagedVecItem for DctTokenPaymentMultiValue<M> {
     const PAYLOAD_SIZE: usize = DctTokenPayment::<M>::PAYLOAD_SIZE;
     const SKIPS_RESERIALIZATION: bool = DctTokenPayment::<M>::SKIPS_RESERIALIZATION;
     type Ref<'a> = Self;
@@ -54,7 +59,7 @@ impl<M: ManagedTypeApi> ManagedVecItem for DctTokenPaymentMultiArg<M> {
     }
 }
 
-impl<M> TopEncodeMulti for DctTokenPaymentMultiArg<M>
+impl<M> TopEncodeMulti for DctTokenPaymentMultiValue<M>
 where
     M: ManagedTypeApi,
 {
@@ -72,7 +77,7 @@ where
     }
 }
 
-impl<M> TopDecodeMulti for DctTokenPaymentMultiArg<M>
+impl<M> TopDecodeMulti for DctTokenPaymentMultiValue<M>
 where
     M: ManagedTypeApi,
 {
@@ -88,11 +93,11 @@ where
     }
 }
 
-impl<M> TypeAbi for DctTokenPaymentMultiArg<M>
+impl<M> TypeAbi for DctTokenPaymentMultiValue<M>
 where
     M: ManagedTypeApi,
 {
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         MultiValue3::<TokenIdentifier<M>, u64, BigUint<M>>::type_name()
     }
 

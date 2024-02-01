@@ -5,8 +5,9 @@ use crate::{
 use dharitri_wasm::{
     api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedBufferApi, ManagedTypeApi},
     types::{
-        Address, BigUint, DctLocalRole, DctLocalRoleFlags, DctTokenData, DctTokenType,
-        ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier, H256,
+        heap::{Address, H256},
+        BigUint, DctLocalRole, DctLocalRoleFlags, DctTokenData, DctTokenType, ManagedAddress,
+        ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
 

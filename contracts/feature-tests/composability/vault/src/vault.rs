@@ -15,18 +15,13 @@ pub trait Vault {
         opt_arg_to_echo
     }
 
-    #[payable("*")]
-    #[endpoint]
-    fn just_accept_funds(&self) {
-        self.call_counts(b"accept_funds").update(|c| *c += 1);
-    }
-
     #[endpoint]
     fn echo_arguments(
         &self,
         #[var_args] args: MultiValueEncoded<ManagedBuffer>,
     ) -> MultiValueEncoded<ManagedBuffer> {
-        self.call_counts(b"echo_arguments").update(|c| *c += 1);
+        self.call_counts(&ManagedBuffer::from(b"echo_arguments"))
+            .update(|c| *c += 1);
         args
     }
 
@@ -35,95 +30,46 @@ pub trait Vault {
         self.blockchain().get_caller()
     }
 
-    #[payable("*")]
-    #[endpoint]
-    fn accept_funds(
-        &self,
-        #[payment_token] token: TokenIdentifier,
-        #[payment_nonce] nonce: u64,
-        #[payment_amount] payment: BigUint,
-    ) {
-        let token_type = self.call_value().dct_token_type();
-
-        self.accept_funds_event(&token, token_type.as_type_name(), &payment, nonce);
-
-        self.call_counts(b"accept_funds").update(|c| *c += 1);
+    fn dct_transfers_multi(&self) -> MultiValueEncoded<DctTokenPaymentMultiValue> {
+        let dct_transfers = self.call_value().all_dct_transfers();
+        let mut dct_transfers_multi = MultiValueEncoded::new();
+        for dct_transfer in dct_transfers.into_iter() {
+            dct_transfers_multi.push(dct_transfer.into_multi_value());
+        }
+        dct_transfers_multi
     }
 
     #[payable("*")]
     #[endpoint]
-    fn accept_funds_multi_transfer(&self) {
-        let payments = self.call_value().all_dct_transfers();
+    fn accept_funds(&self) {
+        let dct_transfers_multi = self.dct_transfers_multi();
+        self.accept_funds_event(&self.call_value().moax_value(), &dct_transfers_multi);
 
-        for payment in payments.into_iter() {
-            self.accept_funds_event(
-                &payment.token_identifier,
-                payment.token_type.as_type_name(),
-                &payment.amount,
-                payment.token_nonce,
-            );
-        }
-
-        self.call_counts(b"accept_funds_multi_transfer")
+        self.call_counts(&ManagedBuffer::from(b"accept_funds"))
             .update(|c| *c += 1);
-    }
-
-    #[payable("*")]
-    #[endpoint]
-    fn accept_multi_funds_echo(
-        &self,
-    ) -> MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>> {
-        let payments = self.call_value().all_dct_transfers();
-        let mut result = MultiValueEncoded::new();
-
-        for payment in payments.into_iter() {
-            result.push(
-                (
-                    payment.token_identifier,
-                    payment.token_nonce,
-                    payment.amount,
-                )
-                    .into(),
-            );
-        }
-
-        result
     }
 
     #[payable("*")]
     #[endpoint]
     fn accept_funds_echo_payment(
         &self,
-        #[payment_token] token_identifier: TokenIdentifier,
-        #[payment_amount] token_payment: BigUint,
-        #[payment_nonce] token_nonce: u64,
-    ) -> MultiValue4<TokenIdentifier, ManagedBuffer, BigUint, u64> {
-        let token_type = self.call_value().dct_token_type();
+    ) -> MultiValue2<BigUint, MultiValueEncoded<DctTokenPaymentMultiValue>> {
+        let moax_value = self.call_value().moax_value();
+        let dct_transfers_multi = self.dct_transfers_multi();
+        self.accept_funds_event(&moax_value, &dct_transfers_multi);
 
-        self.accept_funds_event(
-            &token_identifier,
-            token_type.as_type_name(),
-            &token_payment,
-            token_nonce,
-        );
-
-        self.call_counts(b"accept_funds_echo_payment")
+        self.call_counts(&ManagedBuffer::from(b"accept_funds_echo_payment"))
             .update(|c| *c += 1);
 
-        (
-            token_identifier,
-            token_type.as_type_name().into(),
-            token_payment,
-            token_nonce,
-        )
-            .into()
+        (moax_value, dct_transfers_multi).into()
     }
 
     #[payable("*")]
     #[endpoint]
-    fn reject_funds(&self, #[payment_token] token: TokenIdentifier, #[payment] payment: BigUint) {
-        self.reject_funds_event(&token, &payment);
-        sc_panic!("reject_funds")
+    fn reject_funds(&self) {
+        let dct_transfers_multi = self.dct_transfers_multi();
+        self.reject_funds_event(&self.call_value().moax_value(), &dct_transfers_multi);
+        sc_panic!("reject_funds");
     }
 
     #[payable("*")]
@@ -244,14 +190,16 @@ pub trait Vault {
     #[event("accept_funds")]
     fn accept_funds_event(
         &self,
-        #[indexed] token_identifier: &TokenIdentifier,
-        #[indexed] token_type: &[u8],
-        #[indexed] token_payment: &BigUint,
-        #[indexed] token_nonce: u64,
+        #[indexed] moax_value: &BigUint,
+        #[indexed] multi_dct: &MultiValueEncoded<DctTokenPaymentMultiValue>,
     );
 
     #[event("reject_funds")]
-    fn reject_funds_event(&self, #[indexed] token: &TokenIdentifier, #[indexed] payment: &BigUint);
+    fn reject_funds_event(
+        &self,
+        #[indexed] moax_value: &BigUint,
+        #[indexed] multi_dct: &MultiValueEncoded<DctTokenPaymentMultiValue>,
+    );
 
     #[event("retrieve_funds")]
     fn retrieve_funds_event(
@@ -270,5 +218,5 @@ pub trait Vault {
     /// this additional counter has the role of showing that storage also gets saved correctly.
     #[view]
     #[storage_mapper("call_counts")]
-    fn call_counts(&self, endpoint: &[u8]) -> SingleValueMapper<usize>;
+    fn call_counts(&self, endpoint: &ManagedBuffer) -> SingleValueMapper<usize>;
 }

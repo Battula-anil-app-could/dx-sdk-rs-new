@@ -1,6 +1,6 @@
 use crate::{
     api::ManagedTypeApi,
-    types::{BigUint, DctTokenType, ManagedVecItem, TokenIdentifier},
+    types::{BigUint, DctTokenPaymentMultiValue, DctTokenType, ManagedVecItem, TokenIdentifier},
 };
 
 use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
@@ -45,6 +45,11 @@ impl<M: ManagedTypeApi> DctTokenPayment<M> {
             token_nonce,
             amount,
         }
+    }
+
+    #[inline]
+    pub fn into_multi_value(self) -> DctTokenPaymentMultiValue<M> {
+        self.into()
     }
 }
 

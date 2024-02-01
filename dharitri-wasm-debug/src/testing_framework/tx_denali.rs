@@ -1,7 +1,7 @@
 use crate::{rust_biguint, tx_mock::TxInputDCT};
 use dharitri_wasm::{
     dharitri_codec::{top_encode_to_vec_u8_or_panic, TopEncode},
-    types::Address,
+    types::heap::Address,
 };
 
 pub struct ScCallDenali {

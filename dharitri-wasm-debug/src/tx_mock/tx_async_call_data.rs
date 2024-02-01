@@ -1,7 +1,7 @@
 use crate::tx_mock::{TxInput, TxResult};
 use dharitri_wasm::{
     dharitri_codec::*,
-    types::{Address, H256},
+    types::heap::{Address, H256},
 };
 
 use num_bigint::BigUint;

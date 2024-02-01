@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-codec"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -15,10 +15,11 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 
 [features]
 derive = ["dharitri-codec-derive"]
+alloc = []
 
 [dependencies.dharitri-codec-derive]
 path = "../dharitri-codec-derive"
-version = "=0.1.6"
+version = "=0.1.7"
 optional = true
 
 [dependencies]
@@ -27,4 +28,4 @@ arrayvec = { version = "0.7.1", default-features = false }
 
 [dev-dependencies.dharitri-codec-derive]
 path = "../dharitri-codec-derive"
-version = "=0.1.6"
+version = "=0.1.7"

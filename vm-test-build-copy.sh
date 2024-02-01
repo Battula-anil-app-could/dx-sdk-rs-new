@@ -28,8 +28,9 @@ build_and_copy ./contracts/examples/adder $VM_REPO_PATH/test/adder
 build_and_copy ./contracts/examples/crowdfunding-dct $VM_REPO_PATH/test/crowdfunding-dct
 build_and_copy ./contracts/examples/digital-cash $VM_REPO_PATH/test/digital-cash
 build_and_copy ./contracts/examples/ping-pong-moax $VM_REPO_PATH/test/ping-pong-moax
-build_and_copy ./contracts/examples/multisig $VM_REPO_PATH/test/multisig
+build_and_copy ./contracts/experimental/multisig-external-view $VM_REPO_PATH/test/multisig
 build_and_copy ./contracts/examples/moax-dct-swap $VM_REPO_PATH/test/moax-dct-swap
+build_and_copy ./contracts/feature-tests/alloc-features $VM_REPO_PATH/test/features/alloc-features
 build_and_copy ./contracts/feature-tests/basic-features $VM_REPO_PATH/test/features/basic-features
 build_and_copy ./contracts/feature-tests/erc-style-contracts/erc20 $VM_REPO_PATH/test/erc20-rust
 build_and_copy ./contracts/feature-tests/payable-features $VM_REPO_PATH/test/features/payable-features

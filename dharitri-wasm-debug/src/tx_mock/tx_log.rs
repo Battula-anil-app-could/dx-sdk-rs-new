@@ -1,5 +1,5 @@
 use alloc::vec::Vec;
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use denali::model::Checkable;
 
 #[derive(Clone, Debug)]

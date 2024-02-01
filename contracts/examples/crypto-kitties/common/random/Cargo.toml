@@ -8,5 +8,5 @@ edition = "2018"
 path = "src/lib.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.4.5"
+version = "0.4.6"
 path = "../../../../../dharitri-wasm"

@@ -1,4 +1,4 @@
-use dharitri_wasm::types::H256;
+use dharitri_wasm::types::heap::H256;
 
 pub fn generate_tx_hash_dummy(tx_id: &str) -> H256 {
     let bytes = tx_id.as_bytes();

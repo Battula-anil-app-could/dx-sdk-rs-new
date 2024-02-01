@@ -1,4 +1,4 @@
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use num_bigint::BigUint;
 
 use crate::{tx_mock::TxPanic, world_mock::DctInstanceMetadata};
@@ -97,6 +97,6 @@ impl TxCache {
 fn panic_insufficient_funds() -> ! {
     std::panic::panic_any(TxPanic {
         status: 10,
-        message: b"insufficient funds".to_vec(),
+        message: "insufficient funds".to_string(),
     });
 }
