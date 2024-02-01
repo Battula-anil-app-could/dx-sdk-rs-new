@@ -31,6 +31,7 @@ pub trait UseModule:
     + dharitri_wasm_modules::governance::GovernanceModule
     + dharitri_wasm_modules::governance::governance_configurable::GovernanceConfigurablePropertiesModule
     + dharitri_wasm_module_pause::PauseModule
+    + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     /// Validates that the "featureName" feature is on.
     /// Uses the `feature_guard!` macro.

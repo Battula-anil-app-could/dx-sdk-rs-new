@@ -1,12 +1,12 @@
 use core::fmt::Debug;
 use dharitri_wasm::{
     api::ManagedTypeApi,
-    types::{BigInt, BigUint, ManagedBuffer, ManagedByteArray, ManagedRef, ManagedType},
+    types::{
+        BigInt, BigUint, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedRef, ManagedType,
+        TokenIdentifier,
+    },
 };
-use dharitri_wasm_debug::{
-    testing_framework::{ManagedAddress, TokenIdentifier},
-    DebugApi,
-};
+use dharitri_wasm_debug::DebugApi;
 
 fn test_managed_ref_for_type<M, T>(obj: T)
 where

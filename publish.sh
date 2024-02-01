@@ -24,7 +24,7 @@
 # 4. Run `cargo test`, to make sure nothing was broken and all dependencies still work fine.
 #
 # 5. Commit changes. The name of the commit should be the released crates and versions, same as the changelog title,
-# e.g. `dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.1.1`.
+# e.g. `dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.11.1`.
 # The branch doesn't need to be published for the following steps to work.
 # 
 # 5. Run this script, `./publish.sh`.

@@ -24,11 +24,13 @@ dharitri_wasm_node::wasm_endpoints! {
         get_random_buffer_once
         get_random_buffer_twice
         mint_dct
+        panic
         receive_moax
         receive_dct
         receive_dct_half
         receive_multi_dct
         recieve_moax_half
+        reject_payment
         send_nft
         sum
         sum_sc_result

@@ -12,11 +12,11 @@ path = "src/forwarder_main.rs"
 path = "../vault"
 
 [dependencies.dharitri-wasm]
-version = "0.4.1"
+version = "0.4.2"
 path = "../../../../dharitri-wasm"
 features = ["cb_closure_managed_deser"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.4.1"
+version = "0.4.2"
 path = "../../../../dharitri-wasm-debug"
 

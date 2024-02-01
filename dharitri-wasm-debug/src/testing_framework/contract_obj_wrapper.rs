@@ -8,9 +8,10 @@ use dharitri_wasm::{
 
 use crate::{
     rust_biguint,
+    testing_framework::raw_converter::bytes_to_hex,
     tx_execution::interpret_panic_as_tx_result,
     tx_mock::{TxCache, TxContext, TxContextStack, TxInput, TxInputDCT, TxResult},
-    world_mock::{AccountData, AccountDct, DctInstanceMetadata},
+    world_mock::{is_smart_contract_address, AccountData, AccountDct, DctInstanceMetadata},
     BlockchainMock, DebugApi,
 };
 
@@ -50,11 +51,6 @@ pub struct BlockchainStateWrapper {
     address_to_code_path: HashMap<Address, Vec<u8>>,
     denali_generator: DenaliGenerator,
     workspace_path: PathBuf,
-}
-
-pub enum StateChange {
-    Commit,
-    Revert,
 }
 
 impl BlockchainStateWrapper {
@@ -176,6 +172,14 @@ impl BlockchainStateWrapper {
         address
     }
 
+    pub fn create_user_account_fixed_address(
+        &mut self,
+        address: &Address,
+        moax_balance: &num_bigint::BigUint,
+    ) {
+        self.create_account_raw(address, moax_balance, None, None, None);
+    }
+
     pub fn create_sc_account<CB, ContractObjBuilder>(
         &mut self,
         moax_balance: &num_bigint::BigUint,
@@ -188,6 +192,30 @@ impl BlockchainStateWrapper {
         ContractObjBuilder: 'static + Copy + Fn() -> CB,
     {
         let address = self.address_factory.new_sc_address();
+        self.create_sc_account_fixed_address(
+            &address,
+            moax_balance,
+            owner,
+            obj_builder,
+            contract_wasm_path,
+        )
+    }
+
+    pub fn create_sc_account_fixed_address<CB, ContractObjBuilder>(
+        &mut self,
+        address: &Address,
+        moax_balance: &num_bigint::BigUint,
+        owner: Option<&Address>,
+        obj_builder: ContractObjBuilder,
+        contract_wasm_path: &str,
+    ) -> ContractObjWrapper<CB, ContractObjBuilder>
+    where
+        CB: ContractBase<Api = DebugApi> + CallableContract + 'static,
+        ContractObjBuilder: 'static + Copy + Fn() -> CB,
+    {
+        if !is_smart_contract_address(address) {
+            panic!("Invalid SC Address: {:?}", address_to_hex(address))
+        }
 
         let mut wasm_full_path = std::env::current_dir().unwrap();
         wasm_full_path.push(PathBuf::from_str(contract_wasm_path).unwrap());
@@ -209,7 +237,7 @@ impl BlockchainStateWrapper {
             .insert(address.clone(), was_relative_path_expr_bytes.clone());
 
         self.create_account_raw(
-            &address,
+            address,
             moax_balance,
             owner,
             Some(contract_bytes),
@@ -220,11 +248,10 @@ impl BlockchainStateWrapper {
             let contract_obj = create_contract_obj_box(obj_builder);
 
             let b_mock_ref = Rc::get_mut(&mut self.rc_b_mock).unwrap();
-            // let contract_obj = closure(DebugApi::new_from_static());
             b_mock_ref.register_contract_obj(&wasm_full_path_as_expr, contract_obj);
         }
 
-        ContractObjWrapper::new(address, obj_builder)
+        ContractObjWrapper::new(address.clone(), obj_builder)
     }
 
     pub fn create_account_raw(
@@ -235,6 +262,10 @@ impl BlockchainStateWrapper {
         sc_identifier: Option<Vec<u8>>,
         sc_denali_path_expr: Option<Vec<u8>>,
     ) {
+        if self.rc_b_mock.account_exists(address) {
+            panic!("Address already used: {:?}", address_to_hex(address));
+        }
+
         let acc_data = AccountData {
             address: address.clone(),
             nonce: 0,
@@ -302,7 +333,16 @@ impl BlockchainStateWrapper {
         attributes: &T,
     ) {
         self.set_nft_balance_all_properties(
-            address, token_id, nonce, balance, attributes, 0, None, None, None, None,
+            address,
+            token_id,
+            nonce,
+            balance,
+            attributes,
+            0,
+            None,
+            None,
+            None,
+            &[],
         );
     }
 
@@ -318,9 +358,10 @@ impl BlockchainStateWrapper {
         creator: Option<&Address>,
         name: Option<&[u8]>,
         hash: Option<&[u8]>,
-        uri: Option<&[u8]>,
+        uris: &[Vec<u8>],
     ) {
         let b_mock_ref = Rc::get_mut(&mut self.rc_b_mock).unwrap();
+
         match b_mock_ref.accounts.get_mut(address) {
             Some(acc) => {
                 acc.dct.set_dct_balance(
@@ -333,7 +374,7 @@ impl BlockchainStateWrapper {
                         royalties,
                         name: name.unwrap_or_default().to_vec(),
                         hash: hash.map(|h| h.to_vec()),
-                        uri: uri.map(|u| u.to_vec()),
+                        uri: uris.to_vec(),
                     },
                 );
 
@@ -514,7 +555,7 @@ impl BlockchainStateWrapper {
     where
         CB: ContractBase<Api = DebugApi> + CallableContract + 'static,
         ContractObjBuilder: 'static + Copy + Fn() -> CB,
-        TxFn: FnOnce(CB) -> StateChange,
+        TxFn: FnOnce(CB),
     {
         self.execute_tx_any(caller, sc_wrapper, moax_payment, Vec::new(), tx_fn)
     }
@@ -531,7 +572,7 @@ impl BlockchainStateWrapper {
     where
         CB: ContractBase<Api = DebugApi> + CallableContract + 'static,
         ContractObjBuilder: 'static + Copy + Fn() -> CB,
-        TxFn: FnOnce(CB) -> StateChange,
+        TxFn: FnOnce(CB),
     {
         let dct_transfer = vec![TxInputDCT {
             token_identifier: token_id.to_vec(),
@@ -541,7 +582,7 @@ impl BlockchainStateWrapper {
         self.execute_tx_any(caller, sc_wrapper, &rust_biguint!(0), dct_transfer, tx_fn)
     }
 
-    pub fn execute_dct_multi_transfer<CB, ContractObjBuilder, TxFn: FnOnce(CB) -> StateChange>(
+    pub fn execute_dct_multi_transfer<CB, ContractObjBuilder, TxFn: FnOnce(CB)>(
         &mut self,
         caller: &Address,
         sc_wrapper: &ContractObjWrapper<CB, ContractObjBuilder>,
@@ -574,15 +615,12 @@ impl BlockchainStateWrapper {
             sc_wrapper.address_ref(),
             sc_wrapper,
             &rust_biguint!(0),
-            |sc| {
-                query_fn(sc);
-                StateChange::Revert
-            },
+            query_fn,
         )
     }
 
     // deduplicates code for execution
-    fn execute_tx_any<CB, ContractObjBuilder, TxFn: FnOnce(CB) -> StateChange>(
+    fn execute_tx_any<CB, ContractObjBuilder, TxFn: FnOnce(CB)>(
         &mut self,
         caller: &Address,
         sc_wrapper: &ContractObjWrapper<CB, ContractObjBuilder>,
@@ -626,27 +664,31 @@ impl BlockchainStateWrapper {
         TxContextStack::static_push(tx_context_rc);
 
         let sc = (sc_wrapper.obj_builder)();
-        let result_state_change =
-            std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| tx_fn(sc)));
+        let exec_result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| tx_fn(sc)));
 
         let api_after_exec = Rc::try_unwrap(TxContextStack::static_pop()).unwrap();
         let updates = api_after_exec.into_blockchain_updates();
 
         let b_mock_ref = Rc::get_mut(&mut self.rc_b_mock).unwrap();
-        match result_state_change {
-            Ok(StateChange::Commit) => {
-                updates.apply(b_mock_ref);
+        match exec_result {
+            Ok(()) => {
+                // do not commit changes for SC Query (caller == SC in that case)
+                if caller != sc_wrapper.address_ref() {
+                    updates.apply(b_mock_ref);
+                }
+
                 TxResult::empty()
             },
-            Ok(StateChange::Revert) => TxResult::empty(),
             Err(panic_any) => interpret_panic_as_tx_result(panic_any),
         }
     }
 
-    pub fn execute_in_managed_environment<Func: FnOnce()>(&self, f: Func) {
+    pub fn execute_in_managed_environment<T, Func: FnOnce() -> T>(&self, f: Func) -> T {
         let _ = DebugApi::dummy();
-        f();
+        let result = f();
         let _ = TxContextStack::static_pop();
+
+        result
     }
 }
 
@@ -696,6 +738,79 @@ impl BlockchainStateWrapper {
             ),
         }
     }
+
+    pub fn dump_state(&self) {
+        for addr in self.rc_b_mock.accounts.keys() {
+            self.dump_state_for_account_hex_attributes(addr);
+            println!();
+        }
+    }
+
+    #[inline]
+    /// Prints the state for the account, with any token attributes as hex
+    pub fn dump_state_for_account_hex_attributes(&self, address: &Address) {
+        self.dump_state_for_account::<Vec<u8>>(address)
+    }
+
+    /// Prints the state for the account, with token attributes decoded as the provided type, if possible
+    pub fn dump_state_for_account<AttributesType: 'static + TopDecode + core::fmt::Debug>(
+        &self,
+        address: &Address,
+    ) {
+        let account = match self.rc_b_mock.accounts.get(address) {
+            Some(acc) => acc,
+            None => panic!(
+                "dump_state_for_account: Account {:?} does not exist",
+                address_to_hex(address)
+            ),
+        };
+
+        println!("State for account: {:?}", address_to_hex(address));
+        println!("MOAX: {}", account.moax_balance);
+
+        if !account.dct.is_empty() {
+            println!("DCT Tokens:");
+        }
+        for (token_id, acc_dct) in account.dct.iter() {
+            let token_id_str = String::from_utf8(token_id.to_vec()).unwrap();
+            println!("  Token: {}", token_id_str);
+
+            for (token_nonce, instance) in acc_dct.instances.get_instances() {
+                if std::any::TypeId::of::<AttributesType>() == std::any::TypeId::of::<Vec<u8>>() {
+                    print_token_balance_raw(
+                        *token_nonce,
+                        &instance.balance,
+                        &instance.metadata.attributes,
+                    );
+                } else {
+                    match AttributesType::top_decode(&instance.metadata.attributes[..]) {
+                        core::result::Result::Ok(attr) => {
+                            print_token_balance_specialized(*token_nonce, &instance.balance, &attr)
+                        },
+                        core::result::Result::Err(_) => print_token_balance_raw(
+                            *token_nonce,
+                            &instance.balance,
+                            &instance.metadata.attributes,
+                        ),
+                    }
+                }
+            }
+        }
+
+        if !account.storage.is_empty() {
+            println!();
+            println!("Storage: ");
+        }
+        for (key, value) in &account.storage {
+            let key_str = match String::from_utf8(key.to_vec()) {
+                core::result::Result::Ok(s) => s,
+                core::result::Result::Err(_) => bytes_to_hex(key),
+            };
+            let value_str = bytes_to_hex(value);
+
+            println!("  {}: {}", key_str, value_str);
+        }
+    }
 }
 
 fn build_tx_input(
@@ -728,6 +843,30 @@ fn serialize_attributes<T: TopEncode>(attributes: &T) -> Vec<u8> {
     }
 
     serialized_attributes
+}
+
+fn print_token_balance_raw(
+    token_nonce: u64,
+    token_balance: &num_bigint::BigUint,
+    attributes: &[u8],
+) {
+    println!(
+        "      Nonce {}, balance: {}, attributes: {}",
+        token_nonce,
+        token_balance,
+        bytes_to_hex(attributes)
+    );
+}
+
+fn print_token_balance_specialized<T: core::fmt::Debug>(
+    token_nonce: u64,
+    token_balance: &num_bigint::BigUint,
+    attributes: &T,
+) {
+    println!(
+        "      Nonce {}, balance: {}, attributes: {:?}",
+        token_nonce, token_balance, attributes
+    );
 }
 
 fn create_contract_obj_box<CB, ContractObjBuilder>(

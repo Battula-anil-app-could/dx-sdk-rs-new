@@ -79,7 +79,10 @@ impl CallValueApiImpl for DebugApi {
         if let Some(dct_value) = self.input_ref().dct_values.get(index) {
             self.insert_new_big_uint(dct_value.value.clone())
         } else {
-            self.insert_new_big_uint_zero()
+            std::panic::panic_any(TxPanic {
+                status: 10,
+                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_vec(),
+            });
         }
     }
 
@@ -88,7 +91,10 @@ impl CallValueApiImpl for DebugApi {
         if let Some(dct_value) = self.input_ref().dct_values.get(index) {
             self.insert_new_managed_buffer(dct_value.token_identifier.clone())
         } else {
-            self.insert_new_managed_buffer(Vec::new())
+            std::panic::panic_any(TxPanic {
+                status: 10,
+                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_vec(),
+            });
         }
     }
 
@@ -97,7 +103,10 @@ impl CallValueApiImpl for DebugApi {
         if let Some(dct_value) = self.input_ref().dct_values.get(index) {
             dct_value.nonce
         } else {
-            0
+            std::panic::panic_any(TxPanic {
+                status: 10,
+                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_vec(),
+            });
         }
     }
 

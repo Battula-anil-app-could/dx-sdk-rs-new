@@ -20,6 +20,7 @@ dharitri_wasm_node::wasm_endpoints! {
         forward_async_call
         forward_async_call_half_payment
         forward_async_retrieve_multi_transfer_funds
+        forward_direct_dct_multi
         forward_direct_dct_via_transf_exec
         forward_payment
         forward_transf_exec

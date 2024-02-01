@@ -4,8 +4,9 @@ use crate::{
     api::{
         BlockchainApi, BlockchainApiImpl, CallTypeApi, SendApiImpl, StorageReadApi,
         CHANGE_OWNER_BUILTIN_FUNC_NAME, DCT_LOCAL_BURN_FUNC_NAME, DCT_LOCAL_MINT_FUNC_NAME,
-        DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_BURN_FUNC_NAME,
-        DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME, DCT_TRANSFER_FUNC_NAME,
+        DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_ADD_URI_FUNC_NAME,
+        DCT_NFT_BURN_FUNC_NAME, DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME,
+        DCT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME, DCT_TRANSFER_FUNC_NAME,
     },
     dct::DCTSystemSmartContractProxy,
     types::{
@@ -120,6 +121,23 @@ where
                 &arg_buffer,
             );
         }
+    }
+
+    pub fn direct_multi<D>(
+        &self,
+        to: &ManagedAddress<A>,
+        payments: &ManagedVec<A, DctTokenPayment<A>>,
+        data: D,
+    ) where
+        D: Into<ManagedBuffer<A>>,
+    {
+        let _ = A::send_api_impl().direct_multi_dct_transfer_execute(
+            to,
+            payments,
+            0,
+            &data.into(),
+            &ManagedArgBuffer::new_empty(),
+        );
     }
 
     /// Performs a simple DCT/NFT transfer, but via async call.  
@@ -327,7 +345,29 @@ where
         }
     }
 
-    // Creates an NFT on behalf of the caller. This will set the "creator" field to the caller's address
+    pub fn dct_nft_create_compact<T: dharitri_codec::TopEncode>(
+        &self,
+        token: &TokenIdentifier<A>,
+        amount: &BigUint<A>,
+        attributes: &T,
+    ) -> u64 {
+        let big_zero = BigUint::zero();
+        let empty_buffer = ManagedBuffer::new();
+        let empty_vec = ManagedVec::from_raw_handle(empty_buffer.get_raw_handle());
+
+        self.dct_nft_create(
+            token,
+            amount,
+            &empty_buffer,
+            &big_zero,
+            &empty_buffer,
+            attributes,
+            &empty_vec,
+        )
+    }
+
+    /// Creates an NFT on behalf of the caller. This will set the "creator" field to the caller's address
+    /// NOT activated on devnet/mainnet yet.
     #[allow(clippy::too_many_arguments)]
     pub fn dct_nft_create_as_caller<T: dharitri_codec::TopEncode>(
         &self,
@@ -408,5 +448,57 @@ where
         } else {
             payment_amount.clone()
         }
+    }
+
+    pub fn nft_add_uri(
+        &self,
+        token_id: &TokenIdentifier<A>,
+        nft_nonce: u64,
+        new_uri: ManagedBuffer<A>,
+    ) {
+        self.nft_add_multiple_uri(token_id, nft_nonce, &ManagedVec::from_single_item(new_uri));
+    }
+
+    pub fn nft_add_multiple_uri(
+        &self,
+        token_id: &TokenIdentifier<A>,
+        nft_nonce: u64,
+        new_uris: &ManagedVec<A, ManagedBuffer<A>>,
+    ) {
+        if new_uris.is_empty() {
+            return;
+        }
+
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        arg_buffer.push_arg(token_id);
+        arg_buffer.push_arg(nft_nonce);
+
+        for uri in new_uris {
+            arg_buffer.push_arg(uri);
+        }
+
+        let _ = self.call_local_dct_built_in_function(
+            A::blockchain_api_impl().get_gas_left(),
+            &ManagedBuffer::new_from_bytes(DCT_NFT_ADD_URI_FUNC_NAME),
+            &arg_buffer,
+        );
+    }
+
+    pub fn nft_update_attributes<T: dharitri_codec::TopEncode>(
+        &self,
+        token_id: &TokenIdentifier<A>,
+        nft_nonce: u64,
+        new_attributes: &T,
+    ) {
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        arg_buffer.push_arg(token_id);
+        arg_buffer.push_arg(nft_nonce);
+        arg_buffer.push_arg(new_attributes);
+
+        let _ = self.call_local_dct_built_in_function(
+            A::blockchain_api_impl().get_gas_left(),
+            &ManagedBuffer::new_from_bytes(DCT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME),
+            &arg_buffer,
+        );
     }
 }

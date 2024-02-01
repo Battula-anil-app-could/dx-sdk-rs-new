@@ -9,6 +9,7 @@ dharitri_wasm_node::wasm_endpoints! {
     (
         callBack
         buyNft
+        claimRoyaltiesFromMarketplace
         createNft
         getNftPrice
         issueToken
