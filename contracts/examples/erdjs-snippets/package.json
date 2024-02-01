@@ -7,7 +7,7 @@
         "compile": "tsc -p tsconfig.json"
     },
     "dependencies": {
-        "@dharitrinetwork/erdjs": "10.0.2",
+        "@dharitrinetwork/erdjs": "10.1.0",
         "@dharitrinetwork/erdjs-snippets": "2.0.2",
         "@dharitrinetwork/erdjs-network-providers": "0.1.4",
         "bignumber.js": "9.0.2"

@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.4.7, dharitri-codec 0.1.8, denali 0.1.3] - 2022-05-02
+## [dharitri-wasm 0.4.8, denali 0.1.4] - 2022-05-04
+- Bugfix - formatter single char issue.
+
+## [dharitri-wasm 0.31.0, dharitri-codec 0.1.8, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -12,7 +15,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Denali Rust testing framework v2, which uses contract proxies for composing calls and is capable of building and exporting denali scenarios.
 - Managed type handle management system in the contract, to reduce the number of API calls to the VM. General VM API refactor.
 - Eliminated `#[var_args]` annotation. The framework can now distinguish between single-values and multi-values solely based on type.
+- Contract cleans up return data after performing synchronous calls. Getting return data by range is no longer needed and the respective methods have been removed.
 - Fixed behavior of blockchain API `get_dct_token_data`.
+- Git tag/commit info in ABI (fixed & reintroduced).
 
 ## [dharitri-wasm 0.30.0, dharitri-codec 0.10.0] - 2022-03-17
 - Feature flags in `dharitri-wasm`:
@@ -168,7 +173,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Debugger builtin function mocks check for DCT roles
 - ABI provides definitions for DctTokenPayment, DctTokenData, DctTokenType
 
-## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.1.8] - 2021-10-22
+## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -324,7 +329,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - `dharitri-codec-derive` dix - `TopDecodeOrDefault` works with generics
 - Upgraded to Rust2021.
 
-## [dharitri-wasm 0.1.3] - 2021-03-04
+## [dharitri-wasm 0.13.0] - 2021-03-04
 ### Main feature
 - Events revamped:
 	- any event name of any length is accepted. The event name is now expressed as ASCII instead of hex
@@ -344,7 +349,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [dharitri-wasm 0.1.8, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [dharitri-wasm 0.11.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -451,7 +456,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -477,7 +482,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -549,7 +554,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.0.2] - 2020-02-05 
+## [dharitri-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro
