@@ -1,7 +1,13 @@
 {
     "networkProvider": {
         "type": "ProxyNetworkProvider",
-        "url": "https://devnet-gateway.dharitri.com"
+        "url": "https://devnet-gateway.dharitri.com",
+        "timeout": 5000
+    },
+    "reporting": {
+        "explorerUrl": "https://devnet-explorer.dharitri.com",
+        "apiUrl": "https://devnet-api.dharitri.com",
+        "outputFolder": "~/reports"
     },
     "users": {
         "individuals": [

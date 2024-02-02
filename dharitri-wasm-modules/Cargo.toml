@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-modules"
-version = "0.4.8"
+version = "0.4.9"
 edition = "2018"
 
 authors = ["Dharitri Network <contact@dharitri.com>"]
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 alloc = ["dharitri-wasm/alloc"]
 
 [dependencies.dharitri-wasm]
-version = "0.4.8"
+version = "0.4.9"
 path = "../dharitri-wasm"

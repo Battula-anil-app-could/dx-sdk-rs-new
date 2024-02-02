@@ -12,7 +12,8 @@ pub trait CryptoBubbles {
     /// player adds funds
     #[payable("MOAX")]
     #[endpoint(topUp)]
-    fn top_up(&self, #[payment] payment: BigUint) {
+    fn top_up(&self) {
+        let payment = self.call_value().moax_value();
         let caller = self.blockchain().get_caller_legacy();
         self.player_balance(&caller)
             .update(|balance| *balance += &payment);
@@ -62,9 +63,10 @@ pub trait CryptoBubbles {
     // player tops up + joins a game
     #[payable("MOAX")]
     #[endpoint(joinGame)]
-    fn join_game(&self, game_index: BigUint, #[payment] bet: BigUint) {
+    fn join_game(&self, game_index: BigUint) {
+        let bet = self.call_value().moax_value();
         let player = self.blockchain().get_caller_legacy();
-        self.top_up(bet.clone());
+        self.top_up();
         self.add_player_to_game_state_change(&game_index, &player, &bet)
     }
 

@@ -23,7 +23,6 @@ extern "C" {
         sliceLength: i32,
         destinationHandle: i32,
     ) -> i32;
-    #[cfg(not(feature = "ei-unmanaged"))]
     fn mBufferEq(handle1: i32, handle2: i32) -> i32;
     fn mBufferSetBytes(mBufferHandle: i32, byte_ptr: *const u8, byte_len: i32) -> i32;
 
@@ -37,6 +36,8 @@ extern "C" {
     fn mBufferSetRandom(destinationHandle: i32, length: i32) -> i32;
     fn mBufferAppend(accumulatorHandle: i32, dataHandle: i32) -> i32;
     fn mBufferAppendBytes(accumulatorHandle: i32, byte_ptr: *const u8, byte_len: i32) -> i32;
+
+    fn managedBufferToHex(sourceHandle: i32, destinationHandle: i32);
 }
 
 impl ManagedBufferApi for crate::VmApiImpl {
@@ -177,28 +178,14 @@ impl ManagedBufferApi for crate::VmApiImpl {
         }
     }
 
-    #[cfg(feature = "ei-unmanaged")]
-    fn mb_eq(&self, handle1: Handle, handle2: Handle) -> bool {
-        unsafe {
-            let len1 = mBufferGetLength(handle1 as i32) as usize;
-            let len2 = mBufferGetLength(handle2 as i32) as usize;
-            if len1 != len2 {
-                return false;
-            }
-            if len1 == 0 {
-                return true;
-            }
-            let mut bytes1 = BoxedBytes::allocate(len1);
-            let mut bytes2 = BoxedBytes::allocate(len2);
-            let _ = mBufferGetBytes(handle1, bytes1.as_mut_ptr());
-            let _ = mBufferGetBytes(handle2, bytes2.as_mut_ptr());
-            bytes1 == bytes2
-        }
-    }
-
-    #[cfg(not(feature = "ei-unmanaged"))]
     fn mb_eq(&self, handle1: Handle, handle2: Handle) -> bool {
         unsafe { mBufferEq(handle1, handle2) > 0 }
+    }
+
+    fn mb_to_hex(&self, source_handle: Handle, dest_handle: Handle) {
+        unsafe {
+            managedBufferToHex(source_handle, dest_handle);
+        }
     }
 }
 

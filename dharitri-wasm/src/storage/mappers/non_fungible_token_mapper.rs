@@ -293,7 +293,7 @@ where
 
     fn send_payment(&self, to: &ManagedAddress<SA>, payment: &DctTokenPayment<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
-        send_wrapper.direct(
+        send_wrapper.direct_dct(
             to,
             &payment.token_identifier,
             payment.token_nonce,

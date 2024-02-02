@@ -61,6 +61,11 @@ fn payable_moax_4_rs() {
 }
 
 #[test]
+fn payable_multi_array_rs() {
+    dharitri_wasm_debug::denali_rs("denali/payable_multi_array.scen.json", world());
+}
+
+#[test]
 fn payable_token_1_rs() {
     dharitri_wasm_debug::denali_rs("denali/payable_token_1.scen.json", world());
 }

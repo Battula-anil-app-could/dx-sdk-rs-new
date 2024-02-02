@@ -20,7 +20,7 @@ pub trait DigitalCash {
     #[endpoint]
     #[payable("*")]
     fn fund(&self, address: ManagedAddress, valability: u64) {
-        let payment: DctTokenPayment<Self::Api> = self.call_value().payment();
+        let payment = self.call_value().moax_or_single_dct();
         require!(
             payment.amount > BigUint::zero(),
             "amount must be greater than 0"
@@ -79,7 +79,7 @@ pub trait DigitalCash {
         let message = caller_address.as_managed_buffer();
         require!(
             self.crypto()
-                .verify_ed25519_managed::<32>(key, message, &signature),
+                .verify_ed25519_legacy_managed::<32>(key, message, &signature),
             "invalid signature"
         );
 

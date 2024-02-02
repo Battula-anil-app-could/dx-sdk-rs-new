@@ -4,6 +4,8 @@ pub const BAD_TOKEN_PROVIDED: &str = "bad call value token provided";
 pub const SINGLE_DCT_EXPECTED: &str = "function expects single DCT payment";
 pub const TOO_MANY_DCT_TRANSFERS: &str = "too many DCT transfers";
 pub const DCT_INVALID_TOKEN_INDEX: &str = "invalid token index";
+pub const INCORRECT_NUM_DCT_TRANSFERS: &str = "incorrect number of DCT transfers";
+pub static FUNGIBLE_TOKEN_EXPECTED_ERR_MSG: &str = "fungible DCT token expected";
 
 pub const ARG_WRONG_NUMBER: &str = "wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";
@@ -34,6 +36,11 @@ pub const VALUE_EXCEEDS_SLICE: &[u8] = b"value exceeds target slice";
 pub const BIG_UINT_EXCEEDS_SLICE: &[u8] = b"big uint as_bytes exceed target slice";
 pub const BIG_UINT_SUB_NEGATIVE: &[u8] = b"cannot subtract because result would be negative";
 
+pub const EXPONENT_IS_POSITIVE: &[u8] = b"exponent must be negative";
+pub const NUMBER_IS_NOT_NORMAL: &[u8] =
+    b"number is not normal. It is either infinite, NaN or subnormal";
+pub const CANNOT_COMPARE_VALUES: &[u8] = b"values are not comparable";
+
 pub const DESERIALIZATION_INVALID_BYTE: &str = "call data deserialization error: not a valid byte";
 pub const DESERIALIZATION_NOT_32_BYTES: &str =
     "call data deserialization error: 32 as_bytes expected";
@@ -44,7 +51,7 @@ pub const DESERIALIZATION_ARG_OUT_OF_RANGE: &str =
 
 pub const CALLBACK_BAD_FUNC: &[u8] = b"no callback function with that name exists in contract";
 
-pub const RECIPIENT_ADDRESS_NOT_SET: &[u8] = b"recipient address not set";
+pub const RECIPIENT_ADDRESS_NOT_SET: &str = "recipient address not set";
 
 pub const STORAGE_NOT_I64: &[u8] = b"storage not i64";
 pub const STORAGE_NOT_32_BYTES: &[u8] = b"32 bytes of data expected in storage at key";

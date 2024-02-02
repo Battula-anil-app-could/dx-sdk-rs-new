@@ -37,7 +37,7 @@ fn crowdfunding_denali_rust_test() {
             .new_address(&owner_addr, 0, &cf_sc),
     );
     let (_, ()) = world.denali_sc_deploy_get_result(
-        cf_sc.init(2_000u32, deadline, cf_token_id.value.clone()),
+        cf_sc.init(2_000u32, deadline, cf_token_id.value.as_slice()),
         ScDeployStep::new()
             .from(&owner_addr)
             .contract_code("file:output/crowdfunding-dct.wasm", &ctx)

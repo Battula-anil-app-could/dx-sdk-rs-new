@@ -8,10 +8,12 @@ use super::TxCache;
 impl TxCache {
     pub fn subtract_moax_balance(&self, address: &Address, call_value: &BigUint) {
         self.with_account_mut(address, |account| {
-            assert!(
-                &account.moax_balance >= call_value,
-                "failed transfer (insufficient funds)"
-            );
+            if call_value > &account.moax_balance {
+                std::panic::panic_any(TxPanic {
+                    status: 10,
+                    message: "failed transfer (insufficient funds)".to_string(),
+                });
+            }
             account.moax_balance -= call_value;
         })
     }

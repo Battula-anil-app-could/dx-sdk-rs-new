@@ -53,43 +53,43 @@
 #
 
 cd dharitri-codec-derive
-cargo publish
+cargo publish || return 1
 cd ..
 
 sleep 20
 
 cd dharitri-codec
-cargo publish
+cargo publish || return 1
 cd ..
 
 cd dharitri-wasm-derive
-cargo publish
+cargo publish || return 1
 cd ..
 
 sleep 20
 
 cd dharitri-wasm
-cargo publish
+cargo publish || return 1
 cd ..
 
 sleep 20
 
 cd denali
-cargo publish
+cargo publish || return 1
 cd ..
 
 cd dharitri-wasm-node
-cargo publish
+cargo publish || return 1
 cd ..
 
 cd dharitri-wasm-debug
-cargo publish
+cargo publish || return 1
 cd ..
 
 cd dharitri-wasm-output
-cargo publish
+cargo publish || return 1
 cd ..
 
 cd dharitri-wasm-modules
-cargo publish
+cargo publish || return 1
 cd ..

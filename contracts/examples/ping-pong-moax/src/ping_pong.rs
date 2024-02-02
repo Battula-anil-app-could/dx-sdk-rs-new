@@ -50,7 +50,7 @@ pub trait PingPong {
     /// Optional `_data` argument is ignored.
     #[payable("MOAX")]
     #[endpoint]
-    fn ping(&self, _data: OptionalValue<ManagedBuffer>) {
+    fn ping(&self, _data: IgnoreValue) {
         let payment = self.call_value().moax_value();
 
         require!(
@@ -73,7 +73,7 @@ pub trait PingPong {
             require!(
                 &self
                     .blockchain()
-                    .get_sc_balance(&TokenIdentifier::moax(), 0)
+                    .get_sc_balance(&MoaxOrDctTokenIdentifier::moax(), 0)
                     + &payment
                     <= max_funds,
                 "smart contract full"

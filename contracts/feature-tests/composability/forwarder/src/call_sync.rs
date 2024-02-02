@@ -55,20 +55,15 @@ pub trait ForwarderSyncCallModule {
 
     #[endpoint]
     #[payable("*")]
-    fn forward_sync_accept_funds(
-        &self,
-        to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment_amount] payment: BigUint,
-        #[payment_nonce] token_nonce: u64,
-    ) {
+    fn forward_sync_accept_funds(&self, to: ManagedAddress) {
+        let (token, token_nonce, payment) = self.call_value().moax_or_single_dct().into_tuple();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         let result: MultiValue2<BigUint, MultiValueEncoded<DctTokenPaymentMultiValue>> = self
             .vault_proxy()
             .contract(to)
             .accept_funds_echo_payment()
-            .add_token_transfer(token, token_nonce, payment)
+            .with_moax_or_single_dct_token_transfer(token, token_nonce, payment)
             .with_gas_limit(half_gas)
             .execute_on_dest_context();
         let (moax_value, dct_transfers_multi) = result.into_tuple();
@@ -78,13 +73,8 @@ pub trait ForwarderSyncCallModule {
 
     #[payable("*")]
     #[endpoint]
-    fn forward_sync_accept_funds_with_fees(
-        &self,
-        #[payment_token] token_id: TokenIdentifier,
-        #[payment_amount] payment: BigUint,
-        to: ManagedAddress,
-        percentage_fees: BigUint,
-    ) {
+    fn forward_sync_accept_funds_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
+        let (token_id, payment) = self.call_value().moax_or_single_fungible_dct();
         let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment - fees;
 
@@ -92,7 +82,7 @@ pub trait ForwarderSyncCallModule {
             .vault_proxy()
             .contract(to)
             .accept_funds()
-            .add_token_transfer(token_id, 0, amount_to_send)
+            .with_moax_or_single_dct_token_transfer(token_id, 0, amount_to_send)
             .execute_on_dest_context();
     }
 
@@ -105,18 +95,13 @@ pub trait ForwarderSyncCallModule {
 
     #[endpoint]
     #[payable("*")]
-    fn forward_sync_accept_funds_then_read(
-        &self,
-        to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment_amount] payment: BigUint,
-        #[payment_nonce] token_nonce: u64,
-    ) -> usize {
+    fn forward_sync_accept_funds_then_read(&self, to: ManagedAddress) -> usize {
+        let (token, token_nonce, payment) = self.call_value().moax_or_single_dct().into_tuple();
         let () = self
             .vault_proxy()
             .contract(to.clone())
             .accept_funds()
-            .add_token_transfer(token, token_nonce, payment)
+            .with_moax_or_single_dct_token_transfer(token, token_nonce, payment)
             .execute_on_dest_context();
 
         self.vault_proxy()
@@ -130,7 +115,7 @@ pub trait ForwarderSyncCallModule {
     fn forward_sync_retrieve_funds(
         &self,
         to: ManagedAddress,
-        token: TokenIdentifier,
+        token: MoaxOrDctTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {

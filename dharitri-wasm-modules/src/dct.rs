@@ -29,7 +29,6 @@ pub trait DctModule {
     #[endpoint(issueToken)]
     fn issue_token(
         &self,
-        #[payment_amount] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         token_type: DctTokenType,
@@ -37,6 +36,7 @@ pub trait DctModule {
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
+        let issue_cost = self.call_value().moax_value();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,

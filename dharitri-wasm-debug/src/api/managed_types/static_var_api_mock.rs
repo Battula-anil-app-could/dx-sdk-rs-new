@@ -44,4 +44,22 @@ impl StaticVarApiImpl for DebugApi {
     fn get_num_arguments(&self) -> i32 {
         self.static_vars_cell.borrow().num_arguments
     }
+
+    fn set_call_value_moax_handle(&self, handle: Handle) {
+        self.static_vars_cell.borrow_mut().call_value_moax_handle = handle;
+    }
+
+    fn get_call_value_moax_handle(&self) -> Handle {
+        self.static_vars_cell.borrow().call_value_moax_handle
+    }
+
+    fn set_call_value_multi_dct_handle(&self, handle: Handle) {
+        self.static_vars_cell
+            .borrow_mut()
+            .call_value_multi_dct_handle = handle;
+    }
+
+    fn get_call_value_multi_dct_handle(&self) -> Handle {
+        self.static_vars_cell.borrow().call_value_multi_dct_handle
+    }
 }

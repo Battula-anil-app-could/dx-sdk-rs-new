@@ -4,7 +4,7 @@ use crate::{
     DebugApi,
 };
 use dharitri_wasm::{
-    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedTypeApi},
+    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedBufferApi, ManagedTypeApi},
     types::{
         heap::{Address, H256},
         BigUint, DctLocalRole, DctLocalRoleFlags, DctTokenData, DctTokenType, ManagedAddress,
@@ -156,7 +156,7 @@ impl BlockchainApiImpl for DebugApi {
         self.bi_overwrite(dest, dct_balance.into());
     }
 
-    fn get_dct_token_data<M: ManagedTypeApi>(
+    fn load_dct_token_data<M: ManagedTypeApi>(
         &self,
         address: &ManagedAddress<M>,
         token: &TokenIdentifier<M>,
@@ -193,7 +193,7 @@ impl BlockchainApiImpl for DebugApi {
             })
     }
 
-    fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(
+    fn load_dct_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
         _address: &ManagedAddress<M>,
         _token: &TokenIdentifier<M>,
@@ -202,7 +202,35 @@ impl BlockchainApiImpl for DebugApi {
         panic!("get_dct_token_data_unmanaged is deprecated and should never be used in Rust tests")
     }
 
-    fn get_dct_local_roles(&self, token_id_handle: Handle) -> DctLocalRoleFlags {
+    fn check_dct_frozen(
+        &self,
+        address_handle: Handle,
+        token_id_handle: Handle,
+        _nonce: u64,
+    ) -> bool {
+        let mut frozen = false;
+        let address = ManagedAddress::<Self>::from_raw_handle(address_handle).to_address();
+        let token_identifier_value = self.mb_to_boxed_bytes(token_id_handle);
+        self.blockchain_cache().with_account(&address, |account| {
+            if let Some(dct_data) = account
+                .dct
+                .get_by_identifier(token_identifier_value.as_slice())
+            {
+                frozen = dct_data.frozen;
+            }
+        });
+        frozen
+    }
+
+    fn check_dct_paused(&self, _token_id_handle: Handle) -> bool {
+        false
+    }
+
+    fn check_dct_limited_transfer(&self, _token_id_handle: Handle) -> bool {
+        false
+    }
+
+    fn load_dct_local_roles(&self, token_id_handle: Handle) -> DctLocalRoleFlags {
         let sc_address = self.input_ref().to.clone();
         self.blockchain_cache()
             .with_account(&sc_address, |account| {

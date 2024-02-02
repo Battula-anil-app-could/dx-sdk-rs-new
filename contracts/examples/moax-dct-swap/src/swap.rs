@@ -66,7 +66,8 @@ pub trait MoaxDctSwap {
                 self.wrapped_moax_token_id().set(&token_identifier);
             },
             ManagedAsyncCallResult::Err(message) => {
-                let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
+                let (token_identifier, returned_tokens) =
+                    self.call_value().moax_or_single_fungible_dct();
                 self.issue_failure_event(caller, &message.err_msg);
 
                 // return issue cost to the owner
@@ -103,8 +104,7 @@ pub trait MoaxDctSwap {
     #[payable("MOAX")]
     #[endpoint(wrapMoax)]
     fn wrap_moax(&self) {
-        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
-        require!(payment_token.is_moax(), "Only MOAX accepted");
+        let payment_amount = self.call_value().moax_value();
         require!(payment_amount > 0u32, "Payment must be more than 0");
 
         let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
@@ -113,17 +113,16 @@ pub trait MoaxDctSwap {
 
         let caller = self.blockchain().get_caller();
         self.send()
-            .direct(&caller, &wrapped_moax_token_id, 0, &payment_amount, &[]);
+            .direct_dct(&caller, &wrapped_moax_token_id, 0, &payment_amount, &[]);
     }
 
     #[payable("*")]
     #[endpoint(unwrapMoax)]
     fn unwrap_moax(&self) {
-        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
+        let (payment_token, payment_amount) = self.call_value().single_fungible_dct();
         let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
 
         require!(payment_token == wrapped_moax_token_id, "Wrong dct token");
-        require!(payment_amount > 0u32, "Must pay more than 0 tokens!");
         // this should never happen, but we'll check anyway
         require!(
             payment_amount <= self.get_locked_moax_balance(),
@@ -141,7 +140,7 @@ pub trait MoaxDctSwap {
     #[view(getLockedMoaxBalance)]
     fn get_locked_moax_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&TokenIdentifier::moax(), 0)
+            .get_sc_balance(&MoaxOrDctTokenIdentifier::moax(), 0)
     }
 
     // storage

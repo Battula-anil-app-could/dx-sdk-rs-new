@@ -1,4 +1,4 @@
-use dharitri_wasm::types::{ManagedBuffer, TokenIdentifier};
+use dharitri_wasm::types::{MoaxOrDctTokenIdentifier, ManagedBuffer, TokenIdentifier};
 use dharitri_wasm_debug::*;
 
 use basic_features::token_identifier_features::TokenIdentifierFeatures;
@@ -8,7 +8,7 @@ fn test_token_identifier_moax() {
     let _ = DebugApi::dummy();
     let bf = basic_features::contract_obj::<DebugApi>();
     let result = bf.token_identifier_moax();
-    assert_eq!(TokenIdentifier::moax(), result);
+    assert_eq!(MoaxOrDctTokenIdentifier::moax(), result);
 }
 
 /// This just tests the contract syntax.
@@ -17,9 +17,13 @@ fn test_token_identifier_moax() {
 fn test_token_identifier_is_valid() {
     let _ = DebugApi::dummy();
     let bf = basic_features::contract_obj::<DebugApi>();
-    let result = bf.token_identifier_is_valid_1(TokenIdentifier::from(&b"ALC-6258d2"[..]));
+    let result = bf.token_identifier_is_valid_1(MoaxOrDctTokenIdentifier::dct(
+        TokenIdentifier::from(&b"ALC-6258d2"[..]),
+    ));
     assert!(result);
-    let result = bf.token_identifier_is_valid_1(TokenIdentifier::from(&b"AL-C6258d2"[..]));
+    let result = bf.token_identifier_is_valid_1(MoaxOrDctTokenIdentifier::dct(
+        TokenIdentifier::from(&b"AL-C6258d2"[..]),
+    ));
     assert!(!result);
     let result = bf.token_identifier_is_valid_2(ManagedBuffer::from(&b"12345-6258d2"[..]));
     assert!(result);

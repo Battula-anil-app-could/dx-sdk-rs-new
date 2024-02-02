@@ -36,7 +36,6 @@ dharitri_wasm_node::wasm_endpoints! {
         getTotalVotes
         getVotingDelayInBlocks
         getVotingPeriodInBlocks
-        initGovernanceModule
         isPaused
         issueToken
         only_owner_mod_endpoint
@@ -44,8 +43,12 @@ dharitri_wasm_node::wasm_endpoints! {
         propose
         queue
         setFeatureFlag
+        slashMember
+        stake
         unpause
+        unstake
         vote
+        voteSlashMember
         withdrawGovernanceTokens
     )
 }

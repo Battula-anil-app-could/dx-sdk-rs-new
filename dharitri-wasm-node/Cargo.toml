@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-node"
-version = "0.4.8"
+version = "0.4.9"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -16,8 +16,8 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 [features]
 vm-validate-token-identifier = []
 vm-dct-local-roles = []
-ei-unmanaged = []
+ei-unmanaged-node = []
 
 [dependencies.dharitri-wasm]
-version = "=0.4.8"
+version = "=0.4.9"
 path = "../dharitri-wasm"

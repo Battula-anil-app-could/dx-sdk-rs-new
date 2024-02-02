@@ -111,7 +111,7 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         dest: Handle,
     );
 
-    fn get_dct_token_data<M: ManagedTypeApi>(
+    fn load_dct_token_data<M: ManagedTypeApi>(
         &self,
         address: &ManagedAddress<M>,
         token_id: &TokenIdentifier<M>,
@@ -119,15 +119,26 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
     ) -> DctTokenData<M>;
 
     #[deprecated(
-        since = "0.4.8",
-        note = "Only used for ;imited backwards compatibility tests. Never use! Use `get_dct_token_data` instead."
+        since = "0.31.0",
+        note = "Only used for limited backwards compatibility tests. Never use! Use `load_dct_token_data` instead."
     )]
-    fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(
+    fn load_dct_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
         address: &ManagedAddress<M>,
         token_id: &TokenIdentifier<M>,
         nonce: u64,
     ) -> DctTokenData<M>;
 
-    fn get_dct_local_roles(&self, token_id_handle: Handle) -> DctLocalRoleFlags;
+    fn check_dct_frozen(
+        &self,
+        address_handle: Handle,
+        token_id_handle: Handle,
+        nonce: u64,
+    ) -> bool;
+
+    fn check_dct_paused(&self, token_id_handle: Handle) -> bool;
+
+    fn check_dct_limited_transfer(&self, token_id_handle: Handle) -> bool;
+
+    fn load_dct_local_roles(&self, token_id_handle: Handle) -> DctLocalRoleFlags;
 }

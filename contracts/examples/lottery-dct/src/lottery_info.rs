@@ -1,13 +1,13 @@
 use dharitri_wasm::{
     api::ManagedTypeApi,
-    types::{BigUint, ManagedVec, TokenIdentifier},
+    types::{BigUint, MoaxOrDctTokenIdentifier, ManagedVec},
 };
 
 dharitri_wasm::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<M: ManagedTypeApi> {
-    pub token_identifier: TokenIdentifier<M>,
+    pub token_identifier: MoaxOrDctTokenIdentifier<M>,
     pub ticket_price: BigUint<M>,
     pub tickets_left: usize,
     pub deadline: u64,

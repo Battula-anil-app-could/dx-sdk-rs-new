@@ -4,10 +4,31 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.4.8, denali 0.1.4] - 2022-05-04
+## [dharitri-wasm 0.4.9, denali 0.1.5] - 2022-06-03
+- VM new functionality added as part of the environment interface 1.2:
+	- Fully managed functionality for elliptic curves (no allocator);
+	- Fully managed cryptographic functions (no allocator);
+	- More efficient printing of big ints and hex;
+	- Functionality available by adding the `ei-1-2` flag to contracts.
+- `BigFloat` functionality. Since the functionality is not yet deployed on mainnet, use flag `big-float` to use.
+- Major refactoring of the call value mechanism:
+	- `TokenIdentifier` now only refers to DCT, for mixed MOAX+DCT we have `MoaxOrDctTokenIdentifier`.
+	- `DctTokenPayment` now only refers to DCT, for mixed MOAX+DCT we have `MoaxOrDctTokenPayment`.
+	- Compact version for multi-transfer: `let [payment_a, payment_b, payment_c] = self.call_value().multi_dct();`.
+	- Explicit `single_dct` vs. `single_fungible_dct` vs. `moax_or_single_dct` vs. `moax_or_single_fungible_dct`.
+	- Payment arguments are still supported, although discouraged. They always assume the MOAX+DCT scenario.
+- `ManagedOption` provides some minor optimization for specific use-cases. Mostly for use in the framework.
+- Cleanup in the callback mechanism and in the `SendApi`.
+- `SparseArray` implementation.
+- `UniqueIdMapper` - efficient storage mapper for holding unique values.
+- The ABI also contains events.
+- New standard module: `StakingModule`.
+
+
+## [dharitri-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
-## [dharitri-wasm 0.31.0, dharitri-codec 0.1.8, denali 0.13.0] - 2022-05-02
+## [dharitri-wasm 0.31.0, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -310,7 +331,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
+## [dharitri-wasm 0.1.5, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -456,7 +477,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -482,7 +503,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -554,7 +575,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

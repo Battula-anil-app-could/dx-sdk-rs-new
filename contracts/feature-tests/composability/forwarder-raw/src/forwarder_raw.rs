@@ -14,18 +14,14 @@ pub trait ForwarderRaw {
 
     #[endpoint]
     #[payable("*")]
-    fn forward_payment(
-        &self,
-        to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
-    ) {
+    fn forward_payment(&self, to: ManagedAddress) {
+        let (token, payment) = self.call_value().moax_or_single_fungible_dct();
         if token.is_moax() {
             self.send().direct_moax(&to, &payment, ManagedBuffer::new());
         } else {
             self.send().transfer_dct_via_async_call(
                 &to,
-                &token,
+                &token.unwrap_dct(),
                 0,
                 &payment,
                 ManagedBuffer::new(),
@@ -35,13 +31,9 @@ pub trait ForwarderRaw {
 
     #[endpoint]
     #[payable("*")]
-    fn forward_direct_dct_via_transf_exec(
-        &self,
-        to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
-    ) {
-        let _ = self.send().direct(&to, &token, 0, &payment, &[]);
+    fn forward_direct_dct_via_transf_exec(&self, to: ManagedAddress) {
+        let (token, payment) = self.call_value().single_fungible_dct();
+        self.send().direct_dct(&to, &token, 0, &payment, &[]);
     }
 
     #[endpoint]
@@ -54,14 +46,14 @@ pub trait ForwarderRaw {
     fn forward_contract_call(
         &self,
         to: ManagedAddress,
-        payment_token: TokenIdentifier,
+        payment_token: MoaxOrDctTokenIdentifier,
         payment_amount: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) -> ContractCall<Self::Api, ()> {
         self.send()
             .contract_call(to, endpoint_name)
-            .add_token_transfer(payment_token, 0, payment_amount)
+            .with_moax_or_single_dct_token_transfer(payment_token, 0, payment_amount)
             .with_arguments_raw(args.to_arg_buffer())
     }
 
@@ -70,11 +62,10 @@ pub trait ForwarderRaw {
     fn forward_async_call(
         &self,
         to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
+        let (token, payment) = self.call_value().moax_or_single_fungible_dct();
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .async_call()
             .call_and_exit()
@@ -85,13 +76,14 @@ pub trait ForwarderRaw {
     fn forward_async_call_half_payment(
         &self,
         to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
+        let (token, payment) = self.call_value().moax_or_single_fungible_dct();
         let half_payment = payment / 2u32;
-        self.forward_async_call(to, token, half_payment, endpoint_name, args)
+        self.forward_contract_call(to, token, half_payment, endpoint_name, args)
+            .async_call()
+            .call_and_exit()
     }
 
     #[endpoint]
@@ -99,13 +91,19 @@ pub trait ForwarderRaw {
     fn forward_transf_exec_moax(
         &self,
         to: ManagedAddress,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        self.forward_contract_call(to, TokenIdentifier::moax(), payment, endpoint_name, args)
-            .with_gas_limit(self.blockchain().get_gas_left() / 2)
-            .transfer_execute();
+        let payment = self.call_value().moax_value();
+        self.forward_contract_call(
+            to,
+            MoaxOrDctTokenIdentifier::moax(),
+            payment,
+            endpoint_name,
+            args,
+        )
+        .with_gas_limit(self.blockchain().get_gas_left() / 2)
+        .transfer_execute();
     }
 
     #[endpoint]
@@ -113,14 +111,19 @@ pub trait ForwarderRaw {
     fn forward_transf_exec_dct(
         &self,
         to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        self.forward_contract_call(to, token, payment, endpoint_name, args)
-            .with_gas_limit(self.blockchain().get_gas_left() / 2)
-            .transfer_execute();
+        let (token, payment) = self.call_value().single_fungible_dct();
+        self.forward_contract_call(
+            to,
+            MoaxOrDctTokenIdentifier::dct(token),
+            payment,
+            endpoint_name,
+            args,
+        )
+        .with_gas_limit(self.blockchain().get_gas_left() / 2)
+        .transfer_execute();
     }
 
     #[endpoint]
@@ -128,11 +131,10 @@ pub trait ForwarderRaw {
     fn forward_transf_exec(
         &self,
         to: ManagedAddress,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
+        let (token, payment) = self.call_value().moax_or_single_fungible_dct();
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .with_gas_limit(self.blockchain().get_gas_left() / 2)
             .transfer_execute();
@@ -144,7 +146,7 @@ pub trait ForwarderRaw {
         to: ManagedAddress,
         token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         for multi_arg in token_payments.into_iter() {
             let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
 
@@ -153,7 +155,7 @@ pub trait ForwarderRaw {
             arg_buffer.push_arg(amount);
         }
 
-        Self::Api::send_api_impl().async_call_raw(
+        self.send_raw().async_call_raw(
             &to,
             &BigUint::zero(),
             &ManagedBuffer::from(&b"retrieve_multi_funds_async"[..]),
@@ -171,12 +173,7 @@ pub trait ForwarderRaw {
         for multi_arg in token_payments.into_iter() {
             let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
 
-            all_payments.push(DctTokenPayment {
-                token_identifier,
-                token_nonce,
-                amount,
-                token_type: DctTokenType::Invalid, // ignored
-            });
+            all_payments.push(DctTokenPayment::new(token_identifier, token_nonce, amount));
         }
 
         self.send().transfer_multiple_dct_via_async_call(
@@ -191,7 +188,7 @@ pub trait ForwarderRaw {
     fn callback_data(&self) -> VecMapper<ManagedVec<Self::Api, ManagedBuffer>>;
 
     #[storage_mapper("callback_payments")]
-    fn callback_payments(&self) -> VecMapper<(TokenIdentifier, u64, BigUint)>;
+    fn callback_payments(&self) -> VecMapper<(MoaxOrDctTokenIdentifier, u64, BigUint)>;
 
     #[endpoint]
     fn clear_callback_info(&self) {
@@ -204,14 +201,16 @@ pub trait ForwarderRaw {
         if payments.is_empty() {
             let moax_value = self.call_value().moax_value();
             if moax_value > 0 {
-                let _ = self
-                    .callback_payments()
-                    .push(&(TokenIdentifier::moax(), 0, moax_value));
+                let _ = self.callback_payments().push(&(
+                    MoaxOrDctTokenIdentifier::moax(),
+                    0,
+                    moax_value,
+                ));
             }
         } else {
             for payment in payments.into_iter() {
                 let _ = self.callback_payments().push(&(
-                    payment.token_identifier,
+                    MoaxOrDctTokenIdentifier::dct(payment.token_identifier),
                     payment.token_nonce,
                     payment.amount,
                 ));
@@ -234,12 +233,12 @@ pub trait ForwarderRaw {
     fn call_execute_on_dest_context(
         &self,
         to: ManagedAddress,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
+        let payment = self.call_value().moax_value();
         let half_gas = self.blockchain().get_gas_left() / 2;
-        let result = Self::Api::send_api_impl().execute_on_dest_context_raw(
+        let result = self.send_raw().execute_on_dest_context_raw(
             half_gas,
             &to,
             &payment,
@@ -255,15 +254,15 @@ pub trait ForwarderRaw {
     fn call_execute_on_dest_context_twice(
         &self,
         to: ManagedAddress,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
+        let payment = self.call_value().moax_value();
         let one_third_gas = self.blockchain().get_gas_left() / 3;
         let half_payment = payment / 2u32;
         let arg_buffer = args.to_arg_buffer();
 
-        let result = Self::Api::send_api_impl().execute_on_dest_context_raw(
+        let result = self.send_raw().execute_on_dest_context_raw(
             one_third_gas,
             &to,
             &half_payment,
@@ -272,7 +271,7 @@ pub trait ForwarderRaw {
         );
         self.execute_on_dest_context_result(result);
 
-        let result = Self::Api::send_api_impl().execute_on_dest_context_raw(
+        let result = self.send_raw().execute_on_dest_context_raw(
             one_third_gas,
             &to,
             &half_payment,
@@ -283,19 +282,16 @@ pub trait ForwarderRaw {
     }
 
     #[endpoint]
-    #[payable("MOAX")]
     fn call_execute_on_dest_context_by_caller(
         &self,
         to: ManagedAddress,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
         let half_gas = self.blockchain().get_gas_left() / 2;
-        let result = Self::Api::send_api_impl().execute_on_dest_context_by_caller_raw(
+        let result = self.send_raw().execute_on_dest_context_by_caller_raw(
             half_gas,
             &to,
-            &payment,
             &endpoint_name,
             &args.to_arg_buffer(),
         );
@@ -308,12 +304,12 @@ pub trait ForwarderRaw {
     fn call_execute_on_same_context(
         &self,
         to: ManagedAddress,
-        #[payment] payment: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
+        let payment = self.call_value().moax_value();
         let half_gas = self.blockchain().get_gas_left() / 2;
-        let result = Self::Api::send_api_impl().execute_on_same_context_raw(
+        let result = self.send_raw().execute_on_same_context_raw(
             half_gas,
             &to,
             &payment,
@@ -332,7 +328,7 @@ pub trait ForwarderRaw {
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
         let half_gas = self.blockchain().get_gas_left() / 2;
-        let result = Self::Api::send_api_impl().execute_on_dest_context_readonly_raw(
+        let result = self.send_raw().execute_on_dest_context_readonly_raw(
             half_gas,
             &to,
             &endpoint_name,
@@ -354,7 +350,7 @@ pub trait ForwarderRaw {
         code: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) -> MultiValue2<ManagedAddress, ManagedVec<Self::Api, ManagedBuffer>> {
-        Self::Api::send_api_impl()
+        self.send_raw()
             .deploy_contract(
                 self.blockchain().get_gas_left(),
                 &BigUint::zero(),
@@ -371,7 +367,7 @@ pub trait ForwarderRaw {
         source_contract_address: ManagedAddress,
         arguments: MultiValueEncoded<ManagedBuffer>,
     ) -> ManagedAddress {
-        let (address, _) = Self::Api::send_api_impl().deploy_from_source_contract(
+        let (address, _) = self.send_raw().deploy_from_source_contract(
             self.blockchain().get_gas_left(),
             &BigUint::zero(),
             &source_contract_address,
@@ -389,7 +385,7 @@ pub trait ForwarderRaw {
         new_code: &ManagedBuffer,
         arguments: MultiValueEncoded<ManagedBuffer>,
     ) {
-        Self::Api::send_api_impl().upgrade_contract(
+        self.send_raw().upgrade_contract(
             child_sc_address,
             self.blockchain().get_gas_left(),
             &BigUint::zero(),
@@ -406,7 +402,7 @@ pub trait ForwarderRaw {
         source_contract_address: ManagedAddress,
         arguments: MultiValueEncoded<ManagedBuffer>,
     ) {
-        Self::Api::send_api_impl().upgrade_from_source_contract(
+        self.send_raw().upgrade_from_source_contract(
             &sc_address,
             self.blockchain().get_gas_left(),
             &BigUint::zero(),
