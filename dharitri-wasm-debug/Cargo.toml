@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-debug"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2018"
 
 authors = [
@@ -37,10 +37,10 @@ itertools = "0.10.3"
 denali-go-tests = []
 
 [dependencies.dharitri-wasm]
-version = "=0.5.0"
+version = "=0.5.1"
 path = "../dharitri-wasm"
 features = ["alloc", "num-bigint", "promises", "big-float"]
 
 [dependencies.denali]
-version = "0.1.6"
+version = "0.1.7"
 path = "../denali"
