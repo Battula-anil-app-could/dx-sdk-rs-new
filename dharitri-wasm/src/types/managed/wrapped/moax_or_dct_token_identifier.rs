@@ -1,6 +1,6 @@
 use crate::{
     abi::{TypeAbi, TypeName},
-    api::{Handle, ManagedTypeApi},
+    api::{HandleConstraints, ManagedTypeApi},
     derive::ManagedVecItem,
     formatter::{FormatByteReceiver, SCDisplay, SCLowerHex},
     types::{ManagedBuffer, ManagedOption, ManagedRef, ManagedType, TokenIdentifier},
@@ -44,15 +44,18 @@ impl<M: ManagedTypeApi> MoaxOrDctTokenIdentifier<M> {
 
     /// DCT instance, containing an DCT token identifier.
     #[inline]
-    pub fn dct(token_identifier: TokenIdentifier<M>) -> Self {
+    pub fn dct<TI>(token_identifier: TI) -> Self
+    where
+        TokenIdentifier<M>: From<TI>,
+    {
         Self {
-            data: ManagedOption::some(token_identifier),
+            data: ManagedOption::some(TokenIdentifier::from(token_identifier)),
         }
     }
 
-    pub fn from_opt_raw_handle(opt_handle: Option<Handle>) -> Self {
+    pub fn from_opt_raw_handle(opt_handle: Option<M::ManagedBufferHandle>) -> Self {
         match opt_handle {
-            Some(handle) => Self::dct(TokenIdentifier::from_raw_handle(handle)),
+            Some(handle) => Self::dct(TokenIdentifier::from_handle(handle)),
             None => Self::moax(),
         }
     }
@@ -205,6 +208,7 @@ impl<M> CodecFrom<TokenIdentifier<M>> for MoaxOrDctTokenIdentifier<M> where M: M
 impl<M> CodecFrom<&TokenIdentifier<M>> for MoaxOrDctTokenIdentifier<M> where M: ManagedTypeApi {}
 
 impl<M> CodecFrom<&[u8]> for MoaxOrDctTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M> CodecFrom<&str> for MoaxOrDctTokenIdentifier<M> where M: ManagedTypeApi {}
 
 impl<M: ManagedTypeApi> TypeAbi for MoaxOrDctTokenIdentifier<M> {
     fn type_name() -> TypeName {
@@ -215,8 +219,8 @@ impl<M: ManagedTypeApi> TypeAbi for MoaxOrDctTokenIdentifier<M> {
 impl<M: ManagedTypeApi> SCDisplay for MoaxOrDctTokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
         if let Some(token_identifier) = self.data.as_option() {
-            f.append_managed_buffer(&ManagedBuffer::from_raw_handle(
-                token_identifier.get_raw_handle(),
+            f.append_managed_buffer(&ManagedBuffer::from_handle(
+                token_identifier.get_handle().cast_or_signal_error::<M, _>(),
             ));
         } else {
             f.append_bytes(Self::MOAX_REPRESENTATION);
@@ -224,13 +228,13 @@ impl<M: ManagedTypeApi> SCDisplay for MoaxOrDctTokenIdentifier<M> {
     }
 }
 
-const MOAX_REPRESENTATION_HEX: &[u8] = b"45474C44";
+const MOAX_REPRESENTATION_HEX: &[u8] = b"4d4f4158";
 
 impl<M: ManagedTypeApi> SCLowerHex for MoaxOrDctTokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
         if let Some(token_identifier) = self.data.as_option() {
-            f.append_managed_buffer_lower_hex(&ManagedBuffer::from_raw_handle(
-                token_identifier.get_raw_handle(),
+            f.append_managed_buffer_lower_hex(&ManagedBuffer::from_handle(
+                token_identifier.get_handle().cast_or_signal_error::<M, _>(),
             ));
         } else {
             f.append_bytes(MOAX_REPRESENTATION_HEX);

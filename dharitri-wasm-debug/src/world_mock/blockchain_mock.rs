@@ -1,8 +1,8 @@
-use crate::{num_bigint::BigUint, tx_mock::BlockchainUpdate, ContractMap};
-use dharitri_wasm::types::heap::Address;
-use denali::{
-    interpret_trait::InterpreterContext, model::Scenario, value_interpreter::interpret_string,
+use crate::{
+    denali_system::model::Scenario, num_bigint::BigUint, tx_mock::BlockchainUpdate, ContractMap,
 };
+use dharitri_wasm::types::heap::Address;
+use denali::{interpret_trait::InterpreterContext, value_interpreter::interpret_string};
 use num_traits::Zero;
 use std::{collections::HashMap, path::PathBuf};
 

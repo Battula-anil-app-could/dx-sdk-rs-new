@@ -247,8 +247,18 @@ fn managed_vec_biguint_push_rs() {
 }
 
 #[test]
+fn managed_vec_array_push_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_vec_array_push.scen.json", world());
+}
+
+#[test]
 fn only_owner_rs() {
     dharitri_wasm_debug::denali_rs("denali/only_owner.scen.json", world());
+}
+
+#[test]
+fn only_user_account_rs() {
+    dharitri_wasm_debug::denali_rs("denali/only_user_account.scen.json", world());
 }
 
 // Will never run in denali-rs.
@@ -270,6 +280,11 @@ fn return_codes_rs() {
 #[test]
 fn sc_properties_rs() {
     dharitri_wasm_debug::denali_rs("denali/sc_properties.scen.json", world());
+}
+
+#[test]
+fn storage_raw_api_features_rs() {
+    dharitri_wasm_debug::denali_rs("denali/storage_raw_api_features.scen.json", world());
 }
 
 #[test]

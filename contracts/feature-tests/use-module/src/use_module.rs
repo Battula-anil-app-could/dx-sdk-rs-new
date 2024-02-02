@@ -33,6 +33,7 @@ pub trait UseModule:
     + dharitri_wasm_modules::governance::governance_events::GovernanceEventsModule
     + dharitri_wasm_modules::pause::PauseModule
     + dharitri_wasm_modules::staking::StakingModule
+    + dharitri_wasm_modules::token_merge::TokenMergeModule
     + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     /// Validates that the "featureName" feature is on.

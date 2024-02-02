@@ -1,6 +1,6 @@
 use crate::{num_bigint, tx_mock::TxPanic, DebugApi};
 use dharitri_wasm::{
-    api::{CallValueApi, CallValueApiImpl, Handle},
+    api::{CallValueApi, CallValueApiImpl},
     err_msg,
     types::DctTokenType,
 };
@@ -42,12 +42,12 @@ impl CallValueApiImpl for DebugApi {
     }
 
     #[inline]
-    fn load_moax_value(&self, dest: Handle) {
+    fn load_moax_value(&self, dest: Self::BigIntHandle) {
         self.set_big_uint(dest, self.input_ref().moax_value.clone())
     }
 
     #[inline]
-    fn load_single_dct_value(&self, dest: Handle) {
+    fn load_single_dct_value(&self, dest: Self::BigIntHandle) {
         self.fail_if_more_than_one_dct_transfer();
         if let Some(dct_value) = self.input_ref().dct_values.get(0) {
             self.set_big_uint(dest, dct_value.value.clone());
@@ -60,7 +60,7 @@ impl CallValueApiImpl for DebugApi {
     }
 
     #[inline]
-    fn token(&self) -> Option<Handle> {
+    fn token(&self) -> Option<Self::ManagedBufferHandle> {
         self.fail_if_more_than_one_dct_transfer();
 
         if self.dct_num_transfers() > 0 {
@@ -88,7 +88,7 @@ impl CallValueApiImpl for DebugApi {
     }
 
     #[inline]
-    fn dct_value_by_index(&self, index: usize) -> Handle {
+    fn dct_value_by_index(&self, index: usize) -> Self::BigIntHandle {
         if let Some(dct_value) = self.input_ref().dct_values.get(index) {
             self.insert_new_big_uint(dct_value.value.clone())
         } else {
@@ -100,7 +100,7 @@ impl CallValueApiImpl for DebugApi {
     }
 
     #[inline]
-    fn token_by_index(&self, index: usize) -> Handle {
+    fn token_by_index(&self, index: usize) -> Self::ManagedBufferHandle {
         if let Some(dct_value) = self.input_ref().dct_values.get(index) {
             self.insert_new_managed_buffer(dct_value.token_identifier.clone())
         } else {
