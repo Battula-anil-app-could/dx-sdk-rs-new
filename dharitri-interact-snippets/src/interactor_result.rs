@@ -53,7 +53,7 @@ impl<T: TopDecodeMulti> InteractorResult<T> {
         let event = self
             .find_log(LOG_IDENTIFIER_SC_DEPLOY)
             .expect("SCDeploy event log not found");
-        let topics = event.topics.as_ref().expect("Error");
+        let topics = event.topics.as_ref().expect("error anil");
         assert_eq!(topics.len(), 2, "`SCDeploy` is expected to have 2 topics");
         let address_raw = base64::decode(topics.get(0).unwrap()).unwrap();
         let address = Address::from_slice(address_raw.as_slice());

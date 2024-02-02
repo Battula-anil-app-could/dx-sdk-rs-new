@@ -10,6 +10,7 @@ use dharitri_wasm::{
 };
 use num_bigint::BigInt;
 use num_traits::{pow, sign::Signed, Zero};
+use std::convert::TryInto;
 
 use super::big_int_util::big_int_to_i64;
 
@@ -185,7 +186,7 @@ impl BigIntApi for DebugApi {
     fn bi_pow(&self, dest: Self::BigIntHandle, x: Self::BigIntHandle, y: Self::BigIntHandle) {
         let bi_x = self.bi_get(x);
         let bi_y = self.bi_get(y);
-        let exp = big_int_to_i64(&bi_y).unwrap() as usize;
+        let exp = big_int_to_i64(&bi_y).unwrap().try_into().unwrap();
         let result = pow(bi_x, exp);
         self.bi_overwrite(dest, result);
     }

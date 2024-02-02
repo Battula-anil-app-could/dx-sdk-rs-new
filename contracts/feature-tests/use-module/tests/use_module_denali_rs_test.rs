@@ -60,6 +60,16 @@ fn use_module_internal_rs() {
 }
 
 #[test]
+fn use_module_only_owner_rs() {
+    dharitri_wasm_debug::denali_rs("denali/use_module_only_owner.scen.json", world());
+}
+
+#[test]
+fn use_module_only_admin_rs() {
+    dharitri_wasm_debug::denali_rs("denali/use_module_only_admin.scen.json", world());
+}
+
+#[test]
 fn use_module_no_endpoint_rs() {
     dharitri_wasm_debug::denali_rs("denali/use_module_no_endpoint.scen.json", world());
 }

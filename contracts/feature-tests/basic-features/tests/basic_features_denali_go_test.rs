@@ -1,4 +1,9 @@
 #[test]
+fn big_int_from_i64_go() {
+    dharitri_wasm_debug::denali_go("denali/big_int_from_i64.scen.json");
+}
+
+#[test]
 fn big_int_to_i64_go() {
     dharitri_wasm_debug::denali_go("denali/big_int_to_i64.scen.json");
 }
@@ -9,8 +14,18 @@ fn big_num_conversions_go() {
 }
 
 #[test]
+fn big_uint_eq_u64_go() {
+    dharitri_wasm_debug::denali_go("denali/big_uint_eq_u64.scen.json");
+}
+
+#[test]
 fn big_uint_sqrt_go() {
     dharitri_wasm_debug::denali_go("denali/big_uint_sqrt.scen.json");
+}
+
+#[test]
+fn big_uint_from_u64_go() {
+    dharitri_wasm_debug::denali_go("denali/big_uint_from_u64.scen.json");
 }
 
 #[test]

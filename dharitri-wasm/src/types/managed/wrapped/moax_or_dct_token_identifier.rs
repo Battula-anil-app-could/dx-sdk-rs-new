@@ -228,7 +228,7 @@ impl<M: ManagedTypeApi> SCDisplay for MoaxOrDctTokenIdentifier<M> {
     }
 }
 
-const MOAX_REPRESENTATION_HEX: &[u8] = b"4d4f4158";
+const MOAX_REPRESENTATION_HEX: &[u8] = b"45474C44";
 
 impl<M: ManagedTypeApi> SCLowerHex for MoaxOrDctTokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {

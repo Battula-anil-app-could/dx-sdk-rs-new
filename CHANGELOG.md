@@ -4,7 +4,12 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.5.2, dharitri-codec 0.1.9, denali 0.1.8, dharitri-interact-snippets 0.0.1] - 2022-07-08
+## [dharitri-wasm 0.5.3] - 2022-07-19
+- `#[only_admin]` annotation
+- Safer BigUint/BigInt conversions
+- Added and published `price-aggregator` and `wmoax-swap` core contracts.
+
+## [dharitri-wasm 0.34.0, dharitri-codec 0.1.9, denali 0.1.8, dharitri-interact-snippets 0.0.1] - 2022-07-08
 - Major refactor of the denali-rs infrastructure.
 	- High-level Denali objects moved to dharitri-wasm-debug;
 	- The `denali` crate no longer depends on `dharitri-wasm-debug` (as originally intended and implemented);
@@ -89,7 +94,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
 - Git tag/commit info in ABI.
 
-## [dharitri-wasm 0.28.0, dharitri-codec 0.9.0, denali 0.12.0] - 2022-02-22
+## [dharitri-wasm 0.28.0, dharitri-codec 0.9.0, denali 0.1.9] - 2022-02-22
 - Major dharitri-codec refactor:
 	- Redesigned the error handling for single value encoding
 	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
@@ -321,7 +326,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
+## [dharitri-wasm 0.1.8, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -386,7 +391,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Minor features
 - SingleValueMapper redesigned for easier use. It no longer keeps the storage value cached.
 
-## [dharitri-wasm 0.12.0] - 2021-02-25
+## [dharitri-wasm 0.1.9] - 2021-02-25
 - Reorganized DCT and MOAX direct send api.
 - New async call syntax
 	- redesigned contract proxies
@@ -501,7 +506,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -599,7 +604,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro
