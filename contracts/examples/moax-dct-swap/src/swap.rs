@@ -9,7 +9,7 @@ const MOAX_NUM_DECIMALS: usize = 18;
 ///	1 MOAX = 1 wrapped MOAX and is interchangeable at all times.
 /// Also manages the supply of wrapped MOAX tokens.
 #[dharitri_wasm::contract]
-pub trait MoaxDctSwap {
+pub trait MoaxDctSwap: dharitri_wasm_modules::pause::PauseModule {
     #[init]
     fn init(&self) {}
 
@@ -73,7 +73,7 @@ pub trait MoaxDctSwap {
                 // return issue cost to the owner
                 // TODO: test that it works
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens, &[]);
+                    self.send().direct_moax(caller, &returned_tokens);
                 }
             },
         }
@@ -104,6 +104,8 @@ pub trait MoaxDctSwap {
     #[payable("MOAX")]
     #[endpoint(wrapMoax)]
     fn wrap_moax(&self) {
+        require!(self.not_paused(), "contract is paused");
+
         let payment_amount = self.call_value().moax_value();
         require!(payment_amount > 0u32, "Payment must be more than 0");
 
@@ -113,12 +115,14 @@ pub trait MoaxDctSwap {
 
         let caller = self.blockchain().get_caller();
         self.send()
-            .direct_dct(&caller, &wrapped_moax_token_id, 0, &payment_amount, &[]);
+            .direct_dct(&caller, &wrapped_moax_token_id, 0, &payment_amount);
     }
 
     #[payable("*")]
     #[endpoint(unwrapMoax)]
     fn unwrap_moax(&self) {
+        require!(self.not_paused(), "contract is paused");
+
         let (payment_token, payment_amount) = self.call_value().single_fungible_dct();
         let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
 
@@ -134,7 +138,7 @@ pub trait MoaxDctSwap {
 
         // 1 wrapped MOAX = 1 MOAX, so we pay back the same amount
         let caller = self.blockchain().get_caller();
-        self.send().direct_moax(&caller, &payment_amount, &[]);
+        self.send().direct_moax(&caller, &payment_amount);
     }
 
     #[view(getLockedMoaxBalance)]

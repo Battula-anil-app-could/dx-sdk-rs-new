@@ -1,12 +1,13 @@
 use core::marker::PhantomData;
 
+use dharitri_codec::Empty;
+
 use crate::{
     api::{
         BlockchainApi, BlockchainApiImpl, CallTypeApi, StorageReadApi,
         CHANGE_OWNER_BUILTIN_FUNC_NAME, DCT_LOCAL_BURN_FUNC_NAME, DCT_LOCAL_MINT_FUNC_NAME,
-        DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_ADD_URI_FUNC_NAME,
-        DCT_NFT_BURN_FUNC_NAME, DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME,
-        DCT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME, DCT_TRANSFER_FUNC_NAME,
+        DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_ADD_URI_FUNC_NAME, DCT_NFT_BURN_FUNC_NAME,
+        DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME,
     },
     dct::DCTSystemSmartContractProxy,
     types::{
@@ -60,27 +61,21 @@ where
 
     /// Sends MOAX to a given address, directly.
     /// Used especially for sending MOAX to regular accounts.
-    pub fn direct_moax<D>(&self, to: &ManagedAddress<A>, amount: &BigUint<A>, data: D)
-    where
-        D: Into<ManagedBuffer<A>>,
-    {
-        self.send_raw_wrapper().direct_moax(to, amount, data)
+    pub fn direct_moax(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
+        self.send_raw_wrapper().direct_moax(to, amount, Empty)
     }
 
     /// Sends either MOAX, DCT or NFT to the target address,
     /// depending on the token identifier and nonce
     #[inline]
-    pub fn direct<D>(
+    pub fn direct(
         &self,
         to: &ManagedAddress<A>,
         token: &MoaxOrDctTokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
-        data: D,
-    ) where
-        D: Into<ManagedBuffer<A>>,
-    {
-        self.direct_with_gas_limit(to, token, nonce, amount, 0, data, &[]);
+    ) {
+        self.direct_with_gas_limit(to, token, nonce, amount, 0, Empty, &[]);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -119,17 +114,14 @@ where
     }
 
     #[allow(clippy::too_many_arguments)]
-    pub fn direct_dct<D>(
+    pub fn direct_dct(
         &self,
         to: &ManagedAddress<A>,
         token_identifier: &TokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
-        data: D,
-    ) where
-        D: Into<ManagedBuffer<A>>,
-    {
-        self.direct_dct_with_gas_limit(to, token_identifier, nonce, amount, 0, data, &[]);
+    ) {
+        self.direct_dct_with_gas_limit(to, token_identifier, nonce, amount, 0, Empty, &[]);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -145,7 +137,7 @@ where
     ) where
         D: Into<ManagedBuffer<A>>,
     {
-        if let Some(dct_token_identifier) = token.as_dct_token_identifier() {
+        if let Some(dct_token_identifier) = token.as_dct_option() {
             self.direct_dct_with_gas_limit(
                 to,
                 &dct_token_identifier,
@@ -166,19 +158,16 @@ where
         }
     }
 
-    pub fn direct_multi<D>(
+    pub fn direct_multi(
         &self,
         to: &ManagedAddress<A>,
         payments: &ManagedVec<A, DctTokenPayment<A>>,
-        data: D,
-    ) where
-        D: Into<ManagedBuffer<A>>,
-    {
+    ) {
         let _ = self.send_raw_wrapper().multi_dct_transfer_execute(
             to,
             payments,
             0,
-            &data.into(),
+            &ManagedBuffer::new(),
             &ManagedArgBuffer::new(),
         );
     }
@@ -188,79 +177,28 @@ where
     /// So only use as the last call in your endpoint.  
     /// If you want to perform multiple transfers, use `self.send().transfer_multiple_dct_via_async_call()` instead.  
     /// Note that MOAX can NOT be transfered with this function.  
-    pub fn transfer_dct_via_async_call<D>(
+    pub fn transfer_dct_via_async_call(
         &self,
-        to: &ManagedAddress<A>,
-        token: &TokenIdentifier<A>,
+        to: ManagedAddress<A>,
+        token: TokenIdentifier<A>,
         nonce: u64,
-        amount: &BigUint<A>,
-        data: D,
-    ) -> !
-    where
-        D: Into<ManagedBuffer<A>>,
-    {
-        let data_buf: ManagedBuffer<A> = data.into();
-        let mut arg_buffer = ManagedArgBuffer::new();
-        arg_buffer.push_arg(token);
-        if nonce == 0 {
-            arg_buffer.push_arg(amount);
-            if !data_buf.is_empty() {
-                arg_buffer.push_arg_raw(data_buf);
-            }
-
-            self.send_raw_wrapper().async_call_raw(
-                to,
-                &BigUint::zero(),
-                &ManagedBuffer::new_from_bytes(DCT_TRANSFER_FUNC_NAME),
-                &arg_buffer,
-            )
-        } else {
-            arg_buffer.push_arg(nonce);
-            arg_buffer.push_arg(amount);
-            arg_buffer.push_arg(to);
-            if !data_buf.is_empty() {
-                arg_buffer.push_arg_raw(data_buf);
-            }
-
-            self.send_raw_wrapper().async_call_raw(
-                &BlockchainWrapper::<A>::new().get_sc_address(),
-                &BigUint::zero(),
-                &ManagedBuffer::new_from_bytes(DCT_NFT_TRANSFER_FUNC_NAME),
-                &arg_buffer,
-            )
-        }
+        amount: BigUint<A>,
+    ) -> ! {
+        ContractCall::<A, ()>::new(to, ManagedBuffer::new())
+            .add_dct_token_transfer(token, nonce, amount)
+            .async_call()
+            .call_and_exit_ignore_callback()
     }
 
-    pub fn transfer_multiple_dct_via_async_call<D>(
+    pub fn transfer_multiple_dct_via_async_call(
         &self,
-        to: &ManagedAddress<A>,
-        payments: &ManagedVec<A, DctTokenPayment<A>>,
-        data: D,
-    ) -> !
-    where
-        D: Into<ManagedBuffer<A>>,
-    {
-        let mut arg_buffer = ManagedArgBuffer::new();
-        arg_buffer.push_arg(to);
-        arg_buffer.push_arg(payments.len());
-
-        for payment in payments.into_iter() {
-            // TODO: check that `!token_identifier.is_moax()` or let Arwen throw the error?
-            arg_buffer.push_arg(payment.token_identifier);
-            arg_buffer.push_arg(payment.token_nonce);
-            arg_buffer.push_arg(payment.amount);
-        }
-        let data_buf: ManagedBuffer<A> = data.into();
-        if !data_buf.is_empty() {
-            arg_buffer.push_arg_raw(data_buf);
-        }
-
-        self.send_raw_wrapper().async_call_raw(
-            &BlockchainWrapper::<A>::new().get_sc_address(),
-            &BigUint::zero(),
-            &ManagedBuffer::new_from_bytes(DCT_MULTI_TRANSFER_FUNC_NAME),
-            &arg_buffer,
-        );
+        to: ManagedAddress<A>,
+        payments: ManagedVec<A, DctTokenPayment<A>>,
+    ) -> ! {
+        ContractCall::<A, ()>::new(to, ManagedBuffer::new())
+            .with_multi_token_transfer(payments)
+            .async_call()
+            .call_and_exit_ignore_callback()
     }
 
     /// Sends a synchronous call to change a smart contract address.
@@ -421,54 +359,6 @@ where
         )
     }
 
-    /// Creates an NFT on behalf of the caller. This will set the "creator" field to the caller's address
-    /// NOT activated on devnet/mainnet yet.
-    #[allow(clippy::too_many_arguments)]
-    pub fn dct_nft_create_as_caller<T: dharitri_codec::TopEncode>(
-        &self,
-        token: &TokenIdentifier<A>,
-        amount: &BigUint<A>,
-        name: &ManagedBuffer<A>,
-        royalties: &BigUint<A>,
-        hash: &ManagedBuffer<A>,
-        attributes: &T,
-        uris: &ManagedVec<A, ManagedBuffer<A>>,
-    ) -> u64 {
-        let mut arg_buffer = ManagedArgBuffer::<A>::new();
-        arg_buffer.push_arg(token);
-        arg_buffer.push_arg(amount);
-        arg_buffer.push_arg(name);
-        arg_buffer.push_arg(royalties);
-        arg_buffer.push_arg(hash);
-        arg_buffer.push_arg(attributes);
-
-        if uris.is_empty() {
-            // at least one URI is required, so we push an empty one
-            arg_buffer.push_arg(&dharitri_codec::Empty);
-        } else {
-            // The API function has the last argument as variadic,
-            // so we top-encode each and send as separate argument
-            for uri in uris {
-                arg_buffer.push_arg(uri);
-            }
-        }
-
-        let output = self
-            .send_raw_wrapper()
-            .execute_on_dest_context_by_caller_raw(
-                A::blockchain_api_impl().get_gas_left(),
-                &BlockchainWrapper::<A>::new().get_caller(),
-                &ManagedBuffer::new_from_bytes(DCT_NFT_CREATE_FUNC_NAME),
-                &arg_buffer,
-            );
-
-        if let Some(first_result_bytes) = output.try_get(0) {
-            first_result_bytes.parse_as_u64().unwrap_or_default()
-        } else {
-            0
-        }
-    }
-
     /// Sends the NFTs to the buyer address and calculates and sends the required royalties to the NFT creator.
     /// Returns the payment amount left after sending royalties.
     #[allow(clippy::too_many_arguments)]
@@ -505,7 +395,6 @@ where
                 payment_token,
                 payment_nonce,
                 &royalties_amount,
-                &[],
             );
 
             payment_amount.clone() - royalties_amount

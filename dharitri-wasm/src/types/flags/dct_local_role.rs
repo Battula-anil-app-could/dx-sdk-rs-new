@@ -15,7 +15,7 @@ static DCT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCTRoleNFTUpdateAttributes";
 static DCT_ROLE_TRANSFER: &[u8] = b"DCTTransferRole";
 
 #[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug, Copy,
+    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug, Copy,
 )]
 pub enum DctLocalRole {
     None,

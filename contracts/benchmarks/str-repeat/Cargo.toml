@@ -9,10 +9,10 @@ publish = false
 path = "src/str_repeat.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.4.9"
+version = "0.5.0"
 path = "../../../dharitri-wasm"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.4.9"
+version = "0.5.0"
 path = "../../../dharitri-wasm-debug"

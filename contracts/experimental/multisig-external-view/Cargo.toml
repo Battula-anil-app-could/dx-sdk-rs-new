@@ -9,11 +9,11 @@ publish = false
 path = "src/multisig_external_view.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.4.9"
+version = "0.5.0"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.4.9"
+version = "0.5.0"
 path = "../../../dharitri-wasm-debug"
 
 [dev-dependencies.adder]

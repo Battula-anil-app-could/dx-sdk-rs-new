@@ -29,13 +29,8 @@ pub trait PayableFeatures {
 
             self.send()
                 .dct_local_mint(&new_token_id, 0, &initial_supply);
-            self.send().transfer_dct_via_async_call(
-                &caller,
-                &new_token_id,
-                0,
-                &initial_supply,
-                &[],
-            );
+            self.send()
+                .transfer_dct_via_async_call(caller, new_token_id, 0, initial_supply);
         }
 
         new_token_id

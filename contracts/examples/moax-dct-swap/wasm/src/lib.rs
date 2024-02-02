@@ -10,8 +10,11 @@ dharitri_wasm_node::wasm_endpoints! {
         callBack
         getLockedMoaxBalance
         getWrappedMoaxTokenIdentifier
+        isPaused
         issueWrappedMoax
+        pause
         setLocalRoles
+        unpause
         unwrapMoax
         wrapMoax
     )

@@ -136,10 +136,9 @@ pub trait LocalDctAndDctNft {
         token_identifier: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
-        data: ManagedBuffer,
     ) {
         self.send()
-            .transfer_dct_via_async_call(&to, &token_identifier, nonce, &amount, data);
+            .transfer_dct_via_async_call(to, token_identifier, nonce, amount);
     }
 
     #[endpoint]
@@ -271,7 +270,7 @@ pub trait LocalDctAndDctNft {
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens, &[]);
+                    self.send().direct_moax(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -295,7 +294,7 @@ pub trait LocalDctAndDctNft {
                 let (token_identifier, returned_tokens) =
                     self.call_value().moax_or_single_fungible_dct();
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens, &[]);
+                    self.send().direct_moax(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
