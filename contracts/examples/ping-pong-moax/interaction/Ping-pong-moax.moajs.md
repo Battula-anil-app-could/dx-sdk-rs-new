@@ -4,9 +4,9 @@ First [set up a node terminal](../../../../tutorial/src/interaction/interaction-
 
 ```javascript
 let moajs = await require('@dharitrinetwork/moajs');
-let { erdSys, Moax, wallets: { alice, bob, carol, dan } } = await moajs.setupInteractive("local-testnet");
+let { moaSys, Moax, wallets: { alice, bob, carol, dan } } = await moajs.setupInteractive("local-testnet");
 
-let pingPong = await erdSys.loadWrapper("contracts/examples/ping-pong-moax");
+let pingPong = await moaSys.loadWrapper("contracts/examples/ping-pong-moax");
 
 await pingPong.sender(alice).gas(150_000_000).call.deploy(Moax(0.5), 2 * 60, null, Moax(1.5));
 

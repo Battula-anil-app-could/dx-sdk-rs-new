@@ -4,13 +4,13 @@ First [set up a node terminal](../../../../tutorial/src/interaction/interaction-
 
 ```javascript
 let moajs = await require('@dharitrinetwork/moajs');
-let { erdSys, Moax, wallets: { alice, bob, carol, dan, eve } } = await moajs.setupInteractive("local-testnet");
+let { moaSys, Moax, wallets: { alice, bob, carol, dan, eve } } = await moajs.setupInteractive("local-testnet");
 ```
 
 The `setupInteractive` call does several essential things:
 - synchronizes the default `NetworkConfig` with the chosen provider
 - loads the test wallets from the filesystem and *synchronizes their nonce*
-- loads `erdSys`, which contains the DCT system smart contract and builtin functions (required for DCT issuing, transfers)
+- loads `moaSys`, which contains the DCT system smart contract and builtin functions (required for DCT issuing, transfers)
 - returns `Moax` which can be used to build MOAX sums (eg. `Moax(0.5)`)
 
 ## Choosing a provider

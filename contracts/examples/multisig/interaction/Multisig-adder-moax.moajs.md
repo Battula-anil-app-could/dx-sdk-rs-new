@@ -6,9 +6,9 @@ First [set up a node terminal](../../../../tutorial/src/interaction/interaction-
 
 ```javascript
 let moajs = await require('@dharitrinetwork/moajs');
-let { erdSys, Moax, wallets: { alice, bob, carol, dan, eve }} = await moajs.setupInteractive("local-testnet");
+let { moaSys, Moax, wallets: { alice, bob, carol, dan, eve }} = await moajs.setupInteractive("local-testnet");
 
-let multisig = await erdSys.loadWrapper("contracts/examples/multisig");
+let multisig = await moaSys.loadWrapper("contracts/examples/multisig");
 
 // Deploy a multisig contract with a quorum of 3, but 4 possible signers: alice, bob, carol, dan
 await multisig.sender(alice).gas(150_000_000).call.deploy(3, alice, bob, carol, dan);
@@ -31,7 +31,7 @@ await multisig.query.getActionValidSignerCount(sendId);
 await multisig.call.performAction(sendId);
 
 // Let's use the adder contract as the nested contract which is to be managed by the multisig
-let adder = await erdSys.loadWrapper("contracts/examples/adder");
+let adder = await moaSys.loadWrapper("contracts/examples/adder");
 
 // Validate and pack the arguments into a FormattedCall object
 // Note: this doesn't deploy the contract (this will be done through the proposal below)

@@ -6,24 +6,24 @@ First [set up a node terminal](../../../../tutorial/src/interaction/interaction-
 
 ```javascript
 let moajs = await require('@dharitrinetwork/moajs');
-let { erdSys, Moax, wallets: { alice, bob, carol } } = await moajs.setupInteractive("local-testnet");
+let { moaSys, Moax, wallets: { alice, bob, carol } } = await moajs.setupInteractive("local-testnet");
 
 // Issue a new non-fungible token
-let MyToken = await erdSys.sender(alice).issueNonFungible("MyFungibleToken", "MYTOKEN");
+let MyToken = await moaSys.sender(alice).issueNonFungible("MyFungibleToken", "MYTOKEN");
 
 // Check the token's identifier
 console.log(MyToken.getTokenIdentifier());
 
-await erdSys.dctSystemContract.sender(alice).call.setSpecialRole(MyToken, alice, "DCTRoleNFTCreate");
+await moaSys.dctSystemContract.sender(alice).call.setSpecialRole(MyToken, alice, "DCTRoleNFTCreate");
 
 // Create 2 tokens
-let MyFirstNFT = await erdSys.sender(alice).dctNftCreate(MyToken, 1, "MyFirstNFT", 0, "", "", "https://example.com");
-let MySecondNFT = await erdSys.sender(alice).dctNftCreate(MyToken, 1, "MySecondNFT", 0, "", "", "https://example.com");
+let MyFirstNFT = await moaSys.sender(alice).dctNftCreate(MyToken, 1, "MyFirstNFT", 0, "", "", "https://example.com");
+let MySecondNFT = await moaSys.sender(alice).dctNftCreate(MyToken, 1, "MySecondNFT", 0, "", "", "https://example.com");
 
 // Send some tokens to bob and carol
-await erdSys.sender(alice).value(MyFirstNFT.one()).send(bob);
-await erdSys.sender(alice).value(MySecondNFT.one()).send(carol);
+await moaSys.sender(alice).value(MyFirstNFT.one()).send(bob);
+await moaSys.sender(alice).value(MySecondNFT.one()).send(carol);
 
-await erdSys.getBalanceList(alice, MyToken).then(moajs.printList);
-await erdSys.getBalanceList(bob, MyToken).then(moajs.printList);
+await moaSys.getBalanceList(alice, MyToken).then(moajs.printList);
+await moaSys.getBalanceList(bob, MyToken).then(moajs.printList);
 ```
