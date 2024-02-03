@@ -3,7 +3,7 @@
 dharitri_wasm::imports!();
 dharitri_wasm::derive_imports!();
 
-#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Clone, Copy, Debug)]
 pub enum Status {
     FundingPeriod,
     Successful,
@@ -13,7 +13,7 @@ pub enum Status {
 #[dharitri_wasm::contract]
 pub trait Crowdfunding {
     #[init]
-    fn init(&self, target: BigUint, deadline: u64, token_identifier: MoaxOrDctTokenIdentifier) {
+    fn init(&self, target: BigUint, deadline: u64, token_identifier: TokenIdentifier) {
         require!(target > 0, "Target must be more than 0");
         self.target().set(target);
 
@@ -23,14 +23,17 @@ pub trait Crowdfunding {
         );
         self.deadline().set(deadline);
 
-        require!(token_identifier.is_valid(), "Invalid token provided");
+        require!(
+            token_identifier.is_moax() || token_identifier.is_valid_dct_identifier(),
+            "Invalid token provided"
+        );
         self.cf_token_identifier().set(token_identifier);
     }
 
     #[endpoint]
     #[payable("*")]
     fn fund(&self) {
-        let (token, _, payment) = self.call_value().moax_or_single_dct().into_tuple();
+        let (payment, token) = self.call_value().payment_token_pair();
 
         require!(
             self.status() == Status::FundingPeriod,
@@ -75,7 +78,7 @@ pub trait Crowdfunding {
                 let sc_balance = self.get_current_funds();
 
                 self.send()
-                    .direct(&caller, &token_identifier, 0, &sc_balance);
+                    .direct(&caller, &token_identifier, 0, &sc_balance, &[]);
             },
             Status::Failed => {
                 let caller = self.blockchain().get_caller();
@@ -85,7 +88,8 @@ pub trait Crowdfunding {
                     let token_identifier = self.cf_token_identifier().get();
 
                     self.deposit(&caller).clear();
-                    self.send().direct(&caller, &token_identifier, 0, &deposit);
+                    self.send()
+                        .direct(&caller, &token_identifier, 0, &deposit, &[]);
                 }
             },
         }
@@ -113,5 +117,5 @@ pub trait Crowdfunding {
 
     #[view(getCrowdfundingTokenIdentifier)]
     #[storage_mapper("tokenIdentifier")]
-    fn cf_token_identifier(&self) -> SingleValueMapper<MoaxOrDctTokenIdentifier>;
+    fn cf_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
 }

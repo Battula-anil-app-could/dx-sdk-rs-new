@@ -442,7 +442,7 @@
             },
             "expect": {
                 "out": [
-                    "nested:str:TICKER-333333|u64:0|biguint:1000"
+                    "u8:0|nested:str:TICKER-333333|u64:0|biguint:1000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -490,7 +490,7 @@
             },
             "expect": {
                 "out": [
-                    "nested:str:TICKER-333333|u64:0|biguint:2000"
+                    "u8:0|nested:str:TICKER-333333|u64:0|biguint:2000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -677,7 +677,7 @@
             "expect": {
                 "out": [],
                 "status": "4",
-                "message": "str:incorrect number of DCT transfers",
+                "message": "str:Invalid payment token",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"

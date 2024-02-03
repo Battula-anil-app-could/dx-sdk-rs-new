@@ -44,11 +44,6 @@ fn payable_moax_4_go() {
 }
 
 #[test]
-fn payable_multi_array_go() {
-    dharitri_wasm_debug::denali_go("denali/payable_multi_array.scen.json");
-}
-
-#[test]
 fn payable_token_1_go() {
     dharitri_wasm_debug::denali_go("denali/payable_token_1.scen.json");
 }

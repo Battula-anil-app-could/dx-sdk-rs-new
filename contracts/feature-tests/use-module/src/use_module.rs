@@ -5,8 +5,6 @@ mod internal_mod_b;
 mod internal_mod_c;
 mod internal_mod_d;
 mod internal_mod_init;
-mod only_admin_derived_mod;
-mod only_admin_mod;
 mod only_owner_derived_mod;
 mod only_owner_mod;
 
@@ -25,21 +23,15 @@ pub trait UseModule:
     + internal_mod_b::InternalModuleB
     + internal_mod_c::InternalModuleC
     + internal_mod_init::InternalModuleInit
-    + only_owner_mod::OnlyOwnerTestModule
-    + only_owner_derived_mod::OnlyOwnerDerivedTestModule
-    + only_admin_mod::OnlyAdminTestModule
-    + only_admin_derived_mod::OnlyAdminDerivedTestModule
+    + only_owner_mod::OnlyOwnerModule
+    + only_owner_derived_mod::OnlyOwnerDerivedModule
     + dharitri_wasm_modules::dns::DnsModule
     + dharitri_wasm_modules::dct::DctModule
     + dharitri_wasm_modules::features::FeaturesModule
     + dharitri_wasm_modules::governance::GovernanceModule
     + dharitri_wasm_modules::governance::governance_configurable::GovernanceConfigurablePropertiesModule
-    + dharitri_wasm_modules::governance::governance_events::GovernanceEventsModule
     + dharitri_wasm_modules::pause::PauseModule
-    + dharitri_wasm_modules::staking::StakingModule
-    + dharitri_wasm_modules::token_merge::TokenMergeModule
     + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
-    + dharitri_wasm_modules::only_admin::OnlyAdminModule
 {
     /// Validates that the "featureName" feature is on.
     /// Uses the `feature_guard!` macro.

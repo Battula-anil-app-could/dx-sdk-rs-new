@@ -7,11 +7,11 @@ use dharitri_codec::{
 
 use super::{unordered_set_mapper, StorageMapper, UnorderedSetMapper};
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
+    abi::{TypeAbi, TypeName},
     api::StorageMapperApi,
     storage::{storage_get, storage_set, StorageKey},
     storage_clear,
-    types::{ManagedType, MultiValueEncoded},
+    types::{ManagedAddress, ManagedType, MultiValueEncoded},
 };
 
 const VALUE_SUFIX: &[u8] = b"_value";
@@ -241,31 +241,13 @@ where
 impl<SA, K, V> TypeAbi for BiDiMapper<SA, K, V>
 where
     SA: StorageMapperApi,
-    K: TopEncode
-        + TopDecode
-        + NestedEncode
-        + NestedDecode
-        + 'static
-        + Default
-        + PartialEq
-        + TypeAbi,
-    V: TopEncode
-        + TopDecode
-        + NestedEncode
-        + NestedDecode
-        + 'static
-        + Default
-        + PartialEq
-        + TypeAbi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+    V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
 {
     fn type_name() -> TypeName {
-        MultiValueEncoded::<SA, MultiValue2<K, V>>::type_name()
+        crate::abi::type_name_variadic::<ManagedAddress<SA>>()
     }
 
-    fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {
-        K::provide_type_descriptions(accumulator);
-        V::provide_type_descriptions(accumulator);
-    }
     fn is_variadic() -> bool {
         true
     }

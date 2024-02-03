@@ -1,9 +1,4 @@
 #[test]
-fn big_int_from_i64_go() {
-    dharitri_wasm_debug::denali_go("denali/big_int_from_i64.scen.json");
-}
-
-#[test]
 fn big_int_to_i64_go() {
     dharitri_wasm_debug::denali_go("denali/big_int_to_i64.scen.json");
 }
@@ -14,18 +9,8 @@ fn big_num_conversions_go() {
 }
 
 #[test]
-fn big_uint_eq_u64_go() {
-    dharitri_wasm_debug::denali_go("denali/big_uint_eq_u64.scen.json");
-}
-
-#[test]
 fn big_uint_sqrt_go() {
     dharitri_wasm_debug::denali_go("denali/big_uint_sqrt.scen.json");
-}
-
-#[test]
-fn big_uint_from_u64_go() {
-    dharitri_wasm_debug::denali_go("denali/big_uint_from_u64.scen.json");
 }
 
 #[test]
@@ -49,11 +34,6 @@ fn count_ones_go() {
 }
 
 #[test]
-fn crypto_elliptic_curves_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_elliptic_curves.scen.json");
-}
-
-#[test]
 fn crypto_keccak256_go() {
     dharitri_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
 }
@@ -64,28 +44,13 @@ fn crypto_keccak256_legacy_managed_go() {
 }
 
 #[test]
-fn crypto_ripemd160_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_ripemd160.scen.json");
-}
-
-#[test]
 fn crypto_sha256_go() {
     dharitri_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
 }
 
 #[test]
-fn crypto_verify_bls_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_verify_bls.scen.json");
-}
-
-#[test]
-fn crypto_verify_ed25519_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_verify_ed25519.scen.json");
-}
-
-#[test]
-fn crypto_verify_secp256k1_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_verify_secp256k1.scen.json");
+fn crypto_sha256_legacy_managed_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_sha256_legacy_managed.scen.json");
 }
 
 #[test]
@@ -239,18 +204,8 @@ fn managed_vec_biguint_push_go() {
 }
 
 #[test]
-fn managed_vec_array_push_go() {
-    dharitri_wasm_debug::denali_go("denali/managed_vec_array_push.scen.json");
-}
-
-#[test]
 fn only_owner_go() {
     dharitri_wasm_debug::denali_go("denali/only_owner.scen.json");
-}
-
-#[test]
-fn only_user_account_go() {
-    dharitri_wasm_debug::denali_go("denali/only_user_account.scen.json");
 }
 
 #[test]
@@ -271,11 +226,6 @@ fn return_codes_go() {
 #[test]
 fn sc_properties_go() {
     dharitri_wasm_debug::denali_go("denali/sc_properties.scen.json");
-}
-
-#[test]
-fn storage_raw_api_features_go() {
-    dharitri_wasm_debug::denali_go("denali/storage_raw_api_features.scen.json");
 }
 
 #[test]
@@ -421,9 +371,4 @@ fn storage_usize_bad_go() {
 #[test]
 fn struct_eq_go() {
     dharitri_wasm_debug::denali_go("denali/struct_eq.scen.json");
-}
-
-#[test]
-fn storage_mapper_unique_id_go() {
-    dharitri_wasm_debug::denali_go("denali/storage_mapper_unique_id.scen.json");
 }

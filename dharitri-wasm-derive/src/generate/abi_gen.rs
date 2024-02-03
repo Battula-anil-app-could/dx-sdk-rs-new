@@ -1,14 +1,12 @@
 use super::util::*;
 use crate::model::{
-    AutoImpl, ContractTrait, EndpointLocationMetadata, EndpointMutabilityMetadata, Method,
-    MethodImpl, PublicRole,
+    ContractTrait, EndpointLocationMetadata, EndpointMutabilityMetadata, Method, PublicRole,
 };
 
 fn generate_endpoint_snippet(
     m: &Method,
     endpoint_name: &str,
     only_owner: bool,
-    only_admin: bool,
     mutability: EndpointMutabilityMetadata,
     location: EndpointLocationMetadata,
 ) -> proc_macro2::TokenStream {
@@ -54,7 +52,6 @@ fn generate_endpoint_snippet(
             docs: &[ #(#endpoint_docs),* ],
             name: #endpoint_name,
             only_owner: #only_owner,
-            only_admin: #only_admin,
             mutability: #mutability_tokens,
             location: #location_tokens,
             payable_in_tokens: &[ #(#payable_in_tokens),* ],
@@ -76,7 +73,6 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     m,
                     "init",
                     false,
-                    false,
                     EndpointMutabilityMetadata::Mutable,
                     EndpointLocationMetadata::MainContract,
                 );
@@ -91,7 +87,6 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     m,
                     &endpoint_name_str,
                     endpoint_metadata.only_owner,
-                    endpoint_metadata.only_admin,
                     endpoint_metadata.mutability.clone(),
                     endpoint_metadata.location.clone(),
                 );
@@ -101,52 +96,6 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                 })
             },
             _ => None,
-        })
-        .collect()
-}
-
-fn generate_event_snippet(m: &Method, event_name: &str) -> proc_macro2::TokenStream {
-    let event_docs = &m.docs;
-    let input_snippets: Vec<proc_macro2::TokenStream> = m
-        .method_args
-        .iter()
-        .map(|arg| {
-            let mut arg_type = arg.ty.clone();
-            let indexed = arg.metadata.event_topic;
-            clear_all_type_lifetimes(&mut arg_type);
-            let arg_name = &arg.pat;
-            let arg_name_str = quote! { #arg_name }.to_string();
-            quote! {
-                event_abi.add_input::<#arg_type>(#arg_name_str, #indexed);
-                contract_abi.add_type_descriptions::<#arg_type>();
-            }
-        })
-        .collect();
-
-    quote! {
-        let mut event_abi = dharitri_wasm::abi::EventAbi{
-            docs: &[ #(#event_docs),* ],
-            identifier: #event_name,
-            inputs: dharitri_wasm::types::heap::Vec::new(),
-        };
-        #(#input_snippets)*
-    }
-}
-
-fn generate_event_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
-    contract
-        .methods
-        .iter()
-        .filter_map(|m| {
-            if let MethodImpl::Generated(AutoImpl::Event { identifier }) = &m.implementation {
-                let event_def = generate_event_snippet(m, identifier);
-                Some(quote! {
-                    #event_def
-                    contract_abi.events.push(event_abi);
-                })
-            } else {
-                None
-            }
         })
         .collect()
 }
@@ -180,7 +129,6 @@ fn generate_abi_method_body(
     let contract_docs = &contract.docs;
     let contract_name = &contract.trait_name.to_string();
     let endpoint_snippets = generate_endpoint_snippets(contract);
-    let event_snippets = generate_event_snippets(contract);
     let has_callbacks = has_callback(contract);
     let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
         generate_supertrait_snippets(contract)
@@ -202,12 +150,10 @@ fn generate_abi_method_body(
             name: #contract_name,
             constructors: dharitri_wasm::types::heap::Vec::new(),
             endpoints: dharitri_wasm::types::heap::Vec::new(),
-            events: dharitri_wasm::types::heap::Vec::new(),
             has_callback: #has_callbacks,
             type_descriptions: <dharitri_wasm::abi::TypeDescriptionContainerImpl as dharitri_wasm::abi::TypeDescriptionContainer>::new(),
         };
         #(#endpoint_snippets)*
-        #(#event_snippets)*
         #(#supertrait_snippets)*
         contract_abi
     }

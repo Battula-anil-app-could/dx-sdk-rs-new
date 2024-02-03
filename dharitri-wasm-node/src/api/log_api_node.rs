@@ -1,6 +1,6 @@
 use super::VmApiImpl;
 use dharitri_wasm::{
-    api::{LogApi, LogApiImpl},
+    api::{Handle, LogApi, LogApiImpl},
     types::heap::ArgBuffer,
 };
 
@@ -15,6 +15,7 @@ extern "C" {
         dataLength: i32,
     );
 
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedWriteLog(topicsHandle: i32, dataHandle: i32);
 }
 
@@ -60,11 +61,19 @@ impl LogApiImpl for VmApiImpl {
         }
     }
 
-    fn managed_write_log(
-        &self,
-        topics_handle: Self::ManagedBufferHandle,
-        data_handle: Self::ManagedBufferHandle,
-    ) {
+    #[cfg(feature = "ei-unmanaged")]
+    fn managed_write_log(&self, topics_handle: Handle, data_handle: Handle) {
+        use dharitri_wasm::types::{
+            managed_vec_of_buffers_to_arg_buffer, ManagedBuffer, ManagedType, ManagedVec,
+        };
+        let topics = ManagedVec::<Self, ManagedBuffer<Self>>::from_raw_handle(topics_handle);
+        let topics_arg_buffer = managed_vec_of_buffers_to_arg_buffer(topics);
+        let data = ManagedBuffer::<Self>::from_raw_handle(data_handle);
+        self.write_event_log(&topics_arg_buffer, data.to_boxed_bytes().as_slice());
+    }
+
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn managed_write_log(&self, topics_handle: Handle, data_handle: Handle) {
         unsafe {
             managedWriteLog(topics_handle, data_handle);
         }

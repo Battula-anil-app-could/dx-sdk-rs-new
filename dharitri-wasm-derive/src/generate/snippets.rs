@@ -85,7 +85,7 @@ pub fn proxy_object_def() -> proc_macro2::TokenStream {
         where
             A: dharitri_wasm::api::VMApi + 'static,
         {
-            pub address: dharitri_wasm::types::ManagedOption<A, dharitri_wasm::types::ManagedAddress<A>>,
+            pub address: core::option::Option<dharitri_wasm::types::ManagedAddress<A>>,
         }
 
         impl<A> dharitri_wasm::contract_base::ProxyObjBase for Proxy<A>
@@ -96,26 +96,27 @@ pub fn proxy_object_def() -> proc_macro2::TokenStream {
 
             fn new_proxy_obj() -> Self {
                 Proxy {
-                    address: dharitri_wasm::types::ManagedOption::none(),
+                    address: core::option::Option::None,
                 }
             }
 
-            fn contract(mut self, address: dharitri_wasm::types::ManagedAddress<Self::Api>) -> Self {
-                self.address = dharitri_wasm::types::ManagedOption::some(address);
+            fn contract(mut self, address: ManagedAddress<Self::Api>) -> Self {
+                self.address = core::option::Option::Some(address);
                 self
             }
 
-            fn extract_opt_address(
-                &mut self,
-            ) -> dharitri_wasm::types::ManagedOption<
-                Self::Api,
-                dharitri_wasm::types::ManagedAddress<Self::Api>,
-            > {
-                core::mem::replace(&mut self.address, dharitri_wasm::types::ManagedOption::none())
+            fn extract_address(&mut self) -> ManagedAddress<Self::Api> {
+                let address = core::mem::replace(&mut self.address, core::option::Option::None);
+                address.unwrap_or_else(|| {
+                    dharitri_wasm::api::ErrorApiImpl::signal_error(
+                        &A::error_api_impl(),
+                        dharitri_wasm::err_msg::RECIPIENT_ADDRESS_NOT_SET,
+                    )
+                })
             }
 
-            fn extract_address(&mut self) -> dharitri_wasm::types::ManagedAddress<Self::Api> {
-                self.extract_opt_address().unwrap_or_sc_panic(dharitri_wasm::err_msg::RECIPIENT_ADDRESS_NOT_SET)
+            fn extract_opt_address(&mut self) -> core::option::Option<ManagedAddress<Self::Api>> {
+                core::mem::replace(&mut self.address, core::option::Option::None)
             }
         }
     }

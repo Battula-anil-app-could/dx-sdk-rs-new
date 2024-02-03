@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct CheckLogRaw {
-    pub address: CheckBytesValueRaw,
+    pub address: ValueSubTree,
 
     pub endpoint: CheckBytesValueRaw,
 

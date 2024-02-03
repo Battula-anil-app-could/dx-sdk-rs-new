@@ -8,9 +8,6 @@ use dharitri_codec::{
     TopEncodeMultiOutput,
 };
 
-const SAME_SHARD_SUCCESS_CODE: u32 = 0;
-const CROSS_SHARD_SUCCESS_CODE: u32 = 0x00006f6b; // "ok"
-
 pub struct ManagedAsyncCallError<M>
 where
     M: ManagedTypeApi,
@@ -53,7 +50,7 @@ where
         H: DecodeErrorHandler,
     {
         let err_code: u32 = input.next_value(h)?;
-        if err_code == SAME_SHARD_SUCCESS_CODE || err_code == CROSS_SHARD_SUCCESS_CODE {
+        if err_code == 0 {
             Ok(Self::Ok(T::multi_decode_or_handle_err(input, h)?))
         } else {
             let err_msg = if input.has_next() {

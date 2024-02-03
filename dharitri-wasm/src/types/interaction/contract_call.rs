@@ -1,16 +1,16 @@
-use dharitri_codec::{TopDecodeMulti, TopEncodeMulti};
+use dharitri_codec::{CodecFrom, TopEncodeMulti};
 
 use crate::{
     api::{
-        BlockchainApiImpl, CallTypeApi, DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME,
-        DCT_TRANSFER_FUNC_NAME,
+        BlockchainApiImpl, CallTypeApi, ErrorApiImpl, SendApiImpl, DCT_MULTI_TRANSFER_FUNC_NAME,
+        DCT_NFT_TRANSFER_FUNC_NAME, DCT_TRANSFER_FUNC_NAME,
     },
-    contract_base::{BlockchainWrapper, ExitCodecErrorHandler, SendRawWrapper},
+    contract_base::{BlockchainWrapper, ExitCodecErrorHandler},
     err_msg,
     io::{ArgErrorHandler, ArgId, ManagedResultArgLoader},
     types::{
-        AsyncCall, BigUint, MoaxOrDctTokenIdentifier, DctTokenPayment, ManagedAddress,
-        ManagedArgBuffer, ManagedBuffer, ManagedVec, TokenIdentifier,
+        AsyncCall, BigUint, DctTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
+        ManagedVec, TokenIdentifier,
     },
 };
 use core::marker::PhantomData;
@@ -72,7 +72,7 @@ where
         endpoint_name: ManagedBuffer<SA>,
         payments: ManagedVec<SA, DctTokenPayment<SA>>,
     ) -> Self {
-        let arg_buffer = ManagedArgBuffer::new();
+        let arg_buffer = ManagedArgBuffer::new_empty();
         let moax_payment = BigUint::zero();
         let success_callback = b"";
         let error_callback = b"";
@@ -91,7 +91,7 @@ where
         }
     }
 
-    pub fn add_dct_token_transfer(
+    pub fn add_token_transfer(
         mut self,
         payment_token: TokenIdentifier<SA>,
         payment_nonce: u64,
@@ -105,23 +105,13 @@ where
         self
     }
 
-    pub fn with_moax_or_single_dct_token_transfer(
-        self,
-        payment_token: MoaxOrDctTokenIdentifier<SA>,
-        payment_nonce: u64,
-        payment_amount: BigUint<SA>,
-    ) -> Self {
-        if payment_token.is_moax() {
-            self.with_moax_transfer(payment_amount)
-        } else {
-            self.add_dct_token_transfer(payment_token.unwrap_dct(), payment_nonce, payment_amount)
-        }
-    }
-
     pub fn with_moax_transfer(mut self, moax_amount: BigUint<SA>) -> Self {
-        self.payments.clear();
-        self.moax_payment = moax_amount;
-
+        self.payments
+            .overwrite_with_single_item(DctTokenPayment::new(
+                TokenIdentifier::moax(),
+                0,
+                moax_amount,
+            ));
         self
     }
 
@@ -189,7 +179,7 @@ where
 
     /// If this is an DCT call, it converts it to a regular call to DCTTransfer.
     /// Async calls require this step, but not `transfer_dct_execute`.
-    pub fn convert_to_dct_transfer_call(self) -> Self {
+    fn convert_to_dct_transfer_call(self) -> Self {
         match self.payments.len() {
             0 => self,
             1 => self.convert_to_single_transfer_dct_call(),
@@ -197,13 +187,17 @@ where
         }
     }
 
-    fn convert_to_single_transfer_dct_call(self) -> Self {
+    fn convert_to_single_transfer_dct_call(mut self) -> Self {
         if let Some(payment) = self.payments.try_get(0) {
-            if payment.token_nonce == 0 {
+            if payment.token_identifier.is_moax() {
+                self.moax_payment = payment.amount;
+                self.payments.clear();
+                self
+            } else if payment.token_nonce == 0 {
                 let no_payments = self.no_payments();
 
                 // fungible DCT
-                let mut new_arg_buffer = ManagedArgBuffer::new();
+                let mut new_arg_buffer = ManagedArgBuffer::new_empty();
                 new_arg_buffer.push_arg(&payment.token_identifier);
                 new_arg_buffer.push_arg(&payment.amount);
                 if !self.endpoint_name.is_empty() {
@@ -235,7 +229,7 @@ where
                 // arg1 - nonce
                 // arg2 - quantity to transfer
                 // arg3 - destination address
-                let mut new_arg_buffer = ManagedArgBuffer::new();
+                let mut new_arg_buffer = ManagedArgBuffer::new_empty();
                 new_arg_buffer.push_arg(&payment.token_identifier);
                 new_arg_buffer.push_arg(&payment.token_nonce);
                 new_arg_buffer.push_arg(&payment.amount);
@@ -271,11 +265,12 @@ where
     fn convert_to_multi_transfer_dct_call(self) -> Self {
         let payments = self.no_payments();
 
-        let mut new_arg_buffer = ManagedArgBuffer::new();
+        let mut new_arg_buffer = ManagedArgBuffer::new_empty();
         new_arg_buffer.push_arg(self.to);
         new_arg_buffer.push_arg(self.payments.len());
 
         for payment in self.payments.into_iter() {
+            // TODO: check that `!token_identifier.is_moax()` or let Arwen throw the error?
             new_arg_buffer.push_arg(payment.token_identifier);
             new_arg_buffer.push_arg(payment.token_nonce);
             new_arg_buffer.push_arg(payment.amount);
@@ -327,7 +322,7 @@ where
     #[cfg(feature = "promises")]
     pub fn register_promise(mut self) {
         self = self.convert_to_dct_transfer_call();
-        SendRawWrapper::<SA>::new().create_async_call_raw(
+        SA::send_api_impl().create_async_call_raw(
             &self.to,
             &self.moax_payment,
             &self.endpoint_name,
@@ -349,7 +344,7 @@ where
         raw_result: ManagedVec<SA, ManagedBuffer<SA>>,
     ) -> RequestedResult
     where
-        RequestedResult: TopDecodeMulti,
+        RequestedResult: CodecFrom<OriginalResult>,
     {
         let mut loader = ManagedResultArgLoader::new(raw_result);
         let arg_id = ArgId::from(&b"sync result"[..]);
@@ -362,10 +357,10 @@ where
     /// Only works if the target contract is in the same shard.
     pub fn execute_on_dest_context<RequestedResult>(mut self) -> RequestedResult
     where
-        RequestedResult: TopDecodeMulti,
+        RequestedResult: CodecFrom<OriginalResult>,
     {
         self = self.convert_to_dct_transfer_call();
-        let raw_result = SendRawWrapper::<SA>::new().execute_on_dest_context_raw(
+        let raw_result = SA::send_api_impl().execute_on_dest_context_raw(
             self.resolve_gas_limit(),
             &self.to,
             &self.moax_payment,
@@ -373,42 +368,24 @@ where
             &self.arg_buffer,
         );
 
-        SendRawWrapper::<SA>::new().clean_return_data();
+        SA::send_api_impl().clean_return_data();
 
         Self::decode_result(raw_result)
     }
 
     pub fn execute_on_dest_context_readonly<RequestedResult>(mut self) -> RequestedResult
     where
-        RequestedResult: TopDecodeMulti,
+        RequestedResult: CodecFrom<OriginalResult>,
     {
         self = self.convert_to_dct_transfer_call();
-        let raw_result = SendRawWrapper::<SA>::new().execute_on_dest_context_readonly_raw(
+        let raw_result = SA::send_api_impl().execute_on_dest_context_readonly_raw(
             self.resolve_gas_limit(),
             &self.to,
             &self.endpoint_name,
             &self.arg_buffer,
         );
 
-        SendRawWrapper::<SA>::new().clean_return_data();
-
-        Self::decode_result(raw_result)
-    }
-
-    pub fn execute_on_same_context<RequestedResult>(mut self) -> RequestedResult
-    where
-        RequestedResult: TopDecodeMulti,
-    {
-        self = self.convert_to_dct_transfer_call();
-        let raw_result = SendRawWrapper::<SA>::new().execute_on_same_context_raw(
-            self.resolve_gas_limit(),
-            &self.to,
-            &self.moax_payment,
-            &self.endpoint_name,
-            &self.arg_buffer,
-        );
-
-        SendRawWrapper::<SA>::new().clean_return_data();
+        SA::send_api_impl().clean_return_data();
 
         Self::decode_result(raw_result)
     }
@@ -425,7 +402,7 @@ where
     /// Only works if the target contract is in the same shard.
     pub fn execute_on_dest_context_ignore_result(mut self) {
         self = self.convert_to_dct_transfer_call();
-        let _ = SendRawWrapper::<SA>::new().execute_on_dest_context_raw(
+        let _ = SA::send_api_impl().execute_on_dest_context_raw(
             self.resolve_gas_limit(),
             &self.to,
             &self.moax_payment,
@@ -433,7 +410,20 @@ where
             &self.arg_buffer,
         );
 
-        SendRawWrapper::<SA>::new().clean_return_data();
+        SA::send_api_impl().clean_return_data();
+    }
+
+    pub fn execute_on_same_context(mut self) {
+        self = self.convert_to_dct_transfer_call();
+        let _ = SA::send_api_impl().execute_on_same_context_raw(
+            self.resolve_gas_limit(),
+            &self.to,
+            &self.moax_payment,
+            &self.endpoint_name,
+            &self.arg_buffer,
+        );
+
+        SA::send_api_impl().clean_return_data();
     }
 
     fn resolve_gas_limit_with_leftover(&self) -> u64 {
@@ -463,9 +453,9 @@ where
     fn no_payment_transfer_execute(&self) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
 
-        let _ = SendRawWrapper::<SA>::new().direct_moax_execute(
+        let _ = SA::send_api_impl().direct_moax_execute(
             &self.to,
-            &self.moax_payment,
+            &BigUint::zero(),
             gas_limit,
             &self.endpoint_name,
             &self.arg_buffer,
@@ -476,17 +466,17 @@ where
         let gas_limit = self.resolve_gas_limit_with_leftover();
         let payment = &self.payments.try_get(0).unwrap();
 
-        if self.moax_payment > 0 {
-            let _ = SendRawWrapper::<SA>::new().direct_moax_execute(
+        if payment.token_identifier.is_moax() {
+            let _ = SA::send_api_impl().direct_moax_execute(
                 &self.to,
-                &self.moax_payment,
+                &payment.amount,
                 gas_limit,
                 &self.endpoint_name,
                 &self.arg_buffer,
             );
         } else if payment.token_nonce == 0 {
             // fungible DCT
-            let _ = SendRawWrapper::<SA>::new().transfer_dct_execute(
+            let _ = SA::send_api_impl().direct_dct_execute(
                 &self.to,
                 &payment.token_identifier,
                 &payment.amount,
@@ -496,7 +486,7 @@ where
             );
         } else {
             // non-fungible/semi-fungible DCT
-            let _ = SendRawWrapper::<SA>::new().transfer_dct_nft_execute(
+            let _ = SA::send_api_impl().direct_dct_nft_execute(
                 &self.to,
                 &payment.token_identifier,
                 payment.token_nonce,
@@ -510,12 +500,16 @@ where
 
     fn multi_transfer_execute(self) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
-        let _ = SendRawWrapper::<SA>::new().multi_dct_transfer_execute(
+        let result = SA::send_api_impl().direct_multi_dct_transfer_execute(
             &self.to,
             &self.payments,
             gas_limit,
             &self.endpoint_name,
             &self.arg_buffer,
         );
+
+        if let Err(e) = result {
+            SA::error_api_impl().signal_error(e);
+        }
     }
 }

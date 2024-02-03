@@ -2,6 +2,7 @@ dharitri_wasm::imports!();
 dharitri_wasm::derive_imports!();
 
 pub mod curves;
+pub mod function_selector;
 pub mod utils;
 use utils::{events, owner_endpoints, storage, user_endpoints};
 

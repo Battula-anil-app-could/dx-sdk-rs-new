@@ -184,7 +184,7 @@ pub trait KittyAuction {
         // refund losing bid
         if !auction.current_winner.is_zero() {
             self.send()
-                .direct_moax(&auction.current_winner, &auction.current_bid);
+                .direct_moax(&auction.current_winner, &auction.current_bid, b"bid refund");
         }
 
         // update auction bid and winner
@@ -356,8 +356,11 @@ pub trait KittyAuction {
                 if auction.kitty_owner != self.blockchain().get_sc_address()
                     && !auction.current_winner.is_zero()
                 {
-                    self.send()
-                        .direct_moax(&auction.kitty_owner, &auction.current_bid);
+                    self.send().direct_moax(
+                        &auction.kitty_owner,
+                        &auction.current_bid,
+                        b"sold kitty",
+                    );
                 }
             },
             ManagedAsyncCallResult::Err(_) => {

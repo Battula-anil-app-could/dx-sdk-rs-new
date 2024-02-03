@@ -8,14 +8,11 @@ publish = false
 [lib]
 path = "src/proxy-test-second.rs"
 
-[features]
-ei-unmanaged = ["dharitri-wasm/ei-unmanaged"]
-
 [dependencies.dharitri-wasm]
-version = "0.5.3"
+version = "0.5.4"
 path = "../../../../dharitri-wasm"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.5.3"
+version = "0.5.4"
 path = "../../../../dharitri-wasm-debug"

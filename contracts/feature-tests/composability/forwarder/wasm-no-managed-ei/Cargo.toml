@@ -17,15 +17,14 @@ panic = "abort"
 
 [dependencies.forwarder]
 path = ".."
-features = ["ei-unmanaged"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.5.3"
+version = "0.5.4"
 path = "../../../../../dharitri-wasm-node"
-features = ["ei-unmanaged-node"]
+features = ["ei-unmanaged"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.5.3"
+version = "0.5.4"
 path = "../../../../../dharitri-wasm-output"
 features = ["wasm-output-mode"]
 

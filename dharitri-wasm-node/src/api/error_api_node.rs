@@ -1,7 +1,8 @@
 use crate::{error_hook, VmApiImpl};
-use dharitri_wasm::api::{ErrorApi, ErrorApiImpl};
+use dharitri_wasm::api::{ErrorApi, ErrorApiImpl, Handle};
 
 extern "C" {
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedSignalError(messageHandle: i32) -> !;
 }
 
@@ -20,8 +21,16 @@ impl ErrorApiImpl for VmApiImpl {
         error_hook::signal_error(message)
     }
 
+    #[cfg(feature = "ei-unmanaged")]
+    fn signal_error_from_buffer(&self, message_handle: Handle) -> ! {
+        use dharitri_wasm::api::ManagedBufferApi;
+        let message = self.mb_to_boxed_bytes(message_handle);
+        self.signal_error(message.as_slice())
+    }
+
     #[inline(always)]
-    fn signal_error_from_buffer(&self, message_handle: Self::ManagedBufferHandle) -> ! {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn signal_error_from_buffer(&self, message_handle: Handle) -> ! {
         unsafe { managedSignalError(message_handle) }
     }
 }

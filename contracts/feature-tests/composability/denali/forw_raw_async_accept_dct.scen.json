@@ -77,7 +77,7 @@
                             "str:callback_raw"
                         ],
                         "data": {
-                            "0-status": "nested:0x00"
+                            "0-status": "biguint:0"
                         }
                     }
                 ],
@@ -112,9 +112,9 @@
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        "str:callback_args.len": "1",
-                        "str:callback_args.item|u32:1": [
-                            "nested:0x00"
+                        "str:callback_data.len": "1",
+                        "str:callback_data.item|u32:1": [
+                            "u32:0"
                         ]
                     },
                     "code": "file:../forwarder-raw/output/forwarder-raw.wasm"

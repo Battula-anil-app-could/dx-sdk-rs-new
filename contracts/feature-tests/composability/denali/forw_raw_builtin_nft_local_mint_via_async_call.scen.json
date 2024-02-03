@@ -60,7 +60,7 @@
                         "topics": [
                             "str:callback_raw"
                         ],
-                        "data": "nested:0x00"
+                        "data": "u32:0"
                     }
                 ],
                 "gas": "*",
@@ -90,8 +90,8 @@
                         }
                     },
                     "storage": {
-                        "str:callback_args.len": "1",
-                        "str:callback_args.item|u32:01": "nested:0x00"
+                        "str:callback_data.len": "1",
+                        "str:callback_data.item|u32:01": "u32:0"
                     },
                     "code": "file:../forwarder-raw/output/forwarder-raw.wasm"
                 }

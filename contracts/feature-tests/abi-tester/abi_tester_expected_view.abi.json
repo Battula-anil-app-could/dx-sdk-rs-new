@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.5.3"
+            "version": "0.5.4"
         }
     },
     "docs": [
@@ -31,37 +31,6 @@
             "mutability": "readonly",
             "inputs": [],
             "outputs": []
-        }
-    ],
-    "events": [
-        {
-            "identifier": "payable-event",
-            "inputs": [
-                {
-                    "name": "token",
-                    "type": "TokenIdentifier",
-                    "indexed": true
-                },
-                {
-                    "name": "amount",
-                    "type": "BigUint"
-                }
-            ]
-        },
-        {
-            "identifier": "address-h256-event",
-            "inputs": [
-                {
-                    "name": "address",
-                    "type": "Address",
-                    "indexed": true
-                },
-                {
-                    "name": "h256",
-                    "type": "H256",
-                    "indexed": true
-                }
-            ]
         }
     ],
     "hasCallback": false,
@@ -267,6 +236,10 @@
         "DctTokenPayment": {
             "type": "struct",
             "fields": [
+                {
+                    "name": "token_type",
+                    "type": "DctTokenType"
+                },
                 {
                     "name": "token_identifier",
                     "type": "TokenIdentifier"

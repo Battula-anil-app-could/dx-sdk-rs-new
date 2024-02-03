@@ -10,7 +10,7 @@ use crate as dharitri_wasm; // needed by the TypeAbi generated code
 use crate::derive::TypeAbi;
 
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Eq, Debug, TypeAbi)]
+#[derive(Clone, PartialEq, Debug, TypeAbi)]
 pub enum DctTokenType {
     Fungible,
     NonFungible,

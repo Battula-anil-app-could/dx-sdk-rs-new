@@ -1,7 +1,5 @@
 dharitri_wasm::imports!();
 
-use dharitri_wasm::api::HandleTypeInfo;
-
 use crate::types::*;
 
 /// Storage tests: direct load.
@@ -77,13 +75,12 @@ pub trait StorageLoadFeatures {
         use dharitri_wasm::api::{
             StaticVarApi, StaticVarApiImpl, StorageReadApi, StorageReadApiImpl,
         };
-        let value_handle: <<Self as ContractBase>::Api as HandleTypeInfo>::ManagedBufferHandle =
-            Self::Api::static_var_api_impl().next_handle();
+        let value_handle = Self::Api::static_var_api_impl().next_handle();
         Self::Api::storage_read_api_impl().storage_load_from_address(
-            address.get_handle(),
-            key.get_handle(),
-            value_handle.clone(),
+            address.get_raw_handle(),
+            key.get_raw_handle(),
+            value_handle,
         );
-        ManagedBuffer::from_handle(value_handle)
+        ManagedBuffer::from_raw_handle(value_handle)
     }
 }

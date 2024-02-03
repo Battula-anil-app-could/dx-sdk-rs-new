@@ -49,9 +49,9 @@ pub trait KittyOwnership {
         let caller = self.blockchain().get_caller();
         let moax_balance = self
             .blockchain()
-            .get_sc_balance(&MoaxOrDctTokenIdentifier::moax(), 0);
+            .get_sc_balance(&TokenIdentifier::moax(), 0);
 
-        self.send().direct_moax(&caller, &moax_balance);
+        self.send().direct_moax(&caller, &moax_balance, b"claim");
     }
 
     // views/endpoints - ERC721 required
@@ -568,7 +568,8 @@ pub trait KittyOwnership {
 
                 // send birth fee to caller
                 let fee = self.birth_fee().get();
-                self.send().direct_moax(&original_caller, &fee);
+                self.send()
+                    .direct_moax(&original_caller, &fee, b"birth fee");
             },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_genes contract address is invalid

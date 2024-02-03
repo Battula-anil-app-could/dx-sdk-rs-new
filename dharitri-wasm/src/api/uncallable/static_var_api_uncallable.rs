@@ -1,5 +1,5 @@
 use crate::{
-    api::{HandleConstraints, StaticVarApi, StaticVarApiImpl},
+    api::{Handle, StaticVarApi, StaticVarApiImpl},
     types::LockableStaticBuffer,
 };
 
@@ -21,15 +21,15 @@ impl StaticVarApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn set_external_view_target_address_handle(&self, _handle: Self::ManagedBufferHandle) {
+    fn set_external_view_target_address_handle(&self, _handle: Handle) {
         unreachable!()
     }
 
-    fn get_external_view_target_address_handle(&self) -> Self::ManagedBufferHandle {
+    fn get_external_view_target_address_handle(&self) -> Handle {
         unreachable!()
     }
 
-    fn next_handle<H: HandleConstraints>(&self) -> H {
+    fn next_handle(&self) -> Handle {
         unreachable!()
     }
 
@@ -38,22 +38,6 @@ impl StaticVarApiImpl for UncallableApi {
     }
 
     fn get_num_arguments(&self) -> i32 {
-        unreachable!()
-    }
-
-    fn set_call_value_moax_handle(&self, _handle: Self::BigIntHandle) {
-        unreachable!()
-    }
-
-    fn get_call_value_moax_handle(&self) -> Self::BigIntHandle {
-        unreachable!()
-    }
-
-    fn set_call_value_multi_dct_handle(&self, _handle: Self::ManagedBufferHandle) {
-        unreachable!()
-    }
-
-    fn get_call_value_multi_dct_handle(&self) -> Self::ManagedBufferHandle {
         unreachable!()
     }
 }

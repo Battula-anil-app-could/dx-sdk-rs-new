@@ -7,7 +7,7 @@ use crate::abi::TypeName;
 
 // BigInt sign.
 #[allow(clippy::enum_variant_names)]
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Debug)]
 pub enum Sign {
     Minus,
     NoSign,

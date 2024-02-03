@@ -16,8 +16,8 @@ pub trait Child {
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
+        #[payment] issue_cost: BigUint,
     ) {
-        let issue_cost = self.call_value().moax_value();
         self.send()
             .dct_system_sc_proxy()
             .issue_fungible(
@@ -45,8 +45,12 @@ pub trait Child {
     // callbacks
 
     #[callback]
-    fn dct_issue_callback(&self, #[call_result] _result: IgnoreValue) {
-        let (token_identifier, _amount) = self.call_value().single_fungible_dct();
+    fn dct_issue_callback(
+        &self,
+        #[payment_token] token_identifier: TokenIdentifier,
+        #[payment] _amount: BigUint,
+        #[call_result] _result: ManagedAsyncCallResult<()>,
+    ) {
         self.wrapped_moax_token_identifier().set(&token_identifier);
     }
 

@@ -2,7 +2,6 @@
 /// Contains processed data from argument annotations.
 #[derive(Clone, Debug)]
 pub struct MethodArgument {
-    pub original_pat: syn::Pat,
     pub pat: syn::Pat,
     pub ty: syn::Type,
     pub unprocessed_attributes: Vec<syn::Attribute>,
@@ -57,6 +56,4 @@ impl MethodArgument {
 #[derive(Clone, Debug, Default)]
 pub struct TraitProperties {
     pub only_owner: bool,
-    pub only_admin: bool,
-    pub only_user_account: bool,
 }

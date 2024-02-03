@@ -4,16 +4,16 @@
 
 The following examples rely on having a [local testnet](https://docs.dharitri.com/developers/setup-local-testnet/) up and running.
 
-# Installing @dharitrinetwork/erdjs globally
+# Installing @dharitrinetwork/moajs globally
 
 ```bash
-cd ./code/dharitri-sdk-erdjs
+cd ./code/dharitri-sdk-moajs
 npm run compile && npm test && npm install -g
 ```
 
 # How to start a node terminal
 
-By exporting `NODE_PATH`, the node terminal should have access to `erdjs`.
+By exporting `NODE_PATH`, the node terminal should have access to `moajs`.
 Open a terminal and enter the following:
 
 ```bash
@@ -30,7 +30,7 @@ node --experimental-repl-await
 
 # Smart contract examples
 
-- Adder [interaction](../../../contracts/examples/adder/interaction/Adder.erdjs.md)
-- Crowdfunding DCT [MOAX interaction](../../../contracts/examples/crowdfunding-dct/interaction/Crowdfunding-moax.erdjs.md), [DCT interaction](../../../contracts/examples/crowdfunding-dct/interaction/Crowdfunding-dct.erdjs.md)
-- Multisig [MOAX adder interaction](../../../contracts/examples/multisig/interaction/Multisig-adder-moax.erdjs.md)
-- Ping-pong [MOAX interaction](../../../contracts/examples/ping-pong-moax/interaction/Ping-pong-moax.erdjs.md)
+- Adder [interaction](../../../contracts/examples/adder/interaction/Adder.moajs.md)
+- Crowdfunding DCT [MOAX interaction](../../../contracts/examples/crowdfunding-dct/interaction/Crowdfunding-moax.moajs.md), [DCT interaction](../../../contracts/examples/crowdfunding-dct/interaction/Crowdfunding-dct.moajs.md)
+- Multisig [MOAX adder interaction](../../../contracts/examples/multisig/interaction/Multisig-adder-moax.moajs.md)
+- Ping-pong [MOAX interaction](../../../contracts/examples/ping-pong-moax/interaction/Ping-pong-moax.moajs.md)

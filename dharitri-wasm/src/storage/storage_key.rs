@@ -1,5 +1,5 @@
 use crate::{
-    api::{ErrorApi, ManagedTypeApi},
+    api::{ErrorApi, Handle, ManagedTypeApi},
     contract_base::ExitCodecErrorHandler,
     types::{heap::BoxedBytes, ManagedBuffer, ManagedByteArray, ManagedType},
     *,
@@ -17,20 +17,19 @@ impl<A> ManagedType<A> for StorageKey<A>
 where
     A: ManagedTypeApi + ErrorApi + 'static,
 {
-    type OwnHandle = A::ManagedBufferHandle;
-
     #[inline]
-    fn from_handle(handle: A::ManagedBufferHandle) -> Self {
+    fn from_raw_handle(handle: Handle) -> Self {
         StorageKey {
-            buffer: ManagedBuffer::from_handle(handle),
+            buffer: ManagedBuffer::from_raw_handle(handle),
         }
     }
 
-    fn get_handle(&self) -> A::ManagedBufferHandle {
-        self.buffer.get_handle()
+    #[doc(hidden)]
+    fn get_raw_handle(&self) -> Handle {
+        self.buffer.get_raw_handle()
     }
 
-    fn transmute_from_handle_ref(handle_ref: &A::ManagedBufferHandle) -> &Self {
+    fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
         unsafe { core::mem::transmute(handle_ref) }
     }
 }

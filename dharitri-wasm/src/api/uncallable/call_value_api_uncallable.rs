@@ -1,5 +1,5 @@
 use crate::{
-    api::{CallValueApi, CallValueApiImpl},
+    api::{CallValueApi, CallValueApiImpl, Handle},
     types::DctTokenType,
 };
 
@@ -18,15 +18,15 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn load_moax_value(&self, _dest: Self::BigIntHandle) {
+    fn load_moax_value(&self, _dest: Handle) {
         unreachable!()
     }
 
-    fn load_single_dct_value(&self, _dest: Self::BigIntHandle) {
+    fn load_single_dct_value(&self, _dest: Handle) {
         unreachable!()
     }
 
-    fn token(&self) -> Option<Self::ManagedBufferHandle> {
+    fn token(&self) -> Handle {
         unreachable!()
     }
 
@@ -42,11 +42,11 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn dct_value_by_index(&self, _index: usize) -> Self::BigIntHandle {
+    fn dct_value_by_index(&self, _index: usize) -> Handle {
         unreachable!()
     }
 
-    fn token_by_index(&self, _index: usize) -> Self::ManagedBufferHandle {
+    fn token_by_index(&self, _index: usize) -> Handle {
         unreachable!()
     }
 

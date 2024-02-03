@@ -29,7 +29,7 @@ tags
 **/node_modules
 **/output/**
 **/testnet/**
-**/erdpy.data-storage.json
+**/moapy.data-storage.json
 **/*.interaction.json
 
 # Python scripts

@@ -9,7 +9,6 @@ dharitri_wasm_node::wasm_endpoints! {
     (
         deposit
         discardAction
-        dnsRegister
         getActionData
         getActionLastIndex
         getActionSignerCount

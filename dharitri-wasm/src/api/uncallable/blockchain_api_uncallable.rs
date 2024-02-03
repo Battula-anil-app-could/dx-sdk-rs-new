@@ -1,7 +1,7 @@
 use alloc::boxed::Box;
 
 use crate::{
-    api::{BlockchainApi, BlockchainApiImpl, ManagedTypeApi},
+    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedTypeApi},
     types::{
         heap::{Address, H256},
         DctTokenData, ManagedAddress, TokenIdentifier,
@@ -39,7 +39,7 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn load_balance_legacy(&self, _dest: Self::BigIntHandle, _address: &Address) {
+    fn load_balance_legacy(&self, _dest: Handle, _address: &Address) {
         unreachable!()
     }
 
@@ -95,25 +95,21 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_current_dct_nft_nonce(
-        &self,
-        _address_handle: Self::ManagedBufferHandle,
-        _token_id_handle: Self::ManagedBufferHandle,
-    ) -> u64 {
+    fn get_current_dct_nft_nonce(&self, _address_handle: Handle, _token_id_handle: Handle) -> u64 {
         unreachable!()
     }
 
     fn load_dct_balance(
         &self,
-        _address_handle: Self::ManagedBufferHandle,
-        _token_id_handle: Self::ManagedBufferHandle,
+        _address_handle: Handle,
+        _token_id_handle: Handle,
         _nonce: u64,
-        _dest: Self::BigIntHandle,
+        _dest: Handle,
     ) {
         unreachable!()
     }
 
-    fn load_dct_token_data<M: ManagedTypeApi>(
+    fn get_dct_token_data<M: ManagedTypeApi>(
         &self,
         _address: &ManagedAddress<M>,
         _token: &TokenIdentifier<M>,
@@ -122,7 +118,7 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn load_dct_token_data_unmanaged<M: ManagedTypeApi>(
+    fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
         _address: &ManagedAddress<M>,
         _token: &TokenIdentifier<M>,
@@ -131,27 +127,7 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn check_dct_frozen(
-        &self,
-        _address_handle: Self::ManagedBufferHandle,
-        _token_id_handle: Self::ManagedBufferHandle,
-        _nonce: u64,
-    ) -> bool {
-        unreachable!()
-    }
-
-    fn check_dct_paused(&self, _token_id_handle: Self::ManagedBufferHandle) -> bool {
-        unreachable!()
-    }
-
-    fn check_dct_limited_transfer(&self, _token_id_handle: Self::ManagedBufferHandle) -> bool {
-        unreachable!()
-    }
-
-    fn load_dct_local_roles(
-        &self,
-        _token_id_handle: Self::ManagedBufferHandle,
-    ) -> crate::types::DctLocalRoleFlags {
+    fn get_dct_local_roles(&self, _token_id_handle: Handle) -> crate::types::DctLocalRoleFlags {
         unreachable!()
     }
 }

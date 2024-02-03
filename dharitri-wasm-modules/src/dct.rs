@@ -29,6 +29,7 @@ pub trait DctModule {
     #[endpoint(issueToken)]
     fn issue_token(
         &self,
+        #[payment_amount] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         token_type: DctTokenType,
@@ -36,7 +37,6 @@ pub trait DctModule {
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
-        let issue_cost = self.call_value().moax_value();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,
@@ -67,7 +67,8 @@ pub trait DctModule {
                 let initial_caller = self.blockchain().get_owner_address();
                 let moax_returned = self.call_value().moax_value();
                 if moax_returned > 0u32 {
-                    self.send().direct_moax(&initial_caller, &moax_returned);
+                    self.send()
+                        .direct_moax(&initial_caller, &moax_returned, &[]);
                 }
             },
         }
@@ -86,7 +87,7 @@ pub trait DctModule {
     fn nft_create<T: TopEncode>(&self, amount: &BigUint, attributes: &T) -> u64 {
         let token_id = self.token_id().get();
         let empty_buffer = ManagedBuffer::new();
-        let empty_vec = ManagedVec::from_handle(empty_buffer.get_handle());
+        let empty_vec = ManagedVec::from_raw_handle(empty_buffer.get_raw_handle());
 
         self.send().dct_nft_create(
             &token_id,

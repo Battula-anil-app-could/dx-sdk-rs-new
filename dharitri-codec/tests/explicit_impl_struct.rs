@@ -7,7 +7,7 @@ use dharitri_codec::{
     TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
 };
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct S {
     pub int: u16,
     pub seq: Vec<u8>,

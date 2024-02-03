@@ -50,7 +50,7 @@ pub trait PingPong {
     /// Optional `_data` argument is ignored.
     #[payable("MOAX")]
     #[endpoint]
-    fn ping(&self, _data: IgnoreValue) {
+    fn ping(&self, _data: OptionalValue<ManagedBuffer>) {
         let payment = self.call_value().moax_value();
 
         require!(
@@ -73,7 +73,7 @@ pub trait PingPong {
             require!(
                 &self
                     .blockchain()
-                    .get_sc_balance(&MoaxOrDctTokenIdentifier::moax(), 0)
+                    .get_sc_balance(&TokenIdentifier::moax(), 0)
                     + &payment
                     <= max_funds,
                 "smart contract full"
@@ -104,7 +104,7 @@ pub trait PingPong {
                 self.user_status(user_id).set(UserStatus::Withdrawn);
                 if let Some(user_address) = self.user_mapper().get_user_address(user_id) {
                     self.send()
-                        .direct_moax(&user_address, &self.ping_amount().get());
+                        .direct_moax(&user_address, &self.ping_amount().get(), b"pong");
                     Result::Ok(())
                 } else {
                     Result::Err("unknown user")

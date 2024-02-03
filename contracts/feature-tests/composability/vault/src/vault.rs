@@ -65,12 +65,6 @@ pub trait Vault {
 
     #[payable("*")]
     #[endpoint]
-    fn accept_funds_single_dct_transfer(&self) {
-        let _ = self.call_value().single_dct();
-    }
-
-    #[payable("*")]
-    #[endpoint]
     fn reject_funds(&self) {
         let dct_transfers_multi = self.dct_transfers_multi();
         self.reject_funds_event(&self.call_value().moax_value(), &dct_transfers_multi);
@@ -89,28 +83,39 @@ pub trait Vault {
         let caller = self.blockchain().get_caller();
         let func_name = opt_receive_func.into_option().unwrap_or_default();
 
-        self.send_raw()
-            .transfer_dct_execute(
+        Self::Api::send_api_impl()
+            .direct_dct_execute(
                 &caller,
                 &token,
                 &amount,
                 50_000_000,
                 &func_name,
-                &ManagedArgBuffer::new(),
+                &ManagedArgBuffer::new_empty(),
             )
             .unwrap_or_else(|_| sc_panic!("DCT transfer failed"));
     }
 
     #[endpoint]
-    fn retrieve_funds(&self, token: MoaxOrDctTokenIdentifier, nonce: u64, amount: BigUint) {
+    fn retrieve_funds(
+        &self,
+        token: TokenIdentifier,
+        nonce: u64,
+        amount: BigUint,
+        return_message: OptionalValue<ManagedBuffer>,
+    ) {
         self.retrieve_funds_event(&token, nonce, &amount);
-        let caller = self.blockchain().get_caller();
 
-        if let Some(dct_token_id) = token.into_dct_option() {
-            self.send()
-                .transfer_dct_via_async_call(caller, dct_token_id, nonce, amount);
+        let caller = self.blockchain().get_caller();
+        let data = match return_message {
+            OptionalValue::Some(data) => data,
+            OptionalValue::None => ManagedBuffer::new(),
+        };
+
+        if token.is_moax() {
+            self.send().direct_moax(&caller, &amount, data);
         } else {
-            self.send().direct_moax(&caller, &amount);
+            self.send()
+                .transfer_dct_via_async_call(&caller, &token, nonce, &amount, data);
         }
     }
 
@@ -125,11 +130,16 @@ pub trait Vault {
         for multi_arg in token_payments.into_iter() {
             let (token_id, nonce, amount) = multi_arg.into_tuple();
 
-            all_payments.push(DctTokenPayment::new(token_id, nonce, amount));
+            all_payments.push(DctTokenPayment {
+                token_identifier: token_id,
+                token_nonce: nonce,
+                amount,
+                token_type: DctTokenType::Invalid,
+            });
         }
 
         self.send()
-            .transfer_multiple_dct_via_async_call(caller, all_payments);
+            .transfer_multiple_dct_via_async_call(&caller, &all_payments, b"");
     }
 
     #[payable("*")]
@@ -160,15 +170,19 @@ pub trait Vault {
                 &uris,
             );
 
-            new_tokens.push(DctTokenPayment::new(
-                payment.token_identifier,
-                new_token_nonce,
-                payment.amount,
-            ));
+            new_tokens.push(DctTokenPayment {
+                token_identifier: payment.token_identifier,
+                token_nonce: new_token_nonce,
+                amount: payment.amount,
+                token_type: DctTokenType::Invalid, // ignored
+            });
         }
 
-        self.send()
-            .transfer_multiple_dct_via_async_call(self.blockchain().get_caller(), new_tokens);
+        self.send().transfer_multiple_dct_via_async_call(
+            &self.blockchain().get_caller(),
+            &new_tokens,
+            &[],
+        );
     }
 
     /// TODO: invert token_payment and token_nonce, for consistency.
@@ -189,7 +203,7 @@ pub trait Vault {
     #[event("retrieve_funds")]
     fn retrieve_funds_event(
         &self,
-        #[indexed] token: &MoaxOrDctTokenIdentifier,
+        #[indexed] token: &TokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] amount: &BigUint,
     );

@@ -1,6 +1,7 @@
-use crate::VmApiImpl;
+use crate::{error_hook, VmApiImpl};
 use dharitri_wasm::{
-    api::{EndpointArgumentApi, EndpointArgumentApiImpl},
+    api::{EndpointArgumentApi, EndpointArgumentApiImpl, Handle},
+    err_msg,
     types::heap::BoxedBytes,
 };
 
@@ -9,9 +10,6 @@ extern "C" {
     fn getArgumentLength(id: i32) -> i32;
     fn getArgument(id: i32, dstOffset: *mut u8) -> i32;
 
-    // managed buffer API (currently the main one)
-    fn mBufferGetArgument(argId: i32, mBufferHandle: i32) -> i32;
-
     // big int API
     fn bigIntGetUnsignedArgument(arg_index: i32, dest: i32);
     fn bigIntGetSignedArgument(arg_index: i32, dest: i32);
@@ -19,6 +17,9 @@ extern "C" {
     // small int API
     fn smallIntGetUnsignedArgument(id: i32) -> i64;
     fn smallIntGetSignedArgument(id: i32) -> i64;
+
+    // managed buffer API
+    fn mBufferGetArgument(argId: i32, mBufferHandle: i32) -> i32;
 }
 
 impl EndpointArgumentApi for VmApiImpl {
@@ -43,10 +44,12 @@ impl EndpointArgumentApiImpl for VmApiImpl {
         unsafe { getArgumentLength(arg_index) as usize }
     }
 
-    #[inline]
-    fn load_argument_managed_buffer(&self, arg_index: i32, dest: Self::ManagedBufferHandle) {
+    fn copy_argument_to_slice(&self, arg_index: i32, slice: &mut [u8]) {
         unsafe {
-            mBufferGetArgument(arg_index, dest);
+            let byte_len = getArgument(arg_index, slice.as_mut_ptr()) as usize;
+            if byte_len != slice.len() {
+                error_hook::signal_error(err_msg::ARG_BAD_LENGTH);
+            }
         }
     }
 
@@ -62,16 +65,23 @@ impl EndpointArgumentApiImpl for VmApiImpl {
     }
 
     #[inline]
-    fn load_argument_big_int_unsigned(&self, arg_index: i32, dest: Self::ManagedBufferHandle) {
+    fn load_argument_big_int_unsigned(&self, arg_index: i32, dest: Handle) {
         unsafe {
             bigIntGetUnsignedArgument(arg_index, dest);
         }
     }
 
     #[inline]
-    fn load_argument_big_int_signed(&self, arg_index: i32, dest: Self::ManagedBufferHandle) {
+    fn load_argument_big_int_signed(&self, arg_index: i32, dest: Handle) {
         unsafe {
             bigIntGetSignedArgument(arg_index, dest);
+        }
+    }
+
+    #[inline]
+    fn load_argument_managed_buffer(&self, arg_index: i32, dest: Handle) {
+        unsafe {
+            mBufferGetArgument(arg_index, dest);
         }
     }
 

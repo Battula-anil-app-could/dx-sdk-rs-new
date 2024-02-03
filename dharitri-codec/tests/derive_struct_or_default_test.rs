@@ -3,7 +3,7 @@ use dharitri_codec_derive::*;
 
 use dharitri_codec::test_util::check_top_encode_decode;
 
-#[derive(TopEncodeOrDefault, TopDecodeOrDefault, PartialEq, Eq, Clone, Debug)]
+#[derive(TopEncodeOrDefault, TopDecodeOrDefault, PartialEq, Clone, Debug)]
 pub struct StructOrDefault {
     pub int: u16,
     pub seq: Vec<u8>,

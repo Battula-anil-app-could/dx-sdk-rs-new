@@ -2,7 +2,7 @@ use crate::abi::{TypeAbi, TypeName};
 use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
 /// Message hash type for the `verifyCustomSecp256k1` CryptoApi function
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Debug)]
 pub enum MessageHashType {
     ECDSAPlainMsg,
     ECDSASha256,

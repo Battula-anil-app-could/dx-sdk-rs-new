@@ -1,5 +1,5 @@
 use super::VmApiImpl;
-use dharitri_wasm::api::{EndpointFinishApi, EndpointFinishApiImpl};
+use dharitri_wasm::api::{EndpointFinishApi, EndpointFinishApiImpl, Handle};
 
 extern "C" {
     fn finish(dataOffset: *const u8, length: i32);
@@ -36,21 +36,21 @@ impl EndpointFinishApiImpl for VmApiImpl {
     }
 
     #[inline]
-    fn finish_big_int_raw(&self, handle: Self::BigIntHandle) {
+    fn finish_big_int_raw(&self, handle: i32) {
         unsafe {
             bigIntFinishSigned(handle);
         }
     }
 
     #[inline]
-    fn finish_big_uint_raw(&self, handle: Self::BigIntHandle) {
+    fn finish_big_uint_raw(&self, handle: i32) {
         unsafe {
             bigIntFinishUnsigned(handle);
         }
     }
 
     #[inline]
-    fn finish_managed_buffer_raw(&self, handle: Self::ManagedBufferHandle) {
+    fn finish_managed_buffer_raw(&self, handle: Handle) {
         unsafe {
             mBufferFinish(handle);
         }

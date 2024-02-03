@@ -1,10 +1,9 @@
-use crate::bonding_curve::curves::curve_function::CurveFunction;
-use dharitri_wasm::{abi::TypeAbi, dharitri_codec::TopEncode};
+use crate::bonding_curve::function_selector::FunctionSelector;
 
 dharitri_wasm::imports!();
 dharitri_wasm::derive_imports!();
 
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Eq, Clone)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Clone)]
 pub struct CurveArguments<M: ManagedTypeApi> {
     pub available_supply: BigUint<M>,
     pub balance: BigUint<M>,
@@ -16,31 +15,16 @@ impl<M: ManagedTypeApi> CurveArguments<M> {
     }
 }
 
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Eq, Clone)]
-pub struct BondingCurve<
-    M: ManagedTypeApi,
-    T: CurveFunction<M> + TopEncode + TopDecode + NestedEncode + NestedDecode + TypeAbi,
-> {
-    pub curve: T,
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Clone)]
+pub struct BondingCurve<M: ManagedTypeApi> {
+    pub curve: FunctionSelector<M>,
     pub arguments: CurveArguments<M>,
     pub sell_availability: bool,
-    pub payment: MoaxOrDctTokenPayment<M>,
+    pub payment_token: TokenIdentifier<M>,
+    pub payment_amount: BigUint<M>,
 }
 
-impl<
-        M: ManagedTypeApi,
-        T: CurveFunction<M> + TopEncode + TopDecode + NestedEncode + NestedDecode + TypeAbi,
-    > BondingCurve<M, T>
-{
-    pub fn payment_token(&self) -> MoaxOrDctTokenIdentifier<M> {
-        self.payment.token_identifier.clone()
-    }
-    pub fn payment_is_moax(&self) -> bool {
-        self.payment.token_identifier.is_moax()
-    }
-}
-
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Eq, Clone)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Clone)]
 pub struct TokenOwnershipData<M: ManagedTypeApi> {
     pub token_nonces: ManagedVec<M, u64>,
     pub owner: ManagedAddress<M>,

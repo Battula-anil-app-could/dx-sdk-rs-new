@@ -3,5 +3,5 @@
 **/output/**
 **/testnet/**
 **/wallets/**
-**/erdpy.data-storage.json
+**/moapy.data-storage.json
 **/*.interaction.json

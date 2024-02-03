@@ -8,7 +8,6 @@ pub struct BuildArgs {
     pub wasm_name_override: Option<String>,
     pub wasm_name_suffix: Option<String>,
     pub wasm_opt: bool,
-    pub target_dir: Option<String>,
 }
 
 impl Default for BuildArgs {
@@ -18,7 +17,6 @@ impl Default for BuildArgs {
             wasm_name_override: None,
             wasm_name_suffix: None,
             wasm_opt: true,
-            target_dir: None,
         }
     }
 }
@@ -53,13 +51,10 @@ impl ContractMetadata {
     }
 
     /// This is where Rust will initially compile the WASM binary.
-    pub fn wasm_compilation_output_path(&self, explicit_target_dir: &Option<String>) -> String {
-        let target_dir = explicit_target_dir
-            .clone()
-            .unwrap_or_else(|| format!("{}/target", &self.wasm_crate_path,));
+    pub fn wasm_compilation_output_path(&self) -> String {
         format!(
-            "{}/wasm32-unknown-unknown/release/{}.wasm",
-            &target_dir,
+            "{}/target/wasm32-unknown-unknown/release/{}.wasm",
+            &self.wasm_crate_path,
             &self.wasm_crate_name.replace('-', "_")
         )
     }
@@ -102,12 +97,6 @@ pub fn process_args(args: &[String]) -> BuildArgs {
             },
             "--no-wasm-opt" => {
                 result.wasm_opt = false;
-            },
-            "--target-dir" => {
-                let arg = iter
-                    .next()
-                    .expect("argument `--target-dir` must be followed by argument");
-                result.target_dir = Some(arg.clone());
             },
             _ => {},
         }

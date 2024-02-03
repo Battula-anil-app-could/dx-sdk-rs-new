@@ -10,6 +10,11 @@ fn world() -> BlockchainMock {
 }
 
 #[test]
-fn send_tx_repeat_denali_rs() {
-    dharitri_wasm_debug::denali_rs("denali/send_tx_repeat.scen.json", world());
+fn test_send_tx_repeat_without_data_denali_rs() {
+    dharitri_wasm_debug::denali_rs("denali/send_tx_repeat_without_data.scen.json", world());
+}
+
+#[test]
+fn test_send_tx_repeat_with_data_denali_rs() {
+    dharitri_wasm_debug::denali_rs("denali/send_tx_repeat_with_data.scen.json", world());
 }

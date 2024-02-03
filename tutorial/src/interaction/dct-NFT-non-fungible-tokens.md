@@ -5,8 +5,8 @@ Non-Fungible Tokens have amounts of either 0 or 1, and variable nonce. They are 
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let erdjs = await require('@dharitrinetwork/erdjs');
-let { erdSys, Moax, wallets: { alice, bob, carol } } = await erdjs.setupInteractive("local-testnet");
+let moajs = await require('@dharitrinetwork/moajs');
+let { erdSys, Moax, wallets: { alice, bob, carol } } = await moajs.setupInteractive("local-testnet");
 
 // Issue a new non-fungible token
 let MyToken = await erdSys.sender(alice).issueNonFungible("MyFungibleToken", "MYTOKEN");
@@ -24,6 +24,6 @@ let MySecondNFT = await erdSys.sender(alice).dctNftCreate(MyToken, 1, "MySecondN
 await erdSys.sender(alice).value(MyFirstNFT.one()).send(bob);
 await erdSys.sender(alice).value(MySecondNFT.one()).send(carol);
 
-await erdSys.getBalanceList(alice, MyToken).then(erdjs.printList);
-await erdSys.getBalanceList(bob, MyToken).then(erdjs.printList);
+await erdSys.getBalanceList(alice, MyToken).then(moajs.printList);
+await erdSys.getBalanceList(bob, MyToken).then(moajs.printList);
 ```

@@ -3,8 +3,8 @@
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let erdjs = await require('@dharitrinetwork/erdjs');
-let { erdSys, Moax, wallets: { alice, bob, carol, dan, eve } } = await erdjs.setupInteractive("local-testnet");
+let moajs = await require('@dharitrinetwork/moajs');
+let { erdSys, Moax, wallets: { alice, bob, carol, dan, eve } } = await moajs.setupInteractive("local-testnet");
 ```
 
 The `setupInteractive` call does several essential things:
@@ -15,7 +15,7 @@ The `setupInteractive` call does several essential things:
 
 ## Choosing a provider
 
-For `erdjs.setupInteractive` the available providers are:
+For `moajs.setupInteractive` the available providers are:
 - Local Testnet proxy: `"local-testnet"`
 - Dharitri Testnet proxy: `"dharitri-testnet"`
 - Dharitri Devnet proxy: `"dharitri-devnet"`

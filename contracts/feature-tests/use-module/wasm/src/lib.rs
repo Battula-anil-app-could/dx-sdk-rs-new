@@ -8,10 +8,6 @@ dharitri_wasm_node::wasm_endpoints! {
     use_module
     (
         callBack
-        addAdmin
-        addMergeableTokensToWhitelist
-        admins
-        call_derived_not_admin_only
         call_derived_not_owner_only
         call_mod_a
         call_mod_b
@@ -30,8 +26,6 @@ dharitri_wasm_node::wasm_endpoints! {
         execute
         getGovernanceTokenId
         getLockTimeAfterVotingEndsInBlocks
-        getMergeableTokensWhitelist
-        getMergedTokenId
         getMinTokenBalanceForProposing
         getProposalActions
         getProposalDescription
@@ -42,27 +36,16 @@ dharitri_wasm_node::wasm_endpoints! {
         getTotalVotes
         getVotingDelayInBlocks
         getVotingPeriodInBlocks
+        initGovernanceModule
         isPaused
-        is_admin
-        issueMergedToken
         issueToken
-        mergeTokens
-        only_admin_mod_endpoint
         only_owner_mod_endpoint
         pause
         propose
         queue
-        removeAdmin
-        removeMergeableTokensFromWhitelist
         setFeatureFlag
-        slashMember
-        splitTokenPartial
-        splitTokens
-        stake
         unpause
-        unstake
         vote
-        voteSlashMember
         withdrawGovernanceTokens
     )
 }

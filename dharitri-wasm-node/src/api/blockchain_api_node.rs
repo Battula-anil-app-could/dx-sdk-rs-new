@@ -5,7 +5,7 @@ use crate::{
     VmApiImpl,
 };
 use dharitri_wasm::{
-    api::{BlockchainApi, BlockchainApiImpl, ManagedBufferApi, ManagedTypeApi},
+    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedBufferApi, ManagedTypeApi},
     types::{
         heap::{Address, Box, H256},
         BigUint, DctTokenData, DctTokenType, ManagedAddress, ManagedBuffer, ManagedType,
@@ -17,15 +17,15 @@ use dharitri_wasm::{
 extern "C" {
     // address utils
     fn getSCAddress(resultOffset: *mut u8);
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedSCAddress(resultHandle: i32);
 
     fn getOwnerAddress(resultOffset: *mut u8);
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedOwnerAddress(resultHandle: i32);
 
     fn getCaller(resultOffset: *mut u8);
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedCaller(resultHandle: i32);
 
     fn getShardOfAddress(address_ptr: *const u8) -> i32;
@@ -56,13 +56,13 @@ extern "C" {
     fn getOriginalTxHash(resultOffset: *const u8);
 
     // Managed versions of the above
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedGetPrevBlockRandomSeed(resultHandle: i32);
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedGetBlockRandomSeed(resultHandle: i32);
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedGetStateRootHash(resultHandle: i32);
-    #[cfg(not(feature = "ei-unmanaged-node"))]
+    #[cfg(not(feature = "ei-unmanaged"))]
     fn managedGetOriginalTxHash(resultHandle: i32);
 
     // big int API
@@ -117,6 +117,8 @@ extern "C" {
         nonce: i64,
     ) -> i32;
 
+    fn getDCTLocalRoles(tokenhandle: i32) -> i64;
+
     fn managedGetDCTTokenData(
         addressHandle: i32,
         tokenIDHandle: i32,
@@ -130,12 +132,6 @@ extern "C" {
         royaltiesHandle: i32,
         urisHandle: i32,
     );
-
-    fn managedIsDCTFrozen(addressHandle: i32, tokenIDHandle: i32, nonce: i64) -> i32;
-    fn managedIsDCTPaused(tokenIDHandle: i32) -> i32;
-    fn managedIsDCTLimitedTransfer(tokenIDHandle: i32) -> i32;
-
-    fn getDCTLocalRoles(tokenhandle: i32) -> i64;
 }
 
 fn dct_is_frozen(properties_bytes: &[u8; 2]) -> bool {
@@ -162,8 +158,8 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_caller_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_caller_managed(&self, dest: Handle) {
         unsafe {
             managedCaller(dest);
         }
@@ -179,8 +175,8 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_sc_address_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_sc_address_managed(&self, dest: Handle) {
         unsafe {
             managedSCAddress(dest);
         }
@@ -196,8 +192,8 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_owner_address_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_owner_address_managed(&self, dest: Handle) {
         unsafe {
             managedOwnerAddress(dest);
         }
@@ -209,7 +205,7 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    fn get_shard_of_address(&self, address_handle: Self::ManagedBufferHandle) -> u32 {
+    fn get_shard_of_address(&self, address_handle: Handle) -> u32 {
         unsafe { getShardOfAddress(unsafe_buffer_load_address(address_handle)) as u32 }
     }
 
@@ -219,19 +215,19 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    fn is_smart_contract(&self, address_handle: Self::ManagedBufferHandle) -> bool {
+    fn is_smart_contract(&self, address_handle: Handle) -> bool {
         unsafe { isSmartContract(unsafe_buffer_load_address(address_handle)) > 0 }
     }
 
     #[inline]
-    fn load_balance_legacy(&self, dest: Self::BigIntHandle, address: &Address) {
+    fn load_balance_legacy(&self, dest: Handle, address: &Address) {
         unsafe {
             bigIntGetExternalBalance(address.as_ref().as_ptr(), dest);
         }
     }
 
     #[inline]
-    fn load_balance(&self, dest: Self::BigIntHandle, address_handle: Self::ManagedBufferHandle) {
+    fn load_balance(&self, dest: Handle, address_handle: Handle) {
         unsafe {
             bigIntGetExternalBalance(unsafe_buffer_load_address(address_handle), dest);
         }
@@ -247,8 +243,8 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_state_root_hash_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_state_root_hash_managed(&self, dest: Handle) {
         unsafe {
             managedGetStateRootHash(dest);
         }
@@ -264,8 +260,8 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_tx_hash_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_tx_hash_managed(&self, dest: Handle) {
         unsafe {
             managedGetOriginalTxHash(dest);
         }
@@ -306,8 +302,8 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_block_random_seed_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_block_random_seed_managed(&self, dest: Handle) {
         unsafe {
             managedGetBlockRandomSeed(dest);
         }
@@ -343,19 +339,15 @@ impl BlockchainApiImpl for VmApiImpl {
     }
 
     #[inline]
-    #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_prev_block_random_seed_managed(&self, dest: Self::ManagedBufferHandle) {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_prev_block_random_seed_managed(&self, dest: Handle) {
         unsafe {
             managedGetPrevBlockRandomSeed(dest);
         }
     }
 
     #[inline]
-    fn get_current_dct_nft_nonce(
-        &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> u64 {
+    fn get_current_dct_nft_nonce(&self, address_handle: Handle, token_id_handle: Handle) -> u64 {
         unsafe {
             let token_identifier_len = self.mb_len(token_id_handle);
             getCurrentDCTNFTNonce(
@@ -368,10 +360,10 @@ impl BlockchainApiImpl for VmApiImpl {
 
     fn load_dct_balance(
         &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
+        address_handle: Handle,
+        token_id_handle: Handle,
         nonce: u64,
-        dest: Self::BigIntHandle,
+        dest: Handle,
     ) {
         let token_identifier_len = self.mb_len(token_id_handle);
         unsafe {
@@ -385,7 +377,7 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
-    fn load_dct_token_data_unmanaged<M: ManagedTypeApi>(
+    fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
         m_address: &ManagedAddress<M>,
         token: &TokenIdentifier<M>,
@@ -394,7 +386,6 @@ impl BlockchainApiImpl for VmApiImpl {
         use dharitri_wasm::{api::BigIntApi, types::heap::BoxedBytes};
 
         let address = m_address.to_address();
-        let token_bytes = token.to_boxed_bytes();
         unsafe {
             let value_handle = self.bi_new_zero();
             let mut properties_bytes = [0u8; 2]; // always 2 bytes
@@ -402,16 +393,16 @@ impl BlockchainApiImpl for VmApiImpl {
 
             let name_len = getDCTNFTNameLength(
                 address.as_ref().as_ptr(),
-                token_bytes.as_ptr(),
-                token_bytes.len() as i32,
+                token.to_dct_identifier().as_ptr(),
+                token.len() as i32,
                 nonce as i64,
             ) as usize;
             let mut name_bytes = BoxedBytes::allocate(name_len);
 
             let attr_len = getDCTNFTAttributeLength(
                 address.as_ref().as_ptr(),
-                token_bytes.as_ptr(),
-                token_bytes.len() as i32,
+                token.to_dct_identifier().as_ptr(),
+                token.len() as i32,
                 nonce as i64,
             ) as usize;
             let mut attr_bytes = BoxedBytes::allocate(attr_len);
@@ -421,8 +412,8 @@ impl BlockchainApiImpl for VmApiImpl {
             // Hence the DctTokenData receives a Vec<BoxedBytes>
             let uris_len = getDCTNFTURILength(
                 address.as_ref().as_ptr(),
-                token_bytes.as_ptr(),
-                token_bytes.len() as i32,
+                token.to_dct_identifier().as_ptr(),
+                token.len() as i32,
                 nonce as i64,
             ) as usize;
             let mut uri_bytes = BoxedBytes::allocate(uris_len);
@@ -432,8 +423,8 @@ impl BlockchainApiImpl for VmApiImpl {
 
             getDCTTokenData(
                 address.as_ref().as_ptr(),
-                token_bytes.as_ptr(),
-                token_bytes.len() as i32,
+                token.to_dct_identifier().as_ptr(),
+                token.len() as i32,
                 nonce as i64,
                 value_handle,
                 properties_bytes.as_mut_ptr(),
@@ -448,8 +439,8 @@ impl BlockchainApiImpl for VmApiImpl {
             // Fungible always have a nonce of 0, so we check nonce to figure out the type
             let nonce = getCurrentDCTNFTNonce(
                 address.as_ref().as_ptr(),
-                token_bytes.as_ptr(),
-                token_bytes.len() as i32,
+                token.to_dct_identifier().as_ptr(),
+                token.len() as i32,
             );
             let token_type = if nonce == 0 {
                 DctTokenType::Fungible
@@ -476,7 +467,7 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
-    fn load_dct_token_data<M: ManagedTypeApi>(
+    fn get_dct_token_data<M: ManagedTypeApi>(
         &self,
         address: &ManagedAddress<M>,
         token: &TokenIdentifier<M>,
@@ -542,26 +533,9 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
-    fn check_dct_frozen(
+    fn get_dct_local_roles(
         &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-        nonce: u64,
-    ) -> bool {
-        unsafe { managedIsDCTFrozen(address_handle, token_id_handle, nonce as i64) > 0 }
-    }
-
-    fn check_dct_paused(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
-        unsafe { managedIsDCTPaused(token_id_handle) > 0 }
-    }
-
-    fn check_dct_limited_transfer(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
-        unsafe { managedIsDCTLimitedTransfer(token_id_handle) > 0 }
-    }
-
-    fn load_dct_local_roles(
-        &self,
-        token_id_handle: Self::ManagedBufferHandle,
+        token_id_handle: Handle,
     ) -> dharitri_wasm::types::DctLocalRoleFlags {
         unsafe {
             dharitri_wasm::types::DctLocalRoleFlags::from_bits_unchecked(getDCTLocalRoles(

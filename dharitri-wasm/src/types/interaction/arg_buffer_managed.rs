@@ -1,11 +1,8 @@
 use crate::{
-    api::{ErrorApi, ManagedTypeApi},
+    api::{ErrorApi, Handle, ManagedTypeApi},
     contract_base::ExitCodecErrorHandler,
     err_msg,
-    types::{
-        heap::ArgBuffer, ManagedBuffer, ManagedType, ManagedVec, ManagedVecRefIterator,
-        MultiValueEncoded,
-    },
+    types::{ManagedBuffer, ManagedType, ManagedVec, ManagedVecRefIterator, MultiValueEncoded},
 };
 use alloc::vec::Vec;
 use dharitri_codec::{
@@ -14,7 +11,7 @@ use dharitri_codec::{
     TopEncodeOutput,
 };
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 #[repr(transparent)]
 pub struct ManagedArgBuffer<M>
 where
@@ -27,20 +24,19 @@ impl<M: ManagedTypeApi> ManagedType<M> for ManagedArgBuffer<M>
 where
     M: ManagedTypeApi + 'static,
 {
-    type OwnHandle = M::ManagedBufferHandle;
-
     #[inline]
-    fn from_handle(handle: M::ManagedBufferHandle) -> Self {
+    fn from_raw_handle(handle: Handle) -> Self {
         ManagedArgBuffer {
-            data: ManagedVec::from_handle(handle),
+            data: ManagedVec::from_raw_handle(handle),
         }
     }
 
-    fn get_handle(&self) -> M::ManagedBufferHandle {
-        self.data.get_handle()
+    #[doc(hidden)]
+    fn get_raw_handle(&self) -> Handle {
+        self.data.get_raw_handle()
     }
 
-    fn transmute_from_handle_ref(handle_ref: &M::ManagedBufferHandle) -> &Self {
+    fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
         unsafe { core::mem::transmute(handle_ref) }
     }
 }
@@ -50,7 +46,7 @@ where
     M: ManagedTypeApi + 'static,
 {
     #[inline]
-    pub fn new() -> Self {
+    pub fn new_empty() -> Self {
         ManagedArgBuffer {
             data: ManagedVec::new(),
         }
@@ -64,48 +60,6 @@ where
 {
     fn from(v: Vec<I>) -> Self {
         ManagedArgBuffer { data: v.into() }
-    }
-}
-
-impl<M, I> From<&[I]> for ManagedArgBuffer<M>
-where
-    M: ManagedTypeApi,
-    I: Into<ManagedBuffer<M>> + TopEncode,
-{
-    fn from(arguments: &[I]) -> Self {
-        let mut arg_buffer = Self::new();
-        for arg in arguments {
-            arg_buffer.push_arg(arg);
-        }
-        arg_buffer
-    }
-}
-
-impl<M> From<ArgBuffer> for ManagedArgBuffer<M>
-where
-    M: ManagedTypeApi,
-{
-    fn from(arg_buffer: ArgBuffer) -> Self {
-        let mut data = ManagedVec::new();
-        for arg in arg_buffer.arg_data().iter() {
-            data.push(ManagedBuffer::new_from_bytes(&[*arg]));
-        }
-
-        ManagedArgBuffer { data }
-    }
-}
-
-impl<M> From<&ArgBuffer> for ManagedArgBuffer<M>
-where
-    M: ManagedTypeApi,
-{
-    fn from(arg_buffer: &ArgBuffer) -> Self {
-        let mut data = ManagedVec::new();
-        for arg in arg_buffer.arg_data().iter() {
-            data.push(ManagedBuffer::new_from_bytes(&[*arg]));
-        }
-
-        ManagedArgBuffer { data }
     }
 }
 

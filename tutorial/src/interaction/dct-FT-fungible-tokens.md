@@ -5,8 +5,8 @@ Fungible Tokens have variable amounts, but always have nonce 0. They may be deno
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let erdjs = await require('@dharitrinetwork/erdjs');
-let { erdSys, wallets: { alice, bob, carol } } = await erdjs.setupInteractive("local-testnet");
+let moajs = await require('@dharitrinetwork/moajs');
+let { erdSys, wallets: { alice, bob, carol } } = await moajs.setupInteractive("local-testnet");
 
 // Issue a new fungible token
 let MyToken = await erdSys.sender(alice).issueFungible("MyFungibleToken", "MYTOKEN", 1_000_00, 2);
@@ -19,15 +19,15 @@ console.log(MyToken.getTokenIdentifier());
 
 // Check alice's token balance
 // Note: if the balance comes up as 0, wait some time and try again
-await erdSys.getBalance(alice, MyToken).then(erdjs.print);
+await erdSys.getBalance(alice, MyToken).then(moajs.print);
 
 // Send some tokens to bob
 await erdSys.sender(alice).value(MyToken(200.0)).send(bob);
 
 // Check alice's balance (should be 800.00 MYTOKEN)
-await erdSys.getBalance(alice, MyToken).then(erdjs.print);
+await erdSys.getBalance(alice, MyToken).then(moajs.print);
 
 // Check bob's balance (should be 200.00 MYTOKEN)
-await erdSys.getBalance(bob, MyToken).then(erdjs.print);
+await erdSys.getBalance(bob, MyToken).then(moajs.print);
 
 ```

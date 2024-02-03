@@ -1,4 +1,4 @@
-use crate::api::{ErrorApi, ErrorApiImpl};
+use crate::api::{ErrorApi, ErrorApiImpl, Handle};
 
 impl ErrorApi for super::UncallableApi {
     type ErrorApiImpl = super::UncallableApi;
@@ -13,7 +13,7 @@ impl ErrorApiImpl for super::UncallableApi {
         unreachable!()
     }
 
-    fn signal_error_from_buffer(&self, _message_handle: Self::ManagedBufferHandle) -> ! {
+    fn signal_error_from_buffer(&self, _message_handle: Handle) -> ! {
         unreachable!()
     }
 }

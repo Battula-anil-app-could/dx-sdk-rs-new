@@ -1,21 +1,15 @@
-use super::HandleTypeInfo;
+use super::Handle;
 
-pub trait ErrorApi: HandleTypeInfo {
-    type ErrorApiImpl: ErrorApiImpl
-        + HandleTypeInfo<
-            ManagedBufferHandle = Self::ManagedBufferHandle,
-            BigIntHandle = Self::BigIntHandle,
-            BigFloatHandle = Self::BigFloatHandle,
-            EllipticCurveHandle = Self::EllipticCurveHandle,
-        >;
+pub trait ErrorApi {
+    type ErrorApiImpl: ErrorApiImpl;
 
     fn error_api_impl() -> Self::ErrorApiImpl;
 }
 
-pub trait ErrorApiImpl: HandleTypeInfo {
+pub trait ErrorApiImpl {
     fn signal_error(&self, message: &[u8]) -> !;
 
-    fn signal_error_from_buffer(&self, message_handle: Self::ManagedBufferHandle) -> !;
+    fn signal_error_from_buffer(&self, message_handle: Handle) -> !;
 }
 
 /// An error handler that simply panics whenever `signal_error` is called.
@@ -31,19 +25,9 @@ impl ErrorApiImpl for PanickingErrorApiImpl {
         )
     }
 
-    fn signal_error_from_buffer(&self, _message_handle: Self::ManagedBufferHandle) -> ! {
+    fn signal_error_from_buffer(&self, _message_handle: Handle) -> ! {
         panic!("PanickingErrorApi panicked via signal_error_from_buffer")
     }
-}
-
-impl HandleTypeInfo for PanickingErrorApiImpl {
-    type ManagedBufferHandle = i32;
-
-    type BigIntHandle = i32;
-
-    type BigFloatHandle = i32;
-
-    type EllipticCurveHandle = i32;
 }
 
 /// An error handler that simply panics whenever `signal_error` is called.
@@ -57,14 +41,4 @@ impl ErrorApi for PanickingErrorApi {
     fn error_api_impl() -> Self::ErrorApiImpl {
         PanickingErrorApiImpl
     }
-}
-
-impl HandleTypeInfo for PanickingErrorApi {
-    type ManagedBufferHandle = i32;
-
-    type BigIntHandle = i32;
-
-    type BigFloatHandle = i32;
-
-    type EllipticCurveHandle = i32;
 }

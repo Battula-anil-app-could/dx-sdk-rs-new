@@ -1,6 +1,5 @@
 use dharitri_codec::TryStaticCast;
 
-mod big_float_api_uncallable;
 mod big_int_api_uncallable;
 mod blockchain_api_uncallable;
 mod call_value_api_uncallable;

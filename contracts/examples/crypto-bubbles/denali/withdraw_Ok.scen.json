@@ -41,16 +41,6 @@
                 "status": "",
                 "logs": [
                     {
-                        "address": "*",
-                        "endpoint": "str:transferValueOnly",
-                        "topics": [
-                            "sc:crypto_bubbles",
-                            "address:acc1",
-                            "0x10"
-                        ],
-                        "data": ""
-                    },
-                    {
                         "address": "sc:crypto_bubbles",
                         "endpoint": "str:withdraw",
                         "topics": [
@@ -85,7 +75,8 @@
                     "nonce": "1",
                     "balance": "0x10",
                     "storage": {},
-                    "code": ""
+                    "code": "",
+                    "asyncCallData": "str:crypto bubbles"
                 }
             }
         }

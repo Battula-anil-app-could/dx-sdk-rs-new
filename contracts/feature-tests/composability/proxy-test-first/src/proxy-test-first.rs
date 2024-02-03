@@ -14,11 +14,11 @@ mod pay_me_proxy {
     pub trait PayMe {
         #[payable("MOAX")]
         #[endpoint(payMe)]
-        fn pay_me(&self, arg1: i64);
+        fn pay_me(&self, #[payment] payment: BigUint, arg1: i64);
 
         #[payable("MOAX")]
         #[endpoint(payMeWithResult)]
-        fn pay_me_with_result(&self, arg1: i64);
+        fn pay_me_with_result(&self, #[payment] payment: BigUint, arg1: i64);
     }
 }
 
@@ -29,7 +29,7 @@ mod message_me_proxy {
     pub trait MessageMe {
         #[init]
         #[payable("MOAX")]
-        fn init(&self, init_arg: i32) -> i32;
+        fn init(&self, #[payment] payment: BigUint, init_arg: i32) -> i32;
 
         #[endpoint(messageMe)]
         fn message_me(&self, arg1: i64, arg2: &BigUint, arg3: Vec<u8>, arg4: &ManagedAddress);
@@ -60,12 +60,10 @@ pub trait ProxyTestFirst {
 
     #[payable("MOAX")]
     #[endpoint(deploySecondContract)]
-    fn deploy_second_contract(&self, code: ManagedBuffer) -> i32 {
-        let payment = self.call_value().moax_value();
+    fn deploy_second_contract(&self, #[payment] payment: BigUint, code: ManagedBuffer) -> i32 {
         let (address, init_result) = self
             .message_me_proxy()
-            .init(123)
-            .with_moax_transfer(payment)
+            .init(payment, 123)
             .deploy_contract::<i32>(&code, CodeMetadata::DEFAULT);
         self.set_other_contract(&address);
         init_result + 1
@@ -73,39 +71,33 @@ pub trait ProxyTestFirst {
 
     #[payable("MOAX")]
     #[endpoint(upgradeSecondContract)]
-    fn upgrade_second_contract(&self, code: ManagedBuffer) {
-        let payment = self.call_value().moax_value();
+    fn upgrade_second_contract(&self, #[payment] payment: BigUint, code: ManagedBuffer) {
         let other_contract = self.get_other_contract();
 
         self.message_me_proxy()
             .contract(other_contract)
-            .init(456)
-            .with_moax_transfer(payment)
+            .init(payment, 456)
             .upgrade_contract(&code, CodeMetadata::DEFAULT);
     }
 
     #[payable("MOAX")]
     #[endpoint(forwardToOtherContract)]
-    fn forward_to_other_contract(&self) {
-        let payment = self.call_value().moax_value();
+    fn forward_to_other_contract(&self, #[payment] payment: BigUint) {
         let other_contract = self.get_other_contract();
         self.pay_me_proxy()
             .contract(other_contract)
-            .pay_me(0x56)
-            .with_moax_transfer(payment)
+            .pay_me(payment, 0x56)
             .async_call()
             .call_and_exit()
     }
 
     #[payable("MOAX")]
     #[endpoint(forwardToOtherContractWithCallback)]
-    fn forward_to_other_contract_with_callback(&self) {
-        let payment = self.call_value().moax_value();
+    fn forward_to_other_contract_with_callback(&self, #[payment] payment: BigUint) {
         let other_contract = self.get_other_contract();
         self.pay_me_proxy()
             .contract(other_contract)
-            .pay_me_with_result(0x56)
-            .with_moax_transfer(payment)
+            .pay_me_with_result(payment, 0x56)
             .async_call()
             .with_callback(self.callbacks().pay_callback())
             .call_and_exit()

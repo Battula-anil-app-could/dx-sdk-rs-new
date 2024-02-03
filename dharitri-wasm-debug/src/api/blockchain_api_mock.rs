@@ -4,7 +4,7 @@ use crate::{
     DebugApi,
 };
 use dharitri_wasm::{
-    api::{BlockchainApi, BlockchainApiImpl, HandleConstraints, ManagedBufferApi, ManagedTypeApi},
+    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedTypeApi},
     types::{
         heap::{Address, H256},
         BigUint, DctLocalRole, DctLocalRoleFlags, DctTokenData, DctTokenType, ManagedAddress,
@@ -46,7 +46,7 @@ impl BlockchainApiImpl for DebugApi {
         is_smart_contract_address(address)
     }
 
-    fn load_balance_legacy(&self, dest: Self::BigIntHandle, address: &Address) {
+    fn load_balance_legacy(&self, dest: Handle, address: &Address) {
         assert!(
             address == &self.get_sc_address_legacy(),
             "get balance not yet implemented for accounts other than the contract itself"
@@ -113,12 +113,8 @@ impl BlockchainApiImpl for DebugApi {
             .clone()
     }
 
-    fn get_current_dct_nft_nonce(
-        &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> u64 {
-        let address = ManagedAddress::<DebugApi>::from_handle(address_handle);
+    fn get_current_dct_nft_nonce(&self, address_handle: Handle, token_id_handle: Handle) -> u64 {
+        let address = ManagedAddress::<DebugApi>::from_raw_handle(address_handle);
         assert!(
             address.to_address() == self.get_sc_address_legacy(),
             "get_current_dct_nft_nonce not yet implemented for accounts other than the contract itself"
@@ -128,8 +124,8 @@ impl BlockchainApiImpl for DebugApi {
             account
                 .dct
                 .get_by_identifier_or_default(
-                    TokenIdentifier::<DebugApi>::from_handle(token_id_handle)
-                        .to_boxed_bytes()
+                    TokenIdentifier::<DebugApi>::from_raw_handle(token_id_handle)
+                        .to_dct_identifier()
                         .as_slice(),
                 )
                 .last_nonce
@@ -138,12 +134,12 @@ impl BlockchainApiImpl for DebugApi {
 
     fn load_dct_balance(
         &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
+        address_handle: Handle,
+        token_id_handle: Handle,
         nonce: u64,
-        dest: Self::BigIntHandle,
+        dest: Handle,
     ) {
-        let address = ManagedAddress::<DebugApi>::from_handle(address_handle);
+        let address = ManagedAddress::<DebugApi>::from_raw_handle(address_handle);
         assert!(
             address.to_address() == self.get_sc_address_legacy(),
             "get_dct_balance not yet implemented for accounts other than the contract itself"
@@ -151,8 +147,8 @@ impl BlockchainApiImpl for DebugApi {
 
         let dct_balance = self.with_contract_account(|account| {
             account.dct.get_dct_balance(
-                TokenIdentifier::<DebugApi>::from_handle(token_id_handle)
-                    .to_boxed_bytes()
+                TokenIdentifier::<DebugApi>::from_raw_handle(token_id_handle)
+                    .to_dct_identifier()
                     .as_slice(),
                 nonce,
             )
@@ -160,7 +156,7 @@ impl BlockchainApiImpl for DebugApi {
         self.bi_overwrite(dest, dct_balance.into());
     }
 
-    fn load_dct_token_data<M: ManagedTypeApi>(
+    fn get_dct_token_data<M: ManagedTypeApi>(
         &self,
         address: &ManagedAddress<M>,
         token: &TokenIdentifier<M>,
@@ -168,13 +164,18 @@ impl BlockchainApiImpl for DebugApi {
     ) -> DctTokenData<M> {
         self.blockchain_cache()
             .with_account(&address.to_address(), |account| {
-                let token_identifier_value = token.to_boxed_bytes();
+                let token_identifier_value = token.to_dct_identifier();
                 if let Some(dct_data) = account
                     .dct
                     .get_by_identifier(token_identifier_value.as_slice())
                 {
                     if let Some(instance) = dct_data.instances.get_by_nonce(nonce) {
-                        self.dct_token_data_from_instance(dct_data, nonce, instance)
+                        self.dct_token_data_from_instance(
+                            token_identifier_value.into_vec(),
+                            dct_data,
+                            nonce,
+                            instance,
+                        )
                     } else {
                         // missing nonce
                         DctTokenData {
@@ -192,7 +193,7 @@ impl BlockchainApiImpl for DebugApi {
             })
     }
 
-    fn load_dct_token_data_unmanaged<M: ManagedTypeApi>(
+    fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
         _address: &ManagedAddress<M>,
         _token: &TokenIdentifier<M>,
@@ -201,45 +202,14 @@ impl BlockchainApiImpl for DebugApi {
         panic!("get_dct_token_data_unmanaged is deprecated and should never be used in Rust tests")
     }
 
-    fn check_dct_frozen(
-        &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-        _nonce: u64,
-    ) -> bool {
-        let mut frozen = false;
-        let address = ManagedAddress::<Self>::from_handle(address_handle).to_address();
-        let token_identifier_value = self.mb_to_boxed_bytes(token_id_handle);
-        self.blockchain_cache().with_account(&address, |account| {
-            if let Some(dct_data) = account
-                .dct
-                .get_by_identifier(token_identifier_value.as_slice())
-            {
-                frozen = dct_data.frozen;
-            }
-        });
-        frozen
-    }
-
-    fn check_dct_paused(&self, _token_id_handle: Self::ManagedBufferHandle) -> bool {
-        false
-    }
-
-    fn check_dct_limited_transfer(&self, _token_id_handle: Self::ManagedBufferHandle) -> bool {
-        false
-    }
-
-    fn load_dct_local_roles(
-        &self,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> DctLocalRoleFlags {
+    fn get_dct_local_roles(&self, token_id_handle: Handle) -> DctLocalRoleFlags {
         let sc_address = self.input_ref().to.clone();
         self.blockchain_cache()
             .with_account(&sc_address, |account| {
                 let mut result = DctLocalRoleFlags::NONE;
                 if let Some(dct_data) = account.dct.get_by_identifier(
-                    TokenIdentifier::<DebugApi>::from_handle(token_id_handle)
-                        .to_boxed_bytes()
+                    TokenIdentifier::<DebugApi>::from_raw_handle(token_id_handle)
+                        .to_dct_identifier()
                         .as_slice(),
                 ) {
                     for role_name in dct_data.roles.get() {
@@ -255,6 +225,7 @@ impl BlockchainApiImpl for DebugApi {
 impl DebugApi {
     fn dct_token_data_from_instance<M: ManagedTypeApi>(
         &self,
+        token_identifier_value: Vec<u8>,
         dct_data: &DctData,
         nonce: u64,
         instance: &DctInstance,
@@ -272,27 +243,20 @@ impl DebugApi {
 
         DctTokenData {
             token_type: DctTokenType::based_on_token_nonce(nonce),
-            amount: BigUint::from_handle(
-                self.insert_new_big_uint(instance.balance.clone())
-                    .cast_or_signal_error::<M, _>(),
-            ),
+            amount: BigUint::from_raw_handle(self.insert_new_big_uint(instance.balance.clone())),
             frozen: dct_data.frozen,
-            hash: ManagedBuffer::from_handle(
-                self.insert_new_managed_buffer(instance.metadata.hash.clone().unwrap_or_default())
-                    .cast_or_signal_error::<M, _>(),
+            hash: ManagedBuffer::from_raw_handle(
+                self.insert_new_managed_buffer(instance.metadata.hash.clone().unwrap_or_default()),
             ),
-            name: ManagedBuffer::from_handle(
-                self.insert_new_managed_buffer(instance.metadata.name.clone())
-                    .cast_or_signal_error::<M, _>(),
+            name: ManagedBuffer::from_raw_handle(
+                self.insert_new_managed_buffer(token_identifier_value),
             ),
-            attributes: ManagedBuffer::from_handle(
-                self.insert_new_managed_buffer(instance.metadata.attributes.clone())
-                    .cast_or_signal_error::<M, _>(),
+            attributes: ManagedBuffer::from_raw_handle(
+                self.insert_new_managed_buffer(instance.metadata.attributes.clone()),
             ),
             creator,
-            royalties: BigUint::from_handle(
-                self.insert_new_big_uint(num_bigint::BigUint::from(instance.metadata.royalties))
-                    .cast_or_signal_error::<M, _>(),
+            royalties: BigUint::from_raw_handle(
+                self.insert_new_big_uint(num_bigint::BigUint::from(instance.metadata.royalties)),
             ),
             uris,
         }

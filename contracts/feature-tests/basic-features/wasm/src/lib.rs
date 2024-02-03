@@ -23,15 +23,12 @@ dharitri_wasm_node::wasm_endpoints! {
         big_int_to_i64
         big_int_to_parts
         big_int_zero
-        big_uint_eq_u64
         big_uint_from_managed_buffer
         big_uint_from_managed_buffer_ref
         big_uint_from_u64_1
         big_uint_from_u64_2
         big_uint_to_u64
         big_uint_zero
-        bigint_overwrite_i64
-        biguint_overwrite_u64
         bit_and_assign_big_uint
         bit_and_assign_big_uint_ref
         bit_and_big_uint
@@ -56,26 +53,10 @@ dharitri_wasm_node::wasm_endpoints! {
         codec_err_storage_get
         codec_err_storage_key
         codec_err_storage_set
-        compute_create_ec
-        compute_ec_add
-        compute_ec_double
-        compute_generate_key_ec
-        compute_get_ec_length
-        compute_get_priv_key_byte_length
-        compute_get_values
-        compute_is_on_curve_ec
         compute_keccak256
         compute_keccak256_legacy_managed
-        compute_marshal_compressed_ec
-        compute_marshal_ec
-        compute_ripemd160
-        compute_scalar_base_mult
-        compute_scalar_mult
-        compute_secp256k1_der_signature
         compute_sha256
         compute_sha256_legacy_managed
-        compute_unmarshal_compressed_ec
-        compute_unmarshal_ec
         count_ones
         div_assign_big_int
         div_assign_big_int_ref
@@ -117,7 +98,6 @@ dharitri_wasm_node::wasm_endpoints! {
         echo_usize
         echo_varags_managed_eager
         echo_varags_managed_sum
-        endpoint_with_mutable_arg
         finish_simple_enum_variant_1
         getFungibleTokenId
         getListMapper
@@ -141,7 +121,6 @@ dharitri_wasm_node::wasm_endpoints! {
         get_shard_of_address
         get_state_root_hash
         get_tx_hash_legacy
-        init_unique_id_mapper
         is_empty_opt_addr
         is_empty_single_value_mapper
         is_smart_contract
@@ -187,7 +166,6 @@ dharitri_wasm_node::wasm_endpoints! {
         managed_address_zero
         managed_struct_eq
         managed_vec_address_push
-        managed_vec_array_push
         managed_vec_biguint_eq
         managed_vec_biguint_push
         managed_vec_contains
@@ -248,7 +226,6 @@ dharitri_wasm_node::wasm_endpoints! {
         non_zero_usize_iter
         non_zero_usize_macro
         only_owner_endpoint
-        only_user_account_endpoint
         panicWithMessage
         pow_big_int
         pow_big_int_ref
@@ -288,9 +265,6 @@ dharitri_wasm_node::wasm_endpoints! {
         shr_big_uint_ref
         sqrt_big_uint
         sqrt_big_uint_ref
-        storage_read_from_address
-        storage_read_raw
-        storage_write_raw
         store_addr
         store_big_int
         store_big_uint
@@ -324,17 +298,9 @@ dharitri_wasm_node::wasm_endpoints! {
         token_identifier_moax
         token_identifier_is_valid_1
         token_identifier_is_valid_2
-        unique_id_mapper
-        unique_id_mapper_get
-        unique_id_mapper_set
-        unique_id_mapper_swap_remove
         vec_mapper
         vec_mapper_get
         vec_mapper_len
         vec_mapper_push
-        verify_bls_signature
-        verify_custom_secp256k1_signature
-        verify_ed25519_signature
-        verify_secp256k1_signature
     )
 }

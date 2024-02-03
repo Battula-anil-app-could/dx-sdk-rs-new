@@ -29,22 +29,11 @@ macro_rules! managed_address {
 #[macro_export]
 macro_rules! managed_token_id {
     ($bytes:expr) => {{
-        dharitri_wasm::types::TokenIdentifier::from_dct_bytes($bytes)
-    }};
-}
-
-#[macro_export]
-macro_rules! managed_token_id_wrapped {
-    ($bytes:expr) => {{
-        let ___dct_token_id___ = dharitri_wasm::types::TokenIdentifier::from_dct_bytes($bytes);
-        dharitri_wasm::types::MoaxOrDctTokenIdentifier::dct(___dct_token_id___)
-    }};
-}
-
-#[macro_export]
-macro_rules! managed_moax_token_id {
-    () => {{
-        dharitri_wasm::types::MoaxOrDctTokenIdentifier::moax()
+        if $bytes == &dharitri_wasm::types::TokenIdentifier::<dharitri_wasm_debug::DebugApi>::MOAX_REPRESENTATION[..] {
+            dharitri_wasm::types::TokenIdentifier::moax()
+        } else {
+            dharitri_wasm::types::TokenIdentifier::from_dct_bytes($bytes)
+        }
     }};
 }
 

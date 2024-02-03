@@ -6,8 +6,12 @@ use super::storage;
 pub trait ForwarderSftModule: storage::ForwarderStorageModule {
     #[payable("MOAX")]
     #[endpoint]
-    fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moax_value();
+    fn sft_issue(
+        &self,
+        #[payment] issue_cost: BigUint,
+        token_display_name: ManagedBuffer,
+        token_ticker: ManagedBuffer,
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -43,10 +47,9 @@ pub trait ForwarderSftModule: storage::ForwarderStorageModule {
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
-                let (token_identifier, returned_tokens) =
-                    self.call_value().moax_or_single_fungible_dct();
+                let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens);
+                    self.send().direct_moax(caller, &returned_tokens, &[]);
                 }
 
                 self.last_error_message().set(&message.err_msg);

@@ -1,6 +1,6 @@
 use crate::DebugApi;
 use dharitri_wasm::{
-    api::{use_raw_handle, HandleConstraints, StaticVarApi, StaticVarApiImpl},
+    api::{Handle, StaticVarApi, StaticVarApiImpl},
     types::LockableStaticBuffer,
 };
 
@@ -18,25 +18,23 @@ impl StaticVarApiImpl for DebugApi {
         f(&mut lockable_static_buffer)
     }
 
-    fn set_external_view_target_address_handle(&self, handle: Self::ManagedBufferHandle) {
+    fn set_external_view_target_address_handle(&self, handle: Handle) {
         self.static_vars_cell
             .borrow_mut()
-            .external_view_target_address_handle = handle.get_raw_handle();
+            .external_view_target_address_handle = handle;
     }
 
-    fn get_external_view_target_address_handle(&self) -> Self::ManagedBufferHandle {
-        use_raw_handle(
-            self.static_vars_cell
-                .borrow()
-                .external_view_target_address_handle,
-        )
+    fn get_external_view_target_address_handle(&self) -> Handle {
+        self.static_vars_cell
+            .borrow()
+            .external_view_target_address_handle
     }
 
-    fn next_handle<H: HandleConstraints>(&self) -> H {
+    fn next_handle(&self) -> Handle {
         let mut ref_tx_static_vars = self.static_vars_cell.borrow_mut();
         let new_handle = ref_tx_static_vars.next_handle;
         ref_tx_static_vars.next_handle -= 1;
-        use_raw_handle(new_handle)
+        new_handle
     }
 
     fn set_num_arguments(&self, num_arguments: i32) {
@@ -45,23 +43,5 @@ impl StaticVarApiImpl for DebugApi {
 
     fn get_num_arguments(&self) -> i32 {
         self.static_vars_cell.borrow().num_arguments
-    }
-
-    fn set_call_value_moax_handle(&self, handle: Self::BigIntHandle) {
-        self.static_vars_cell.borrow_mut().call_value_moax_handle = handle.get_raw_handle();
-    }
-
-    fn get_call_value_moax_handle(&self) -> Self::BigIntHandle {
-        use_raw_handle(self.static_vars_cell.borrow().call_value_moax_handle)
-    }
-
-    fn set_call_value_multi_dct_handle(&self, handle: Self::ManagedBufferHandle) {
-        self.static_vars_cell
-            .borrow_mut()
-            .call_value_multi_dct_handle = handle.get_raw_handle();
-    }
-
-    fn get_call_value_multi_dct_handle(&self) -> Self::ManagedBufferHandle {
-        use_raw_handle(self.static_vars_cell.borrow().call_value_multi_dct_handle)
     }
 }

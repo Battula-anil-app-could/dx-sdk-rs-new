@@ -4,18 +4,18 @@ use super::DctLocalRoleFlags;
 use crate as dharitri_wasm;
 use crate::{derive::TypeAbi, types::ManagedVecItem};
 
-static DCT_ROLE_NONE: &[u8] = &[];
-static DCT_ROLE_LOCAL_MINT: &[u8] = b"DCTRoleLocalMint";
-static DCT_ROLE_LOCAL_BURN: &[u8] = b"DCTRoleLocalBurn";
-static DCT_ROLE_NFT_CREATE: &[u8] = b"DCTRoleNFTCreate";
-static DCT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCTRoleNFTAddQuantity";
-static DCT_ROLE_NFT_BURN: &[u8] = b"DCTRoleNFTBurn";
-static DCT_ROLE_NFT_ADD_URI: &[u8] = b"DCTRoleNFTAddURI";
-static DCT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCTRoleNFTUpdateAttributes";
-static DCT_ROLE_TRANSFER: &[u8] = b"DCTTransferRole";
+const DCT_ROLE_NONE: &[u8] = &[];
+const DCT_ROLE_LOCAL_MINT: &[u8] = b"DCTRoleLocalMint";
+const DCT_ROLE_LOCAL_BURN: &[u8] = b"DCTRoleLocalBurn";
+const DCT_ROLE_NFT_CREATE: &[u8] = b"DCTRoleNFTCreate";
+const DCT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCTRoleNFTAddQuantity";
+const DCT_ROLE_NFT_BURN: &[u8] = b"DCTRoleNFTBurn";
+const DCT_ROLE_NFT_ADD_URI: &[u8] = b"DCTRoleNFTAddURI";
+const DCT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCTRoleNFTUpdateAttributes";
+const DCT_ROLE_TRANSFER: &[u8] = b"DCTRoleTransfer";
 
 #[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug, Copy,
+    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug, Copy,
 )]
 pub enum DctLocalRole {
     None,

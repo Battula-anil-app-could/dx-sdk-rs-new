@@ -24,8 +24,12 @@ pub trait FormattedMessageFeatures {
 
     #[payable("*")]
     #[endpoint]
-    fn dynamic_message_multiple(&self) {
-        let (token_id, nonce, amount) = self.call_value().moax_or_single_dct().into_tuple();
+    fn dynamic_message_multiple(
+        &self,
+        #[payment_token] token_id: TokenIdentifier,
+        #[payment_nonce] nonce: u64,
+        #[payment_amount] amount: BigUint,
+    ) {
         sc_panic!(
             "Got token {}, with nonce {}, amount {}. I prefer MOAX. ERROR!",
             &&token_id, // references are accepted
@@ -36,8 +40,12 @@ pub trait FormattedMessageFeatures {
 
     #[payable("*")]
     #[endpoint]
-    fn dynamic_message_ascii(&self) {
-        let (token_id, nonce, amount) = self.call_value().moax_or_single_dct().into_tuple();
+    fn dynamic_message_ascii(
+        &self,
+        #[payment_token] token_id: TokenIdentifier,
+        #[payment_nonce] nonce: u64,
+        #[payment_amount] amount: BigUint,
+    ) {
         sc_panic!(
             "Got token {}, with nonce {}, amount {}. I prefer MOAX. ERROR!",
             token_id,
@@ -73,32 +81,14 @@ pub trait FormattedMessageFeatures {
     }
 
     #[endpoint]
-    fn format_message_one_part(&self) -> ManagedBuffer {
+    fn format_message_one_argument(&self) -> ManagedBuffer {
         let message = sc_format!("Test");
         message
     }
 
     #[endpoint]
-    fn format_message_multiple_parts(&self, x: i32) -> ManagedBuffer {
+    fn format_message_multiple_arguments(&self, x: i32) -> ManagedBuffer {
         let message = sc_format!("Hello {} world", x);
-        message
-    }
-
-    #[endpoint]
-    fn format_message_big_int(&self, x: BigInt) -> ManagedBuffer {
-        let message = sc_format!("BigInt: {}", x);
-        message
-    }
-
-    #[endpoint]
-    fn format_message_managed_buffer(&self, x: ManagedBuffer) -> ManagedBuffer {
-        let message = sc_format!("ManagedBuffer: {}", x);
-        message
-    }
-
-    #[endpoint]
-    fn format_message_managed_buffer_hex(&self, x: ManagedBuffer) -> ManagedBuffer {
-        let message = sc_format!("ManagedBuffer hex: {:x}", x);
         message
     }
 }

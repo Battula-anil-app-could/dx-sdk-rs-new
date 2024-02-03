@@ -35,7 +35,6 @@ pub struct EndpointAbi {
     pub docs: &'static [&'static str],
     pub name: &'static str,
     pub only_owner: bool,
-    pub only_admin: bool,
     pub mutability: EndpointMutabilityAbi,
     pub location: EndpointLocationAbi,
     pub payable_in_tokens: &'static [&'static str],

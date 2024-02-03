@@ -39,14 +39,35 @@
         },
         {
             "step": "scCall",
-            "txId": "send_moax-ok",
+            "txId": "without-message",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "send_moax",
                 "arguments": [
                     "address:an_account",
-                    "200"
+                    "100"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "",
+                "logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "with-message",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "send_moax",
+                "arguments": [
+                    "address:an_account",
+                    "100",
+                    "str:send tx message here"
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"

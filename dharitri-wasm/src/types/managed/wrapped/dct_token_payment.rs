@@ -3,45 +3,48 @@ use crate::{
     types::{BigUint, DctTokenPaymentMultiValue, DctTokenType, ManagedVecItem, TokenIdentifier},
 };
 
-use crate as dharitri_wasm; // needed by the codec and TypeAbi generated code
-use crate::derive::TypeAbi;
 use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
-#[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug,
-)]
+use crate as dharitri_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
+
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
 pub struct DctTokenPayment<M: ManagedTypeApi> {
+    pub token_type: DctTokenType,
     pub token_identifier: TokenIdentifier<M>,
     pub token_nonce: u64,
     pub amount: BigUint<M>,
 }
 
 impl<M: ManagedTypeApi> DctTokenPayment<M> {
-    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
+    pub fn no_payment() -> Self {
         DctTokenPayment {
-            token_identifier,
-            token_nonce,
-            amount,
+            token_type: DctTokenType::Invalid,
+            token_identifier: TokenIdentifier::moax(),
+            token_nonce: 0,
+            amount: BigUint::zero(),
         }
     }
 
-    pub fn token_type(&self) -> DctTokenType {
-        if self.amount != 0 {
-            if self.token_nonce == 0 {
+    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
+        let token_type = if amount != 0 && token_identifier.is_dct() {
+            if token_nonce == 0 {
                 DctTokenType::Fungible
-            } else if self.amount == 1u64 {
+            } else if amount == 1u64 {
                 DctTokenType::NonFungible
             } else {
                 DctTokenType::SemiFungible
             }
         } else {
             DctTokenType::Invalid
-        }
-    }
+        };
 
-    #[inline]
-    pub fn into_tuple(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
-        (self.token_identifier, self.token_nonce, self.amount)
+        DctTokenPayment {
+            token_type,
+            token_identifier,
+            token_nonce,
+            amount,
+        }
     }
 
     #[inline]
@@ -86,7 +89,14 @@ impl<M: ManagedTypeApi> ManagedVecItem for DctTokenPayment<M> {
         let token_nonce = managed_vec_item_from_slice(&arr, &mut index);
         let amount = managed_vec_item_from_slice(&arr, &mut index);
 
+        let token_type = if token_nonce > 0 {
+            DctTokenType::SemiFungible
+        } else {
+            DctTokenType::Fungible
+        };
+
         DctTokenPayment {
+            token_type,
             token_identifier,
             token_nonce,
             amount,

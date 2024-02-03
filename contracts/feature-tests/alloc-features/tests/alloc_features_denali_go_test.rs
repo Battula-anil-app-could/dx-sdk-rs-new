@@ -4,8 +4,8 @@ fn boxed_bytes_zeros_go() {
 }
 
 #[test]
-fn crypto_elliptic_curves_legacy_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_elliptic_curves_legacy.scen.json");
+fn crypto_elliptic_curves_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_elliptic_curves.scen.json");
 }
 
 #[test]
@@ -14,8 +14,8 @@ fn crypto_keccak256_legacy_alloc_go() {
 }
 
 #[test]
-fn crypto_ripemd160_legacy_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_ripemd160_legacy.scen.json");
+fn crypto_ripemd160_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_ripemd160.scen.json");
 }
 
 #[test]
@@ -24,18 +24,18 @@ fn crypto_sha256_legacy_alloc_go() {
 }
 
 #[test]
-fn crypto_verify_bls_legacy_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_verify_bls_legacy.scen.json");
+fn crypto_verify_bls_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_verify_bls.scen.json");
 }
 
 #[test]
-fn crypto_verify_ed25519_legacy_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_verify_ed25519_legacy.scen.json");
+fn crypto_verify_ed25519_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_verify_ed25519.scen.json");
 }
 
 #[test]
-fn crypto_verify_secp256k1_legacy_go() {
-    dharitri_wasm_debug::denali_go("denali/crypto_verify_secp256k1_legacy.scen.json");
+fn crypto_verify_secp256k1_go() {
+    dharitri_wasm_debug::denali_go("denali/crypto_verify_secp256k1.scen.json");
 }
 
 #[test]

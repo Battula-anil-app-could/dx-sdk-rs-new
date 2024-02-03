@@ -15,7 +15,6 @@ pub trait PauseModule {
     #[storage_get("pause_module:paused")]
     fn is_paused(&self) -> bool;
 
-    #[inline]
     fn not_paused(&self) -> bool {
         !self.is_paused()
     }
@@ -35,13 +34,5 @@ pub trait PauseModule {
     fn unpause_endpoint(&self) {
         self.set_paused(false);
         // TODO: event
-    }
-
-    fn require_paused(&self) {
-        require!(self.is_paused(), "Contract is not paused");
-    }
-
-    fn require_not_paused(&self) {
-        require!(self.not_paused(), "Contract is paused");
     }
 }

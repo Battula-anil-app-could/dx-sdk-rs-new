@@ -5,7 +5,7 @@ pub fn arg_declarations(method_args: &[MethodArgument]) -> Vec<proc_macro2::Toke
         .iter()
         .map(|arg| {
             let unprocessed_attributes = &arg.unprocessed_attributes;
-            let pat = &arg.original_pat;
+            let pat = &arg.pat;
             let ty = &arg.ty;
             quote! { #(#unprocessed_attributes)* #pat : #ty }
         })

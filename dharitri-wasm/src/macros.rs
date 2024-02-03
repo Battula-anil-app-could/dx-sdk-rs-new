@@ -12,10 +12,9 @@ macro_rules! imports {
         };
         use dharitri_wasm::{
             api::{
-                BigFloatApi, BigIntApi, BlockchainApi, BlockchainApiImpl, CallValueApi,
-                CallValueApiImpl, CryptoApi, CryptoApiImpl, EllipticCurveApi, ErrorApi,
-                ErrorApiImpl, LogApi, LogApiImpl, ManagedTypeApi, PrintApi, PrintApiImpl, SendApi,
-                SendApiImpl,
+                BigIntApi, BlockchainApi, BlockchainApiImpl, CallValueApi, CallValueApiImpl,
+                CryptoApi, CryptoApiImpl, EllipticCurveApi, ErrorApi, ErrorApiImpl, LogApi,
+                LogApiImpl, ManagedTypeApi, PrintApi, PrintApiImpl, SendApi, SendApiImpl,
             },
             arrayvec::ArrayVec,
             contract_base::{ContractBase, ProxyObjBase},

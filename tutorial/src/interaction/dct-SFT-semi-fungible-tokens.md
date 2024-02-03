@@ -5,8 +5,8 @@ Semi-Fungible Tokens have variable amounts, and variable nonce. They are not den
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let erdjs = await require('@dharitrinetwork/erdjs');
-let { erdSys, Moax, wallets: { alice, bob, carol } } = await erdjs.setupInteractive("local-testnet");
+let moajs = await require('@dharitrinetwork/moajs');
+let { erdSys, Moax, wallets: { alice, bob, carol } } = await moajs.setupInteractive("local-testnet");
 
 // Issue a new semi-fungible token
 let MyToken = await erdSys.sender(alice).issueSemiFungible("MySemiFungibleToken", "MYTOKEN");
@@ -21,12 +21,12 @@ let MyFirstSemi = await erdSys.sender(alice).dctNftCreate(MyToken, 1_000, "MyFir
 
 // Check alice's token balance
 // Note: if the balance comes up as 0, wait some time and try again
-await erdSys.getBalance(alice, MyFirstSemi).then(erdjs.print);
+await erdSys.getBalance(alice, MyFirstSemi).then(moajs.print);
 
 // Send some tokens to bob and carol
 await erdSys.sender(alice).value(MyFirstSemi(200)).send(bob);
 
-await erdSys.getBalance(alice, MyFirstSemi).then(erdjs.print);
-await erdSys.getBalance(bob, MyFirstSemi).then(erdjs.print);
+await erdSys.getBalance(alice, MyFirstSemi).then(moajs.print);
+await erdSys.getBalance(bob, MyFirstSemi).then(moajs.print);
 
 ```

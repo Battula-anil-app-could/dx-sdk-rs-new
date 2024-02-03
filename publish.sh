@@ -53,53 +53,43 @@
 #
 
 cd dharitri-codec-derive
-cargo publish || return 1
+cargo publish
 cd ..
 
 sleep 20
 
 cd dharitri-codec
-cargo publish || return 1
+cargo publish
 cd ..
 
 cd dharitri-wasm-derive
-cargo publish || return 1
+cargo publish
 cd ..
 
 sleep 20
 
 cd dharitri-wasm
-cargo publish || return 1
+cargo publish
 cd ..
 
+sleep 20
+
 cd denali
-cargo publish || return 1
+cargo publish
 cd ..
 
 cd dharitri-wasm-node
-cargo publish || return 1
+cargo publish
 cd ..
 
 cd dharitri-wasm-debug
-cargo publish || return 1
+cargo publish
 cd ..
 
 cd dharitri-wasm-output
-cargo publish || return 1
+cargo publish
 cd ..
 
 cd dharitri-wasm-modules
-cargo publish || return 1
+cargo publish
 cd ..
-
-cd dharitri-interact-snippets
-cargo publish || return 1
-cd ..
-
-cd contracts/core/price-aggregator
-cargo publish || return 1
-cd ../../..
-
-cd contracts/core/wmoax-swap
-cargo publish || return 1
-cd ../../..

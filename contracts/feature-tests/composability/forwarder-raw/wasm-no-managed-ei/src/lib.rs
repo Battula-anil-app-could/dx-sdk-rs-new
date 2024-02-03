@@ -9,14 +9,11 @@ dharitri_wasm_node::wasm_endpoints! {
     (
         callBack
         call_execute_on_dest_context
+        call_execute_on_dest_context_by_caller
         call_execute_on_dest_context_readonly
         call_execute_on_dest_context_twice
         call_execute_on_same_context
-        callback_args
-        callback_args_at_index
-        callback_payment_at_index
-        callback_payments
-        callback_payments_triples
+        callback_data
         clear_callback_info
         deploy_contract
         deploy_from_source
@@ -29,7 +26,6 @@ dharitri_wasm_node::wasm_endpoints! {
         forward_transf_exec
         forward_transf_exec_moax
         forward_transf_exec_dct
-        forward_transf_exec_twice
         forwarder_async_send_and_retrieve_multi_transfer_funds
         upgrade
         upgrade_from_source

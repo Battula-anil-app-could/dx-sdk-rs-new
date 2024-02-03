@@ -70,8 +70,7 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
     let msig = generate_proxy_method_sig(m, quote! { dharitri_wasm::types::ContractCall });
 
     let mut token_count = 0;
-    let mut token_expr =
-        quote! { dharitri_wasm::types::MoaxOrDctTokenIdentifier::<Self::Api>::moax() };
+    let mut token_expr = quote! { dharitri_wasm::types::TokenIdentifier::<Self::Api>::moax() };
     let mut nonce_count = 0;
     let mut nonce_expr = quote! { 0u64 };
     let mut payment_count = 0;
@@ -140,7 +139,7 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
 
     let single_payment_snippet = if token_count > 0 || nonce_count > 0 || payment_count > 0 {
         quote! {
-            ___contract_call___ = ___contract_call___.with_moax_or_single_dct_token_transfer(#token_expr, #nonce_expr, #payment_expr);
+            ___contract_call___ = ___contract_call___.add_token_transfer(#token_expr, #nonce_expr, #payment_expr);
         }
     } else {
         quote! {}

@@ -41,7 +41,7 @@ pub trait DctTransferWithFee {
         self.paid_fees().clear();
 
         let caller = self.blockchain().get_caller();
-        self.send().direct_multi(&caller, &fees);
+        self.send().direct_multi(&caller, &fees, &[]);
     }
 
     #[payable("*")]
@@ -82,7 +82,7 @@ pub trait DctTransferWithFee {
                 },
             }
         }
-        self.send().direct_multi(&address, &new_payments);
+        self.send().direct_multi(&address, &new_payments, &[]);
     }
 
     fn get_payment_after_fees(

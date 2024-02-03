@@ -4,60 +4,7 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.5.3] - 2022-07-19
-- `#[only_admin]` annotation
-- Safer BigUint/BigInt conversions
-- Added and published `price-aggregator` and `wmoax-swap` core contracts.
-
-## [dharitri-wasm 0.34.0, dharitri-codec 0.1.9, denali 0.1.8, dharitri-interact-snippets 0.0.1] - 2022-07-08
-- Major refactor of the denali-rs infrastructure.
-	- High-level Denali objects moved to dharitri-wasm-debug;
-	- The `denali` crate no longer depends on `dharitri-wasm-debug` (as originally intended and implemented);
-	- Typed denali contract call objects, for better call syntax.
-	- More syntactic sugar for writing denali calls.
-- The first version of dharitri-interact-snippets, which can be used to write short blockchain interactor programs.
-	- The syntax relies on contract proxies to easily build calls.
-	- Some of the infrastructure is shared with Denali.
-	- There is an example of such a interactor for the multisig contract.
-- Refactor of managed type handles in all API traits. Eliminated undefined behavior when using the same handle in multiple contexts.
-- Transfer role proxy module.
-- NFT merge module.
-- `#[only_user_account]` annotation. Only user accounts can call these endpoints.
-- ABI - fixed missing event logs from modules.
-
-## [dharitri-wasm 0.33.1, denali 0.15.1] - 2022-06-24
-- CodecSelf for BigInt
-
-## [dharitri-wasm 0.33.0, denali 0.15.0] - 2022-06-20
-- Removed the data field for direct MOAX & DCT transfers.
-- Testing and debugging environment aligned with VM version 1.4.53.
-- Call value and token data infrastructure additional cleanup.
-
-## [dharitri-wasm 0.32.0, denali 0.14.0] - 2022-06-03
-- VM new functionality added as part of the environment interface 1.2:
-	- Fully managed functionality for elliptic curves (no allocator);
-	- Fully managed cryptographic functions (no allocator);
-	- More efficient printing of big ints and hex;
-	- Functionality available by adding the `ei-1-2` flag to contracts.
-- `BigFloat` functionality. Since the functionality is not yet deployed on mainnet, use flag `big-float` to use.
-- Major refactoring of the call value mechanism:
-	- `TokenIdentifier` now only refers to DCT, for mixed MOAX+DCT we have `MoaxOrDctTokenIdentifier`.
-	- `DctTokenPayment` now only refers to DCT, for mixed MOAX+DCT we have `MoaxOrDctTokenPayment`.
-	- Compact version for multi-transfer: `let [payment_a, payment_b, payment_c] = self.call_value().multi_dct();`.
-	- Explicit `single_dct` vs. `single_fungible_dct` vs. `moax_or_single_dct` vs. `moax_or_single_fungible_dct`.
-	- Payment arguments are still supported, although discouraged. They always assume the MOAX+DCT scenario.
-- `ManagedOption` provides some minor optimization for specific use-cases. Mostly for use in the framework.
-- Cleanup in the callback mechanism and in the `SendApi`.
-- `SparseArray` implementation.
-- `UniqueIdMapper` - efficient storage mapper for holding unique values.
-- The ABI also contains events.
-- New standard module: `StakingModule`.
-
-
-## [dharitri-wasm 0.31.1, denali 0.13.1] - 2022-05-04
-- Bugfix - formatter single char issue.
-
-## [dharitri-wasm 0.31.0, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
+## [dharitri-wasm 0.5.4, dharitri-codec 0.2.0, denali 0.1.8] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -65,9 +12,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Denali Rust testing framework v2, which uses contract proxies for composing calls and is capable of building and exporting denali scenarios.
 - Managed type handle management system in the contract, to reduce the number of API calls to the VM. General VM API refactor.
 - Eliminated `#[var_args]` annotation. The framework can now distinguish between single-values and multi-values solely based on type.
-- Contract cleans up return data after performing synchronous calls. Getting return data by range is no longer needed and the respective methods have been removed.
 - Fixed behavior of blockchain API `get_dct_token_data`.
-- Git tag/commit info in ABI (fixed & reintroduced).
 
 ## [dharitri-wasm 0.30.0, dharitri-codec 0.10.0] - 2022-03-17
 - Feature flags in `dharitri-wasm`:
@@ -94,7 +39,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
 - Git tag/commit info in ABI.
 
-## [dharitri-wasm 0.28.0, dharitri-codec 0.9.0, denali 0.1.9] - 2022-02-22
+## [dharitri-wasm 0.28.0, dharitri-codec 0.9.0, denali 0.12.0] - 2022-02-22
 - Major dharitri-codec refactor:
 	- Redesigned the error handling for single value encoding
 	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
@@ -209,7 +154,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
@@ -223,7 +168,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Debugger builtin function mocks check for DCT roles
 - ABI provides definitions for DctTokenPayment, DctTokenData, DctTokenType
 
-## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.11.0] - 2021-10-22
+## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.2.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -326,7 +271,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [dharitri-wasm 0.1.8, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
+## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -379,7 +324,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - `dharitri-codec-derive` dix - `TopDecodeOrDefault` works with generics
 - Upgraded to Rust2021.
 
-## [dharitri-wasm 0.13.0] - 2021-03-04
+## [dharitri-wasm 0.1.8] - 2021-03-04
 ### Main feature
 - Events revamped:
 	- any event name of any length is accepted. The event name is now expressed as ASCII instead of hex
@@ -391,7 +336,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Minor features
 - SingleValueMapper redesigned for easier use. It no longer keeps the storage value cached.
 
-## [dharitri-wasm 0.1.9] - 2021-02-25
+## [dharitri-wasm 0.12.0] - 2021-02-25
 - Reorganized DCT and MOAX direct send api.
 - New async call syntax
 	- redesigned contract proxies
@@ -399,7 +344,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [dharitri-wasm 0.11.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [dharitri-wasm 0.2.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -514,7 +459,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.6.2] - 2020-09-16
 - NonZeroUsize iterator and utils
 
-## [dharitri-wasm 0.6.1, dharitri-codec 0.1.3] - 2020-09-15
+## [dharitri-wasm 0.6.1, dharitri-codec 0.1.8] - 2020-09-15
 - Integrated NonZeroUsize into the framework
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
@@ -532,7 +477,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 

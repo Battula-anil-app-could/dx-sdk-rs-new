@@ -46,7 +46,8 @@
                     "address:a_user",
                     "str:NFT-000001",
                     "1",
-                    "1"
+                    "1",
+                    ""
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"

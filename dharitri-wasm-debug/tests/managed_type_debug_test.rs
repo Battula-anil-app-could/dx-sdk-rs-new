@@ -1,9 +1,6 @@
 use dharitri_wasm::{
     hex_literal::hex,
-    types::{
-        BigInt, BigUint, MoaxOrDctTokenIdentifier, ManagedAddress, ManagedBuffer,
-        ManagedByteArray, ManagedVec, TokenIdentifier,
-    },
+    types::{BigInt, BigUint, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedVec},
 };
 use dharitri_wasm_debug::DebugApi;
 
@@ -70,26 +67,11 @@ fn test_managed_address_pretty() {
 }
 
 #[test]
-fn test_managed_vec_format_biguint() {
+fn test_managed_vec_format() {
     let _ = DebugApi::dummy();
     let mut mv = ManagedVec::<DebugApi, BigUint<DebugApi>>::new();
     mv.push(BigUint::from(1u32));
     mv.push(BigUint::from(2u32));
     let s = format!("{:?}", &mv);
     assert_eq!("[BigUint { handle: -101, hex-value-be: \"01\" }, BigUint { handle: -102, hex-value-be: \"02\" }]", s);
-}
-
-#[test]
-fn test_managed_vec_format_moax_or_dct() {
-    let _ = DebugApi::dummy();
-    let mut mv = ManagedVec::<DebugApi, MoaxOrDctTokenIdentifier<DebugApi>>::new();
-    mv.push(MoaxOrDctTokenIdentifier::moax());
-    mv.push(MoaxOrDctTokenIdentifier::dct(TokenIdentifier::from(
-        "MYTOKEN-5678",
-    )));
-    let s = format!("{:?}", &mv);
-    assert_eq!(
-        "[MoaxOrDctTokenIdentifier::Moax, MoaxOrDctTokenIdentifier::Dct(\"MYTOKEN-5678\")]",
-        s
-    );
 }

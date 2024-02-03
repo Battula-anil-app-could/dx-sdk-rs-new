@@ -24,8 +24,12 @@ pub trait DnsModule {
     #[payable("MOAX")]
     #[only_owner]
     #[endpoint(dnsRegister)]
-    fn dns_register(&self, dns_address: ManagedAddress, name: ManagedBuffer) {
-        let payment = self.call_value().moax_value();
+    fn dns_register(
+        &self,
+        dns_address: ManagedAddress,
+        name: ManagedBuffer,
+        #[payment] payment: BigUint,
+    ) {
         self.dns_proxy(dns_address)
             .register(&name)
             .with_moax_transfer(payment)

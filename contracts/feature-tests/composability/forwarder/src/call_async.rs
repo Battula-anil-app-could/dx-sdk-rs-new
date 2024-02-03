@@ -4,7 +4,7 @@ dharitri_wasm::derive_imports!();
 #[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct CallbackData<M: ManagedTypeApi> {
     callback_name: ManagedBuffer<M>,
-    token_identifier: MoaxOrDctTokenIdentifier<M>,
+    token_identifier: TokenIdentifier<M>,
     token_nonce: u64,
     token_amount: BigUint<M>,
     args: ManagedVec<M, ManagedBuffer<M>>,
@@ -18,85 +18,55 @@ pub trait ForwarderAsyncCallModule {
     fn vault_proxy(&self) -> vault::Proxy<Self::Api>;
 
     #[endpoint]
-    fn echo_args_async(&self, to: ManagedAddress, args: MultiValueEncoded<ManagedBuffer>) {
-        self.vault_proxy()
-            .contract(to)
-            .echo_arguments(args)
-            .async_call()
-            .with_callback(self.callbacks().echo_args_callback())
-            .call_and_exit();
-    }
-
-    #[callback]
-    fn echo_args_callback(
+    #[payable("*")]
+    fn forward_async_accept_funds(
         &self,
-        #[call_result] result: ManagedAsyncCallResult<MultiValueEncoded<ManagedBuffer>>,
-    ) -> MultiValueEncoded<ManagedBuffer> {
-        match result {
-            ManagedAsyncCallResult::Ok(results) => {
-                let mut cb_result =
-                    ManagedVec::from_single_item(ManagedBuffer::new_from_bytes(b"success"));
-                cb_result.append_vec(results.into_vec_of_buffers());
-
-                cb_result.into()
-            },
-            ManagedAsyncCallResult::Err(err) => {
-                let mut cb_result =
-                    ManagedVec::from_single_item(ManagedBuffer::new_from_bytes(b"error"));
-                cb_result.push(ManagedBuffer::new_from_bytes(
-                    &err.err_code.to_be_bytes()[..],
-                ));
-                cb_result.push(err.err_msg);
-
-                cb_result.into()
-            },
-        }
-    }
-
-    #[endpoint]
-    #[payable("*")]
-    fn forward_async_accept_funds(&self, to: ManagedAddress) {
-        let (token, token_nonce, payment) = self.call_value().moax_or_single_dct().into_tuple();
+        to: ManagedAddress,
+        #[payment_token] token: TokenIdentifier,
+        #[payment_amount] payment: BigUint,
+        #[payment_nonce] token_nonce: u64,
+    ) {
         self.vault_proxy()
             .contract(to)
             .accept_funds()
-            .with_moax_or_single_dct_token_transfer(token, token_nonce, payment)
+            .add_token_transfer(token, token_nonce, payment)
             .async_call()
             .call_and_exit()
     }
 
     #[endpoint]
     #[payable("*")]
-    fn forward_async_accept_funds_half_payment(&self, to: ManagedAddress) {
-        let payment = self.call_value().moax_or_single_dct();
-        let half_payment = payment.amount / 2u32;
+    fn forward_async_accept_funds_half_payment(
+        &self,
+        to: ManagedAddress,
+        #[payment_token] token: TokenIdentifier,
+        #[payment] payment: BigUint,
+    ) {
+        let half_payment = payment / 2u32;
         self.vault_proxy()
             .contract(to)
             .accept_funds()
-            .with_moax_or_single_dct_token_transfer(
-                payment.token_identifier,
-                payment.token_nonce,
-                half_payment,
-            )
+            .add_token_transfer(token, 0, half_payment)
             .async_call()
             .call_and_exit()
     }
 
     #[payable("*")]
     #[endpoint]
-    fn forward_async_accept_funds_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
-        let payment = self.call_value().moax_or_single_dct();
-        let fees = &payment.amount * &percentage_fees / PERCENTAGE_TOTAL;
-        let amount_to_send = payment.amount - fees;
+    fn forward_async_accept_funds_with_fees(
+        &self,
+        #[payment_token] token_id: TokenIdentifier,
+        #[payment_amount] payment: BigUint,
+        to: ManagedAddress,
+        percentage_fees: BigUint,
+    ) {
+        let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
+        let amount_to_send = payment - fees;
 
         self.vault_proxy()
             .contract(to)
             .accept_funds()
-            .with_moax_or_single_dct_token_transfer(
-                payment.token_identifier,
-                payment.token_nonce,
-                amount_to_send,
-            )
+            .add_token_transfer(token_id, 0, amount_to_send)
             .async_call()
             .call_and_exit()
     }
@@ -105,21 +75,30 @@ pub trait ForwarderAsyncCallModule {
     fn forward_async_retrieve_funds(
         &self,
         to: ManagedAddress,
-        token: MoaxOrDctTokenIdentifier,
+        token: TokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {
         self.vault_proxy()
             .contract(to)
-            .retrieve_funds(token, token_nonce, amount)
+            .retrieve_funds(
+                token,
+                token_nonce,
+                amount,
+                OptionalValue::<ManagedBuffer>::None,
+            )
             .async_call()
             .with_callback(self.callbacks().retrieve_funds_callback())
             .call_and_exit()
     }
 
     #[callback]
-    fn retrieve_funds_callback(&self) {
-        let (token, nonce, payment) = self.call_value().moax_or_single_dct().into_tuple();
+    fn retrieve_funds_callback(
+        &self,
+        #[payment_token] token: TokenIdentifier,
+        #[payment_nonce] nonce: u64,
+        #[payment_amount] payment: BigUint,
+    ) {
         self.retrieve_funds_callback_event(&token, nonce, &payment);
 
         let _ = self.callback_data().push(&CallbackData {
@@ -134,7 +113,7 @@ pub trait ForwarderAsyncCallModule {
     #[event("retrieve_funds_callback")]
     fn retrieve_funds_callback_event(
         &self,
-        #[indexed] token: &MoaxOrDctTokenIdentifier,
+        #[indexed] token: &TokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] payment: &BigUint,
     );
@@ -143,13 +122,13 @@ pub trait ForwarderAsyncCallModule {
     fn send_funds_twice(
         &self,
         to: &ManagedAddress,
-        token_identifier: &MoaxOrDctTokenIdentifier,
+        token_identifier: &TokenIdentifier,
         amount: &BigUint,
     ) {
         self.vault_proxy()
             .contract(to.clone())
             .accept_funds()
-            .with_moax_or_single_dct_token_transfer(token_identifier.clone(), 0, amount.clone())
+            .add_token_transfer(token_identifier.clone(), 0, amount.clone())
             .async_call()
             .with_callback(
                 self.callbacks()
@@ -162,13 +141,13 @@ pub trait ForwarderAsyncCallModule {
     fn send_funds_twice_callback(
         &self,
         to: &ManagedAddress,
-        token_identifier: &MoaxOrDctTokenIdentifier,
+        token_identifier: &TokenIdentifier,
         cb_amount: &BigUint,
     ) {
         self.vault_proxy()
             .contract(to.clone())
             .accept_funds()
-            .with_moax_or_single_dct_token_transfer(token_identifier.clone(), 0, cb_amount.clone())
+            .add_token_transfer(token_identifier.clone(), 0, cb_amount.clone())
             .async_call()
             .call_and_exit()
     }
@@ -183,17 +162,22 @@ pub trait ForwarderAsyncCallModule {
 
         for multi_arg in token_payments.into_iter() {
             let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
-            let payment = DctTokenPayment::new(token_identifier, token_nonce, amount);
+            let payment = DctTokenPayment {
+                token_identifier,
+                token_nonce,
+                amount,
+                token_type: DctTokenType::Invalid, // not used
+            };
 
             all_token_payments.push(payment);
         }
 
-        self.vault_proxy()
-            .contract(to)
-            .accept_funds()
-            .with_multi_token_transfer(all_token_payments)
-            .async_call()
-            .call_and_exit()
+        // TODO: use proxy here
+        self.send().transfer_multiple_dct_via_async_call(
+            &to,
+            &all_token_payments,
+            b"accept_funds",
+        );
     }
 
     #[view]
@@ -206,7 +190,7 @@ pub trait ForwarderAsyncCallModule {
         index: usize,
     ) -> MultiValue5<
         ManagedBuffer,
-        MoaxOrDctTokenIdentifier,
+        TokenIdentifier,
         u64,
         BigUint,
         MultiValueManagedVec<Self::Api, ManagedBuffer>,

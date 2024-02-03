@@ -1,26 +1,23 @@
 use core::marker::PhantomData;
 
-use dharitri_codec::Empty;
-
 use crate::{
     api::{
-        BlockchainApi, BlockchainApiImpl, CallTypeApi, StorageReadApi,
+        BlockchainApi, BlockchainApiImpl, CallTypeApi, SendApiImpl, StorageReadApi,
         CHANGE_OWNER_BUILTIN_FUNC_NAME, DCT_LOCAL_BURN_FUNC_NAME, DCT_LOCAL_MINT_FUNC_NAME,
-        DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_ADD_URI_FUNC_NAME, DCT_NFT_BURN_FUNC_NAME,
-        DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME,
+        DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_ADD_URI_FUNC_NAME,
+        DCT_NFT_BURN_FUNC_NAME, DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME,
+        DCT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME, DCT_TRANSFER_FUNC_NAME,
     },
     dct::DCTSystemSmartContractProxy,
     types::{
-        BigUint, ContractCall, MoaxOrDctTokenIdentifier, DctTokenPayment, ManagedAddress,
-        ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier,
+        BigUint, ContractCall, DctTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
+        ManagedType, ManagedVec, TokenIdentifier,
     },
 };
 
 use super::BlockchainWrapper;
 
 const PERCENTAGE_TOTAL: u64 = 10_000;
-
-use super::SendRawWrapper;
 
 /// API that groups methods that either send MOAX or DCT, or that call other contracts.
 // pub trait SendApi: Clone + Sized {
@@ -43,10 +40,6 @@ where
         }
     }
 
-    fn send_raw_wrapper(&self) -> SendRawWrapper<A> {
-        SendRawWrapper::new()
-    }
-
     pub fn dct_system_sc_proxy(&self) -> DCTSystemSmartContractProxy<A> {
         DCTSystemSmartContractProxy::new_proxy_obj()
     }
@@ -61,74 +54,33 @@ where
 
     /// Sends MOAX to a given address, directly.
     /// Used especially for sending MOAX to regular accounts.
-    pub fn direct_moax(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
-        self.send_raw_wrapper().direct_moax(to, amount, Empty)
+    pub fn direct_moax<D>(&self, to: &ManagedAddress<A>, amount: &BigUint<A>, data: D)
+    where
+        D: Into<ManagedBuffer<A>>,
+    {
+        A::send_api_impl().direct_moax(to, amount, data)
     }
 
     /// Sends either MOAX, DCT or NFT to the target address,
     /// depending on the token identifier and nonce
-    #[inline]
-    pub fn direct(
+    pub fn direct<D>(
         &self,
         to: &ManagedAddress<A>,
-        token: &MoaxOrDctTokenIdentifier<A>,
+        token: &TokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
-    ) {
-        self.direct_with_gas_limit(to, token, nonce, amount, 0, Empty, &[]);
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn direct_dct_with_gas_limit<D>(
-        &self,
-        to: &ManagedAddress<A>,
-        token_identifier: &TokenIdentifier<A>,
-        nonce: u64,
-        amount: &BigUint<A>,
-        gas: u64,
-        endpoint_name: D,
-        arguments: &[ManagedBuffer<A>],
+        data: D,
     ) where
         D: Into<ManagedBuffer<A>>,
     {
-        if nonce == 0 {
-            let _ = self.send_raw_wrapper().transfer_dct_execute(
-                to,
-                token_identifier,
-                amount,
-                gas,
-                &endpoint_name.into(),
-                &arguments.into(),
-            );
-        } else {
-            let _ = self.send_raw_wrapper().transfer_dct_nft_execute(
-                to,
-                token_identifier,
-                nonce,
-                amount,
-                gas,
-                &endpoint_name.into(),
-                &arguments.into(),
-            );
-        }
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn direct_dct(
-        &self,
-        to: &ManagedAddress<A>,
-        token_identifier: &TokenIdentifier<A>,
-        nonce: u64,
-        amount: &BigUint<A>,
-    ) {
-        self.direct_dct_with_gas_limit(to, token_identifier, nonce, amount, 0, Empty, &[]);
+        self.direct_with_gas_limit(to, token, nonce, amount, 0, data, &[]);
     }
 
     #[allow(clippy::too_many_arguments)]
     pub fn direct_with_gas_limit<D>(
         &self,
         to: &ManagedAddress<A>,
-        token: &MoaxOrDctTokenIdentifier<A>,
+        token: &TokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
         gas: u64,
@@ -137,38 +89,56 @@ where
     ) where
         D: Into<ManagedBuffer<A>>,
     {
-        if let Some(dct_token_identifier) = token.as_dct_option() {
-            self.direct_dct_with_gas_limit(
+        let endpoint_name_managed = endpoint_name.into();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        for arg in arguments {
+            arg_buffer.push_arg(arg);
+        }
+
+        if token.is_moax() {
+            let _ = A::send_api_impl().direct_moax_execute(
                 to,
-                &dct_token_identifier,
+                amount,
+                gas,
+                &endpoint_name_managed,
+                &arg_buffer,
+            );
+        } else if nonce == 0 {
+            let _ = A::send_api_impl().direct_dct_execute(
+                to,
+                token,
+                amount,
+                gas,
+                &endpoint_name_managed,
+                &arg_buffer,
+            );
+        } else {
+            let _ = A::send_api_impl().direct_dct_nft_execute(
+                to,
+                token,
                 nonce,
                 amount,
                 gas,
-                endpoint_name,
-                arguments,
-            );
-        } else {
-            let _ = self.send_raw_wrapper().direct_moax_execute(
-                to,
-                amount,
-                gas,
-                &endpoint_name.into(),
-                &arguments.into(),
+                &endpoint_name_managed,
+                &arg_buffer,
             );
         }
     }
 
-    pub fn direct_multi(
+    pub fn direct_multi<D>(
         &self,
         to: &ManagedAddress<A>,
         payments: &ManagedVec<A, DctTokenPayment<A>>,
-    ) {
-        let _ = self.send_raw_wrapper().multi_dct_transfer_execute(
+        data: D,
+    ) where
+        D: Into<ManagedBuffer<A>>,
+    {
+        let _ = A::send_api_impl().direct_multi_dct_transfer_execute(
             to,
             payments,
             0,
-            &ManagedBuffer::new(),
-            &ManagedArgBuffer::new(),
+            &data.into(),
+            &ManagedArgBuffer::new_empty(),
         );
     }
 
@@ -177,28 +147,79 @@ where
     /// So only use as the last call in your endpoint.  
     /// If you want to perform multiple transfers, use `self.send().transfer_multiple_dct_via_async_call()` instead.  
     /// Note that MOAX can NOT be transfered with this function.  
-    pub fn transfer_dct_via_async_call(
+    pub fn transfer_dct_via_async_call<D>(
         &self,
-        to: ManagedAddress<A>,
-        token: TokenIdentifier<A>,
+        to: &ManagedAddress<A>,
+        token: &TokenIdentifier<A>,
         nonce: u64,
-        amount: BigUint<A>,
-    ) -> ! {
-        ContractCall::<A, ()>::new(to, ManagedBuffer::new())
-            .add_dct_token_transfer(token, nonce, amount)
-            .async_call()
-            .call_and_exit_ignore_callback()
+        amount: &BigUint<A>,
+        data: D,
+    ) -> !
+    where
+        D: Into<ManagedBuffer<A>>,
+    {
+        let data_buf: ManagedBuffer<A> = data.into();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        arg_buffer.push_arg(token);
+        if nonce == 0 {
+            arg_buffer.push_arg(amount);
+            if !data_buf.is_empty() {
+                arg_buffer.push_arg_raw(data_buf);
+            }
+
+            A::send_api_impl().async_call_raw(
+                to,
+                &BigUint::zero(),
+                &ManagedBuffer::new_from_bytes(DCT_TRANSFER_FUNC_NAME),
+                &arg_buffer,
+            )
+        } else {
+            arg_buffer.push_arg(nonce);
+            arg_buffer.push_arg(amount);
+            arg_buffer.push_arg(to);
+            if !data_buf.is_empty() {
+                arg_buffer.push_arg_raw(data_buf);
+            }
+
+            A::send_api_impl().async_call_raw(
+                &BlockchainWrapper::<A>::new().get_sc_address(),
+                &BigUint::zero(),
+                &ManagedBuffer::new_from_bytes(DCT_NFT_TRANSFER_FUNC_NAME),
+                &arg_buffer,
+            )
+        }
     }
 
-    pub fn transfer_multiple_dct_via_async_call(
+    pub fn transfer_multiple_dct_via_async_call<D>(
         &self,
-        to: ManagedAddress<A>,
-        payments: ManagedVec<A, DctTokenPayment<A>>,
-    ) -> ! {
-        ContractCall::<A, ()>::new(to, ManagedBuffer::new())
-            .with_multi_token_transfer(payments)
-            .async_call()
-            .call_and_exit_ignore_callback()
+        to: &ManagedAddress<A>,
+        payments: &ManagedVec<A, DctTokenPayment<A>>,
+        data: D,
+    ) -> !
+    where
+        D: Into<ManagedBuffer<A>>,
+    {
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        arg_buffer.push_arg(to);
+        arg_buffer.push_arg(payments.len());
+
+        for payment in payments.into_iter() {
+            // TODO: check that `!token_identifier.is_moax()` or let Arwen throw the error?
+            arg_buffer.push_arg(payment.token_identifier);
+            arg_buffer.push_arg(payment.token_nonce);
+            arg_buffer.push_arg(payment.amount);
+        }
+        let data_buf: ManagedBuffer<A> = data.into();
+        if !data_buf.is_empty() {
+            arg_buffer.push_arg_raw(data_buf);
+        }
+
+        A::send_api_impl().async_call_raw(
+            &BlockchainWrapper::<A>::new().get_sc_address(),
+            &BigUint::zero(),
+            &ManagedBuffer::new_from_bytes(DCT_MULTI_TRANSFER_FUNC_NAME),
+            &arg_buffer,
+        );
     }
 
     /// Sends a synchronous call to change a smart contract address.
@@ -224,8 +245,12 @@ where
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
-        self.send_raw_wrapper()
-            .call_local_dct_built_in_function(gas, endpoint_name, arg_buffer)
+        let results =
+            A::send_api_impl().call_local_dct_built_in_function(gas, endpoint_name, arg_buffer);
+
+        A::send_api_impl().clean_return_data();
+
+        results
     }
 
     /// Allows synchronous minting of DCT/SFT (depending on nonce). Execution is resumed afterwards.
@@ -234,7 +259,7 @@ where
     /// For SFTs, you must use `self.send().dct_nft_create()` before adding additional quantity.
     /// This function cannot be used for NFTs.
     pub fn dct_local_mint(&self, token: &TokenIdentifier<A>, nonce: u64, amount: &BigUint<A>) {
-        let mut arg_buffer = ManagedArgBuffer::new();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         let func_name: &[u8];
 
         arg_buffer.push_arg(token);
@@ -259,7 +284,7 @@ where
     /// Note that the SC must have the DCTLocalBurn or DCTNftBurn roles set,
     /// or this will fail with "action is not allowed"
     pub fn dct_local_burn(&self, token: &TokenIdentifier<A>, nonce: u64, amount: &BigUint<A>) {
-        let mut arg_buffer = ManagedArgBuffer::new();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         let func_name: &[u8];
 
         arg_buffer.push_arg(token);
@@ -295,7 +320,7 @@ where
         attributes: &T,
         uris: &ManagedVec<A, ManagedBuffer<A>>,
     ) -> u64 {
-        let mut arg_buffer = ManagedArgBuffer::new();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(name);
@@ -346,7 +371,7 @@ where
     ) -> u64 {
         let big_zero = BigUint::zero();
         let empty_buffer = ManagedBuffer::new();
-        let empty_vec = ManagedVec::from_handle(empty_buffer.get_handle());
+        let empty_vec = ManagedVec::from_raw_handle(empty_buffer.get_raw_handle());
 
         self.dct_nft_create(
             token,
@@ -359,7 +384,54 @@ where
         )
     }
 
-    /// Sends the NFTs to the buyer address and calculates and sends the required royalties to the NFT creator.
+    /// Creates an NFT on behalf of the caller. This will set the "creator" field to the caller's address
+    /// NOT activated on devnet/mainnet yet.
+    #[allow(clippy::too_many_arguments)]
+    pub fn dct_nft_create_as_caller<T: dharitri_codec::TopEncode>(
+        &self,
+        token: &TokenIdentifier<A>,
+        amount: &BigUint<A>,
+        name: &ManagedBuffer<A>,
+        royalties: &BigUint<A>,
+        hash: &ManagedBuffer<A>,
+        attributes: &T,
+        uris: &ManagedVec<A, ManagedBuffer<A>>,
+    ) -> u64 {
+        let mut arg_buffer = ManagedArgBuffer::<A>::new_empty();
+        arg_buffer.push_arg(token);
+        arg_buffer.push_arg(amount);
+        arg_buffer.push_arg(name);
+        arg_buffer.push_arg(royalties);
+        arg_buffer.push_arg(hash);
+        arg_buffer.push_arg(attributes);
+
+        if uris.is_empty() {
+            // at least one URI is required, so we push an empty one
+            arg_buffer.push_arg(&dharitri_codec::Empty);
+        } else {
+            // The API function has the last argument as variadic,
+            // so we top-encode each and send as separate argument
+            for uri in uris {
+                arg_buffer.push_arg(uri);
+            }
+        }
+
+        let output = A::send_api_impl().execute_on_dest_context_by_caller_raw(
+            A::blockchain_api_impl().get_gas_left(),
+            &BlockchainWrapper::<A>::new().get_caller(),
+            &BigUint::zero(),
+            &ManagedBuffer::new_from_bytes(DCT_NFT_CREATE_FUNC_NAME),
+            &arg_buffer,
+        );
+
+        if let Some(first_result_bytes) = output.try_get(0) {
+            first_result_bytes.parse_as_u64().unwrap_or_default()
+        } else {
+            0
+        }
+    }
+
+    /// Sends thr NFTs to the buyer address and calculates and sends the required royalties to the NFT creator.
     /// Returns the payment amount left after sending royalties.
     #[allow(clippy::too_many_arguments)]
     pub fn sell_nft(
@@ -368,26 +440,18 @@ where
         nft_nonce: u64,
         nft_amount: &BigUint<A>,
         buyer: &ManagedAddress<A>,
-        payment_token: &MoaxOrDctTokenIdentifier<A>,
+        payment_token: &TokenIdentifier<A>,
         payment_nonce: u64,
         payment_amount: &BigUint<A>,
     ) -> BigUint<A> {
-        let nft_token_data = A::blockchain_api_impl().load_dct_token_data::<A>(
+        let nft_token_data = A::blockchain_api_impl().get_dct_token_data::<A>(
             &BlockchainWrapper::<A>::new().get_sc_address(),
             nft_id,
             nft_nonce,
         );
         let royalties_amount = payment_amount.clone() * nft_token_data.royalties / PERCENTAGE_TOTAL;
 
-        let _ = self.send_raw_wrapper().transfer_dct_nft_execute(
-            buyer,
-            nft_id,
-            nft_nonce,
-            nft_amount,
-            0,
-            &ManagedBuffer::new(),
-            &ManagedArgBuffer::new(),
-        );
+        self.direct(buyer, nft_id, nft_nonce, nft_amount, &[]);
 
         if royalties_amount > 0u32 {
             self.direct(
@@ -395,6 +459,7 @@ where
                 payment_token,
                 payment_nonce,
                 &royalties_amount,
+                &[],
             );
 
             payment_amount.clone() - royalties_amount
@@ -422,7 +487,7 @@ where
             return;
         }
 
-        let mut arg_buffer = ManagedArgBuffer::new();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         arg_buffer.push_arg(token_id);
         arg_buffer.push_arg(nft_nonce);
 
@@ -443,7 +508,7 @@ where
         nft_nonce: u64,
         new_attributes: &T,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         arg_buffer.push_arg(token_id);
         arg_buffer.push_arg(nft_nonce);
         arg_buffer.push_arg(new_attributes);

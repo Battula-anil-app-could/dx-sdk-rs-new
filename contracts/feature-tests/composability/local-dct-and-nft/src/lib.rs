@@ -22,11 +22,11 @@ pub trait LocalDctAndDctNft {
     #[endpoint(issueFungibleToken)]
     fn issue_fungible_token(
         &self,
+        #[payment] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().moax_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -67,8 +67,12 @@ pub trait LocalDctAndDctNft {
 
     #[payable("MOAX")]
     #[endpoint(nftIssue)]
-    fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moax_value();
+    fn nft_issue(
+        &self,
+        #[payment] issue_cost: BigUint,
+        token_display_name: ManagedBuffer,
+        token_ticker: ManagedBuffer,
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -136,9 +140,10 @@ pub trait LocalDctAndDctNft {
         token_identifier: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
+        data: ManagedBuffer,
     ) {
         self.send()
-            .transfer_dct_via_async_call(to, token_identifier, nonce, amount);
+            .transfer_dct_via_async_call(&to, &token_identifier, nonce, &amount, data);
     }
 
     #[endpoint]
@@ -151,12 +156,12 @@ pub trait LocalDctAndDctNft {
         function: ManagedBuffer,
         arguments: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new();
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         for arg in arguments.into_iter() {
             arg_buffer.push_arg_raw(arg);
         }
 
-        let _ = self.send_raw().transfer_dct_nft_execute(
+        let _ = Self::Api::send_api_impl().direct_dct_nft_execute(
             &to,
             &token_identifier,
             nonce,
@@ -171,8 +176,12 @@ pub trait LocalDctAndDctNft {
 
     #[payable("MOAX")]
     #[endpoint(sftIssue)]
-    fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moax_value();
+    fn sft_issue(
+        &self,
+        #[payment] issue_cost: BigUint,
+        token_display_name: ManagedBuffer,
+        token_ticker: ManagedBuffer,
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -256,21 +265,21 @@ pub trait LocalDctAndDctNft {
     fn dct_issue_callback(
         &self,
         caller: &ManagedAddress,
+        #[payment_token] token_identifier: TokenIdentifier,
+        #[payment] returned_tokens: BigUint,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
-        let (token_identifier, returned_tokens) = self.call_value().moax_or_single_fungible_dct();
         // callback is called with DCTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-                self.last_issued_token()
-                    .set(&token_identifier.unwrap_dct());
+                self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens);
+                    self.send().direct_moax(caller, &returned_tokens, &[]);
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -291,10 +300,9 @@ pub trait LocalDctAndDctNft {
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
-                let (token_identifier, returned_tokens) =
-                    self.call_value().moax_or_single_fungible_dct();
+                let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens);
+                    self.send().direct_moax(caller, &returned_tokens, &[]);
                 }
 
                 self.last_error_message().set(&message.err_msg);

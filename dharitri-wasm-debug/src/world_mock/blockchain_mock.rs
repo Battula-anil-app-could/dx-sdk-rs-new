@@ -1,10 +1,15 @@
-use crate::{
-    denali_system::model::Scenario, num_bigint::BigUint, tx_mock::BlockchainUpdate, ContractMap,
-};
+use crate::{num_bigint::BigUint, tx_mock::BlockchainUpdate, ContractMap};
 use dharitri_wasm::types::heap::Address;
-use denali::{interpret_trait::InterpreterContext, value_interpreter::interpret_string};
+use denali::{
+    interpret_trait::{InterpreterContext, IntoRaw},
+    model::Scenario,
+    value_interpreter::interpret_string,
+};
 use num_traits::Zero;
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+};
 
 use super::{AccountData, BlockInfo};
 
@@ -13,7 +18,6 @@ const DHARITRI_REWARD_KEY: &[u8] = b"DHARITRIreward";
 #[derive(Debug)]
 pub struct BlockchainMock {
     pub accounts: HashMap<Address, AccountData>,
-    pub addr_to_denali_string_map: HashMap<Address, String>,
     pub new_addresses: HashMap<(Address, u64), Address>,
     pub previous_block_info: BlockInfo,
     pub current_block_info: BlockInfo,
@@ -26,7 +30,6 @@ impl BlockchainMock {
     pub fn new() -> Self {
         BlockchainMock {
             accounts: HashMap::new(),
-            addr_to_denali_string_map: HashMap::new(),
             new_addresses: HashMap::new(),
             previous_block_info: BlockInfo::new(),
             current_block_info: BlockInfo::new(),
@@ -114,5 +117,11 @@ impl BlockchainMock {
         let (result, obj) = f(obj);
         *self = obj;
         result
+    }
+
+    pub fn write_denali_trace<P: AsRef<Path>>(&mut self, file_path: P) {
+        let denali_trace = core::mem::take(&mut self.denali_trace);
+        let denali_trace_raw = denali_trace.into_raw();
+        denali_trace_raw.save_to_file(file_path);
     }
 }

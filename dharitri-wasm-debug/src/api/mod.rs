@@ -1,7 +1,6 @@
 mod blockchain_api_mock;
 mod call_value_api_mock;
 mod crypto_api_mock;
-mod debug_handle_mock;
 mod endpoint_arg_api_mock;
 mod endpoint_finish_api_mock;
 mod error_api_mock;

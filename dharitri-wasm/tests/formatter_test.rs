@@ -32,10 +32,7 @@ impl FormatByteReceiver for SimpleReceiver {
 }
 
 /// Expects that the output from SCDisplay is the same as the standard Rust display.
-fn check_display<T>(item: T)
-where
-    T: SCDisplay + Display,
-{
+fn check_display<T: SCDisplay + Display>(item: T) {
     let mut receiver = SimpleReceiver::default();
     SCDisplay::fmt(&item, &mut receiver);
     let expected = format!("{}", item);
@@ -75,10 +72,7 @@ fn test_format_signed() {
     check_display(i64::MIN);
 }
 
-fn check_code_metadata_display<T>(item: T, expected: &str)
-where
-    T: SCDisplay,
-{
+fn check_code_metadata_display<T: SCDisplay>(item: T, expected: &str) {
     let mut receiver = SimpleReceiver::default();
     SCDisplay::fmt(&item, &mut receiver);
     assert_eq!(receiver.0.as_str(), expected);
