@@ -1,22 +1,9 @@
 #![no_std]
 
+mod vault_proxy;
+use vault_proxy::*;
+
 dharitri_wasm::imports!();
-
-#[dharitri_wasm_derive::callable(VaultProxy)]
-pub trait Vault {
-	fn echo_arguments(
-		&self,
-		args: &VarArgs<BoxedBytes>,
-	) -> ContractCall<BigUint, VarArgs<BoxedBytes>>;
-
-	#[payable("*")]
-	fn accept_funds(&self) -> ContractCall<BigUint, ()>;
-
-	#[payable("*")]
-	fn reject_funds(&self) -> ContractCall<BigUint, ()>;
-
-	fn retrieve_funds(&self, token: TokenIdentifier, amount: BigUint) -> ContractCall<BigUint, ()>;
-}
 
 /// Test contract for investigating async calls.
 /// TODO: split into modules.
