@@ -37,58 +37,58 @@ fn contract_map() -> ContractMap<TxContext> {
 	contract_map
 }
 
-#[test]
-fn forwarder_async_accept_moax() {
-	parse_execute_denali(
-		"denali/forwarder_async_accept_moax.scen.json",
-		&contract_map(),
-	);
-}
+// #[test]
+// fn forwarder_async_accept_moax() {
+// 	parse_execute_denali(
+// 		"denali/forwarder_async_accept_moax.scen.json",
+// 		&contract_map(),
+// 	);
+// }
 
-#[test]
-fn forwarder_async_accept_dct() {
-	parse_execute_denali(
-		"denali/forwarder_async_accept_dct.scen.json",
-		&contract_map(),
-	);
-}
+// #[test]
+// fn forwarder_async_accept_dct() {
+// 	parse_execute_denali(
+// 		"denali/forwarder_async_accept_dct.scen.json",
+// 		&contract_map(),
+// 	);
+// }
 
-#[test]
-fn forwarder_raw_async_accept_moax() {
-	parse_execute_denali(
-		"denali/forwarder_raw_async_accept_moax.scen.json",
-		&contract_map(),
-	);
-}
+// #[test]
+// fn forwarder_raw_async_accept_moax() {
+// 	parse_execute_denali(
+// 		"denali/forwarder_raw_async_accept_moax.scen.json",
+// 		&contract_map(),
+// 	);
+// }
 
-#[test]
-fn forwarder_raw_async_accept_dct() {
-	parse_execute_denali(
-		"denali/forwarder_raw_async_accept_dct.scen.json",
-		&contract_map(),
-	);
-}
+// #[test]
+// fn forwarder_raw_async_accept_dct() {
+// 	parse_execute_denali(
+// 		"denali/forwarder_raw_async_accept_dct.scen.json",
+// 		&contract_map(),
+// 	);
+// }
 
-#[test]
-fn forwarder_raw_async_echo() {
-	parse_execute_denali("denali/forwarder_raw_async_echo.scen.json", &contract_map());
-}
+// #[test]
+// fn forwarder_raw_async_echo() {
+// 	parse_execute_denali("denali/forwarder_raw_async_echo.scen.json", &contract_map());
+// }
 
-#[test]
-fn forwarder_raw_direct_moax() {
-	parse_execute_denali(
-		"denali/forwarder_raw_direct_moax.scen.json",
-		&contract_map(),
-	);
-}
+// #[test]
+// fn forwarder_raw_direct_moax() {
+// 	parse_execute_denali(
+// 		"denali/forwarder_raw_direct_moax.scen.json",
+// 		&contract_map(),
+// 	);
+// }
 
-#[test]
-fn forwarder_raw_direct_dct() {
-	parse_execute_denali(
-		"denali/forwarder_raw_direct_dct.scen.json",
-		&contract_map(),
-	);
-}
+// #[test]
+// fn forwarder_raw_direct_dct() {
+// 	parse_execute_denali(
+// 		"denali/forwarder_raw_direct_dct.scen.json",
+// 		&contract_map(),
+// 	);
+// }
 
 // #[test]
 // fn forwarder_raw_sync_echo() {

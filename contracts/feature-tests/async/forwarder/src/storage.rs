@@ -1,0 +1,12 @@
+dharitri_wasm::imports!();
+
+#[dharitri_wasm_derive::module(ForwarderStorageModuleImpl)]
+pub trait ForwarderStorageModule {
+	#[view(lastIssuedToken)]
+	#[storage_mapper("lastIssuedToken")]
+	fn last_issued_token(&self) -> SingleValueMapper<Self::Storage, TokenIdentifier>;
+
+	#[view(lastErrorMessage)]
+	#[storage_mapper("lastErrorMessage")]
+	fn last_error_message(&self) -> SingleValueMapper<Self::Storage, BoxedBytes>;
+}

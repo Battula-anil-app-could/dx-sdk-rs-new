@@ -22,5 +22,5 @@ features = [ "wasm-output-mode",]
 path = ".."
 
 [dependencies.dharitri-wasm-output]
-version = "0.6.0"
+version = "0.6.1"
 features = [ "wasm-output-mode",]
