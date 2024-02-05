@@ -27,8 +27,9 @@
                 "logs": [
                     {
                         "address": "sc:moax-dct-swap",
-                        "identifier": "str:unwrap-moax",
+                        "endpoint": "str:unwrapMoax",
                         "topics": [
+                            "str:unwrap-moax",
                             "address:user"
                         ],
                         "data": "300"

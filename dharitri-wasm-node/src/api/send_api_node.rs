@@ -1,4 +1,4 @@
-use super::{ArwenBigInt, ArwenBigUint};
+use super::{ArwenBigInt, ArwenBigUint, ArwenEllipticCurve};
 use crate::ArwenApiImpl;
 use alloc::vec::Vec;
 use dharitri_wasm::api::{BlockchainApi, SendApi, StorageReadApi, StorageWriteApi};
@@ -58,19 +58,42 @@ extern "C" {
 	) -> !;
 
 	fn createContract(
-		gas: u64,
+		gas: i64,
 		valueOffset: *const u8,
 		codeOffset: *const u8,
 		codeMetadataOffset: *const u8,
-		length: i32,
+		codeLength: i32,
 		resultOffset: *const u8,
 		numArguments: i32,
 		argumentsLengthOffset: *const u8,
 		dataOffset: *const u8,
 	) -> i32;
 
+	fn deployFromSourceContract(
+		gas: i64,
+		valueOffset: *const u8,
+		sourceContractAddressOffset: *const u8,
+		codeMetadataOffset: *const u8,
+		resultAddressOffset: *const u8,
+		numArguments: i32,
+		argumentsLengthOffset: *const u8,
+		dataOffset: *const u8,
+	) -> i32;
+
+	fn upgradeContract(
+		scAddressOffset: *const u8,
+		gas: i64,
+		valueOffset: *const u8,
+		codeOffset: *const u8,
+		codeMetadataOffset: *const u8,
+		codeLength: i32,
+		numArguments: i32,
+		argumentsLengthOffset: *const u8,
+		dataOffset: *const u8,
+	);
+
 	fn executeOnDestContext(
-		gas: u64,
+		gas: i64,
 		addressOffset: *const u8,
 		valueOffset: *const u8,
 		functionOffset: *const u8,
@@ -81,7 +104,7 @@ extern "C" {
 	) -> i32;
 
 	fn executeOnDestContextByCaller(
-		gas: u64,
+		gas: i64,
 		addressOffset: *const u8,
 		valueOffset: *const u8,
 		functionOffset: *const u8,
@@ -92,7 +115,7 @@ extern "C" {
 	) -> i32;
 
 	fn executeOnSameContext(
-		gas: u64,
+		gas: i64,
 		addressOffset: *const u8,
 		valueOffset: *const u8,
 		functionOffset: *const u8,
@@ -110,6 +133,7 @@ extern "C" {
 impl SendApi for ArwenApiImpl {
 	type AmountType = ArwenBigUint;
 	type ProxyBigInt = ArwenBigInt;
+	type ProxyEllipticCurve = ArwenEllipticCurve;
 	type ProxyStorage = Self;
 
 	#[inline]
@@ -121,6 +145,16 @@ impl SendApi for ArwenApiImpl {
 	fn get_gas_left(&self) -> u64 {
 		BlockchainApi::get_gas_left(self)
 	}
+
+	#[inline]
+	fn get_dct_token_data(
+		&self,
+		address: &Address,
+		token: &TokenIdentifier,
+		nonce: u64,
+	) -> dharitri_wasm::types::DctTokenData<ArwenBigUint> {
+		BlockchainApi::get_dct_token_data(self, address, token, nonce)
+	} 
 
 	fn direct_moax(&self, to: &Address, amount: &ArwenBigUint, data: &[u8]) {
 		unsafe {
@@ -245,12 +279,12 @@ impl SendApi for ArwenApiImpl {
 		code: &BoxedBytes,
 		code_metadata: CodeMetadata,
 		arg_buffer: &ArgBuffer,
-	) -> Address {
+	) -> Option<Address> {
 		let mut new_address = Address::zero();
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
 			let _ = createContract(
-				gas,
+				gas as i64,
 				amount_bytes32_ptr,
 				code.as_ptr(),
 				code_metadata.as_ptr(),
@@ -261,7 +295,65 @@ impl SendApi for ArwenApiImpl {
 				arg_buffer.arg_data_ptr(),
 			);
 		}
-		new_address
+		if new_address.is_zero() {
+			None
+		} else {
+			Some(new_address)
+		}
+	}
+
+	fn deploy_from_source_contract(
+		&self,
+		gas: u64,
+		amount: &ArwenBigUint,
+		source_contract_address: &Address,
+		code_metadata: CodeMetadata,
+		arg_buffer: &ArgBuffer,
+	) -> Option<Address> {
+		let mut new_address = Address::zero();
+		unsafe {
+			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
+			let _ = deployFromSourceContract(
+				gas as i64,
+				amount_bytes32_ptr,
+				source_contract_address.as_ptr(),
+				code_metadata.as_ptr(),
+				new_address.as_mut_ptr(),
+				arg_buffer.num_args() as i32,
+				arg_buffer.arg_lengths_bytes_ptr(),
+				arg_buffer.arg_data_ptr(),
+			);
+		}
+		if new_address.is_zero() {
+			None
+		} else {
+			Some(new_address)
+		}
+	}
+
+	fn upgrade_contract(
+		&self,
+		sc_address: &Address,
+		gas: u64,
+		amount: &ArwenBigUint,
+		code: &BoxedBytes,
+		code_metadata: CodeMetadata,
+		arg_buffer: &ArgBuffer,
+	) {
+		unsafe {
+			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
+			upgradeContract(
+				sc_address.as_ref().as_ptr(),
+				gas as i64,
+				amount_bytes32_ptr,
+				code.as_ptr(),
+				code_metadata.as_ptr(),
+				code.len() as i32,
+				arg_buffer.num_args() as i32,
+				arg_buffer.arg_lengths_bytes_ptr(),
+				arg_buffer.arg_data_ptr(),
+			);
+		}
 	}
 
 	fn execute_on_dest_context_raw(
@@ -277,7 +369,7 @@ impl SendApi for ArwenApiImpl {
 
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
 			let _ = executeOnDestContext(
-				gas,
+				gas as i64,
 				address.as_ref().as_ptr(),
 				amount_bytes32_ptr,
 				function.as_ptr(),
@@ -309,7 +401,7 @@ impl SendApi for ArwenApiImpl {
 
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
 			let _ = executeOnDestContext(
-				gas,
+				gas as i64,
 				address.as_ref().as_ptr(),
 				amount_bytes32_ptr,
 				function.as_ptr(),
@@ -341,7 +433,7 @@ impl SendApi for ArwenApiImpl {
 
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
 			let _ = executeOnDestContextByCaller(
-				gas,
+				gas as i64,
 				address.as_ref().as_ptr(),
 				amount_bytes32_ptr,
 				function.as_ptr(),
@@ -367,7 +459,7 @@ impl SendApi for ArwenApiImpl {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
 			let _ = executeOnSameContext(
-				gas,
+				gas as i64,
 				address.as_ref().as_ptr(),
 				amount_bytes32_ptr,
 				function.as_ptr(),
@@ -389,17 +481,22 @@ impl SendApi for ArwenApiImpl {
 		self.storage_load_boxed_bytes(tx_hash.as_bytes())
 	}
 
-	fn call_local_dct_built_in_function(&self, gas: u64, function: &[u8], arg_buffer: &ArgBuffer) {
+	fn call_local_dct_built_in_function(
+		&self,
+		gas: u64,
+		function: &[u8],
+		arg_buffer: &ArgBuffer,
+	) -> Vec<BoxedBytes> {
 		// account-level built-in function, so the destination address is the contract itself
 		let own_address = BlockchainApi::get_sc_address(self);
 
-		let _ = self.execute_on_dest_context_raw(
+		self.execute_on_dest_context_raw(
 			gas,
 			&own_address,
 			&ArwenBigUint::from(0u32),
 			function,
-			&arg_buffer,
-		);
+			arg_buffer,
+		)
 	}
 }
 

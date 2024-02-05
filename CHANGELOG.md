@@ -4,12 +4,26 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
-### New math hooks exposed from Arwen:
-- `pow`, `log2`, `sqrt`
-- cryptography: elliptic curves
+## [dharitri-wasm 0.6.4, denali 0.2.3] - 2021-07-28
 
-## [dharitri-wasm 0.6.3] - 2021-06-04
+- New math hooks exposed from Arwen:
+	- `pow`, `log2`, `sqrt`
+	- cryptography: elliptic curves
+- `deploy_contract` now returns `Option<Address>`
+- `deploy_from_source_contract` API
+- Send API refactored for more consistency and ease of use.
+- High level proxies can be used to deploy contracts.
+- Denali log syntax updated, to match Arwen.
+- A better `#[only_owner]` annotation, which can be applied directly to endoint methods. This annotation also shows up in the ABI.
+- `dharitri-wasm-derive` now an optional dependency of `dharitri-wasm`. Use `#[dharitri_wasm::contract]` instead of `#[dharitri_wasm_derive::contract]` now. Same for proxies and modules.
+
+## [dharitri-wasm 0.17.4] - 2021-06-30
+- conversions from big ints to small int: `BigUint::to_u64`, `BigInt::to_i64`
+
+## [dharitri-wasm 0.17.3] - 2021-06-11
+- `SingleValueMapper` `set_if_empty` method
+
+## [dharitri-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
 ## [dharitri-wasm 0.17.1] - 2021-06-04
@@ -31,7 +45,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
+## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.2.5] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -211,7 +225,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -237,7 +251,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.0.7, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -309,7 +323,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro
