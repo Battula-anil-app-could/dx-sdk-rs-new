@@ -6,17 +6,59 @@ edition = "2018"
 publish = false
 
 [lib]
-path = "src/use_module.rs"
+path = "src/lib.rs"
 
-[dependencies.dharitri-wasm-modules]
-version = "0.5.4"
-path = "../../../dharitri-wasm-modules"
+[features]
+wasm-output-mode = [
+    "dharitri-wasm-node",
+    "dharitri-wasm-module-features-wasm",
+    "dharitri-wasm-module-pause-wasm"
+]
+
+default = [
+    "dharitri-wasm-module-features-default",
+    "dharitri-wasm-module-pause-default"
+]
+
+[dependencies.dharitri-wasm-module-features-wasm]
+package = "dharitri-wasm-module-features"
+version = "0.5.5"
+path = "../../modules/dharitri-wasm-module-features"
+features = ["wasm-output-mode"]
+optional = true
+
+[dependencies.dharitri-wasm-module-features-default]
+package = "dharitri-wasm-module-features"
+version = "0.5.5"
+path = "../../modules/dharitri-wasm-module-features"
+optional = true
+
+[dependencies.dharitri-wasm-module-pause-wasm]
+package = "dharitri-wasm-module-pause"
+version = "0.5.5"
+path = "../../modules/dharitri-wasm-module-pause"
+features = ["wasm-output-mode"]
+optional = true
+
+[dependencies.dharitri-wasm-module-pause-default]
+package = "dharitri-wasm-module-pause"
+version = "0.5.5"
+path = "../../modules/dharitri-wasm-module-pause"
+optional = true
 
 [dependencies.dharitri-wasm]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../dharitri-wasm"
-features = [ "alloc" ]
+
+[dependencies.dharitri-wasm-derive]
+version = "0.5.5"
+path = "../../../dharitri-wasm-derive"
+
+[dependencies.dharitri-wasm-node]
+version = "0.5.5"
+path = "../../../dharitri-wasm-node"
+optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../dharitri-wasm-debug"

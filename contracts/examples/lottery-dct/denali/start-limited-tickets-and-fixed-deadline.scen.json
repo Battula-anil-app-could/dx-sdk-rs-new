@@ -1,6 +1,5 @@
 {
     "name": "start with limited tickets and fixed deadline",
-    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "externalSteps",
@@ -11,11 +10,12 @@
             "txId": "start limited tickets, fixed deadline",
             "tx": {
                 "from": "address:my_address",
-                "to": "sc:lottery",
+                "to": "address:the_lottery_contract",
+                "value": "0",
                 "function": "start",
                 "arguments": [
                     "str:lottery_name",
-                    "str:LOTTERY-123456",
+                    "str:lottery_token",
                     "100",
                     "0x01|u32:2",
                     "0x01|u64:123,456",
@@ -27,7 +27,6 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
                 "status": "",
                 "gas": "*",
                 "refund": "*"
@@ -51,19 +50,11 @@
                     "balance": "1,000,000",
                     "storage": {}
                 },
-                "sc:lottery": {
+                "address:the_lottery_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        "str:lotteryInfo|nested:str:lottery_name": {
-                            "0-token_identifier": "nested:str:LOTTERY-123456",
-                            "1-ticket_price": "biguint:100",
-                            "2-tickets-left": "u32:2",
-                            "3-deadline": "u64:123,456",
-                            "4-max_entries_per_user": "u32:800",
-                            "5-prize_distribution": "nested:u8:100",
-                            "6-prize_pool": "biguint:0"
-                        }
+                        "''lotteryInfo|u32:12|''lottery_name": "u32:13|str:lottery_token|u32:1|u8:100|u32:2|u64:123,456|u32:800|u32:1|u8:100|u32:0|u32:0|u32:0"
                     },
                     "code": "file:../output/lottery-dct.wasm"
                 }

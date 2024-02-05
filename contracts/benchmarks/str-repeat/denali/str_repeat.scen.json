@@ -6,25 +6,28 @@
             "accounts": {
                 "address:owner": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 }
             },
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
                     "creatorNonce": "0",
-                    "newAddress": "sc:contract"
+                    "newAddress": "address:contract"
                 }
             ]
         },
         {
             "step": "scDeploy",
-            "txId": "deploy",
+            "txId": "1",
             "tx": {
                 "from": "address:owner",
+                "value": "0",
                 "contractCode": "file:../output/str-repeat.wasm",
                 "arguments": [],
-                "gasLimit": "2,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -37,20 +40,22 @@
         },
         {
             "step": "scCall",
-            "txId": "append-abc-3-times",
+            "txId": "1",
             "tx": {
                 "from": "address:owner",
-                "to": "sc:contract",
+                "to": "address:contract",
+                "value": "0",
                 "function": "repeat",
                 "arguments": [
-                    "str:abc",
-                    "3"
+                    "str:abc", "3"
                 ],
-                "gasLimit": "4,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
+                "out": [
+                    "str:abcabcabc"
+                ],
                 "status": "",
                 "logs": [],
                 "gas": "*",
@@ -59,74 +64,50 @@
         },
         {
             "step": "scCall",
-            "txId": "append-abc-0-times",
+            "txId": "2",
             "tx": {
                 "from": "address:owner",
-                "to": "sc:contract",
+                "to": "address:contract",
+                "value": "0",
                 "function": "repeat",
                 "arguments": [
-                    "str:abc",
-                    "0"
+                    "str:abc", "0"
                 ],
-                "gasLimit": "3,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
+                "out": [
+                    ""
+                ],
                 "status": "",
                 "logs": [],
                 "gas": "*",
                 "refund": "*"
-            }
-        },
-        {
-            "step": "checkState",
-            "accounts": {
-                "sc:contract": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "storage": {
-                        "str:byteArray": "str:abcabcabc"
-                    },
-                    "code": "*"
-                },
-                "+": ""
             }
         },
         {
             "step": "scCall",
-            "txId": "append-whitespace",
+            "txId": "2",
             "tx": {
                 "from": "address:owner",
-                "to": "sc:contract",
+                "to": "address:contract",
+                "value": "0",
                 "function": "repeat",
                 "arguments": [
-                    "",
-                    "1000"
+                    "", "1000"
                 ],
-                "gasLimit": "4,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
+                "out": [
+                    ""
+                ],
                 "status": "",
                 "logs": [],
                 "gas": "*",
                 "refund": "*"
-            }
-        },
-        {
-            "step": "checkState",
-            "accounts": {
-                "sc:contract": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "storage": {
-                        "str:byteArray": "str:abcabcabc"
-                    },
-                    "code": "*"
-                },
-                "+": ""
             }
         }
     ]

@@ -1,15 +1,4 @@
-////////////////////////////////////////////////////
-////////////////// AUTO-GENERATED //////////////////
-////////////////////////////////////////////////////
-
 #![no_std]
 
-dharitri_wasm_node::wasm_endpoints! {
-    adder
-    (
-        add
-        getSum
-    )
-}
-
-dharitri_wasm_node::wasm_empty_callback! {}
+pub use adder::*;
+pub use dharitri_wasm_output::*;

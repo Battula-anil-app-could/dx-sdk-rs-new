@@ -1,16 +1,4 @@
-////////////////////////////////////////////////////
-////////////////// AUTO-GENERATED //////////////////
-////////////////////////////////////////////////////
-
 #![no_std]
 
-dharitri_wasm_node::wasm_endpoints! {
-    str_repeat
-    (
-        getByteArray
-        getByteArrayLength
-        repeat
-    )
-}
-
-dharitri_wasm_node::wasm_empty_callback! {}
+pub use str_repeat::*;
+pub use dharitri_wasm_output::*;

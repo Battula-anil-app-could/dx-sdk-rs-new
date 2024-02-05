@@ -1,19 +1,22 @@
 {
     "name": "exceptions",
-    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "0",
-                    "balance": "0x1000000"
+                    "balance": "0x1000000",
+                    "storage": {},
+                    "code": ""
                 },
-                "sc:crypto_bubbles": {
+                "address:contract_address": {
                     "nonce": "0",
                     "balance": "0x1300",
-                    "code": "file:../output/crypto-bubbles.wasm",
-                    "owner": "address:crypto_bubbles_owner"
+                    "storage": {
+                        "''owner": "address:creator_address"
+                    },
+                    "code": "file:../output/crypto-bubbles.wasm"
                 }
             }
         },
@@ -21,8 +24,9 @@
             "step": "scCall",
             "txId": "1",
             "tx": {
-                "from": "address:crypto_bubbles_owner",
-                "to": "sc:crypto_bubbles",
+                "from": "address:creator_address",
+                "to": "address:contract_address",
+                "value": "0",
                 "function": "rewardWinner",
                 "arguments": [
                     "0x12",
@@ -35,8 +39,8 @@
             "expect": {
                 "out": [],
                 "status": "0x04",
-                "message": "str:argument decode error (winner): bad array length",
-                "logs": "*",
+                "message": "str:argument decode error (winner): bad H256 length",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -45,8 +49,9 @@
             "step": "scCall",
             "txId": "2",
             "tx": {
-                "from": "address:crypto_bubbles_owner",
-                "to": "sc:crypto_bubbles",
+                "from": "address:creator_address",
+                "to": "address:contract_address",
+                "value": "0",
                 "function": "balanceOf",
                 "arguments": [
                     "0x22acc1000000000000000000000000000000000000000000000000000000000000"
@@ -57,8 +62,8 @@
             "expect": {
                 "out": [],
                 "status": "0x04",
-                "message": "str:argument decode error (player): bad array length",
-                "logs": "*",
+                "message": "str:argument decode error (player): bad H256 length",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -66,16 +71,18 @@
         {
             "step": "checkState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "2",
                     "balance": "0xe00000",
                     "storage": {},
                     "code": ""
                 },
-                "sc:crypto_bubbles": {
+                "address:contract_address": {
                     "nonce": "0",
                     "balance": "0x1300",
-                    "storage": {},
+                    "storage": {
+                        "''owner": "address:creator_address"
+                    },
                     "code": "file:../output/crypto-bubbles.wasm"
                 }
             }

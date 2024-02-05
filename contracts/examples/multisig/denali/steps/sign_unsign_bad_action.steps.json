@@ -6,19 +6,18 @@
             "txId": "processed-action-id-sign-bob",
             "tx": {
                 "from": "address:bob",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "sign",
-                "arguments": [
-                    "1"
-                ],
-                "gasLimit": "50,000,000",
+                "arguments": ["1"],
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "4",
                 "message": "str:action does not exist",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -28,19 +27,18 @@
             "txId": "processed-action-id-unsign-bob",
             "tx": {
                 "from": "address:bob",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "unsign",
-                "arguments": [
-                    "1"
-                ],
-                "gasLimit": "50,000,000",
+                "arguments": ["1"],
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "4",
                 "message": "str:action does not exist",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -50,19 +48,18 @@
             "txId": "huge-action-id-sign-bob",
             "tx": {
                 "from": "address:bob",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "sign",
-                "arguments": [
-                    "1000"
-                ],
-                "gasLimit": "50,000,000",
+                "arguments": ["1000"],
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "4",
                 "message": "str:action does not exist",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -72,19 +69,18 @@
             "txId": "huge-action-id-unsign-bob",
             "tx": {
                 "from": "address:bob",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "unsign",
-                "arguments": [
-                    "1000"
-                ],
-                "gasLimit": "50,000,000",
+                "arguments": ["1000"],
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "4",
                 "message": "str:action does not exist",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }

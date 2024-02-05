@@ -6,12 +6,24 @@ edition = "2018"
 publish = false
 
 [lib]
-path = "src/factorial.rs"
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = ["dharitri-wasm-node"]
 
 [dependencies.dharitri-wasm]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../dharitri-wasm"
 
+[dependencies.dharitri-wasm-derive]
+version = "0.5.5"
+path = "../../../dharitri-wasm-derive"
+
+[dependencies.dharitri-wasm-node]
+version = "0.5.5"
+path = "../../../dharitri-wasm-node"
+optional = true
+
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../dharitri-wasm-debug"

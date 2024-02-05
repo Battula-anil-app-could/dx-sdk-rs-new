@@ -1,169 +1,87 @@
+use crate::*;
 use core::marker::PhantomData;
-
-use crate::{
-    api::{
-        const_handles, ErrorApi, ErrorApiImpl, ManagedBufferApi, ManagedTypeApi, StaticVarApiImpl,
-        StorageReadApi, StorageReadApiImpl,
-    },
-    err_msg,
-    types::{
-        BigInt, BigUint, ManagedBuffer, ManagedBufferNestedDecodeInput, ManagedRef, ManagedType,
-    },
-};
-use alloc::boxed::Box;
 use dharitri_codec::*;
 
-use super::StorageKey;
-
-struct StorageGetInput<'k, A>
+struct StorageGetInput<'k, A, BigInt, BigUint>
 where
-    A: StorageReadApi + ManagedTypeApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
-    key: ManagedRef<'k, A, StorageKey<A>>,
+	api: A,
+	key: &'k [u8],
+	_phantom1: PhantomData<BigInt>,
+	_phantom2: PhantomData<BigUint>,
 }
 
-impl<'k, A> StorageGetInput<'k, A>
+impl<'k, A, BigInt, BigUint> StorageGetInput<'k, A, BigInt, BigUint>
 where
-    A: StorageReadApi + ManagedTypeApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
-    #[inline]
-    fn new(key: ManagedRef<'k, A, StorageKey<A>>) -> Self {
-        StorageGetInput { key }
-    }
-
-    fn to_managed_buffer(&self) -> ManagedBuffer<A> {
-        let mbuf_handle = A::static_var_api_impl().next_handle();
-        A::storage_read_api_impl()
-            .storage_load_managed_buffer_raw(self.key.buffer.get_raw_handle(), mbuf_handle);
-        ManagedBuffer::from_raw_handle(mbuf_handle)
-    }
-
-    fn to_big_uint(&self) -> BigUint<A> {
-        BigUint::from_bytes_be_buffer(&self.to_managed_buffer())
-    }
-
-    fn to_big_int(&self) -> BigInt<A> {
-        BigInt::from_signed_bytes_be_buffer(&self.to_managed_buffer())
-    }
-
-    fn load_len_managed_buffer(&self) -> usize {
-        let value_handle = const_handles::MBUF_TEMPORARY_1;
-        A::storage_read_api_impl()
-            .storage_load_managed_buffer_raw(self.key.buffer.get_raw_handle(), value_handle);
-        A::managed_type_impl().mb_len(value_handle)
-    }
+	#[inline]
+	fn new(api: A, key: &'k [u8]) -> Self {
+		StorageGetInput {
+			api,
+			key,
+			_phantom1: PhantomData,
+			_phantom2: PhantomData,
+		}
+	}
 }
 
-impl<'k, A> TopDecodeInput for StorageGetInput<'k, A>
+impl<'k, A, BigInt, BigUint> TopDecodeInput for StorageGetInput<'k, A, BigInt, BigUint>
 where
-    A: StorageReadApi + ManagedTypeApi + ErrorApi + 'static,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
-    type NestedBuffer = ManagedBufferNestedDecodeInput<A>;
+	fn byte_len(&self) -> usize {
+		self.api.storage_load_len(self.key)
+	}
 
-    fn byte_len(&self) -> usize {
-        self.load_len_managed_buffer()
-    }
+	fn into_boxed_slice_u8(self) -> Box<[u8]> {
+		self.api.storage_load_boxed_bytes(self.key).into_box()
+	}
 
-    fn into_boxed_slice_u8(self) -> Box<[u8]> {
-        let key_bytes = self.key.to_boxed_bytes();
-        A::storage_read_api_impl().storage_load_to_heap(key_bytes.as_slice())
-    }
+	fn into_u64(self) -> u64 {
+		self.api.storage_load_u64(self.key)
+	}
 
-    #[inline]
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
-        self,
-        buffer: &mut [u8; MAX_LEN],
-        h: H,
-    ) -> Result<&[u8], H::HandledErr>
-    where
-        H: DecodeErrorHandler,
-    {
-        self.to_managed_buffer().into_max_size_buffer(buffer, h)
-    }
+	fn into_i64(self) -> i64 {
+		self.api.storage_load_i64(self.key)
+	}
 
-    #[inline]
-    fn supports_specialized_type<T: TryStaticCast>() -> bool {
-        T::type_eq::<ManagedBuffer<A>>() || T::type_eq::<BigUint<A>>() || T::type_eq::<BigInt<A>>()
-    }
+	fn try_get_big_uint_handle(&self) -> (bool, i32) {
+		(true, self.api.storage_load_big_uint_raw(self.key))
+	}
 
-    #[inline]
-    fn into_specialized<T, H>(self, h: H) -> Result<T, H::HandledErr>
-    where
-        T: TryStaticCast,
-        H: DecodeErrorHandler,
-    {
-        if let Some(result) = try_execute_then_cast(|| self.to_managed_buffer()) {
-            Ok(result)
-        } else if let Some(result) = try_execute_then_cast(|| self.to_big_uint()) {
-            Ok(result)
-        } else if let Some(result) = try_execute_then_cast(|| self.to_big_int()) {
-            Ok(result)
-        } else {
-            Err(h.handle_error(DecodeError::UNSUPPORTED_OPERATION))
-        }
-    }
-
-    fn into_nested_buffer(self) -> Self::NestedBuffer {
-        ManagedBufferNestedDecodeInput::new(self.to_managed_buffer())
-    }
+	// TODO: there is currently no API hook for storage of signed big ints
 }
 
-pub fn storage_get<A, T>(key: ManagedRef<'_, A, StorageKey<A>>) -> T
+pub fn storage_get<A, BigInt, BigUint, T>(api: A, key: &[u8]) -> T
 where
-    T: TopDecode,
-    A: StorageReadApi + ManagedTypeApi + ErrorApi,
+	T: TopDecode,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
-    let Ok(value) = T::top_decode_or_handle_err(
-        StorageGetInput::new(key),
-        StorageGetErrorHandler::<A>::default(),
-    );
-    value
+	T::top_decode_or_exit(
+		StorageGetInput::new(api.clone(), key),
+		api,
+		storage_get_exit,
+	)
 }
 
-/// Useful for storage mappers.
-/// Also calls to it generated by macro.
-pub fn storage_get_len<A>(key: ManagedRef<'_, A, StorageKey<A>>) -> usize
+#[inline(always)]
+fn storage_get_exit<A, BigInt, BigUint>(api: A, de_err: DecodeError) -> !
 where
-    A: StorageReadApi + ManagedTypeApi + ErrorApi,
+	BigInt: NestedEncode + 'static,
+	BigUint: NestedEncode + 'static,
+	A: ContractHookApi<BigInt, BigUint> + ContractIOApi<BigInt, BigUint> + 'static,
 {
-    let value_handle = const_handles::MBUF_TEMPORARY_1;
-    A::storage_read_api_impl().storage_load_managed_buffer_raw(key.get_raw_handle(), value_handle);
-    A::managed_type_impl().mb_len(value_handle)
-}
-
-/// Will immediately end the execution when encountering the first decode error, via `signal_error`.
-/// Because its handled error type is the never type, when compiled,
-/// the codec will return the value directly, without wrapping it in a Result.
-#[derive(Clone)]
-struct StorageGetErrorHandler<M>
-where
-    M: ManagedTypeApi + ErrorApi,
-{
-    _phantom: PhantomData<M>,
-}
-
-impl<M> Copy for StorageGetErrorHandler<M> where M: ManagedTypeApi + ErrorApi {}
-
-impl<M> Default for StorageGetErrorHandler<M>
-where
-    M: ManagedTypeApi + ErrorApi,
-{
-    fn default() -> Self {
-        Self {
-            _phantom: PhantomData,
-        }
-    }
-}
-
-impl<M> DecodeErrorHandler for StorageGetErrorHandler<M>
-where
-    M: ManagedTypeApi + ErrorApi,
-{
-    type HandledErr = !;
-
-    fn handle_error(&self, err: DecodeError) -> Self::HandledErr {
-        let mut message_buffer = ManagedBuffer::<M>::new_from_bytes(err_msg::STORAGE_DECODE_ERROR);
-        message_buffer.append_bytes(err.message_bytes());
-        M::error_api_impl().signal_error_from_buffer(message_buffer.get_raw_handle())
-    }
+	let decode_err_message =
+		BoxedBytes::from_concat(&[err_msg::STORAGE_DECODE_ERROR, de_err.message_bytes()][..]);
+	api.signal_error(decode_err_message.as_slice())
 }

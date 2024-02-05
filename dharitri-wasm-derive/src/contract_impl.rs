@@ -1,142 +1,140 @@
-use super::generate::{abi_gen, snippets};
-use crate::{
-    generate::{
-        auto_impl::generate_auto_impls, auto_impl_proxy::generate_all_proxy_trait_imports,
-        callback_gen::*, callback_proxies_gen::*, contract_gen::*,
-        endpoints_mod_gen::generate_endpoints_mod,
-        function_selector::generate_function_selector_body, proxy_gen, supertrait_gen,
-    },
-    model::ContractTrait,
-};
+use super::abi_gen;
+use super::contract_gen::*;
+use super::function_selector::*;
+use super::*;
 
-/// Provides the implementation for both modules and contracts.
-/// TODO: not a great pattern to have the `is_contract_main` flag, reorganize the code and get rid of it.
 pub fn contract_implementation(
-    contract: &ContractTrait,
-    is_contract_main: bool,
+	contract: &Contract,
+	is_contract_main: bool,
 ) -> proc_macro2::TokenStream {
-    let proxy_trait_imports = generate_all_proxy_trait_imports(contract);
-    let module_original_attributes = &contract.original_attributes;
-    let trait_name_ident = contract.trait_name.clone();
-    let method_impls = extract_method_impls(contract);
-    let call_methods = generate_call_methods(contract);
-    let auto_impl_defs = generate_auto_impl_defs(contract);
-    let auto_impls = generate_auto_impls(contract);
-    let endpoints_mod = generate_endpoints_mod(contract, is_contract_main);
-    let function_selector_body = generate_function_selector_body(contract);
-    let (callback_selector_body, callback_body) = generate_callback_selector_and_main(contract);
-    let (callbacks_def, callbacks_impl, callback_proxies_obj) = generate_callback_proxies(contract);
+	let contract_impl_ident = contract.contract_impl_name.clone();
+	let trait_name_ident = contract.trait_name.clone();
+	let method_impls = contract.extract_method_impls();
 
-    // this definition is common to release and debug mode
-    let supertraits_main = supertrait_gen::main_supertrait_decl(contract.supertraits.as_slice());
-    let main_definition = quote! {
-        #(#proxy_trait_imports)*
+	if !contract.supertrait_paths.is_empty() {
+		panic!("contract inheritance currently not supported");
+	}
 
-        #(#module_original_attributes)*
-        pub trait #trait_name_ident:
-        dharitri_wasm::contract_base::ContractBase
-        + Sized
-        #(#supertraits_main)*
-        where
-        {
-            #(#method_impls)*
+	let call_methods = contract.generate_call_methods();
+	let auto_impl_defs = contract.generate_auto_impl_defs();
+	let auto_impls = contract.generate_auto_impls();
+	let endpoints = contract.generate_endpoints();
+	let function_selector_body = generate_function_selector_body(&contract, is_contract_main);
+	let abi_body = abi_gen::generate_abi_method_body(&contract);
+	let callback_body = contract.generate_callback_body();
+	let api_where = snippets::api_where();
 
-            #(#auto_impl_defs)*
+	let supertrait_impls = contract.generate_supertrait_impls();
+	let contract_trait_api_impl = snippets::contract_trait_api_impl(&contract_impl_ident);
 
-            #callbacks_def
-        }
-    };
+	// this definition is common to release and debug mode
+	let main_definition = quote! {
+	  pub trait #trait_name_ident<T, BigInt, BigUint>:
+	  ContractHookApi<BigInt, BigUint>
+	  // #( + #supertrait_paths <T, BigInt, BigUint>)* // currently not supported
+	  + Sized
+	  #api_where
+	  {
+		#(#method_impls)*
 
-    let auto_impl_trait = quote! {
-        pub trait AutoImpl: dharitri_wasm::contract_base::ContractBase {}
+		#(#auto_impl_defs)*
 
-        impl<C> #trait_name_ident for C
-        where
-        C: AutoImpl #(#supertraits_main)*
-        {
-            #(#auto_impls)*
+		fn contract_proxy(&self, address: &Address) -> Box<OtherContractHandle<T, BigInt, BigUint>>;
 
-            #callbacks_impl
-        }
-    };
+		fn callback(&self);
+	  }
 
-    let endpoint_wrapper_supertrait_decl =
-        supertrait_gen::endpoint_wrapper_supertrait_decl(contract.supertraits.as_slice());
-    let endpoint_wrappers = quote! {
-        pub trait EndpointWrappers:
-            dharitri_wasm::contract_base::ContractBase
-            + #trait_name_ident
-            #(#endpoint_wrapper_supertrait_decl)*
-        {
-            #(#call_methods)*
+	  pub struct #contract_impl_ident<T, BigInt, BigUint>
+	  #api_where
+	  {
+		  api: T,
+		  _phantom1: core::marker::PhantomData<BigInt>,
+		  _phantom2: core::marker::PhantomData<BigUint>,
+	  }
 
-            fn call(&self, fn_name: &[u8]) -> bool {
-                #function_selector_body
-            }
+	  impl <T, BigInt, BigUint> #contract_impl_ident<T, BigInt, BigUint>
+	  #api_where
+	  {
+		pub fn new(api: T) -> Self {
+		  #contract_impl_ident {
+			api,
+			_phantom1: core::marker::PhantomData,
+			_phantom2: core::marker::PhantomData,
+		  }
+		}
+	  }
 
-            fn callback_selector(&self, mut ___cb_closure___: dharitri_wasm::types::CallbackClosureForDeser<Self::Api>) -> dharitri_wasm::types::CallbackSelectorResult<Self::Api> {
-                #callback_selector_body
-            }
+	  #contract_trait_api_impl
 
-            fn callback(&self) {
-                #callback_body
-            }
-        }
-    };
+	  #(#supertrait_impls)*
 
-    let abi_provider = abi_gen::generate_abi_provider(contract, is_contract_main);
+	  impl <T, BigInt, BigUint> #trait_name_ident<T, BigInt, BigUint> for #contract_impl_ident<T, BigInt, BigUint>
+	  #api_where
+	  {
+		#(#auto_impls)*
 
-    let module_traits_code = quote! {
-        #main_definition
+		fn contract_proxy(&self, address: &Address) -> Box<OtherContractHandle<T, BigInt, BigUint>> {
+		  let contract_proxy = OtherContractHandle::new(self.api.clone(), address);
+		  Box::new(contract_proxy)
+		}
 
-        #auto_impl_trait
+		fn callback(&self) {
+		  #callback_body
+		}
+	  }
 
-        #endpoint_wrappers
+	  impl <T, BigInt, BigUint> #contract_impl_ident<T, BigInt, BigUint>
+	  #api_where
+	  {
+		#(#call_methods)*
+	  }
 
-        #abi_provider
-    };
+	};
 
-    let contract_object_def = snippets::contract_object_def();
-    let impl_contract_base = snippets::impl_contract_base();
-    let impl_all_auto_impl = supertrait_gen::impl_all_auto_impl(contract.supertraits.as_slice());
-    let impl_all_endpoint_wrappers =
-        supertrait_gen::impl_all_endpoint_wrappers(contract.supertraits.as_slice());
-    let impl_callable_contract = snippets::impl_callable_contract();
-    let new_contract_object_fn = snippets::new_contract_object_fn();
+	let wasm_endpoints = quote! {
+		#[cfg(feature = "wasm-output-mode")]
+		#[allow(non_snake_case)]
+		pub mod endpoints {
+		  use super::*;
+		  use dharitri_wasm_node::*;
 
-    let contract_obj_code = quote! {
+		  fn new_arwen_instance() -> #contract_impl_ident<ArwenApiImpl, ArwenBigInt, ArwenBigUint> {
+			let api = ArwenApiImpl{};
+			#contract_impl_ident::new(api)
+		  }
 
-        #contract_object_def
+		  #(#endpoints)*
+		}
+	};
 
-        #impl_contract_base
+	let function_selector = quote! {
+	  use dharitri_wasm::CallableContract;
+	  impl <T, BigInt, BigUint> CallableContract<T> for #contract_impl_ident<T, BigInt, BigUint>
+	  #api_where
+	  {
+		fn call(&self, fn_name: &[u8]) -> bool {
+		  #function_selector_body
+		}
 
-        #(#impl_all_auto_impl)*
+		fn abi(&self, include_modules: bool) -> dharitri_wasm::abi::ContractAbi{
+			#abi_body
+		}
 
-        #(#impl_all_endpoint_wrappers)*
+		fn clone_contract(&self) -> Box<dyn CallableContract<T>> {
+		  Box::new(#contract_impl_ident::new(self.api.clone()))
+		}
 
-        #impl_callable_contract
+		fn into_api(self: Box<Self>) -> T {
+		  self.api
+		}
+	  }
+	};
 
-        #new_contract_object_fn
-    };
+	quote! {
+	  #main_definition
 
-    let proxy_trait = proxy_gen::proxy_trait(contract);
-    let proxy_obj_code = if is_contract_main {
-        proxy_gen::proxy_obj_code(contract)
-    } else {
-        quote! {}
-    };
+	  #wasm_endpoints
 
-    quote! {
-        #module_traits_code
-
-        #contract_obj_code
-
-        #endpoints_mod
-
-        #proxy_trait
-
-        #proxy_obj_code
-
-        #callback_proxies_obj
-    }
+	  #function_selector
+	}
 }

@@ -1,20 +1,21 @@
 {
     "name": "create",
-    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "0",
-                    "balance": "0xe8d4a51000"
+                    "balance": "0xe8d4a51000",
+                    "storage": {},
+                    "code": ""
                 }
             },
             "newAddresses": [
                 {
-                    "creatorAddress": "address:crypto_bubbles_owner",
+                    "creatorAddress": "address:creator_address",
                     "creatorNonce": "0",
-                    "newAddress": "sc:crypto_bubbles"
+                    "newAddress": "address:contract_address"
                 }
             ]
         },
@@ -22,7 +23,8 @@
             "step": "scDeploy",
             "txId": "1",
             "tx": {
-                "from": "address:crypto_bubbles_owner",
+                "from": "address:creator_address",
+                "value": "0",
                 "contractCode": "file:../output/crypto-bubbles.wasm",
                 "arguments": [],
                 "gasLimit": "0x100000",
@@ -39,16 +41,18 @@
         {
             "step": "checkState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "1",
                     "balance": "0xe8d4951000",
                     "storage": {},
                     "code": ""
                 },
-                "sc:crypto_bubbles": {
+                "address:contract_address": {
                     "nonce": "0",
                     "balance": "0",
-                    "storage": {},
+                    "storage": {
+                        "''owner": "address:creator_address"
+                    },
                     "code": "file:../output/crypto-bubbles.wasm"
                 }
             }

@@ -16,16 +16,14 @@ debug = false
 panic = "abort"
 
 [dependencies.lottery-dct]
+features = [ "wasm-output-mode",]
+default-features = false
 path = ".."
 
-[dependencies.dharitri-wasm-node]
-version = "0.5.4"
-path = "../../../../dharitri-wasm-node"
-
 [dependencies.dharitri-wasm-output]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../../dharitri-wasm-output"
-features = ["wasm-output-mode"]
+features = [ "wasm-output-mode",]
 
 [workspace]
 members = ["."]

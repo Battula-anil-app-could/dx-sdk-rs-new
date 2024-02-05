@@ -1,18 +1,20 @@
 {
     "name": "echo_nothing",
-    "gasSchedule": "v3",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "sc:basic-features": {
+                "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
+                    "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 }
             }
         },
@@ -21,16 +23,17 @@
             "txId": "1",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_nothing",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "1,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }

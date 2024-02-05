@@ -1,12 +1,12 @@
 [package]
 name = "dharitri-codec"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new.git"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Lightweight binary serializer/deserializer, written especially for Dharitri smart contracts"
@@ -15,18 +15,12 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 
 [features]
 derive = ["dharitri-codec-derive"]
-alloc = []
 
 [dependencies.dharitri-codec-derive]
 path = "../dharitri-codec-derive"
-version = "=0.2.0"
+version = "0.2.1"
 optional = true
 
 [dependencies]
 wee_alloc = "0.4"
-arrayvec = { version = "0.7.1", default-features = false }
-num-bigint = { version = "0.4.2", optional = true } # can only be used in std contexts
-
-[dev-dependencies.dharitri-codec-derive]
-path = "../dharitri-codec-derive"
-version = "=0.2.0"
+arrayvec = { version = "0.5.2", default-features = false, features = ["array-sizes-33-128", "array-sizes-129-255"] }

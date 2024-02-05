@@ -17,13 +17,11 @@ panic = "abort"
 
 [dependencies.use-module]
 path = ".."
-
-[dependencies.dharitri-wasm-node]
-version = "0.5.4"
-path = "../../../../dharitri-wasm-node"
+default-features = false
+features=["wasm-output-mode"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../../dharitri-wasm-output"
 features=["wasm-output-mode"]
 

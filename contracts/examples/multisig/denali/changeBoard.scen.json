@@ -1,4 +1,5 @@
 {
+    "name": "unjail nodes scenario",
     "steps": [
         {
             "step": "externalSteps",

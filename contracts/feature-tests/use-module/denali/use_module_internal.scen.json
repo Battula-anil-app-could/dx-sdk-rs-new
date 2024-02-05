@@ -6,14 +6,16 @@
             "accounts": {
                 "address:owner": {
                     "nonce": "5",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 }
             },
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
                     "creatorNonce": "5",
-                    "newAddress": "sc:use_module"
+                    "newAddress": "address:use_module_address"
                 }
             ]
         },
@@ -22,9 +24,10 @@
             "txId": "1",
             "tx": {
                 "from": "address:owner",
+                "value": "0",
                 "contractCode": "file:../output/use-module.wasm",
                 "arguments": [],
-                "gasLimit": "20,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -40,10 +43,11 @@
             "txId": "call_mod_a",
             "tx": {
                 "from": "address:owner",
-                "to": "sc:use_module",
+                "to": "address:use_module_address",
+                "value": "0",
                 "function": "call_mod_a",
                 "arguments": [],
-                "gasLimit": "20,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -56,13 +60,14 @@
         },
         {
             "step": "scCall",
-            "txId": "call_mod_b",
+            "txId": "call_mod_a",
             "tx": {
                 "from": "address:owner",
-                "to": "sc:use_module",
+                "to": "address:use_module_address",
+                "value": "0",
                 "function": "call_mod_b",
                 "arguments": [],
-                "gasLimit": "20,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {

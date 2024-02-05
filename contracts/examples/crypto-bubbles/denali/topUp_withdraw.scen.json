@@ -1,22 +1,28 @@
 {
     "name": "topUp_withdraw",
-    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
-                    "nonce": "0",
-                    "balance": "0"
-                },
-                "sc:crypto_bubbles": {
+                "address:creator_address": {
                     "nonce": "0",
                     "balance": "0",
+                    "storage": {},
+                    "code": ""
+                },
+                "address:contract_address": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {
+                        "''owner": "address:creator_address"
+                    },
                     "code": "file:../output/crypto-bubbles.wasm"
                 },
                 "address:acc1": {
                     "nonce": "0",
-                    "balance": "0x7200000"
+                    "balance": "0x7200000",
+                    "storage": {},
+                    "code": ""
                 }
             }
         },
@@ -25,8 +31,8 @@
             "txId": "1",
             "tx": {
                 "from": "address:acc1",
-                "to": "sc:crypto_bubbles",
-                "moaxValue": "0x4000000",
+                "to": "address:contract_address",
+                "value": "0x4000000",
                 "function": "topUp",
                 "arguments": [],
                 "gasLimit": "0x100000",
@@ -37,10 +43,9 @@
                 "status": "",
                 "logs": [
                     {
-                        "address": "sc:crypto_bubbles",
-                        "endpoint": "str:topUp",
+                        "address": "address:contract_address",
+                        "identifier": "0x1000000000000000000000000000000000000000000000000000000000000001",
                         "topics": [
-                            "str:top_up",
                             "address:acc1"
                         ],
                         "data": "0x4000000"
@@ -55,7 +60,8 @@
             "txId": "2",
             "tx": {
                 "from": "address:acc1",
-                "to": "sc:crypto_bubbles",
+                "to": "address:contract_address",
+                "value": "0",
                 "function": "withdraw",
                 "arguments": [
                     "0x4000000"
@@ -68,10 +74,9 @@
                 "status": "",
                 "logs": [
                     {
-                        "address": "sc:crypto_bubbles",
-                        "endpoint": "str:withdraw",
+                        "address": "address:contract_address",
+                        "identifier": "0x1000000000000000000000000000000000000000000000000000000000000002",
                         "topics": [
-                            "str:withdraw",
                             "address:acc1"
                         ],
                         "data": "0x4000000"
@@ -84,16 +89,18 @@
         {
             "step": "checkState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {},
                     "code": ""
                 },
-                "sc:crypto_bubbles": {
+                "address:contract_address": {
                     "nonce": "0",
                     "balance": "0",
-                    "storage": {},
+                    "storage": {
+                        "''owner": "address:creator_address"
+                    },
                     "code": "file:../output/crypto-bubbles.wasm"
                 },
                 "address:acc1": {

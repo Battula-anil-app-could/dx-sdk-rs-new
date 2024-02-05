@@ -1,25 +1,29 @@
 {
     "name": "withdraw_TooMuch",
-    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 },
-                "sc:crypto_bubbles": {
+                "address:contract_address": {
                     "nonce": "0",
                     "balance": "0x100",
                     "storage": {
-                        "str:playerBalance|address:acc1": "0x100"
+                        "''owner": "address:creator_address",
+                        "''playerBalance|address:acc1": "0x100"
                     },
                     "code": "file:../output/crypto-bubbles.wasm"
                 },
                 "address:acc1": {
                     "nonce": "0",
-                    "balance": "0x200000"
+                    "balance": "0x200000",
+                    "storage": {},
+                    "code": ""
                 }
             }
         },
@@ -28,7 +32,8 @@
             "txId": "1",
             "tx": {
                 "from": "address:acc1",
-                "to": "sc:crypto_bubbles",
+                "to": "address:contract_address",
+                "value": "0",
                 "function": "withdraw",
                 "arguments": [
                     "0x10000"
@@ -40,7 +45,7 @@
                 "out": [],
                 "status": "0x04",
                 "message": "str:amount to withdraw must be less or equal to balance",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -48,17 +53,18 @@
         {
             "step": "checkState",
             "accounts": {
-                "address:crypto_bubbles_owner": {
+                "address:creator_address": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {},
                     "code": ""
                 },
-                "sc:crypto_bubbles": {
+                "address:contract_address": {
                     "nonce": "0",
                     "balance": "0x100",
                     "storage": {
-                        "str:playerBalance|address:acc1": "0x100"
+                        "''owner": "address:creator_address",
+                        "''playerBalance|address:acc1": "0x100"
                     },
                     "code": "file:../output/crypto-bubbles.wasm"
                 },

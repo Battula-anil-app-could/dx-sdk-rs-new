@@ -1,39 +1,60 @@
-#![feature(generic_associated_types)]
-#![allow(clippy::type_complexity)]
-#![feature(exhaustive_patterns)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 
 pub mod abi_json;
-pub mod api;
+mod async_data;
+mod big_int_mock;
+mod big_uint_mock;
+mod blockchain_mock;
 mod contract_map;
 mod display_util;
-mod managed_test_util;
-mod denali_go_runner;
-mod denali_rs_runner;
-mod denali_step;
-pub mod meta;
-pub mod testing_framework;
-pub mod tx_execution;
-pub mod tx_mock;
-pub mod world_mock;
+mod execute_denali;
+mod ext_mock;
 
+pub use async_data::*;
+pub use big_int_mock::*;
+pub use big_uint_mock::*;
+pub use blockchain_mock::*;
 pub use contract_map::*;
 pub use display_util::*;
-pub use managed_test_util::*;
-pub use denali_step::*;
-
-pub use denali_go_runner::denali_go;
-pub use denali_rs_runner::denali_rs;
-pub use tx_mock::DebugApi;
-pub use world_mock::BlockchainMock;
-
-// Re-exporting the whole denali crate for easier use in tests.
-pub use denali;
-
-// Re-exporting for convenience. Using the crate as imported in the codec to make sure the save version is used everywhere.
-pub use dharitri_wasm::dharitri_codec::num_bigint;
+pub use execute_denali::*;
+pub use ext_mock::*;
 
 #[macro_use]
 extern crate alloc;
-pub use alloc::{boxed::Box, vec::Vec};
+pub use alloc::boxed::Box;
+pub use alloc::vec::Vec;
 
 pub use std::collections::HashMap;
+
+#[cfg(test)]
+mod dharitri_codec_tests {
+	use super::*;
+	use core::fmt::Debug;
+	use dharitri_wasm::dharitri_codec::test_util::{check_top_decode, check_top_encode};
+	use dharitri_wasm::dharitri_codec::*;
+
+	pub fn ser_deser_ok<V>(element: V, expected_bytes: &[u8])
+	where
+		V: TopEncode + TopDecode + PartialEq + Debug + 'static,
+	{
+		// serialize
+		let serialized_bytes = check_top_encode(&element);
+		assert_eq!(serialized_bytes.as_slice(), expected_bytes);
+
+		// deserialize
+		let deserialized: V = check_top_decode::<V>(&serialized_bytes[..]);
+		assert_eq!(deserialized, element);
+	}
+
+	#[test]
+	fn test_big_int_serialization() {
+		ser_deser_ok(RustBigInt::from(5), &[5u8]);
+		ser_deser_ok(RustBigInt::from(-5), &[251u8]);
+	}
+
+	#[test]
+	fn test_big_uint_serialization() {
+		ser_deser_ok(RustBigUint::from(5u32), &[5u8]);
+	}
+}

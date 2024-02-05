@@ -1,12 +1,14 @@
 {
-    "comment": "tests denali validatorReward, no SC",
+    "name": "test external steps resolution",
     "steps": [
         {
             "step": "setState",
             "accounts": {
                 "address:A": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 }
             }
         },
@@ -15,7 +17,7 @@
             "txId": "1",
             "tx": {
                 "to": "address:A",
-                "moaxValue": "100"
+                "value": "100"
             }
         },
         {
@@ -36,7 +38,7 @@
             "txId": "2",
             "tx": {
                 "to": "address:A",
-                "moaxValue": "50"
+                "value": "50"
             }
         },
         {

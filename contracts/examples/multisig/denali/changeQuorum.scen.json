@@ -1,4 +1,5 @@
 {
+    "name": "unjail nodes scenario",
     "steps": [
         {
             "step": "externalSteps",
@@ -13,20 +14,19 @@
             "txId": "change-quorum-propose",
             "tx": {
                 "from": "address:alice",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "proposeChangeQuorum",
                 "arguments": [
                     "3"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [
-                    "1"
-                ],
+                "out": ["1"],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -36,39 +36,19 @@
             "txId": "change-quorum-sign-bob",
             "tx": {
                 "from": "address:bob",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "sign",
-                "arguments": [
-                    "1"
-                ],
-                "gasLimit": "50,000,000",
+                "arguments": ["1"],
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
-            }
-        },
-        {
-            "step": "scQuery",
-            "txId": "pending-action-data",
-            "tx": {
-                "to": "sc:multisig",
-                "function": "getPendingActionFullInfo",
-                "arguments": []
-            },
-            "expect": {
-                "out": [
-                    [
-                        "u32:1",
-                        "u8:4|u32:3",
-                        "u32:2|address:alice|address:bob"
-                    ]
-                ],
-                "status": ""
             }
         },
         {
@@ -76,18 +56,17 @@
             "txId": "change-quorum-perform",
             "tx": {
                 "from": "address:alice",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "performAction",
-                "arguments": [
-                    "1"
-                ],
-                "gasLimit": "50,000,000",
+                "arguments": ["1"],
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -97,10 +76,11 @@
             "txId": "getQuorum",
             "tx": {
                 "from": "address:owner",
-                "to": "sc:multisig",
+                "to": "address:multisig",
+                "value": "0",
                 "function": "getQuorum",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -108,22 +88,9 @@
                     "3"
                 ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
-            }
-        },
-        {
-            "step": "scQuery",
-            "txId": "pending-action-data-none",
-            "tx": {
-                "to": "sc:multisig",
-                "function": "getPendingActionFullInfo",
-                "arguments": []
-            },
-            "expect": {
-                "out": [],
-                "status": ""
             }
         }
     ]

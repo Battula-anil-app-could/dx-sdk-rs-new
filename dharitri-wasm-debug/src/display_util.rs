@@ -1,63 +1,34 @@
-use crate::{num_bigint, num_bigint::BigInt};
-use alloc::string::String;
-use dharitri_wasm::{
-    api::ManagedTypeApi,
-    types::{
-        heap::{Address, BoxedBytes},
-        BigUint, ManagedType,
-    },
-};
+use dharitri_wasm::{Address, H256};
+
+use crate::big_int_mock::*;
+use crate::big_uint_mock::*;
+use crate::contract_map::*;
+
+use dharitri_wasm::err_msg;
+use dharitri_wasm::BigUintApi;
+use dharitri_wasm::CallableContract;
+use dharitri_wasm::ContractHookApi;
+
+use num_bigint::{BigInt, BigUint};
+use num_traits::cast::ToPrimitive;
+
+use alloc::boxed::Box;
+use alloc::vec::Vec;
+
+use std::collections::HashMap;
 use std::fmt;
+use std::fmt::Write;
 
-pub struct BigUintPrinter<M: ManagedTypeApi> {
-    pub value: BigUint<M>,
+use sha3::{Digest, Keccak256, Sha3_256};
+
+pub fn address_hex(address: &Address) -> alloc::string::String {
+	alloc::format!("0x{}", hex::encode(address.as_bytes()))
 }
 
-pub fn address_hex(address: &Address) -> String {
-    alloc::format!("0x{}", hex::encode(address.as_bytes()))
+pub fn key_hex(key: &[u8]) -> alloc::string::String {
+	alloc::format!("0x{}", hex::encode(key))
 }
 
-pub fn key_hex(key: &[u8]) -> String {
-    alloc::format!("0x{}", hex::encode(key))
-}
-
-pub fn verbose_hex(value: &[u8]) -> String {
-    alloc::format!("0x{}", hex::encode(value))
-}
-
-pub fn verbose_hex_list(values: &[Vec<u8>]) -> String {
-    let mut s = String::new();
-    s.push('[');
-    for (i, topic) in values.iter().enumerate() {
-        if i > 0 {
-            s.push(',');
-        }
-        s.push_str(verbose_hex(topic).as_str());
-    }
-    s.push(']');
-    s
-}
-
-/// returns it as hex formatted number if it's not valid utf8
-pub fn bytes_to_string(bytes: &[u8]) -> String {
-    String::from_utf8(bytes.to_vec()).unwrap_or_else(|_| verbose_hex(bytes))
-}
-
-impl<M: ManagedTypeApi> fmt::Debug for BigUintPrinter<M> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let handle = self.value.get_raw_handle();
-        let mut bytes = self.value.to_bytes_be();
-        if bytes.is_empty() {
-            bytes = BoxedBytes::from(vec![0u8]);
-        }
-
-        let hex = hex::encode(bytes.as_slice());
-        let dec = BigInt::from_bytes_be(num_bigint::Sign::Plus, bytes.as_slice());
-
-        f.debug_struct("BigUint")
-            .field("handle", &handle)
-            .field("hex", &hex)
-            .field("dec", &dec.to_string())
-            .finish()
-    }
+pub fn verbose_hex(value: &[u8]) -> alloc::string::String {
+	alloc::format!("0x{}", hex::encode(value))
 }

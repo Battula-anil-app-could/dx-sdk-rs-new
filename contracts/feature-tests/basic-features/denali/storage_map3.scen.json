@@ -1,18 +1,20 @@
 {
     "name": "storage",
-    "gasSchedule": "v3",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "sc:basic-features": {
+                "address:features_contract": {
                     "nonce": "0",
                     "balance": "0",
+                    "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "100000000000000000",
+                    "storage": {},
+                    "code": ""
                 }
             }
         },
@@ -21,19 +23,20 @@
             "txId": "store-val",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "store_map3",
                 "arguments": [
                     "0x57",
                     "true"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -41,11 +44,11 @@
         {
             "step": "checkState",
             "accounts": {
-                "sc:basic-features": {
+                "address:features_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        "str:map3|0x00000057": "true"
+                        "``map3|0x00000057": "true"
                     },
                     "code": "file:../output/basic-features.wasm"
                 },
@@ -62,20 +65,19 @@
             "txId": "load-val",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "load_map3",
                 "arguments": [
                     "0x57"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
-                "out": [
-                    "true"
-                ],
+                "out": [ "true" ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -85,19 +87,20 @@
             "txId": "store-empty",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "store_map3",
                 "arguments": [
                     "0x57",
                     "false"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -105,11 +108,11 @@
         {
             "step": "checkState",
             "accounts": {
-                "sc:basic-features": {
+                "address:features_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        "str:map3|0x00000057": "false"
+                        "``map3|0x00000057": "false"
                     },
                     "code": "file:../output/basic-features.wasm"
                 },
@@ -126,20 +129,19 @@
             "txId": "load-empty",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "load_map3",
                 "arguments": [
                     "0x57"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
-                "out": [
-                    "false"
-                ],
+                "out": [ "false" ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }

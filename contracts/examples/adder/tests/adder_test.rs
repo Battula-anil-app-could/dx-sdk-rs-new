@@ -1,19 +1,17 @@
+extern crate adder;
 use adder::*;
-use dharitri_wasm::types::BigUint;
-use dharitri_wasm_debug::DebugApi;
+use dharitri_wasm_debug::*;
 
 #[test]
 fn test_add() {
-    let _ = DebugApi::dummy();
+	let adder = AdderImpl::new(TxContext::dummy());
 
-    let adder = adder::contract_obj::<DebugApi>();
+	adder.init(&RustBigInt::from(5));
+	assert_eq!(RustBigInt::from(5), adder.get_sum());
 
-    adder.init(BigUint::from(5u32));
-    assert_eq!(BigUint::from(5u32), adder.sum().get());
+	let _ = adder.add(&RustBigInt::from(7));
+	assert_eq!(RustBigInt::from(12), adder.get_sum());
 
-    let _ = adder.add(BigUint::from(7u32));
-    assert_eq!(BigUint::from(12u32), adder.sum().get());
-
-    let _ = adder.add(BigUint::from(1u32));
-    assert_eq!(BigUint::from(13u32), adder.sum().get());
+	let _ = adder.add(&RustBigInt::from(1));
+	assert_eq!(RustBigInt::from(13), adder.get_sum());
 }

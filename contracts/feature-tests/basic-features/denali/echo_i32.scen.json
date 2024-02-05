@@ -1,18 +1,20 @@
 {
     "name": "echo_i32",
-    "gasSchedule": "v3",
     "steps": [
         {
             "step": "setState",
             "accounts": {
-                "sc:basic-features": {
+                "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
+                    "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0x900abc",
+                    "storage": {},
+                    "code": ""
                 }
             }
         },
@@ -21,20 +23,21 @@
             "txId": "1",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "0"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [
                     ""
                 ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -44,20 +47,21 @@
             "txId": "2",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "5"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [
                     "5"
                 ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -67,20 +71,21 @@
             "txId": "3",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "-3"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [
                     "0xfd"
                 ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -90,19 +95,20 @@
             "txId": "4",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "0x010000000000000000"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
                 "status": "*",
                 "message": "str:argument out of range",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -112,20 +118,21 @@
             "txId": "5",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "0xffffffff"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [
                     "0xff"
                 ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -135,20 +142,21 @@
             "txId": "6",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "0x7fffffff"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [
                     "0x7fffffff"
                 ],
                 "status": "",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -158,19 +166,20 @@
             "txId": "7",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "+2147483648"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
                 "status": "4",
                 "message": "str:argument decode error (i): input out of range",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -180,19 +189,20 @@
             "txId": "8",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "address:features_contract",
+                "value": "0",
                 "function": "echo_i32",
                 "arguments": [
                     "-2147483649"
                 ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000",
+                "gasPrice": "0x01"
             },
             "expect": {
                 "out": [],
                 "status": "4",
                 "message": "str:argument decode error (i): input out of range",
-                "logs": "*",
+                "logs": [],
                 "gas": "*",
                 "refund": "*"
             }
@@ -200,15 +210,15 @@
         {
             "step": "checkState",
             "accounts": {
-                "sc:basic-features": {
+                "address:features_contract": {
                     "nonce": "0",
-                    "balance": "0",
+                    "balance": "0x100",
                     "storage": {},
                     "code": "file:../output/basic-features.wasm"
                 },
                 "address:an_account": {
                     "nonce": "8",
-                    "balance": "0",
+                    "balance": "0x100abc",
                     "storage": {},
                     "code": ""
                 }

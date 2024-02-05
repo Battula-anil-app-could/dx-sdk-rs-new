@@ -7,40 +7,46 @@
             "accounts": {
                 "address:owner": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 },
                 "address:alice": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 },
                 "address:bob": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 },
                 "address:charlie": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 },
                 "address:dan": {
                     "nonce": "0",
-                    "balance": "0"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 },
                 "address:paul": {
                     "nonce": "0",
-                    "balance": "0"
-                },
-                "sc:adder-code": {
-                    "code": "file:../../test-contracts/adder.wasm"
-                },
-                "sc:factorial-code": {
-                    "code": "file:../../test-contracts/factorial.wasm"
+                    "balance": "0",
+                    "storage": {},
+                    "code": ""
                 }
             },
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
                     "creatorNonce": "0",
-                    "newAddress": "sc:multisig"
+                    "newAddress": "address:multisig"
                 }
             ]
         }

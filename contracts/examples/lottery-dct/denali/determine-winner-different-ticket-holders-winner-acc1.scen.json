@@ -1,6 +1,5 @@
 {
     "name": "acc1 winner",
-    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "externalSteps",
@@ -14,9 +13,11 @@
         },
         {
             "step": "scCall",
+            "txId": "determine-winner-different-ticket-holder-winner-acc1",
             "tx": {
                 "from": "address:my_address",
-                "to": "sc:lottery",
+                "to": "address:the_lottery_contract",
+                "value": "0",
                 "function": "determine_winner",
                 "arguments": [
                     "str:lottery_name"
@@ -25,7 +26,6 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
                 "status": "0",
                 "gas": "*",
                 "refund": "*"
@@ -42,17 +42,17 @@
                 "address:acc1": {
                     "nonce": "1",
                     "balance": "1,000,000",
+                    "storage": {},
                     "dct": {
-                        "str:LOTTERY-123456": "200"
-                    },
-                    "storage": {}
+                        "str:lottery_token": "200"
+                    }
                 },
                 "address:acc2": {
                     "nonce": "1",
                     "balance": "1,000,000",
                     "storage": {}
                 },
-                "sc:lottery": {
+                "address:the_lottery_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {},

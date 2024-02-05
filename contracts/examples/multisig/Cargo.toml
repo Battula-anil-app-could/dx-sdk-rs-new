@@ -1,28 +1,49 @@
 [package]
 name = "multisig"
-version = "1.0.0"
+version = "0.0.0"
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
 edition = "2018"
 publish = false
 
 [lib]
-path = "src/multisig.rs"
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = [
+    "dharitri-wasm-node",
+    "dharitri-wasm-module-users-wasm",
+]
+
+default = [
+    "dharitri-wasm-module-users-default"
+]
+
+[dependencies.dharitri-wasm-module-users-wasm]
+package = "dharitri-wasm-module-users"
+version = "0.5.5"
+path = "../../modules/dharitri-wasm-module-users"
+features = ["wasm-output-mode"]
+optional = true
+
+[dependencies.dharitri-wasm-module-users-default]
+package = "dharitri-wasm-module-users"
+version = "0.5.5"
+path = "../../modules/dharitri-wasm-module-users"
+optional = true
 
 [dependencies.dharitri-wasm]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../dharitri-wasm"
 
+[dependencies.dharitri-wasm-derive]
+version = "0.5.5"
+path = "../../../dharitri-wasm-derive"
+
+[dependencies.dharitri-wasm-node]
+version = "0.5.5"
+path = "../../../dharitri-wasm-node"
+optional = true
+
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.5.4"
+version = "0.5.5"
 path = "../../../dharitri-wasm-debug"
-
-[dev-dependencies.adder]
-path = "../adder"
-
-[dev-dependencies.factorial]
-path = "../factorial"
-
-[dev-dependencies]
-num-bigint = "0.4.2"
-num-traits = "0.2"
-hex = "0.4"

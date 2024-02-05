@@ -1,36 +1,24 @@
 [package]
 name = "dharitri-wasm"
-version = "0.5.4"
+version = "0.5.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new.git"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri WebAssembly smart contract API"
 keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
-[features]
-num-bigint = ["dharitri-codec/num-bigint"]
-cb_closure_unmanaged_deser = []
-alloc = ["dharitri-codec/alloc"]
-promises = []
-
 [dependencies]
 wee_alloc = "0.4"
-hashbrown = "0.11.2"
-hex-literal = "0.3.1"
-bitflags = "1.3.2"
-git-version = "0.3.5"
-
-[dependencies.dharitri-wasm-derive]
-version = "=0.5.4"
-path = "../dharitri-wasm-derive"
+arrayvec = { version = "0.5.2", default-features = false, features = ["array-sizes-33-128", "array-sizes-129-255"] }
+hashbrown = "0.9.1"
 
 [dependencies.dharitri-codec]
-version = "=0.2.0"
+version = "0.2.1"
 path = "../dharitri-codec"
 features = ["derive"]

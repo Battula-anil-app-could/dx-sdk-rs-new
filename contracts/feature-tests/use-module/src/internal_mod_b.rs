@@ -1,11 +1,13 @@
-dharitri_wasm::imports!();
+imports!();
 
-/// Example of a module that lies in the same crate.
-#[dharitri_wasm::module]
-pub trait InternalModuleB {
-    #[view]
-    fn call_mod_b(&self) {}
+use super::internal_mod_a::*;
 
-    #[external_view]
-    fn external_view_mod_b(&self) {}
+/// Contains all events that can be emitted by the contract.
+#[dharitri_wasm_derive::module(InteralModuleBImpl)]
+pub trait InteralModuleB {
+	#[module(InteralModuleAImpl)]
+	fn internal_module_a(&self) -> InteralModuleAImpl<T, BigInt, BigUint>;
+
+	#[view]
+	fn call_mod_b(&self) {}
 }

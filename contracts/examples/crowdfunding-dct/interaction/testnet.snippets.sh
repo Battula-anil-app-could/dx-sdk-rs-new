@@ -1,23 +1,17 @@
 ALICE="${USERS}/alice.pem"
-BOB="${USERS}/bob.pem"
-
 ADDRESS=$(moapy data load --key=address-testnet)
 DEPLOY_TRANSACTION=$(moapy data load --key=deployTransaction-testnet)
-PROXY=https://testnet-api.dharitri.com
-
+DEPLOY_ARGUMENTS="12 4096 0xABBAABBA"
 DEPLOY_GAS="80000000"
-TARGET=10
-DEADLINE_UNIX_TIMESTAMP=1609452000 # Fri Jan 01 2021 00:00:00 GMT+0200 (Eastern European Standard Time)
-MOAX_TOKEN_ID=0x4d4f4158 # "MOAX"
+PROXY=https://testnet-api.dharitri.com
 
 deploy() {
     moapy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} \
-          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${MOAX_TOKEN_ID} \
+          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
           --outfile="deploy-testnet.interaction.json" --send --proxy=${PROXY} --chain=T || return
 
-    TRANSACTION=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
-    ADDRESS=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
+    TRANSACTION=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
+    ADDRESS=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
 
     moapy data store --key=address-testnet --value=${ADDRESS}
     moapy data store --key=deployTransaction-testnet --value=${TRANSACTION}
@@ -31,49 +25,16 @@ checkDeployment() {
     moapy account get --address=$ADDRESS --omit-fields="['code']" --proxy=${PROXY}
 }
 
-# BOB sends funds
-sendFunds() {
-    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${BOB} --gas-limit=10000000 \
-        --function="fund" --value=5 \
-        --proxy=${PROXY} --chain=T \
-        --send
-}
-
-# ALICE claims
-claimFunds() {
-    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
-        --function="claim" \
-        --proxy=${PROXY} --chain=T \
-        --send
-}
-
-# 0 - Funding Period
-# 1 - Successful
-# 2 - Failed
 status() {
-    moapy --verbose contract query ${ADDRESS} --function="status" --proxy=${PROXY} --chain=T
+    moapy --verbose contract query ${ADDRESS} --function="status" --proxy=${PROXY}
 }
 
-getCurrentFunds() {
-    moapy --verbose contract query ${ADDRESS} --function="getCurrentFunds" --proxy=${PROXY} --chain=T
+currentFunds() {
+    moapy --verbose contract query ${ADDRESS} --function="currentFunds" --proxy=${PROXY}
 }
 
-getTarget() {
-    moapy --verbose contract query ${ADDRESS} --function="getTarget" --proxy=${PROXY} --chain=T
-}
-
-getDeadline() {
-    moapy --verbose contract query ${ADDRESS} --function="getDeadline" --proxy=${PROXY} --chain=T
-}
-
-# BOB's deposit
-getDeposit() {
-    local BOB_ADDRESS_BECH32=moa1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruq0yu4wk
-    local BOB_ADDRESS_HEX=0x$(moapy wallet bech32 --decode ${BOB_ADDRESS_BECH32})
-
-    moapy --verbose contract query ${ADDRESS} --function="getDeposit" --arguments ${BOB_ADDRESS_HEX} --proxy=${PROXY} --chain=T
-}
-
-getCrowdfundingTokenName() {
-    moapy --verbose contract query ${ADDRESS} --function="getCrowdfundingTokenName" --proxy=${PROXY} --chain=T
+sendFunds() {
+    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
+        --function="fund" --value=3\
+        --send --proxy=${PROXY} --chain=T
 }

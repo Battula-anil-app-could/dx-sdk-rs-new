@@ -2,21 +2,18 @@
 
 # cleans all wasm targets
 
-set -e
-SMART_CONTRACT_JSONS=$(find . -name "dharitri.json")
-for smart_contract_json in $SMART_CONTRACT_JSONS
-do
-    smart_contract_folder=$(dirname $smart_contract_json)
-    echo ""
-    (set -x; moapy --verbose contract clean $smart_contract_folder)
-done
-
-# not wasm, but worth cleaning from time to time
-
-cargo clean
-cd dharitri-wasm-node
-cargo clean
-cd ..
-cd dharitri-wasm-output
-cargo clean
-cd ..
+moapy --verbose contract clean "contracts/benchmarks/str-repeat"
+moapy --verbose contract clean "contracts/examples/adder"
+moapy --verbose contract clean "contracts/examples/crowdfunding-moax"
+moapy --verbose contract clean "contracts/examples/crowdfunding-erc20"
+moapy --verbose contract clean "contracts/examples/crowdfunding-dct"
+moapy --verbose contract clean "contracts/examples/crypto-bubbles"
+moapy --verbose contract clean "contracts/examples/factorial"
+moapy --verbose contract clean "contracts/examples/lottery-moax"
+moapy --verbose contract clean "contracts/examples/lottery-erc20"
+moapy --verbose contract clean "contracts/examples/multisig"
+moapy --verbose contract clean "contracts/examples/simple-erc20"
+moapy --verbose contract clean "contracts/feature-tests/basic-features"
+moapy --verbose contract clean "contracts/feature-tests/async/async-alice"
+moapy --verbose contract clean "contracts/feature-tests/async/async-bob"
+moapy --verbose contract clean "contracts/feature-tests/use-module"

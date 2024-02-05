@@ -6,7 +6,9 @@
             "accounts": {
                 "address:an_account": {
                     "nonce": "3",
-                    "balance": "5"
+                    "balance": "5",
+                    "storage": {},
+                    "code": ""
                 }
             }
         }

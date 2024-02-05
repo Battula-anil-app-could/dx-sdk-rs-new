@@ -1,17 +1,18 @@
 #![no_std]
 #![feature(new_uninit)]
+#![allow(dead_code)] // TODO: remove
 
-mod api;
-pub mod error_hook;
-mod node_macros;
+mod big_int;
+mod big_uint;
+mod ext;
+pub mod ext_error;
 
+pub use big_int::*;
+pub use big_uint::*;
+pub use ext::*;
+
+#[macro_use]
 extern crate alloc;
-pub use alloc::{boxed::Box, string::String, vec::Vec};
-pub use api::VmApiImpl;
-
-pub use dharitri_wasm;
-
-/// Provides an API instance.
-pub fn vm_api() -> VmApiImpl {
-    VmApiImpl {}
-}
+pub use alloc::boxed::Box;
+pub use alloc::string::String;
+pub use alloc::vec::Vec;
