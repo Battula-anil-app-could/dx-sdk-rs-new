@@ -9,7 +9,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - `pow`, `log2`, `sqrt`
 - cryptography: elliptic curves
 
-## [dharitri-wasm 0.6.2] - 2021-05-28
+## [dharitri-wasm 0.6.3] - 2021-06-04
+- callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
+
+## [dharitri-wasm 0.17.1] - 2021-06-04
+- `legacy-nft-transfer` feature for interacting with older versions of Arwen
+
+## [dharitri-wasm 0.17.0] - 2021-05-28
 - Integration tests can now call Arwen-Denali (denali-go)
 - Send API refactoring and cleanup
 	- DCT builtin function calls no longer require explicit gas
@@ -17,7 +23,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - `#[payment_nonce]` endpoint argument annotation
 - `#[payable]` annotation no longer allowed without argument
 
-## [dharitri-wasm 0.16.2, denali 0.2.2] - 2021-05-20
+## [dharitri-wasm 0.16.2, denali 0.7.2] - 2021-05-20
 - New implementation for the `Try` trait for `SCResult`, in accordance to feature `try_trait_v2`
 - Published DNS module, which helps contracts register usernames for themselves
 - `DCTLocalRole` more expressive type ABI
@@ -25,7 +31,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.2.5] - 2021-05-14
+## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -197,7 +203,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
 
-## [dharitri-wasm 0.2.2] - 2020-10-16
+## [dharitri-wasm 0.7.2] - 2020-10-16
 - small int EI
 - minor refactors, serialization fixes
 
@@ -218,7 +224,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.6.0, dharitri-codec 0.6.2] - 2020-08-25
+## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -231,7 +237,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.2.5, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 

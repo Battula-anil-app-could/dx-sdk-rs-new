@@ -292,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "arrayvec",
  "dharitri-codec",
@@ -303,7 +303,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -318,7 +318,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -328,7 +328,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-dns"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -338,7 +338,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -348,7 +348,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -358,7 +358,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -368,7 +368,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -458,6 +458,25 @@ dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "erc20",
+]
+
+[[package]]
+name = "erc721"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "erc721-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "erc721",
 ]
 
 [[package]]
@@ -728,25 +747,6 @@ dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "nft-storage-prepay",
-]
-
-[[package]]
-name = "non-fungible-tokens"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-derive",
- "dharitri-wasm-node",
-]
-
-[[package]]
-name = "non-fungible-tokens-abi"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "non-fungible-tokens",
 ]
 
 [[package]]

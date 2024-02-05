@@ -1,12 +1,18 @@
 ALICE="${USERS}/alice.pem"
+BOB="${USERS}/bob.pem"
+
 ADDRESS=$(moapy data load --key=address-devnet)
 DEPLOY_TRANSACTION=$(moapy data load --key=deployTransaction-devnet)
-DEPLOY_ARGUMENTS="12 4096 0xABBAABBA"
+
 DEPLOY_GAS="80000000"
+TARGET=10
+DEADLINE_UNIX_TIMESTAMP=1609452000 # Fri Jan 01 2021 00:00:00 GMT+0200 (Eastern European Standard Time)
+MOAX_TOKEN_ID=0x4d4f4158 # "MOAX"
 
 deploy() {
     moapy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
+          --gas-limit=${DEPLOY_GAS} \
+          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${MOAX_TOKEN_ID} \
           --outfile="deploy-devnet.interaction.json" --send || return
 
     TRANSACTION=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['hash']")
@@ -21,7 +27,8 @@ deploy() {
 
 deploySimulate() {
     moapy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
+          --gas-limit=${DEPLOY_GAS} \
+          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${MOAX_TOKEN_ID} \
           --outfile="simulate-devnet.interaction.json" --simulate || return
 
     TRANSACTION=$(moapy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['hash']")
@@ -41,16 +48,47 @@ checkDeployment() {
     moapy account get --address=$ADDRESS --omit-fields="['code']"
 }
 
+# BOB sends funds
+sendFunds() {
+    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${BOB} --gas-limit=10000000 \
+        --function="fund" --value=5 \
+        --send
+}
+
+# ALICE claims
+claimFunds() {
+    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
+        --function="claim" \
+        --send
+}
+
+# 0 - Funding Period
+# 1 - Successful
+# 2 - Failed
 status() {
     moapy --verbose contract query ${ADDRESS} --function="status"
 }
 
-currentFunds() {
-    moapy --verbose contract query ${ADDRESS} --function="currentFunds"
+getCurrentFunds() {
+    moapy --verbose contract query ${ADDRESS} --function="getCurrentFunds"
 }
 
-sendFunds() {
-    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
-        --function="fund" --value=3\
-        --send
+getTarget() {
+    moapy --verbose contract query ${ADDRESS} --function="getTarget"
+}
+
+getDeadline() {
+    moapy --verbose contract query ${ADDRESS} --function="getDeadline"
+}
+
+# BOB's deposit
+getDeposit() {
+    local BOB_ADDRESS_BECH32=moa1932zgy2qh0snh4g8nhvsujzd95jz6fyv3ldmynlf97tscs9nvm2skfndgz
+    local BOB_ADDRESS_HEX=0x$(moapy wallet bech32 --decode ${BOB_ADDRESS_BECH32})
+
+    moapy --verbose contract query ${ADDRESS} --function="getDeposit" --arguments ${BOB_ADDRESS_HEX}
+}
+
+getCrowdfundingTokenName() {
+    moapy --verbose contract query ${ADDRESS} --function="getCrowdfundingTokenName"
 }
