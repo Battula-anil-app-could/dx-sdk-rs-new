@@ -2,7 +2,7 @@
 
 dharitri_wasm::imports!();
 
-#[dharitri_wasm_derive::contract(NftReceiverImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait NftReceiver {
 	#[init]
 	fn init(&self) {}

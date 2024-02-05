@@ -1,15 +1,12 @@
 #![no_std]
 #![allow(clippy::string_lit_as_bytes)]
 
-#[macro_use]
-extern crate dharitri_wasm;
-
 dharitri_wasm::imports!();
 
 /// The module deals with temporarily pausing contract operations.
 /// It provides a flag that contracts can use to check if owner decided to pause the entire contract.
 /// Use the features module for more granular on/off switches.
-#[dharitri_wasm_derive::module(PauseModuleImpl)]
+#[dharitri_wasm_derive::module]
 pub trait PauseModule {
 	#[view(isPaused)]
 	#[storage_get("pause_module:paused")]

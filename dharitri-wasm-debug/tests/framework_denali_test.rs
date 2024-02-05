@@ -8,19 +8,19 @@ fn contract_map() -> ContractMap<TxContext> {
 
 /// Checks that externalSteps work fine.
 #[test]
-fn external_steps() {
-	parse_execute_denali(
+fn external_steps_rs() {
+	dharitri_wasm_debug::denali_rs(
 		"tests/denali/external_steps/external_steps.scen.json",
 		&contract_map(),
 	);
 }
 
 #[test]
-fn transfer() {
-	parse_execute_denali("tests/denali/transfer.scen.json", &contract_map());
+fn transfer_rs() {
+	dharitri_wasm_debug::denali_rs("tests/denali/transfer.scen.json", &contract_map());
 }
 
 #[test]
-fn validator_reward() {
-	parse_execute_denali("tests/denali/validatorReward.scen.json", &contract_map());
+fn validator_reward_rs() {
+	dharitri_wasm_debug::denali_rs("tests/denali/validatorReward.scen.json", &contract_map());
 }

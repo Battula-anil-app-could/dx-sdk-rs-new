@@ -1,7 +1,3 @@
-use dharitri_wasm_debug::*;
-use dct_nft_marketplace::*;
-
 fn main() {
-	let contract = DctNftMarketplaceImpl::new(TxContext::dummy());
-	print!("{}", abi_json::contract_abi(&contract));
+	dharitri_wasm_debug::abi_json::print_abi::<dct_nft_marketplace::AbiProvider>();
 }

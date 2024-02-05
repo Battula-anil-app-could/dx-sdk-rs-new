@@ -1,12 +1,13 @@
 use super::sc_error::SCError;
 use crate::abi::{OutputAbi, TypeAbi, TypeDescriptionContainer};
-use crate::api::{EndpointFinishApi, ErrorApi};
+use crate::api::EndpointFinishApi;
 use crate::EndpointResult;
 use crate::*;
+use core::ops::{ControlFlow, FromResidual, Try};
 
 /// Default way to optionally return an error from a smart contract endpoint.
 #[must_use]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum SCResult<T> {
 	Ok(T),
 	Err(SCError),
@@ -53,13 +54,43 @@ impl<T> SCResult<T> {
 	}
 }
 
-impl<FA, T> EndpointResult<FA> for SCResult<T>
+/// Implementing the `Try` trait overloads the `?` operator.
+/// Documentation on the new version of the trait:
+/// https://github.com/scottmcm/rfcs/blob/do-or-do-not/text/0000-try-trait-v2.md#the-try-trait
+impl<T> Try for SCResult<T> {
+	type Output = T;
+	type Residual = SCError;
+
+	fn branch(self) -> ControlFlow<Self::Residual, T> {
+		match self {
+			SCResult::Ok(t) => ControlFlow::Continue(t),
+			SCResult::Err(e) => ControlFlow::Break(e),
+		}
+	}
+	fn from_output(v: T) -> Self {
+		SCResult::Ok(v)
+	}
+}
+
+impl<T> FromResidual for SCResult<T> {
+	fn from_residual(r: SCError) -> Self {
+		SCResult::Err(r)
+	}
+}
+
+impl<T> EndpointResult for SCResult<T>
 where
-	FA: EndpointFinishApi + ErrorApi + Clone + 'static,
-	T: EndpointResult<FA>,
+	T: EndpointResult,
 {
+	/// Error implies the transaction fails, so if there is a result,
+	/// it is of type `T`.
+	type DecodeAs = T::DecodeAs;
+
 	#[inline]
-	fn finish(&self, api: FA) {
+	fn finish<FA>(&self, api: FA)
+	where
+		FA: EndpointFinishApi + Clone + 'static,
+	{
 		match self {
 			SCResult::Ok(t) => {
 				t.finish(api);

@@ -2,7 +2,7 @@
 
 dharitri_wasm::imports!();
 
-#[dharitri_wasm_derive::contract(StrRepeatImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait StrRepeat {
 	#[init]
 	fn init(&self) {}

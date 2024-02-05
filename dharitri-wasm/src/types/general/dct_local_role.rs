@@ -1,6 +1,7 @@
 use crate::abi::TypeAbi;
+use crate::Vec;
 use alloc::string::String;
-use dharitri_codec::*;
+use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
 const DCT_ROLE_NONE: &[u8] = &[];
 const DCT_ROLE_LOCAL_MINT: &[u8] = b"DCTRoleLocalMint";
@@ -9,7 +10,7 @@ const DCT_ROLE_NFT_CREATE: &[u8] = b"DCTRoleNFTCreate";
 const DCT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCTRoleNFTAddQuantity";
 const DCT_ROLE_NFT_BURN: &[u8] = b"DCTRoleNFTBurn";
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Debug)]
 pub enum DctLocalRole {
 	None,
 	Mint,
@@ -76,70 +77,62 @@ impl<'a> From<&'a [u8]> for DctLocalRole {
 	}
 }
 
-impl NestedEncode for DctLocalRole {
-	#[inline]
-	fn dep_encode<O: NestedEncodeOutput>(&self, dest: &mut O) -> Result<(), EncodeError> {
-		self.as_u8().dep_encode(dest)
-	}
-
-	#[inline]
-	fn dep_encode_or_exit<O: NestedEncodeOutput, ExitCtx: Clone>(
-		&self,
-		dest: &mut O,
-		c: ExitCtx,
-		exit: fn(ExitCtx, EncodeError) -> !,
-	) {
-		self.as_u8().dep_encode_or_exit(dest, c, exit);
-	}
-}
-
-impl TopEncode for DctLocalRole {
-	#[inline]
-	fn top_encode<O: TopEncodeOutput>(&self, output: O) -> Result<(), EncodeError> {
-		self.as_u8().top_encode(output)
-	}
-
-	#[inline]
-	fn top_encode_or_exit<O: TopEncodeOutput, ExitCtx: Clone>(
-		&self,
-		output: O,
-		c: ExitCtx,
-		exit: fn(ExitCtx, EncodeError) -> !,
-	) {
-		self.as_u8().top_encode_or_exit(output, c, exit);
-	}
-}
-
-impl NestedDecode for DctLocalRole {
-	fn dep_decode<I: NestedDecodeInput>(input: &mut I) -> Result<Self, DecodeError> {
-		Ok(Self::from(u8::dep_decode(input)?))
-	}
-
-	fn dep_decode_or_exit<I: NestedDecodeInput, ExitCtx: Clone>(
-		input: &mut I,
-		c: ExitCtx,
-		exit: fn(ExitCtx, DecodeError) -> !,
-	) -> Self {
-		Self::from(u8::dep_decode_or_exit(input, c, exit))
-	}
-}
-
-impl TopDecode for DctLocalRole {
-	fn top_decode<I: TopDecodeInput>(input: I) -> Result<Self, DecodeError> {
-		Ok(Self::from(u8::top_decode(input)?))
-	}
-
-	fn top_decode_or_exit<I: TopDecodeInput, ExitCtx: Clone>(
-		input: I,
-		c: ExitCtx,
-		exit: fn(ExitCtx, DecodeError) -> !,
-	) -> Self {
-		Self::from(u8::top_decode_or_exit(input, c, exit))
-	}
-}
-
 impl TypeAbi for DctLocalRole {
 	fn type_name() -> String {
 		"DctLocalRole".into()
+	}
+
+	fn provide_type_descriptions<TDC: crate::abi::TypeDescriptionContainer>(accumulator: &mut TDC) {
+		let type_name = Self::type_name();
+		if !accumulator.contains_type(&type_name) {
+			accumulator.reserve_type_name(type_name.clone());
+			let variant_descriptions = [
+				crate::abi::EnumVariantDescription {
+					docs: &[],
+					discriminant: 0usize,
+					name: "None",
+					fields: Vec::new(),
+				},
+				crate::abi::EnumVariantDescription {
+					docs: &[],
+					discriminant: 1usize,
+					name: "Mint",
+					fields: Vec::new(),
+				},
+				crate::abi::EnumVariantDescription {
+					docs: &[],
+					discriminant: 2usize,
+					name: "Burn",
+					fields: Vec::new(),
+				},
+				crate::abi::EnumVariantDescription {
+					docs: &[],
+					discriminant: 3usize,
+					name: "NftCreate",
+					fields: Vec::new(),
+				},
+				crate::abi::EnumVariantDescription {
+					docs: &[],
+					discriminant: 4usize,
+					name: "NftAddQuantity",
+					fields: Vec::new(),
+				},
+				crate::abi::EnumVariantDescription {
+					docs: &[],
+					discriminant: 5usize,
+					name: "NftBurn",
+					fields: Vec::new(),
+				},
+			]
+			.to_vec();
+			accumulator.insert(
+				type_name.clone(),
+				crate::abi::TypeDescription {
+					docs: &[],
+					name: type_name,
+					contents: crate::abi::TypeContents::Enum(variant_descriptions),
+				},
+			);
+		}
 	}
 }

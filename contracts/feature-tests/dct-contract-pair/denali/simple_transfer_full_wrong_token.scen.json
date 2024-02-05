@@ -1,5 +1,6 @@
 {
     "name": "simple transfer full wrong token",
+    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "externalSteps",
@@ -23,10 +24,12 @@
             "txId": "transfer-full-wrong-token",
             "tx": {
                 "from": "address:acc1",
-                "to": "address:first_contract",
+                "to": "sc:first_contract",
                 "value": "0",
-                "dctTokenName": "str:boring_token",
-                "dctValue": "500,000",
+                "dct": {
+                    "tokenIdentifier": "str:boring_token",
+                    "value": "500,000"
+                },
                 "function": "transferToSecondContractFull",
                 "arguments": [],
                 "gasLimit": "100,000,000",
@@ -50,21 +53,24 @@
                     },
                     "storage": {}
                 },
-                "address:first_contract": {
+                "sc:first_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
                         "str:dctTokenName": "str:cool_token",
-                        "str:secondContractAddress": "address:second_contract"
-                    }
+                        "str:secondContractAddress": "sc:second_contract"
+                    },
+                    "code": "*"
                 },
-                "address:second_contract": {
+                "sc:second_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
                         "str:dctTokenName": "str:cool_token"
-                    }
-                }
+                    },
+                    "code": "*"
+                },
+                "+": ""
             }
         }
     ]

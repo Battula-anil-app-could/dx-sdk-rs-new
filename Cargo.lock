@@ -200,25 +200,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "crowdfunding-moax"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-derive",
- "dharitri-wasm-node",
-]
-
-[[package]]
-name = "crowdfunding-moax-abi"
-version = "0.0.0"
-dependencies = [
- "crowdfunding-moax",
- "dharitri-wasm",
- "dharitri-wasm-debug",
-]
-
-[[package]]
 name = "crypto-bubbles"
 version = "0.0.0"
 dependencies = [
@@ -270,7 +251,7 @@ dependencies = [
 
 [[package]]
 name = "denali"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "hex",
  "num-bigint",
@@ -292,7 +273,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "arrayvec",
  "dharitri-codec-derive",
@@ -301,7 +282,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec-derive"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -311,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "arrayvec",
  "dharitri-codec",
@@ -322,7 +303,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -337,7 +318,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -346,8 +327,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dharitri-wasm-module-dns"
+version = "0.6.2"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
 name = "dharitri-wasm-module-features"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -357,7 +348,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -367,7 +358,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -377,7 +368,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -506,6 +497,7 @@ dependencies = [
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
+ "vault",
 ]
 
 [[package]]
@@ -666,25 +658,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lottery-moax"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-derive",
- "dharitri-wasm-node",
-]
-
-[[package]]
-name = "lottery-moax-abi"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "lottery-moax",
-]
-
-[[package]]
 name = "memory_units"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -739,6 +712,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "nft-storage-prepay"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "nft-storage-prepay-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "nft-storage-prepay",
+]
+
+[[package]]
 name = "non-fungible-tokens"
 version = "0.0.0"
 dependencies = [
@@ -759,9 +751,9 @@ dependencies = [
 
 [[package]]
 name = "num-bigint"
-version = "0.3.3"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f6f7833f2cbf2360a6cfd58cd41a53aa7a90bd4c202f5b1c7dd2ed73c57b2c3"
+checksum = "608e7659b5c3d7cba262d894801b9ec9d00de989e8a82bd4bef91d08da45cdc0"
 dependencies = [
  "autocfg",
  "num-integer",
@@ -807,6 +799,7 @@ dependencies = [
 name = "parent"
 version = "0.0.0"
 dependencies = [
+ "child",
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
@@ -881,6 +874,7 @@ dependencies = [
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
+ "vault",
 ]
 
 [[package]]
@@ -1020,6 +1014,7 @@ dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
+ "dharitri-wasm-module-dns",
  "dharitri-wasm-module-features",
  "dharitri-wasm-module-pause",
  "dharitri-wasm-node",

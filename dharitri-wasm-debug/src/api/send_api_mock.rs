@@ -1,7 +1,7 @@
-use super::big_uint_api_mock::*;
+use super::{big_uint_api_mock::*, RustBigInt};
 use crate::async_data::AsyncCallTxData;
 use crate::{SendBalance, TxContext, TxOutput, TxPanic};
-use dharitri_wasm::api::{BlockchainApi, ContractSelfApi, SendApi, StorageReadApi, StorageWriteApi};
+use dharitri_wasm::api::{BlockchainApi, ContractBase, SendApi, StorageReadApi, StorageWriteApi};
 use dharitri_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata, TokenIdentifier};
 use num_bigint::BigUint;
 use num_traits::Zero;
@@ -49,7 +49,19 @@ impl TxContext {
 	}
 }
 
-impl SendApi<RustBigUint> for TxContext {
+impl SendApi for TxContext {
+	type AmountType = RustBigUint;
+	type ProxyBigInt = RustBigInt;
+	type ProxyStorage = Self;
+
+	fn get_sc_address(&self) -> Address {
+		BlockchainApi::get_sc_address(self)
+	}
+
+	fn get_gas_left(&self) -> u64 {
+		BlockchainApi::get_gas_left(self)
+	}
+
 	fn direct_moax(&self, to: &Address, amount: &RustBigUint, _data: &[u8]) {
 		if amount.value() > self.get_available_moax_balance() {
 			std::panic::panic_any(TxPanic {
@@ -80,13 +92,13 @@ impl SendApi<RustBigUint> for TxContext {
 	fn direct_dct_execute(
 		&self,
 		to: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		amount: &RustBigUint,
 		_gas: u64,
 		_function: &[u8],
 		_arg_buffer: &ArgBuffer,
 	) -> Result<(), &'static [u8]> {
-		if amount.value() > self.get_available_dct_balance(token) {
+		if amount.value() > self.get_available_dct_balance(token.as_dct_identifier()) {
 			std::panic::panic_any(TxPanic {
 				status: 10,
 				message: b"insufficient funds".to_vec(),
@@ -96,7 +108,7 @@ impl SendApi<RustBigUint> for TxContext {
 		let mut tx_output = self.tx_output_cell.borrow_mut();
 		tx_output.send_balance_list.push(SendBalance {
 			recipient: to.clone(),
-			token: TokenIdentifier::from(token),
+			token: token.clone(),
 			amount: amount.value(),
 		});
 		Ok(())
@@ -105,7 +117,7 @@ impl SendApi<RustBigUint> for TxContext {
 	fn direct_dct_nft_execute(
 		&self,
 		_to: &Address,
-		_token: &[u8],
+		_token: &TokenIdentifier,
 		_nonce: u64,
 		_amount: &RustBigUint,
 		_gas_limit: u64,

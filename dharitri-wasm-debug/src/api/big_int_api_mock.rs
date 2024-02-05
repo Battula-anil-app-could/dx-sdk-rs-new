@@ -229,7 +229,9 @@ impl dharitri_wasm::abi::TypeAbi for RustBigInt {
 	}
 }
 
-impl dharitri_wasm::api::BigIntApi<RustBigUint> for RustBigInt {
+impl dharitri_wasm::api::BigIntApi for RustBigInt {
+	type BigUint = RustBigUint;
+
 	fn abs_uint(&self) -> RustBigUint {
 		RustBigUint(self.0.abs())
 	}

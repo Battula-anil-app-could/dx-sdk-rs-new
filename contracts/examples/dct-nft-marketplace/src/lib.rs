@@ -25,12 +25,11 @@ pub struct DctToken {
 	pub nonce: u64,
 }
 
-#[dharitri_wasm_derive::contract(DctNftMarketplaceImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait DctNftMarketplace {
 	#[init]
-	fn init(&self, bid_cut_percentage: u64) {
-		self.bid_cut_percentage()
-			.set(&BigUint::from(bid_cut_percentage));
+	fn init(&self, bid_cut_percentage: u64) -> SCResult<()> {
+		self.try_set_bid_cut_percentage(bid_cut_percentage)
 	}
 
 	// endpoints - owner-only
@@ -38,15 +37,7 @@ pub trait DctNftMarketplace {
 	#[endpoint(setCutPercentage)]
 	fn set_percentage_cut(&self, new_cut_percentage: u64) -> SCResult<()> {
 		only_owner!(self, "Only owner may call this function!");
-		require!(
-			new_cut_percentage > 0 && new_cut_percentage < PERCENTAGE_TOTAL,
-			"Invalid percentage value, should be between 0 and 10,000"
-		);
-
-		self.bid_cut_percentage()
-			.set(&BigUint::from(new_cut_percentage));
-
-		Ok(())
+		self.try_set_bid_cut_percentage(new_cut_percentage)
 	}
 
 	// endpoints
@@ -56,8 +47,8 @@ pub trait DctNftMarketplace {
 	#[endpoint(auctionToken)]
 	fn auction_token(
 		&self,
-		min_bid: BigUint,
-		max_bid: BigUint,
+		min_bid: Self::BigUint,
+		max_bid: Self::BigUint,
 		deadline: u64,
 		accepted_payment_token: TokenIdentifier,
 		#[var_args] opt_accepted_payment_token_nonce: OptionalArg<u64>,
@@ -70,7 +61,7 @@ pub trait DctNftMarketplace {
 			"Only Non-Fungible tokens can be auctioned"
 		);
 		require!(
-			self.call_value().dct_value() == BigUint::from(NFT_AMOUNT),
+			self.call_value().dct_value() == Self::BigUint::from(NFT_AMOUNT),
 			"Token is not an NFT"
 		);
 		require!(
@@ -111,7 +102,7 @@ pub trait DctNftMarketplace {
 			max_bid,
 			deadline,
 			original_owner: self.blockchain().get_caller(),
-			current_bid: BigUint::zero(),
+			current_bid: Self::BigUint::zero(),
 			current_winner: Address::zero(),
 			marketplace_cut_percentage,
 			creator_royalties_percentage,
@@ -238,20 +229,20 @@ pub trait DctNftMarketplace {
 			);
 
 			// send NFT to auction winner
-			let _ = self.send().direct_dct_nft_via_transfer_exec(
+			let _ = self.send().direct_nft(
 				&auction.current_winner,
-				nft_type.as_dct_identifier(),
+				&nft_type,
 				nft_nonce,
-				&BigUint::from(NFT_AMOUNT),
+				&Self::BigUint::from(NFT_AMOUNT),
 				self.data_or_empty_if_sc(&auction.current_winner, b"bought token at auction"),
 			);
 		} else {
 			// return to original owner
-			let _ = self.send().direct_dct_nft_via_transfer_exec(
+			let _ = self.send().direct_nft(
 				&auction.original_owner,
-				nft_type.as_dct_identifier(),
+				&nft_type,
 				nft_nonce,
-				&BigUint::from(NFT_AMOUNT),
+				&Self::BigUint::from(NFT_AMOUNT),
 				self.data_or_empty_if_sc(&auction.original_owner, b"returned token"),
 			);
 		}
@@ -280,11 +271,11 @@ pub trait DctNftMarketplace {
 
 		self.auction_for_token(&nft_type, nft_nonce).clear();
 
-		let _ = self.send().direct_dct_nft_via_transfer_exec(
+		let _ = self.send().direct_nft(
 			&caller,
-			nft_type.as_dct_identifier(),
+			&nft_type,
 			nft_nonce,
-			&BigUint::from(NFT_AMOUNT),
+			&Self::BigUint::from(NFT_AMOUNT),
 			self.data_or_empty_if_sc(&caller, b"returned token"),
 		);
 
@@ -303,15 +294,16 @@ pub trait DctNftMarketplace {
 		&self,
 		nft_type: &TokenIdentifier,
 		nft_nonce: u64,
-	) -> Option<DctToken> {
+	) -> OptionalResult<MultiResult2<TokenIdentifier, u64>> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
-			Some(
-				self.auction_for_token(nft_type, nft_nonce)
-					.get()
-					.payment_token,
-			)
+			let dct_token = self
+				.auction_for_token(nft_type, nft_nonce)
+				.get()
+				.payment_token;
+
+			OptionalResult::Some((dct_token.token_type, dct_token.nonce).into())
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
@@ -320,35 +312,39 @@ pub trait DctNftMarketplace {
 		&self,
 		nft_type: &TokenIdentifier,
 		nft_nonce: u64,
-	) -> Option<(BigUint, BigUint)> {
+	) -> OptionalResult<MultiResult2<Self::BigUint, Self::BigUint>> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
 			let auction = self.auction_for_token(nft_type, nft_nonce).get();
 
-			Some((auction.min_bid, auction.max_bid))
+			OptionalResult::Some((auction.min_bid, auction.max_bid).into())
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
 	#[view(getDeadline)]
-	fn get_deadline(&self, nft_type: &TokenIdentifier, nft_nonce: u64) -> Option<u64> {
+	fn get_deadline(&self, nft_type: &TokenIdentifier, nft_nonce: u64) -> OptionalResult<u64> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
-			Some(self.auction_for_token(nft_type, nft_nonce).get().deadline)
+			OptionalResult::Some(self.auction_for_token(nft_type, nft_nonce).get().deadline)
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
 	#[view(getOriginalOwner)]
-	fn get_original_owner(&self, nft_type: &TokenIdentifier, nft_nonce: u64) -> Option<Address> {
+	fn get_original_owner(
+		&self,
+		nft_type: &TokenIdentifier,
+		nft_nonce: u64,
+	) -> OptionalResult<Address> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
-			Some(
+			OptionalResult::Some(
 				self.auction_for_token(nft_type, nft_nonce)
 					.get()
 					.original_owner,
 			)
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
@@ -357,28 +353,32 @@ pub trait DctNftMarketplace {
 		&self,
 		nft_type: &TokenIdentifier,
 		nft_nonce: u64,
-	) -> Option<BigUint> {
+	) -> OptionalResult<Self::BigUint> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
-			Some(
+			OptionalResult::Some(
 				self.auction_for_token(nft_type, nft_nonce)
 					.get()
 					.current_bid,
 			)
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
 	#[view(getCurrentWinner)]
-	fn get_current_winner(&self, nft_type: &TokenIdentifier, nft_nonce: u64) -> Option<Address> {
+	fn get_current_winner(
+		&self,
+		nft_type: &TokenIdentifier,
+		nft_nonce: u64,
+	) -> OptionalResult<Address> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
-			Some(
+			OptionalResult::Some(
 				self.auction_for_token(nft_type, nft_nonce)
 					.get()
 					.current_winner,
 			)
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
@@ -387,18 +387,22 @@ pub trait DctNftMarketplace {
 		&self,
 		nft_type: &TokenIdentifier,
 		nft_nonce: u64,
-	) -> Option<Auction<BigUint>> {
+	) -> OptionalResult<Auction<Self::BigUint>> {
 		if self.is_already_up_for_auction(nft_type, nft_nonce) {
-			Some(self.auction_for_token(nft_type, nft_nonce).get())
+			OptionalResult::Some(self.auction_for_token(nft_type, nft_nonce).get())
 		} else {
-			None
+			OptionalResult::None
 		}
 	}
 
 	// private
 
-	fn calculate_cut_amount(&self, total_amount: &BigUint, cut_percentage: &BigUint) -> BigUint {
-		total_amount * cut_percentage / BigUint::from(PERCENTAGE_TOTAL)
+	fn calculate_cut_amount(
+		&self,
+		total_amount: &Self::BigUint,
+		cut_percentage: &Self::BigUint,
+	) -> Self::BigUint {
+		total_amount * cut_percentage / Self::BigUint::from(PERCENTAGE_TOTAL)
 	}
 
 	fn transfer_dct(
@@ -406,7 +410,7 @@ pub trait DctNftMarketplace {
 		to: &Address,
 		token_id: &TokenIdentifier,
 		nonce: u64,
-		amount: &BigUint,
+		amount: &Self::BigUint,
 		data: &'static [u8],
 	) {
 		// nonce 0 means fungible DCT or MOAX
@@ -414,9 +418,9 @@ pub trait DctNftMarketplace {
 			self.send()
 				.direct(to, &token_id, amount, self.data_or_empty_if_sc(to, data));
 		} else {
-			let _ = self.send().direct_dct_nft_via_transfer_exec(
+			let _ = self.send().direct_nft(
 				to,
-				token_id.as_dct_identifier(),
+				&token_id,
 				nonce,
 				amount,
 				self.data_or_empty_if_sc(to, data),
@@ -432,23 +436,40 @@ pub trait DctNftMarketplace {
 		}
 	}
 
-	fn get_nft_info(&self, nft_type: &TokenIdentifier, nft_nonce: u64) -> DctTokenData<BigUint> {
+	fn get_nft_info(
+		&self,
+		nft_type: &TokenIdentifier,
+		nft_nonce: u64,
+	) -> DctTokenData<Self::BigUint> {
 		self.blockchain().get_dct_token_data(
 			&self.blockchain().get_sc_address(),
-			nft_type.as_dct_identifier(),
+			&nft_type,
 			nft_nonce,
 		)
 	}
 
+	fn try_set_bid_cut_percentage(&self, new_cut_percentage: u64) -> SCResult<()> {
+		require!(
+			new_cut_percentage > 0 && new_cut_percentage < PERCENTAGE_TOTAL,
+			"Invalid percentage value, should be between 0 and 10,000"
+		);
+
+		self.bid_cut_percentage()
+			.set(&Self::BigUint::from(new_cut_percentage));
+
+		Ok(())
+	}
+
 	// storage
 
+	#[view(getMarketplaceCutPercentage)]
 	#[storage_mapper("bidCutPerecentage")]
-	fn bid_cut_percentage(&self) -> SingleValueMapper<Self::Storage, BigUint>;
+	fn bid_cut_percentage(&self) -> SingleValueMapper<Self::Storage, Self::BigUint>;
 
 	#[storage_mapper("auctionForToken")]
 	fn auction_for_token(
 		&self,
 		nft_type: &TokenIdentifier,
 		nft_nonce: u64,
-	) -> SingleValueMapper<Self::Storage, Auction<BigUint>>;
+	) -> SingleValueMapper<Self::Storage, Auction<Self::BigUint>>;
 }

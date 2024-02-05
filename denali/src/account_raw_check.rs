@@ -16,6 +16,12 @@ impl CheckStorageRaw {
 	}
 }
 
+impl Default for CheckStorageRaw {
+	fn default() -> Self {
+		CheckStorageRaw::Equal(BTreeMap::new())
+	}
+}
+
 impl Serialize for CheckStorageRaw {
 	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
 	where
@@ -191,6 +197,11 @@ pub struct CheckAccountRaw {
 	#[serde(skip_serializing_if = "CheckDctRaw::is_unspecified")]
 	pub dct: CheckDctRaw,
 
+	#[serde(default)]
+	#[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
+	pub username: CheckBytesValueRaw,
+
+	#[serde(default)]
 	pub storage: CheckStorageRaw,
 
 	#[serde(default)]

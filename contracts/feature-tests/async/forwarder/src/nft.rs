@@ -1,7 +1,7 @@
 dharitri_wasm::imports!();
 dharitri_wasm::derive_imports!();
 
-use super::storage::*;
+use super::storage;
 
 // used as mock attributes for NFTs
 #[derive(TopEncode, TopDecode, TypeAbi)]
@@ -11,16 +11,13 @@ pub struct Color {
 	b: u8,
 }
 
-#[dharitri_wasm_derive::module(ForwarderNftModuleImpl)]
-pub trait ForwarderNftModule {
-	#[module(ForwarderStorageModuleImpl)]
-	fn storage_module(&self) -> ForwarderStorageModuleImpl<T, BigInt, BigUint>;
-
+#[dharitri_wasm_derive::module]
+pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 	#[view]
-	fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> BigUint {
+	fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> Self::BigUint {
 		self.blockchain().get_dct_balance(
 			&self.blockchain().get_sc_address(),
-			token_identifier.as_dct_identifier(),
+			token_identifier,
 			nonce,
 		)
 	}
@@ -29,13 +26,13 @@ pub trait ForwarderNftModule {
 	#[endpoint]
 	fn nft_issue(
 		&self,
-		#[payment] issue_cost: BigUint,
+		#[payment] issue_cost: Self::BigUint,
 		token_display_name: BoxedBytes,
 		token_ticker: BoxedBytes,
-	) -> AsyncCall<BigUint> {
+	) -> AsyncCall<Self::SendApi> {
 		let caller = self.blockchain().get_caller();
 
-		DCTSystemSmartContractProxy::new()
+		DCTSystemSmartContractProxy::new_proxy_obj(self.send())
 			.issue_non_fungible(
 				issue_cost,
 				&token_display_name,
@@ -61,10 +58,8 @@ pub trait ForwarderNftModule {
 	) {
 		match result {
 			AsyncCallResult::Ok(token_identifier) => {
-				self.storage_module()
-					.last_issued_token()
-					.set(&token_identifier);
-				self.storage_module().last_error_message().clear();
+				self.last_issued_token().set(&token_identifier);
+				self.last_error_message().clear();
 			},
 			AsyncCallResult::Err(message) => {
 				// return issue cost to the caller
@@ -73,9 +68,7 @@ pub trait ForwarderNftModule {
 					self.send().direct_moax(caller, &returned_tokens, &[]);
 				}
 
-				self.storage_module()
-					.last_error_message()
-					.set(&message.err_msg);
+				self.last_error_message().set(&message.err_msg);
 			},
 		}
 	}
@@ -84,16 +77,15 @@ pub trait ForwarderNftModule {
 	fn nft_create(
 		&self,
 		token_identifier: TokenIdentifier,
-		amount: BigUint,
+		amount: Self::BigUint,
 		name: BoxedBytes,
-		royalties: BigUint,
-		hash: H256,
+		royalties: Self::BigUint,
+		hash: BoxedBytes,
 		color: Color,
 		uri: BoxedBytes,
 	) {
 		self.send().dct_nft_create::<Color>(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dct_identifier(),
+			&token_identifier,
 			&amount,
 			&name,
 			&royalties,
@@ -104,23 +96,19 @@ pub trait ForwarderNftModule {
 	}
 
 	#[endpoint]
-	fn nft_add_quantity(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
-		self.send().dct_nft_add_quantity(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dct_identifier(),
-			nonce,
-			&amount,
-		);
+	fn nft_add_quantity(
+		&self,
+		token_identifier: TokenIdentifier,
+		nonce: u64,
+		amount: Self::BigUint,
+	) {
+		self.send()
+			.dct_nft_add_quantity(&token_identifier, nonce, &amount);
 	}
 
 	#[endpoint]
-	fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
-		self.send().dct_nft_burn(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dct_identifier(),
-			nonce,
-			&amount,
-		);
+	fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: Self::BigUint) {
+		self.send().dct_nft_burn(&token_identifier, nonce, &amount);
 	}
 
 	#[endpoint]
@@ -129,13 +117,13 @@ pub trait ForwarderNftModule {
 		to: Address,
 		token_identifier: TokenIdentifier,
 		nonce: u64,
-		amount: BigUint,
+		amount: Self::BigUint,
 		data: BoxedBytes,
 	) {
-		self.send().direct_dct_nft_via_async_call(
+		self.send().transfer_dct_nft_via_async_call(
 			&self.blockchain().get_sc_address(),
 			&to,
-			token_identifier.as_dct_identifier(),
+			&token_identifier,
 			nonce,
 			&amount,
 			data.as_slice(),
@@ -148,7 +136,7 @@ pub trait ForwarderNftModule {
 		to: Address,
 		token_identifier: TokenIdentifier,
 		nonce: u64,
-		amount: BigUint,
+		amount: Self::BigUint,
 		function: BoxedBytes,
 		#[var_args] arguments: VarArgs<BoxedBytes>,
 	) {
@@ -159,7 +147,7 @@ pub trait ForwarderNftModule {
 
 		let _ = self.send().direct_dct_nft_execute(
 			&to,
-			token_identifier.as_dct_identifier(),
+			&token_identifier,
 			nonce,
 			&amount,
 			self.blockchain().get_gas_left(),

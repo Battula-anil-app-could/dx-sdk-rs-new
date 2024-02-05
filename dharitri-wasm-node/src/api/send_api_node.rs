@@ -1,8 +1,8 @@
-use super::ArwenBigUint;
+use super::{ArwenBigInt, ArwenBigUint};
 use crate::ArwenApiImpl;
 use alloc::vec::Vec;
 use dharitri_wasm::api::{BlockchainApi, SendApi, StorageReadApi, StorageWriteApi};
-use dharitri_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata};
+use dharitri_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata, TokenIdentifier};
 
 extern "C" {
 	fn transferValue(
@@ -107,7 +107,21 @@ extern "C" {
 	fn getReturnData(result_index: i32, dataOffset: *const u8) -> i32;
 }
 
-impl SendApi<ArwenBigUint> for ArwenApiImpl {
+impl SendApi for ArwenApiImpl {
+	type AmountType = ArwenBigUint;
+	type ProxyBigInt = ArwenBigInt;
+	type ProxyStorage = Self;
+
+	#[inline]
+	fn get_sc_address(&self) -> Address {
+		BlockchainApi::get_sc_address(self)
+	}
+
+	#[inline]
+	fn get_gas_left(&self) -> u64 {
+		BlockchainApi::get_gas_left(self)
+	}
+
 	fn direct_moax(&self, to: &Address, amount: &ArwenBigUint, data: &[u8]) {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
@@ -151,7 +165,7 @@ impl SendApi<ArwenBigUint> for ArwenApiImpl {
 	fn direct_dct_execute(
 		&self,
 		to: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		amount: &ArwenBigUint,
 		gas_limit: u64,
 		function: &[u8],
@@ -182,7 +196,7 @@ impl SendApi<ArwenBigUint> for ArwenApiImpl {
 	fn direct_dct_nft_execute(
 		&self,
 		to: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		nonce: u64,
 		amount: &ArwenBigUint,
 		gas_limit: u64,
@@ -377,7 +391,7 @@ impl SendApi<ArwenBigUint> for ArwenApiImpl {
 
 	fn call_local_dct_built_in_function(&self, gas: u64, function: &[u8], arg_buffer: &ArgBuffer) {
 		// account-level built-in function, so the destination address is the contract itself
-		let own_address = self.get_sc_address();
+		let own_address = BlockchainApi::get_sc_address(self);
 
 		let _ = self.execute_on_dest_context_raw(
 			gas,

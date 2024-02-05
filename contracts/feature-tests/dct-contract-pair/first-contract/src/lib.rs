@@ -9,7 +9,7 @@ const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
 const SECOND_CONTRACT_ACCEPT_DCT_PAYMENT: &[u8] = b"acceptDctPayment";
 const SECOND_CONTRACT_REJECT_DCT_PAYMENT: &[u8] = b"rejectDctPayment";
 
-#[dharitri_wasm_derive::contract(FirstContractImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait FirstContract {
 	#[init]
 	fn init(&self, dct_token_name: TokenIdentifier, second_contract_address: Address) {
@@ -21,7 +21,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractFull)]
 	fn transfer_to_second_contract_full(
 		&self,
-		#[payment] dct_value: BigUint,
+		#[payment] dct_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let expected_token_name = self.get_contract_dct_token_name();
@@ -44,7 +44,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractHalf)]
 	fn transfer_to_second_contract_half(
 		&self,
-		#[payment] dct_value: BigUint,
+		#[payment] dct_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let expected_token_name = self.get_contract_dct_token_name();
@@ -54,7 +54,7 @@ pub trait FirstContract {
 
 		self.call_dct_second_contract(
 			&expected_token_name,
-			&(dct_value / BigUint::from(2u32)),
+			&(dct_value / Self::BigUint::from(2u32)),
 			&self.get_second_contract_address(),
 			SECOND_CONTRACT_ACCEPT_DCT_PAYMENT,
 			&[],
@@ -67,7 +67,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractRejected)]
 	fn transfer_to_second_contract_rejected(
 		&self,
-		#[payment] dct_value: BigUint,
+		#[payment] dct_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let expected_token_name = self.get_contract_dct_token_name();
@@ -90,7 +90,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractRejectedWithTransferAndExecute)]
 	fn transfer_to_second_contract_rejected_with_transfer_and_execute(
 		&self,
-		#[payment] dct_value: BigUint,
+		#[payment] dct_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let second_contract_address = self.get_second_contract_address();
@@ -101,7 +101,7 @@ pub trait FirstContract {
 
 		let _ = self.send().direct_dct_execute(
 			&second_contract_address,
-			expected_token_name.as_dct_identifier(),
+			&expected_token_name,
 			&dct_value,
 			self.blockchain().get_gas_left(),
 			SECOND_CONTRACT_REJECT_DCT_PAYMENT,
@@ -115,7 +115,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractFullWithTransferAndExecute)]
 	fn transfer_to_second_contract_full_with_transfer_and_execute(
 		&self,
-		#[payment] dct_value: BigUint,
+		#[payment] dct_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let second_contract_address = self.get_second_contract_address();
@@ -126,7 +126,7 @@ pub trait FirstContract {
 
 		let _ = self.send().direct_dct_execute(
 			&second_contract_address,
-			expected_token_name.as_dct_identifier(),
+			&expected_token_name,
 			&dct_value,
 			self.blockchain().get_gas_left(),
 			SECOND_CONTRACT_ACCEPT_DCT_PAYMENT,
@@ -139,7 +139,7 @@ pub trait FirstContract {
 	fn call_dct_second_contract(
 		&self,
 		dct_token_name: &TokenIdentifier,
-		amount: &BigUint,
+		amount: &Self::BigUint,
 		to: &Address,
 		func_name: &[u8],
 		args: &[BoxedBytes],
@@ -153,7 +153,7 @@ pub trait FirstContract {
 		}
 
 		self.send()
-			.async_call_raw(&to, &BigUint::zero(), serializer.as_slice());
+			.async_call_raw(&to, &Self::BigUint::zero(), serializer.as_slice());
 	}
 
 	// storage

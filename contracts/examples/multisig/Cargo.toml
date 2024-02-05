@@ -14,18 +14,18 @@ wasm-output-mode = [
 ]
 
 [dependencies.dharitri-wasm]
-version = "0.6.1"
+version = "0.6.2"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-derive]
-version = "0.6.1"
+version = "0.6.2"
 path = "../../../dharitri-wasm-derive"
 
 [dependencies.dharitri-wasm-node]
-version = "0.6.1"
+version = "0.6.2"
 path = "../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.6.1"
+version = "0.6.2"
 path = "../../../dharitri-wasm-debug"

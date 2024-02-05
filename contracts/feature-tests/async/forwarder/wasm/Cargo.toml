@@ -17,10 +17,11 @@ panic = "abort"
 
 [dependencies.forwarder]
 path = ".."
+default-features = false
 features=["wasm-output-mode"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.6.1"
+version = "0.6.2"
 path = "../../../../../dharitri-wasm-output"
 features=["wasm-output-mode"]
 

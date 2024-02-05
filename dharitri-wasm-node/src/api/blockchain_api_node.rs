@@ -1,7 +1,9 @@
 use super::ArwenBigUint;
 use crate::ArwenApiImpl;
 use dharitri_wasm::api::BlockchainApi;
-use dharitri_wasm::types::{Address, Box, BoxedBytes, DctTokenData, DctTokenType, H256};
+use dharitri_wasm::types::{
+	Address, Box, BoxedBytes, DctTokenData, DctTokenType, TokenIdentifier, H256,
+};
 
 extern "C" {
 	fn getSCAddress(resultOffset: *mut u8);
@@ -88,7 +90,9 @@ extern "C" {
 	) -> i32;
 }
 
-impl BlockchainApi<ArwenBigUint> for ArwenApiImpl {
+impl BlockchainApi for ArwenApiImpl {
+	type BalanceType = ArwenBigUint;
+
 	#[inline]
 	fn get_sc_address(&self) -> Address {
 		unsafe {
@@ -207,7 +211,7 @@ impl BlockchainApi<ArwenBigUint> for ArwenApiImpl {
 	}
 
 	#[inline]
-	fn get_current_dct_nft_nonce(&self, address: &Address, token: &[u8]) -> u64 {
+	fn get_current_dct_nft_nonce(&self, address: &Address, token: &TokenIdentifier) -> u64 {
 		unsafe {
 			getCurrentDCTNFTNonce(
 				address.as_ref().as_ptr(),
@@ -218,7 +222,12 @@ impl BlockchainApi<ArwenBigUint> for ArwenApiImpl {
 	}
 
 	#[inline]
-	fn get_dct_balance(&self, address: &Address, token: &[u8], nonce: u64) -> ArwenBigUint {
+	fn get_dct_balance(
+		&self,
+		address: &Address,
+		token: &TokenIdentifier,
+		nonce: u64,
+	) -> ArwenBigUint {
 		unsafe {
 			let result = bigIntNew(0);
 			bigIntGetDCTExternalBalance(
@@ -237,13 +246,13 @@ impl BlockchainApi<ArwenBigUint> for ArwenApiImpl {
 	fn get_dct_token_data(
 		&self,
 		address: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		nonce: u64,
 	) -> DctTokenData<ArwenBigUint> {
 		unsafe {
 			let value = bigIntNew(0);
 			let mut properties = [0u8; 2]; // always 2 bytes
-			let mut hash = H256::zero();
+			let mut hash = BoxedBytes::allocate(128);
 
 			let name_len = getDCTNFTNameLength(
 				address.as_ref().as_ptr(),

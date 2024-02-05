@@ -1,5 +1,5 @@
 use super::util::*;
-use crate::model::{ArgPaymentMetadata, ContractTrait, Method, PublicRole};
+use crate::model::{ContractTrait, Method, PublicRole};
 
 fn generate_endpoint_snippet(m: &Method, endpoint_name: &str) -> proc_macro2::TokenStream {
 	let endpoint_docs = &m.docs;
@@ -9,10 +9,7 @@ fn generate_endpoint_snippet(m: &Method, endpoint_name: &str) -> proc_macro2::To
 		.method_args
 		.iter()
 		.filter_map(|arg| {
-			if matches!(
-				arg.metadata.payment,
-				ArgPaymentMetadata::Payment | ArgPaymentMetadata::PaymentToken
-			) {
+			if arg.metadata.payment.is_payment_arg() {
 				None
 			} else {
 				let mut arg_type = arg.ty.clone();
@@ -53,7 +50,10 @@ fn generate_endpoint_snippet(m: &Method, endpoint_name: &str) -> proc_macro2::To
 	}
 }
 
-pub fn generate_abi_method_body(contract: &ContractTrait) -> proc_macro2::TokenStream {
+fn generate_abi_method_body(
+	contract: &ContractTrait,
+	is_contract_main: bool,
+) -> proc_macro2::TokenStream {
 	let endpoint_snippets: Vec<proc_macro2::TokenStream> = contract
 		.methods
 		.iter()
@@ -84,6 +84,21 @@ pub fn generate_abi_method_body(contract: &ContractTrait) -> proc_macro2::TokenS
 		})
 		.collect();
 
+	let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
+		contract
+			.supertraits
+			.iter()
+			.map(|supertrait| {
+				let module_path = &supertrait.module_path;
+				quote! {
+					contract_abi.coalesce(<#module_path AbiProvider as dharitri_wasm::api::ContractAbiProvider>::abi());
+				}
+			})
+			.collect()
+	} else {
+		Vec::new()
+	};
+
 	let contract_docs = &contract.docs;
 	let contract_name = &contract.trait_name.to_string();
 	quote! {
@@ -95,6 +110,28 @@ pub fn generate_abi_method_body(contract: &ContractTrait) -> proc_macro2::TokenS
 			type_descriptions: <dharitri_wasm::abi::TypeDescriptionContainerImpl as dharitri_wasm::abi::TypeDescriptionContainer>::new(),
 		};
 		#(#endpoint_snippets)*
+		#(#supertrait_snippets)*
 		contract_abi
+	}
+}
+
+pub fn generate_abi_provider(
+	contract: &ContractTrait,
+	is_contract_main: bool,
+) -> proc_macro2::TokenStream {
+	let abi_body = generate_abi_method_body(&contract, is_contract_main);
+	quote! {
+		pub struct AbiProvider {}
+
+		impl dharitri_wasm::api::ContractAbiProvider for AbiProvider {
+			type BigUint = dharitri_wasm::api::uncallable::BigUintUncallable;
+			type BigInt = dharitri_wasm::api::uncallable::BigIntUncallable;
+			type Storage = dharitri_wasm::api::uncallable::UncallableApi;
+			type SendApi = dharitri_wasm::api::uncallable::UncallableApi;
+
+			fn abi() -> dharitri_wasm::abi::ContractAbi {
+				#abi_body
+			}
+		}
 	}
 }

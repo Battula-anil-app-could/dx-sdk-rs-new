@@ -9,6 +9,7 @@ use dharitri_codec::TopDecodeInput;
 
 /// Structure that allows taking a variable number of arguments
 /// or returning a variable number of results in a smart contract endpoint.
+#[derive(Clone)]
 pub struct MultiArgVec<T>(pub Vec<T>);
 
 /// Used for taking a variable number of arguments in an endpoint,
@@ -96,13 +97,17 @@ where
 	}
 }
 
-impl<FA, T> EndpointResult<FA> for MultiArgVec<T>
+impl<T> EndpointResult for MultiArgVec<T>
 where
-	FA: EndpointFinishApi + Clone + 'static,
-	T: EndpointResult<FA>,
+	T: EndpointResult,
 {
+	type DecodeAs = MultiArgVec<T::DecodeAs>;
+
 	#[inline]
-	fn finish(&self, api: FA) {
+	fn finish<FA>(&self, api: FA)
+	where
+		FA: EndpointFinishApi + Clone + 'static,
+	{
 		for elem in self.0.iter() {
 			elem.finish(api.clone());
 		}

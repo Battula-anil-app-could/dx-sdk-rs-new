@@ -3,7 +3,7 @@
 
 dharitri_wasm::imports!();
 
-#[dharitri_wasm_derive::contract(SecondContractImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait SecondContract {
 	#[init]
 	fn init(&self, dct_token_name: TokenIdentifier) {

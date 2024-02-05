@@ -1,25 +1,18 @@
 dharitri_wasm::imports!();
 
-use super::storage::*;
+use super::storage;
 
-#[dharitri_wasm_derive::module(ForwarderRolesModuleImpl)]
-pub trait ForwarderRolesModule {
-	#[module(ForwarderStorageModuleImpl)]
-	fn storage_module(&self) -> ForwarderStorageModuleImpl<T, BigInt, BigUint>;
-
+#[dharitri_wasm_derive::module]
+pub trait ForwarderRolesModule: storage::ForwarderStorageModule {
 	#[endpoint(setLocalRoles)]
 	fn set_local_roles(
 		&self,
 		address: Address,
 		token_identifier: TokenIdentifier,
 		#[var_args] roles: VarArgs<DctLocalRole>,
-	) -> AsyncCall<BigUint> {
-		DCTSystemSmartContractProxy::new()
-			.set_special_roles(
-				&address,
-				token_identifier.as_dct_identifier(),
-				roles.as_slice(),
-			)
+	) -> AsyncCall<Self::SendApi> {
+		DCTSystemSmartContractProxy::new_proxy_obj(self.send())
+			.set_special_roles(&address, &token_identifier, roles.as_slice())
 			.async_call()
 			.with_callback(self.callbacks().change_roles_callback())
 	}
@@ -30,13 +23,9 @@ pub trait ForwarderRolesModule {
 		address: Address,
 		token_identifier: TokenIdentifier,
 		#[var_args] roles: VarArgs<DctLocalRole>,
-	) -> AsyncCall<BigUint> {
-		DCTSystemSmartContractProxy::new()
-			.unset_special_roles(
-				&address,
-				token_identifier.as_dct_identifier(),
-				roles.as_slice(),
-			)
+	) -> AsyncCall<Self::SendApi> {
+		DCTSystemSmartContractProxy::new_proxy_obj(self.send())
+			.unset_special_roles(&address, &token_identifier, roles.as_slice())
 			.async_call()
 			.with_callback(self.callbacks().change_roles_callback())
 	}
@@ -45,12 +34,10 @@ pub trait ForwarderRolesModule {
 	fn change_roles_callback(&self, #[call_result] result: AsyncCallResult<()>) {
 		match result {
 			AsyncCallResult::Ok(()) => {
-				self.storage_module().last_error_message().clear();
+				self.last_error_message().clear();
 			},
 			AsyncCallResult::Err(message) => {
-				self.storage_module()
-					.last_error_message()
-					.set(&message.err_msg);
+				self.last_error_message().set(&message.err_msg);
 			},
 		}
 	}

@@ -5,7 +5,7 @@ dharitri_wasm::imports!();
 
 const MOAX_DECIMALS: usize = 18;
 
-#[dharitri_wasm_derive::contract(ChildImpl)]
+#[dharitri_wasm_derive::contract]
 pub trait Child {
 	#[init]
 	fn init(&self) {}
@@ -16,10 +16,10 @@ pub trait Child {
 		&self,
 		token_display_name: BoxedBytes,
 		token_ticker: BoxedBytes,
-		initial_supply: BigUint,
-		#[payment] issue_cost: BigUint,
-	) -> AsyncCall<BigUint> {
-		DCTSystemSmartContractProxy::new()
+		initial_supply: Self::BigUint,
+		#[payment] issue_cost: Self::BigUint,
+	) -> AsyncCall<Self::SendApi> {
+		DCTSystemSmartContractProxy::new_proxy_obj(self.send())
 			.issue_fungible(
 				issue_cost,
 				&token_display_name,
@@ -47,7 +47,7 @@ pub trait Child {
 	fn dct_issue_callback(
 		&self,
 		#[payment_token] token_identifier: TokenIdentifier,
-		#[payment] _amount: BigUint,
+		#[payment] _amount: Self::BigUint,
 		#[call_result] _result: AsyncCallResult<()>,
 	) {
 		self.wrapped_moax_token_identifier().set(&token_identifier);

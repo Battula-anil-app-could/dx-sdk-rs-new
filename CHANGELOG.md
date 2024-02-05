@@ -4,10 +4,47 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.6.1] - 2021-04-30
+## [Unreleased]
+### New math hooks exposed from Arwen:
+- `pow`, `log2`, `sqrt`
+- cryptography: elliptic curves
+
+## [dharitri-wasm 0.6.2] - 2021-05-28
+- Integration tests can now call Arwen-Denali (denali-go)
+- Send API refactoring and cleanup
+	- DCT builtin function calls no longer require explicit gas
+	- sync calls and transfer-execute no longer require explicit gas
+- `#[payment_nonce]` endpoint argument annotation
+- `#[payable]` annotation no longer allowed without argument
+
+## [dharitri-wasm 0.16.2, denali 0.2.2] - 2021-05-20
+- New implementation for the `Try` trait for `SCResult`, in accordance to feature `try_trait_v2`
+- Published DNS module, which helps contracts register usernames for themselves
+- `DCTLocalRole` more expressive type ABI
+
+## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
+- Improvements in denali-rs: username, contract owner, nested async calls
+
+## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.2.5] - 2021-05-14
+### Major redesign of important framework components:
+- The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
+- Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
+- Each contract now generates its own callable proxy to ease calling it. Caller contracts do no longer need to define a call interface, they can import it from the crate of the contract they want to call. Callable proxies contain the methods from the main contract, as well as from all the modules. Note: calling a contract requires the caller to specify the Rust module where it resides.
+- We no longer have a separate syntax/parser/code generation for call proxies. They are just contracts with no implementations and annotated with `#[dharitri_wasm_derive::proxy]` instead of `#[dharitri_wasm_derive::contract]`.
+- BigUint and BigInt are now associated types instead of generics in all API traits. Contracts need to specify them as `Self::BigUint` instead of just `BigUint`. Although more verbose, this might be more intuitive for the developer.
+- `ContractCall`s, `AsyncCall`s and all other call & transfer result types now contain a reference to the Send API. This also means the `execute_on_dest_context` method no longer requires an api argument.
+- `execute_on_dest_context` can now deserialize the call results automatically and provide them to the calling contract. There is a mechanism in place to deconstruct non-serialized types, e.g. `SCResult<T>` becomes `T` and `AsyncCall<Self::BigUint>` becomes `()`. 
+- Callbacks and callback proxies needed to be adapted to the new system, but work similar to how they did in the past.
+- Contracts can define proxy getter methods using the `#[proxy]` annotation.
+- Callbacks can now have names, just like endpoints. This name gets saved in the callback closure in storage, but has no other impact on the contract. The reason I needed it was to help me with defining callback forwarders and avoiding some name collisions there. Callback forwarders are still needed for a little longer, until module callbacks are properly implemented.
+
+### Denali
+- denali-rs syntax synchronized with denali-go (`sc:` syntax, new DCT call value syntax, _no NFTs yet_).
+
+## [dharitri-wasm 0.15.1] - 2021-04-30
 - Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
 
-## [dharitri-wasm 0.15.0, dharitri-codec 0.2.4] - 2021-04-19
+## [dharitri-wasm 0.15.0, dharitri-codec 0.5.2] - 2021-04-19
 - ABI
 	- Constructor representation
 	- Simplified ABI syntax for tuples and fixed-size arrays
@@ -22,7 +59,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.2.1, dharitri-codec 0.5.1] - 2021-03-22
+## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -160,7 +197,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
 
-## [dharitri-wasm 0.7.2] - 2020-10-16
+## [dharitri-wasm 0.2.2] - 2020-10-16
 - small int EI
 - minor refactors, serialization fixes
 
@@ -181,7 +218,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.0.5, dharitri-codec 0.1.2] - 2020-08-25
+## [dharitri-wasm 0.6.0, dharitri-codec 0.6.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -194,11 +231,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.2.5, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
-## [dharitri-wasm 0.0.6] - 2020-07-09
+## [dharitri-wasm 0.5.2] - 2020-07-09
 - Queue type
 
 ## [dharitri-wasm 0.5.1] - 2020-07-02
@@ -230,7 +267,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [dharitri-wasm 0.4.4] - 2020-05-19
 - Serialization fixes for small ints
-- `storage_load_cumulated_validator_reward` hook
+- `get_cumulated_validator_rewards` hook
 
 ## [dharitri-wasm 0.4.3] - 2020-05-11
 - Allow any (macro-based) serializable argument in async call
@@ -263,7 +300,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [dharitri-wasm 0.6.1] - 2020-02-27
+## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [dharitri-wasm 0.1.0] - 2020-02-05 

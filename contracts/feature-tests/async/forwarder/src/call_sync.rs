@@ -1,19 +1,22 @@
 dharitri_wasm::imports!();
 
-use super::vault_proxy::*;
-
-#[dharitri_wasm_derive::module(ForwarderSyncCallModuleImpl)]
+#[dharitri_wasm_derive::module]
 pub trait ForwarderSyncCallModule {
+	#[proxy]
+	fn vault_proxy(&self, to: Address) -> vault::Proxy<Self::SendApi>;
+
 	#[endpoint]
 	#[payable("*")]
 	fn echo_arguments_sync(&self, to: Address, #[var_args] args: VarArgs<BoxedBytes>) {
 		let half_gas = self.blockchain().get_gas_left() / 2;
 
-		let result = contract_call!(self, to, VaultProxy)
-			.echo_arguments(&args)
-			.execute_on_dest_context(half_gas, self.send());
+		let result = self
+			.vault_proxy(to)
+			.echo_arguments(args)
+			.with_gas_limit(half_gas)
+			.execute_on_dest_context();
 
-		self.execute_on_dest_context_result(result.as_slice());
+		self.execute_on_dest_context_result_event(result.as_slice());
 	}
 
 	#[endpoint]
@@ -27,11 +30,13 @@ pub trait ForwarderSyncCallModule {
 	) {
 		let half_gas = self.blockchain().get_gas_left() / 2;
 
-		let result = contract_call!(self, to, VaultProxy)
-			.echo_arguments(&args)
-			.execute_on_dest_context_custom_range(half_gas, |_, _| (start, end), self.send());
+		let result = self
+			.vault_proxy(to)
+			.echo_arguments(args)
+			.with_gas_limit(half_gas)
+			.execute_on_dest_context_custom_range(|_, _| (start, end));
 
-		self.execute_on_dest_context_result(result.as_slice());
+		self.execute_on_dest_context_result_event(result.as_slice());
 	}
 
 	#[endpoint]
@@ -39,21 +44,25 @@ pub trait ForwarderSyncCallModule {
 	fn echo_arguments_sync_twice(&self, to: Address, #[var_args] args: VarArgs<BoxedBytes>) {
 		let one_third_gas = self.blockchain().get_gas_left() / 3;
 
-		let result = contract_call!(self, to.clone(), VaultProxy)
-			.echo_arguments(&args)
-			.execute_on_dest_context(one_third_gas, self.send());
+		let result = self
+			.vault_proxy(to.clone())
+			.echo_arguments(args.clone())
+			.with_gas_limit(one_third_gas)
+			.execute_on_dest_context();
 
-		self.execute_on_dest_context_result(result.as_slice());
+		self.execute_on_dest_context_result_event(result.as_slice());
 
-		let result = contract_call!(self, to, VaultProxy)
-			.echo_arguments(&args)
-			.execute_on_dest_context(one_third_gas, self.send());
+		let result = self
+			.vault_proxy(to)
+			.echo_arguments(args)
+			.with_gas_limit(one_third_gas)
+			.execute_on_dest_context();
 
-		self.execute_on_dest_context_result(result.as_slice());
+		self.execute_on_dest_context_result_event(result.as_slice());
 	}
 
-	#[event("execute_on_dest_context_result")]
-	fn execute_on_dest_context_result(&self, result: &[BoxedBytes]);
+	#[event("echo_arguments_sync_result")]
+	fn execute_on_dest_context_result_event(&self, result: &[BoxedBytes]);
 
 	#[endpoint]
 	#[payable("*")]
@@ -61,13 +70,52 @@ pub trait ForwarderSyncCallModule {
 		&self,
 		to: Address,
 		#[payment_token] token: TokenIdentifier,
-		#[payment] payment: BigUint,
+		#[payment_amount] payment: Self::BigUint,
+		#[payment_nonce] token_nonce: u64,
 	) {
 		let half_gas = self.blockchain().get_gas_left() / 2;
 
-		let () = contract_call!(self, to, VaultProxy)
-			.with_token_transfer(token, payment)
-			.accept_funds()
-			.execute_on_dest_context(half_gas, self.send());
+		let result: MultiResult4<TokenIdentifier, BoxedBytes, Self::BigUint, u64> = self
+			.vault_proxy(to)
+			.accept_funds_echo_payment(token, payment, token_nonce)
+			.with_gas_limit(half_gas)
+			.execute_on_dest_context();
+
+		let (token_identifier, token_type_str, token_payment, token_nonce) = result.into_tuple();
+		self.accept_funds_sync_result_event(
+			&token_identifier,
+			token_type_str.as_slice(),
+			&token_payment,
+			token_nonce,
+		);
+	}
+
+	#[event("accept_funds_sync_result")]
+	fn accept_funds_sync_result_event(
+		&self,
+		#[indexed] token_identifier: &TokenIdentifier,
+		#[indexed] token_type: &[u8],
+		#[indexed] token_payment: &Self::BigUint,
+		#[indexed] token_nonce: u64,
+	);
+
+	#[endpoint]
+	#[payable("*")]
+	fn forward_sync_accept_funds_then_read(
+		&self,
+		to: Address,
+		#[payment_token] token: TokenIdentifier,
+		#[payment_amount] payment: Self::BigUint,
+		#[payment_nonce] token_nonce: u64,
+	) -> usize {
+		let _ = self
+			.vault_proxy(to.clone())
+			.with_nft_nonce(token_nonce)
+			.accept_funds(token, payment)
+			.execute_on_dest_context();
+
+		self.vault_proxy(to)
+			.call_counts(b"accept_funds")
+			.execute_on_dest_context()
 	}
 }

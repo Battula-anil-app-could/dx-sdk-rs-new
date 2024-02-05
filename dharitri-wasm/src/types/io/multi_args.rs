@@ -9,6 +9,7 @@ use dharitri_codec::TopDecodeInput;
 macro_rules! multi_arg_impls {
     ($(($marg_struct:ident $mres_struct:ident $($n:tt $name:ident)+) )+) => {
         $(
+            #[derive(Clone)]
             pub struct $marg_struct<$($name,)+>(pub ($($name,)+));
 
             pub type $mres_struct<$($name,)+> = $marg_struct<$($name,)+>;
@@ -30,13 +31,17 @@ macro_rules! multi_arg_impls {
                 }
             }
 
-            impl<FA, $($name),+> EndpointResult<FA> for $marg_struct<$($name,)+>
+            impl<$($name),+> EndpointResult for $marg_struct<$($name,)+>
             where
-                FA: EndpointFinishApi + Clone + 'static,
-                $($name: EndpointResult<FA>,)+
+                $($name: EndpointResult,)+
             {
+                type DecodeAs = Self; // TODO: reassemble from component DecodeAs
+
                 #[inline]
-				fn finish(&self, api: FA) {
+				fn finish<FA>(&self, api: FA)
+                where
+                    FA: EndpointFinishApi + Clone + 'static,
+                {
                     $(
                         (self.0).$n.finish(api.clone());
                     )+

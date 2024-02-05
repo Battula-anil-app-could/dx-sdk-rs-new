@@ -4,7 +4,9 @@ use dharitri_wasm::api::CallValueApi;
 use dharitri_wasm::err_msg;
 use dharitri_wasm::types::{DctTokenType, TokenIdentifier};
 
-impl CallValueApi<RustBigUint> for TxContext {
+impl CallValueApi for TxContext {
+	type AmountType = RustBigUint;
+
 	fn check_not_payable(&self) {
 		if self.moax_value() > 0 {
 			std::panic::panic_any(TxPanic {
