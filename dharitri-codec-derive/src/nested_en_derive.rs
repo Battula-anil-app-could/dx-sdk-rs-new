@@ -80,9 +80,9 @@ pub fn nested_encode_impl(ast: &syn::DeriveInput) -> TokenStream {
 				});
 			quote! {
 				impl #impl_generics dharitri_codec::NestedEncode for #name #ty_generics #where_clause {
-					fn dep_encode<O: dharitri_codec::NestedEncodeOutput>(&self, dest: &mut O) -> Result<(), dharitri_codec::EncodeError> {
+					fn dep_encode<O: dharitri_codec::NestedEncodeOutput>(&self, dest: &mut O) -> core::result::Result<(), dharitri_codec::EncodeError> {
 						#(#field_dep_encode_snippets)*
-						Result::Ok(())
+						core::result::Result::Ok(())
 					}
 
 					fn dep_encode_or_exit<O: dharitri_codec::NestedEncodeOutput, ExitCtx: Clone>(
@@ -107,11 +107,11 @@ pub fn nested_encode_impl(ast: &syn::DeriveInput) -> TokenStream {
 
 			quote! {
 				impl #impl_generics dharitri_codec::NestedEncode for #name #ty_generics #where_clause {
-					fn dep_encode<O: dharitri_codec::NestedEncodeOutput>(&self, dest: &mut O) -> Result<(), dharitri_codec::EncodeError> {
+					fn dep_encode<O: dharitri_codec::NestedEncodeOutput>(&self, dest: &mut O) -> core::result::Result<(), dharitri_codec::EncodeError> {
 						match self {
 							#(#variant_dep_encode_snippets)*
 						};
-						Ok(())
+						core::result::Result::Ok(())
 					}
 
 					fn dep_encode_or_exit<O: dharitri_codec::NestedEncodeOutput, ExitCtx: Clone>(
