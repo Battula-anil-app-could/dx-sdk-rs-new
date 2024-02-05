@@ -15,7 +15,9 @@ macro_rules! imports {
 		use core::ops::{AddAssign, DivAssign, MulAssign, RemAssign, SubAssign};
 		use core::ops::{BitAnd, BitOr, BitXor, Shl, Shr};
 		use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
-		use dharitri_wasm::api::{BigIntApi, BigUintApi, CallValueApi, ContractHookApi, SendApi};
+		use dharitri_wasm::api::{
+			BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractSelfApi, CryptoApi, SendApi,
+		};
 		use dharitri_wasm::dharitri_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode};
 		use dharitri_wasm::err_msg;
 		use dharitri_wasm::dct::*;
@@ -45,7 +47,7 @@ macro_rules! derive_imports {
 #[macro_export]
 macro_rules! sc_error {
 	($s:expr) => {
-		dharitri_wasm::types::SCResult::Err(dharitri_wasm::types::SCError::from($s.as_bytes()))
+		dharitri_wasm::types::SCResult::Err(dharitri_wasm::types::SCError::from($s.as_bytes())).into()
 	};
 }
 
@@ -68,14 +70,15 @@ macro_rules! sc_try {
 ///
 /// ```rust
 /// # use dharitri_wasm::*;
+/// # use dharitri_wasm::api::BlockchainApi;
 /// # use dharitri_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractHookApi<BigInt, BigUint>
+/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractSelfApi<BigInt, BigUint>
 /// # where
 /// #   BigInt: dharitri_wasm::api::BigIntApi<BigUint> + 'static,
 /// #   BigUint: dharitri_wasm::api::BigUintApi + 'static,
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
-///     require!(self.get_caller() == self.get_owner_address(), "Caller must be owner");
+///     require!(self.blockchain().get_caller() == self.blockchain().get_owner_address(), "Caller must be owner");
 ///     Ok(())
 /// }
 /// # }
@@ -95,8 +98,9 @@ macro_rules! require {
 ///
 /// ```rust
 /// # use dharitri_wasm::*;
+/// # use dharitri_wasm::api::BlockchainApi;
 /// # use dharitri_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractHookApi<BigInt, BigUint>
+/// # pub trait ExampleContract<BigInt, BigUint>: dharitri_wasm::api::ContractSelfApi<BigInt, BigUint>
 /// # where
 /// #   BigInt: dharitri_wasm::api::BigIntApi<BigUint> + 'static,
 /// #   BigUint: dharitri_wasm::api::BigUintApi + 'static,
@@ -110,7 +114,7 @@ macro_rules! require {
 #[macro_export]
 macro_rules! only_owner {
 	($trait_self: expr, $error_msg:expr) => {
-		if ($trait_self.get_caller() != $trait_self.get_owner_address()) {
+		if ($trait_self.blockchain().get_caller() != $trait_self.blockchain().get_owner_address()) {
 			return sc_error!($error_msg);
 		}
 	};

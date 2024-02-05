@@ -31,14 +31,14 @@ where
 {
 	#[inline]
 	fn finish(&self, api: FA) {
-		if self.token.is_moax() {
+		let result = if self.token.is_moax() {
 			api.direct_moax_execute(
 				&self.to,
 				&self.amount,
 				self.gas_limit,
 				self.endpoint_name.as_slice(),
 				&self.arg_buffer,
-			);
+			)
 		} else {
 			api.direct_dct_execute(
 				&self.to,
@@ -47,7 +47,10 @@ where
 				self.gas_limit,
 				self.endpoint_name.as_slice(),
 				&self.arg_buffer,
-			);
+			)
+		};
+		if let Err(e) = result {
+			api.signal_error(e);
 		}
 	}
 }

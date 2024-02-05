@@ -64,7 +64,7 @@ pub trait FirstContract {
 	}
 
 	#[payable("*")]
-	#[endpoint]
+	#[endpoint(transferToSecondContractRejected)]
 	fn transfer_to_second_contract_rejected(
 		&self,
 		#[payment] dct_value: BigUint,
@@ -77,10 +77,60 @@ pub trait FirstContract {
 
 		self.call_dct_second_contract(
 			&expected_token_name,
-			&(dct_value / BigUint::from(2u32)),
+			&dct_value,
 			&self.get_second_contract_address(),
 			SECOND_CONTRACT_REJECT_DCT_PAYMENT,
 			&[],
+		);
+
+		Ok(())
+	}
+
+	#[payable("*")]
+	#[endpoint(transferToSecondContractRejectedWithTransferAndExecute)]
+	fn transfer_to_second_contract_rejected_with_transfer_and_execute(
+		&self,
+		#[payment] dct_value: BigUint,
+		#[payment_token] actual_token_name: TokenIdentifier,
+	) -> SCResult<()> {
+		let second_contract_address = self.get_second_contract_address();
+		let expected_token_name = self.get_contract_dct_token_name();
+
+		require!(dct_value > 0, "no dct transfered!");
+		require!(actual_token_name == expected_token_name, "Wrong dct token");
+
+		let _ = self.send().direct_dct_execute(
+			&second_contract_address,
+			expected_token_name.as_dct_identifier(),
+			&dct_value,
+			self.blockchain().get_gas_left(),
+			SECOND_CONTRACT_REJECT_DCT_PAYMENT,
+			&ArgBuffer::new(),
+		);
+
+		Ok(())
+	}
+
+	#[payable("*")]
+	#[endpoint(transferToSecondContractFullWithTransferAndExecute)]
+	fn transfer_to_second_contract_full_with_transfer_and_execute(
+		&self,
+		#[payment] dct_value: BigUint,
+		#[payment_token] actual_token_name: TokenIdentifier,
+	) -> SCResult<()> {
+		let second_contract_address = self.get_second_contract_address();
+		let expected_token_name = self.get_contract_dct_token_name();
+
+		require!(dct_value > 0, "no dct transfered!");
+		require!(actual_token_name == expected_token_name, "Wrong dct token");
+
+		let _ = self.send().direct_dct_execute(
+			&second_contract_address,
+			expected_token_name.as_dct_identifier(),
+			&dct_value,
+			self.blockchain().get_gas_left(),
+			SECOND_CONTRACT_ACCEPT_DCT_PAYMENT,
+			&ArgBuffer::new(),
 		);
 
 		Ok(())

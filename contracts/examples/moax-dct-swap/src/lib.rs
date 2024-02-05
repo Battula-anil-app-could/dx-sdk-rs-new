@@ -31,7 +31,7 @@ pub trait MoaxDctSwap {
 			"wrapped moax was already issued"
 		);
 
-		let caller = self.get_caller();
+		let caller = self.blockchain().get_caller();
 
 		self.issue_started_event(&caller, token_ticker.as_slice(), &initial_supply);
 
@@ -96,7 +96,7 @@ pub trait MoaxDctSwap {
 
 		let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
 		let dct_token_id = wrapped_moax_token_id.as_dct_identifier();
-		let caller = self.get_caller();
+		let caller = self.blockchain().get_caller();
 		self.mint_started_event(&caller, &amount);
 
 		Ok(DCTSystemSmartContractProxy::new()
@@ -143,8 +143,8 @@ pub trait MoaxDctSwap {
 		unused_wrapped_moax -= &payment;
 		self.unused_wrapped_moax().set(&unused_wrapped_moax);
 
-		let caller = self.get_caller();
-		self.send().direct_dct_via_transf_exec(
+		let caller = self.blockchain().get_caller();
+		let _ = self.send().direct_dct_via_transf_exec(
 			&caller,
 			self.wrapped_moax_token_id().get().as_dct_identifier(),
 			&payment,
@@ -179,7 +179,7 @@ pub trait MoaxDctSwap {
 		require!(wrapped_moax_payment > 0, "Must pay more than 0 tokens!");
 		// this should never happen, but we'll check anyway
 		require!(
-			wrapped_moax_payment <= self.get_sc_balance(),
+			wrapped_moax_payment <= self.blockchain().get_sc_balance(),
 			"Contract does not have enough funds"
 		);
 
@@ -187,7 +187,7 @@ pub trait MoaxDctSwap {
 			.update(|unused_wrapped_moax| *unused_wrapped_moax += &wrapped_moax_payment);
 
 		// 1 wrapped MOAX = 1 MOAX, so we pay back the same amount
-		let caller = self.get_caller();
+		let caller = self.blockchain().get_caller();
 		self.send()
 			.direct_moax(&caller, &wrapped_moax_payment, b"unwrapping");
 
@@ -198,7 +198,7 @@ pub trait MoaxDctSwap {
 
 	#[view(getLockedMoaxBalance)]
 	fn get_locked_moax_balance(&self) -> BigUint {
-		self.get_sc_balance()
+		self.blockchain().get_sc_balance()
 	}
 
 	// storage

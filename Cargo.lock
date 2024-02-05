@@ -63,6 +63,8 @@ dependencies = [
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
  "forwarder",
+ "forwarder-raw",
+ "vault",
 ]
 
 [[package]]
@@ -138,6 +140,16 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "child"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
 
 [[package]]
 name = "cpufeatures"
@@ -280,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "arrayvec",
  "dharitri-codec-derive",
@@ -289,7 +301,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec-derive"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -299,7 +311,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "arrayvec",
  "dharitri-codec",
@@ -310,7 +322,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -325,7 +337,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -335,7 +347,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -345,7 +357,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -355,7 +367,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -365,7 +377,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -792,6 +804,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "parent"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
 name = "payable-features"
 version = "0.0.0"
 dependencies = [
@@ -831,9 +853,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.76"
+version = "1.0.78"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95fc56cda0b5c3325f5fbbd7ff9fda9e02bb00bb3dac51252d2f1bfa1cb8cc8c"
+checksum = "e2422ad645d89c99f8f3e6b88a9fdeca7fabeac836b1002371c4367c8f984aae"
 dependencies = [
  "unicode-ident",
 ]

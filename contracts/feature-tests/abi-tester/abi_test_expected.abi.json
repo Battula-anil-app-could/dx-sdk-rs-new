@@ -7,8 +7,30 @@
         "including Rust docs."
     ],
     "name": "AbiTester",
+    "constructor": {
+        "docs": [
+            "Contract constructor."
+        ],
+        "payableInTokens": [
+            "MOAX"
+        ],
+        "inputs": [
+            {
+                "name": "_constructor_arg_1",
+                "type": "i32"
+            },
+            {
+                "name": "_constructor_arg_2",
+                "type": "OnlyShowsUpInConstructor"
+            }
+        ],
+        "outputs": []
+    },
     "endpoints": [
         {
+            "docs": [
+                "Example endpoint docs."
+            ],
             "name": "echo_abi_test_type",
             "inputs": [
                 {
@@ -47,7 +69,7 @@
                 },
                 {
                     "name": "multi-result-2",
-                    "type": "[u8; 3]"
+                    "type": "array3<u8>"
                 },
                 {
                     "name": "multi-result-3",
@@ -65,7 +87,7 @@
                 },
                 {
                     "name": "multi-too-few-2",
-                    "type": "[u8; 3]"
+                    "type": "array3<u8>"
                 },
                 {
                     "type": "bytes"
@@ -84,7 +106,7 @@
                 },
                 {
                     "name": "_var_args",
-                    "type": "variadic<multi2<OnlyShowsUpAsNested04,i32,>>",
+                    "type": "variadic<multi<OnlyShowsUpAsNested04,i32>>",
                     "multi_arg": true
                 }
             ],
@@ -95,7 +117,7 @@
             "inputs": [],
             "outputs": [
                 {
-                    "type": "variadic<OnlyShowsUpAsNested05>",
+                    "type": "variadic<multi<OnlyShowsUpAsNested05,bool,()>>",
                     "multi_result": true
                 }
             ]
@@ -248,7 +270,7 @@
                         "Also, just like above, recursive types need to work even when nested into a tuple."
                     ],
                     "name": "tuple_madness",
-                    "type": "(OnlyShowsUpAsNested02,Option<AbiTestType>)"
+                    "type": "tuple<OnlyShowsUpAsNested02,Option<AbiTestType>>"
                 }
             ]
         },
@@ -256,12 +278,6 @@
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested02": {
@@ -272,7 +288,7 @@
             "fields": [
                 {
                     "name": "something",
-                    "type": "()"
+                    "type": "array0<u8>"
                 }
             ]
         },
@@ -280,75 +296,45 @@
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested04": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested05": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested06": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested07": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested08": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
-            ],
-            "fields": [
-                {
-                    "name": "something",
-                    "type": "()"
-                }
             ]
         },
         "OnlyShowsUpAsNested09": {
+            "type": "struct",
+            "docs": [
+                "Tests that the ABI generator also fetches types that only appear as fields."
+            ]
+        },
+        "OnlyShowsUpInConstructor": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."

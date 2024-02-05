@@ -31,7 +31,7 @@ where
 {
 	#[inline]
 	fn finish(&self, api: FA) {
-		api.direct_dct_execute(
+		let result = api.direct_dct_execute(
 			&self.to,
 			self.token_name.as_slice(),
 			&self.amount,
@@ -39,6 +39,9 @@ where
 			self.endpoint_name.as_slice(),
 			&self.arg_buffer,
 		);
+		if let Err(e) = result {
+			api.signal_error(e);
+		}
 	}
 }
 
