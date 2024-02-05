@@ -1,8 +1,9 @@
 #![no_std]
 #![allow(clippy::string_lit_as_bytes)]
 #![allow(clippy::redundant_clone)]
+#![feature(never_type)]
 
-imports!();
+dharitri_wasm::imports!();
 
 // this is not part of the standard imports because we want to discourage its use
 use dharitri_wasm::String;
@@ -145,30 +146,6 @@ pub trait BasicFeatures {
 	fn echo_str_box(&self, s: Box<str>) -> MultiResult2<Box<str>, usize> {
 		let l = s.len();
 		(s, l).into()
-	}
-
-	#[endpoint]
-	fn echo_multi_1(
-		&self,
-		_n: usize,
-		#[multi(_n)] m: VarArgs<i32>,
-		another_arg: u64,
-	) -> MultiResult2<MultiResultVec<i32>, u64> {
-		(m.into_vec().into(), another_arg).into()
-	}
-
-	#[endpoint]
-	fn echo_multi_vec_u8(
-		&self,
-		_n: usize,
-		#[multi(_n)] m: VarArgs<Vec<u8>>,
-	) -> MultiResultVec<Vec<u8>> {
-		m.into_vec().into()
-	}
-
-	#[endpoint]
-	fn echo_multi_h256(&self, _n: usize, #[multi(_n)] m: VarArgs<H256>) -> MultiResultVec<H256> {
-		m.into_vec().into()
 	}
 
 	#[endpoint]
@@ -381,6 +358,11 @@ pub trait BasicFeatures {
 		self._get_opt_addr().into()
 	}
 
+	#[endpoint(storage_load_cumulated_validator_reward)]
+	fn storage_load_cumulated_validator_reward_endpoint(&self) -> BigUint {
+		self.storage_load_cumulated_validator_reward()
+	}
+
 	#[view]
 	#[storage_is_empty("opt_addr")]
 	fn is_empty_opt_addr(&self) -> bool;
@@ -413,6 +395,167 @@ pub trait BasicFeatures {
 	#[storage_get("map3")]
 	fn load_map3(&self, x: usize) -> bool;
 
+	// STORAGE MAPPERS
+
+	#[view]
+	#[storage_mapper("my_single_value_mapper")]
+	fn map_my_single_value_mapper(&self) -> SingleValueMapper<Self::Storage, BigInt>;
+
+	#[endpoint]
+	fn my_single_value_mapper_increment_1(&self, amount: BigInt) {
+		let my_single_value_mapper = self.map_my_single_value_mapper();
+		my_single_value_mapper.set(&(my_single_value_mapper.get() + amount));
+	}
+
+	/// Same as my_single_value_mapper_increment_1, but expressed more compactly.
+	#[endpoint]
+	fn my_single_value_mapper_increment_2(&self, amount: &BigInt) {
+		self.map_my_single_value_mapper()
+			.update(|value| *value += amount);
+	}
+
+	#[endpoint]
+	fn clear_single_value_mapper(&self) {
+		self.map_my_single_value_mapper().clear();
+	}
+
+	#[endpoint]
+	fn is_empty_single_value_mapper(&self) -> bool {
+		self.map_my_single_value_mapper().is_empty()
+	}
+
+	// VecMapper
+
+	#[view]
+	#[storage_mapper("vec_mapper")]
+	fn vec_mapper(&self) -> VecMapper<Self::Storage, u32>;
+
+	#[endpoint]
+	fn vec_mapper_push(&self, item: u32) {
+		let mut vec_mapper = self.vec_mapper();
+		let _ = vec_mapper.push(&item);
+	}
+
+	#[view]
+	fn vec_mapper_get(&self, index: usize) -> u32 {
+		self.vec_mapper().get(index)
+	}
+
+	#[view]
+	fn vec_mapper_len(&self) -> usize {
+		self.vec_mapper().len()
+	}
+
+	// LinkedListMapper
+
+	#[view]
+	#[storage_mapper("list_mapper")]
+	fn list_mapper(&self) -> LinkedListMapper<Self::Storage, u32>;
+
+	#[endpoint]
+	fn list_mapper_push_back(&self, item: u32) {
+		let mut list_mapper = self.list_mapper();
+		list_mapper.push_back(item);
+	}
+
+	#[endpoint]
+	fn list_mapper_pop_front(&self) -> Option<u32> {
+		let mut list_mapper = self.list_mapper();
+		list_mapper.pop_front()
+	}
+
+	#[endpoint]
+	fn list_mapper_front(&self) -> SCResult<u32> {
+		if let Some(front) = self.list_mapper().front() {
+			return Ok(front);
+		}
+		sc_error!("List empty!")
+	}
+
+	// SetMapper
+
+	#[view]
+	#[storage_mapper("set_mapper")]
+	fn set_mapper(&self) -> SetMapper<Self::Storage, u32>;
+
+	#[endpoint]
+	fn set_mapper_insert(&self, item: u32) -> bool {
+		let mut set_mapper = self.set_mapper();
+		set_mapper.insert(item)
+	}
+
+	#[endpoint]
+	fn set_mapper_contains(&self, item: u32) -> bool {
+		let set_mapper = self.set_mapper();
+		set_mapper.contains(&item)
+	}
+
+	#[endpoint]
+	fn set_mapper_remove(&self, item: u32) -> bool {
+		let mut set_mapper = self.set_mapper();
+		set_mapper.remove(&item)
+	}
+
+	// MapMapper
+
+	#[storage_mapper("map_mapper")]
+	fn map_mapper(&self) -> MapMapper<Self::Storage, u32, u32>;
+
+	#[view]
+	fn map_mapper_keys(&self) -> MultiResultVec<u32> {
+		self.map_mapper().keys().collect()
+	}
+
+	#[view]
+	fn map_mapper_values(&self) -> MultiResultVec<u32> {
+		self.map_mapper().values().collect()
+	}
+
+	#[endpoint]
+	fn map_mapper_insert(&self, item: u32, value: u32) -> Option<u32> {
+		let mut map_mapper = self.map_mapper();
+		map_mapper.insert(item, value)
+	}
+
+	#[endpoint]
+	fn map_mapper_contains_key(&self, item: u32) -> bool {
+		let map_mapper = self.map_mapper();
+		map_mapper.contains_key(&item)
+	}
+
+	#[endpoint]
+	fn map_mapper_get(&self, item: u32) -> Option<u32> {
+		let map_mapper = self.map_mapper();
+		map_mapper.get(&item)
+	}
+
+	#[endpoint]
+	fn map_mapper_remove(&self, item: u32) -> Option<u32> {
+		let mut map_mapper = self.map_mapper();
+		map_mapper.remove(&item)
+	}
+
+	// BASIC API
+	#[endpoint(get_caller)]
+	fn get_caller_endpoint(&self) -> Address {
+		self.get_caller()
+	}
+
+	#[endpoint(get_shard_of_address)]
+	fn get_shard_of_address_endpoint(&self, address: &Address) -> u32 {
+		self.get_shard_of_address(address)
+	}
+
+	#[endpoint(is_smart_contract)]
+	fn is_smart_contract_endpoint(&self, address: &Address) -> bool {
+		self.is_smart_contract(address)
+	}
+
+	#[endpoint(get_gas_left)]
+	fn get_gas_left_endpoint(&self) -> u64 {
+		self.get_gas_left()
+	}
+
 	// EVENTS
 
 	#[endpoint(logEventA)]
@@ -420,26 +563,34 @@ pub trait BasicFeatures {
 		self.event_a(data);
 	}
 
+	#[event("event_a")]
+	fn event_a(&self, data: &BigUint);
+
 	#[endpoint(logEventB)]
-	fn log_event_b(&self, arg1: &BigUint, arg2: &Address, data: &BigUint) {
-		self.event_b(arg1, arg2, data);
+	fn log_event_b(&self, arg1: &BigUint, arg2: &Address, #[var_args] data: VarArgs<BoxedBytes>) {
+		self.event_b(arg1, arg2, data.as_slice());
 	}
 
-	// SEND TX
+	#[event("event_b")]
+	fn event_b(&self, #[indexed] arg1: &BigUint, #[indexed] arg2: &Address, data: &[BoxedBytes]);
 
-	#[endpoint]
-	fn send_tx_endpoint(
-		&self,
-		to: &Address,
-		amount: &BigUint,
-		#[var_args] opt_data: OptionalArg<BoxedBytes>,
-	) {
-		let data = match &opt_data {
-			OptionalArg::Some(data) => data.as_slice(),
-			OptionalArg::None => &[],
-		};
-		self.send_tx(to, amount, data);
+	// EVENTS (LEGACY)
+
+	#[endpoint(logLegacyEventA)]
+	fn log_legacy_event_a(&self, data: &BigUint) {
+		self.legacy_event_a(data);
 	}
+
+	#[endpoint(logLegacyEventB)]
+	fn log_legacy_event_b(&self, arg1: &BigUint, arg2: &Address, data: &BigUint) {
+		self.legacy_event_b(arg1, arg2, data);
+	}
+
+	#[legacy_event("0x0123456789abcdef0123456789abcdef0123456789abcdef000000000000000a")]
+	fn legacy_event_a(&self, data: &BigUint);
+
+	#[legacy_event("0x0123456789abcdef0123456789abcdef0123456789abcdef000000000000000b")]
+	fn legacy_event_b(&self, arg1: &BigUint, arg2: &Address, data: &BigUint);
 
 	// BLOCK INFO
 
@@ -492,14 +643,6 @@ pub trait BasicFeatures {
 	fn get_prev_block_random_seed_view(&self) -> Box<[u8; 48]> {
 		self.get_prev_block_random_seed()
 	}
-
-	// EVENTS
-
-	#[event("0x0123456789abcdef0123456789abcdef0123456789abcdef000000000000000a")]
-	fn event_a(&self, data: &BigUint);
-
-	#[event("0x0123456789abcdef0123456789abcdef0123456789abcdef000000000000000b")]
-	fn event_b(&self, arg1: &BigUint, arg2: &Address, data: &BigUint);
 
 	// BIG INT OPERATIONS
 
@@ -878,6 +1021,23 @@ pub trait BasicFeatures {
 		self.keccak256(&input)
 	}
 
+	// Not called, they currently just panic with "Not implemented yet!"
+
+	#[endpoint]
+	fn verify_bls_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+		self.verify_bls(key, message, signature)
+	}
+
+	#[endpoint]
+	fn verify_ed25519_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+		self.verify_ed25519(key, message, signature)
+	}
+
+	#[endpoint]
+	fn verify_secp256k1_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+		self.verify_secp256k1(key, message, signature)
+	}
+
 	// MACROS
 
 	#[view]
@@ -893,7 +1053,37 @@ pub trait BasicFeatures {
 	}
 
 	#[view]
-	fn return_error(&self) -> SCResult<()> {
-		sc_error!("return_error")
+	fn return_sc_error(&self) -> SCResult<()> {
+		sc_error!("return_sc_error")
+	}
+
+	#[view]
+	fn result_ok(&self) -> Result<(), !> {
+		Result::Ok(())
+	}
+
+	#[view]
+	fn result_err_from_bytes_1(&self, e: BoxedBytes) -> Result<(), BoxedBytes> {
+		Result::Err(e)
+	}
+
+	#[view]
+	fn result_err_from_bytes_2<'a>(&self, e: &'a [u8]) -> Result<(), &'a [u8]> {
+		Result::Err(e)
+	}
+
+	#[view]
+	fn result_err_from_bytes_3(&self, e: Vec<u8>) -> Result<(), Vec<u8>> {
+		Result::Err(e)
+	}
+
+	#[view]
+	fn result_err_from_string(&self, e: String) -> Result<(), String> {
+		Result::Err(e)
+	}
+
+	#[view]
+	fn result_err_from_str<'a>(&self, e: &'a str) -> Result<(), &'a str> {
+		Result::Err(e)
 	}
 }

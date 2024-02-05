@@ -1,12 +1,8 @@
 #![no_std]
 #![allow(unused_attributes)]
 
-imports!();
-derive_imports!();
-
-use dharitri_wasm::HexCallDataSerializer;
-
-const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
+dharitri_wasm::imports!();
+dharitri_wasm::derive_imports!();
 
 #[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Clone, Copy)]
 pub enum Status {
@@ -18,7 +14,7 @@ pub enum Status {
 #[dharitri_wasm_derive::contract(CrowdfundingImpl)]
 pub trait Crowdfunding {
 	#[init]
-	fn init(&self, target: BigUint, deadline: u64, dct_token_name: BoxedBytes) {
+	fn init(&self, target: BigUint, deadline: u64, dct_token_name: TokenIdentifier) {
 		let my_address: Address = self.get_caller();
 		self.set_owner(&my_address);
 		self.set_target(&target);
@@ -27,28 +23,27 @@ pub trait Crowdfunding {
 	}
 
 	#[endpoint]
-	fn fund(&self) -> SCResult<()> {
+	#[payable("*")]
+	fn fund(
+		&self,
+		#[payment] payment: BigUint,
+		#[payment_token] token: TokenIdentifier,
+	) -> SCResult<()> {
 		if self.get_block_nonce() > self.get_deadline() {
 			return sc_error!("cannot fund after deadline");
 		}
 
-		let expected_token_name = self.get_cf_dct_token_name();
-		let actual_token_name = self.get_dct_token_name_boxed();
+		require!(token == self.get_cf_dct_token_name(), "wrong dct token");
 
-		if expected_token_name != actual_token_name {
-			return sc_error!("wrong dct token");
-		}
-
-		let payment = self.get_dct_value_big_uint();
 		let caller = self.get_caller();
 		let mut deposit = self.get_deposit(&caller);
-		let mut balance = self.get_dct_balance();
+		let mut balance = self.get_dct_balance_storage();
 
 		deposit += payment.clone();
 		balance += payment;
 
 		self.set_deposit(&caller, &deposit);
-		self.set_dct_balance(&balance);
+		self.set_dct_balance_storage(&balance);
 
 		Ok(())
 	}
@@ -57,7 +52,7 @@ pub trait Crowdfunding {
 	fn status(&self) -> Status {
 		if self.get_block_nonce() <= self.get_deadline() {
 			Status::FundingPeriod
-		} else if self.get_dct_balance() >= self.get_target() {
+		} else if self.get_dct_balance_storage() >= self.get_target() {
 			Status::Successful
 		} else {
 			Status::Failed
@@ -66,7 +61,7 @@ pub trait Crowdfunding {
 
 	#[view(currentFunds)]
 	fn current_funds(&self) -> SCResult<BigUint> {
-		Ok(self.get_dct_balance())
+		Ok(self.get_dct_balance_storage())
 	}
 
 	#[endpoint]
@@ -80,10 +75,11 @@ pub trait Crowdfunding {
 				}
 
 				let dct_token_name = self.get_cf_dct_token_name();
-				let dct_balance = self.get_dct_balance();
+				let dct_balance = self.get_dct_balance_storage();
 
-				self.set_dct_balance(&BigUint::zero());
-				self.pay_dct(&dct_token_name, &dct_balance, &caller);
+				self.set_dct_balance_storage(&BigUint::zero());
+				self.send()
+					.direct(&caller, &dct_token_name, &dct_balance, &[]);
 
 				Ok(())
 			},
@@ -93,29 +89,17 @@ pub trait Crowdfunding {
 
 				if deposit > 0 {
 					let dct_token_name = self.get_cf_dct_token_name();
-					let mut dct_balance = self.get_dct_balance();
+					let mut dct_balance = self.get_dct_balance_storage();
 
 					dct_balance -= deposit.clone();
 
-					self.set_dct_balance(&dct_balance);
+					self.set_dct_balance_storage(&dct_balance);
 					self.set_deposit(&caller, &BigUint::zero());
-					self.pay_dct(&dct_token_name, &deposit, &caller);
+					self.send().direct(&caller, &dct_token_name, &deposit, &[]);
 				}
 				Ok(())
 			},
 		}
-	}
-
-	fn get_dct_token_name_boxed(&self) -> BoxedBytes {
-		BoxedBytes::from(self.get_dct_token_name())
-	}
-
-	fn pay_dct(&self, dct_token_name: &BoxedBytes, amount: &BigUint, to: &Address) {
-		let mut serializer = HexCallDataSerializer::new(DCT_TRANSFER_STRING);
-		serializer.push_argument_bytes(dct_token_name.as_slice());
-		serializer.push_argument_bytes(amount.to_bytes_be().as_slice());
-
-		self.async_call(&to, &BigUint::zero(), serializer.as_slice());
 	}
 
 	// storage
@@ -135,11 +119,11 @@ pub trait Crowdfunding {
 	fn get_target(&self) -> BigUint;
 
 	#[storage_set("dctBalance")]
-	fn set_dct_balance(&self, dct_balance: &BigUint);
+	fn set_dct_balance_storage(&self, dct_balance: &BigUint);
 
 	#[view]
 	#[storage_get("dctBalance")]
-	fn get_dct_balance(&self) -> BigUint;
+	fn get_dct_balance_storage(&self) -> BigUint;
 
 	#[storage_set("deadline")]
 	fn set_deadline(&self, deadline: u64);
@@ -156,9 +140,9 @@ pub trait Crowdfunding {
 	fn get_deposit(&self, donor: &Address) -> BigUint;
 
 	#[storage_set("dctTokenName")]
-	fn set_cf_dct_token_name(&self, dct_token_name: &BoxedBytes);
+	fn set_cf_dct_token_name(&self, dct_token_name: &TokenIdentifier);
 
 	#[view]
 	#[storage_get("dctTokenName")]
-	fn get_cf_dct_token_name(&self) -> BoxedBytes;
+	fn get_cf_dct_token_name(&self) -> TokenIdentifier;
 }

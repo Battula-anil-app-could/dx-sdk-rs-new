@@ -1,7 +1,7 @@
 #![no_std]
 #![allow(clippy::too_many_arguments)]
 
-imports!();
+dharitri_wasm::imports!();
 
 mod lottery_info;
 mod random;
@@ -136,7 +136,7 @@ pub trait Lottery {
 	}
 
 	#[endpoint]
-	#[payable]
+	#[payable("MOAX")]
 	fn buy_ticket(&self, lottery_name: BoxedBytes, #[payment] payment: BigUint) -> SCResult<()> {
 		match self.status(&lottery_name) {
 			Status::Inactive => sc_error!("Lottery is currently inactive."),
@@ -256,7 +256,7 @@ pub trait Lottery {
 							prize = info.prize_pool.clone();
 						}
 
-						self.send_tx(
+						self.send().direct_moax(
 							&winner_address,
 							&prize,
 							b"You won the lottery! Congratulations!",

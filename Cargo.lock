@@ -62,6 +62,7 @@ dependencies = [
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
+ "forwarder",
 ]
 
 [[package]]
@@ -72,6 +73,7 @@ dependencies = [
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
+ "hex-literal",
 ]
 
 [[package]]
@@ -111,42 +113,31 @@ dependencies = [
 
 [[package]]
 name = "block-buffer"
-version = "0.7.3"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0940dc441f31689269e10ac70eb1002a3a1d3ad1390e030043662eb7fe4688b"
+checksum = "4152116fd6e9dadb291ae18fc1ec3575ed6d84c29642d97890f4b4a3417297e4"
 dependencies = [
  "block-padding",
- "byte-tools",
- "byteorder",
  "generic-array",
 ]
 
 [[package]]
 name = "block-padding"
-version = "0.1.5"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa79dedbb091f449f1f39e53edf88d5dbe95f895dae6135a8d7b881fb5af73f5"
-dependencies = [
- "byte-tools",
-]
-
-[[package]]
-name = "byte-tools"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3b5ca7a04898ad4bcd41c90c5285445ff5b791899bb1b0abdd2a2aa791211d7"
-
-[[package]]
-name = "byteorder"
-version = "1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
+checksum = "8d696c370c750c948ada61c69a0ee2cbbb9c50b1019ddb86d9317157a99c2cae"
 
 [[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
+
+[[package]]
+name = "cfg-if"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "cpufeatures"
@@ -184,7 +175,7 @@ dependencies = [
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
- "simple-erc20",
+ "erc20",
 ]
 
 [[package]]
@@ -235,51 +226,40 @@ dependencies = [
 ]
 
 [[package]]
-name = "denali"
-version = "0.2.0"
+name = "dct-contract-pair"
+version = "0.0.0"
 dependencies = [
- "hex",
- "num-bigint",
- "num-traits",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "dharitri-codec"
-version = "0.2.2"
-dependencies = [
- "arrayvec",
- "dharitri-codec-derive",
- "wee_alloc",
-]
-
-[[package]]
-name = "dharitri-codec-derive"
-version = "0.2.2"
-dependencies = [
- "hex",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "dharitri-wasm"
-version = "0.5.7"
-dependencies = [
- "arrayvec",
- "dharitri-codec",
- "hashbrown",
- "wee_alloc",
-]
-
-[[package]]
-name = "dharitri-wasm-debug"
-version = "0.5.7"
-dependencies = [
- "denali",
  "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+ "first-contract",
+ "second-contract",
+]
+
+[[package]]
+name = "dct-nft-marketplace"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "dct-nft-marketplace-abi"
+version = "0.0.0"
+dependencies = [
+ "dct-nft-marketplace",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "denali"
+version = "0.2.1"
+dependencies = [
  "hex",
  "num-bigint",
  "num-traits",
@@ -289,8 +269,63 @@ dependencies = [
 ]
 
 [[package]]
+name = "deploy-two-contracts"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "dharitri-codec"
+version = "0.2.3"
+dependencies = [
+ "arrayvec",
+ "dharitri-codec-derive",
+ "wee_alloc",
+]
+
+[[package]]
+name = "dharitri-codec-derive"
+version = "0.2.3"
+dependencies = [
+ "hex",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "dharitri-wasm"
+version = "0.5.8"
+dependencies = [
+ "arrayvec",
+ "dharitri-codec",
+ "hashbrown",
+ "hex-literal",
+ "wee_alloc",
+]
+
+[[package]]
+name = "dharitri-wasm-debug"
+version = "0.5.8"
+dependencies = [
+ "denali",
+ "dharitri-wasm",
+ "hex",
+ "num-bigint",
+ "num-traits",
+ "serde",
+ "serde_json",
+ "sha2",
+ "sha3",
+]
+
+[[package]]
 name = "dharitri-wasm-derive"
-version = "0.5.7"
+version = "0.5.8"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -300,7 +335,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.5.7"
+version = "0.5.8"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -310,7 +345,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.5.7"
+version = "0.5.8"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -320,7 +355,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.5.7"
+version = "0.5.8"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -330,18 +365,96 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.5.7"
+version = "0.5.8"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "digest"
-version = "0.8.1"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3d0c8c8752312f9713efd397ff63acb9f85585afbf179282e720e7704954dd5"
+checksum = "d3dd60d1080a57a05ab032377049e0591415d2b31afd7028356dbf3cc6dcb066"
 dependencies = [
  "generic-array",
+]
+
+[[package]]
+name = "erc1155"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+ "erc1155-user-mock",
+]
+
+[[package]]
+name = "erc1155-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "erc1155",
+]
+
+[[package]]
+name = "erc1155-marketplace"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+ "erc1155",
+]
+
+[[package]]
+name = "erc1155-marketplace-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "erc1155-marketplace",
+]
+
+[[package]]
+name = "erc1155-user-mock"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "erc1155-user-mock-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "erc1155-user-mock",
+]
+
+[[package]]
+name = "erc20"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "erc20-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "erc20",
 ]
 
 [[package]]
@@ -364,12 +477,43 @@ dependencies = [
 ]
 
 [[package]]
+name = "first-contract"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "forwarder"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "forwarder-raw"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
 name = "generic-array"
-version = "0.12.4"
+version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ffdf9f34f1447443d37393cc6c2b8313aebddcd96906caf34e54c68d8e57d7bd"
+checksum = "85649ca51fd72272d7821adaf274ad91c288277713d9c18820d8499a7ff69e9a"
 dependencies = [
  "typenum",
+ "version_check",
 ]
 
 [[package]]
@@ -388,6 +532,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
+name = "hex-literal"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ebdb29d2ea9ed0083cd8cece49bbd968021bd99b0849edb4a9a7ee0fdf6a4e0"
+
+[[package]]
 name = "itoa"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -403,10 +553,66 @@ dependencies = [
 ]
 
 [[package]]
+name = "kitty"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-derive",
+ "random",
+]
+
+[[package]]
+name = "kitty-auction"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+ "kitty",
+ "kitty-ownership",
+]
+
+[[package]]
+name = "kitty-genetic-alg"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+ "kitty",
+ "random",
+]
+
+[[package]]
+name = "kitty-ownership"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+ "kitty",
+ "kitty-genetic-alg",
+ "random",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.152"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13e3bf6590cbc649f4d1a3eefc9d5d6eb746f5200ffb04e5e142700b8faa56e7"
+
+[[package]]
+name = "local-dct-and-nft"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
 
 [[package]]
 name = "lottery-dct"
@@ -435,7 +641,7 @@ dependencies = [
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
  "dharitri-wasm-node",
- "simple-erc20",
+ "erc20",
 ]
 
 [[package]]
@@ -473,13 +679,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
 
 [[package]]
+name = "moax-dct-swap"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "moax-dct-swap-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "moax-dct-swap",
+]
+
+[[package]]
 name = "multisig"
 version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "dharitri-wasm-derive",
- "dharitri-wasm-module-users",
  "dharitri-wasm-node",
 ]
 
@@ -490,6 +714,16 @@ dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
  "multisig",
+]
+
+[[package]]
+name = "nft-receiver"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
 ]
 
 [[package]]
@@ -543,9 +777,57 @@ dependencies = [
 
 [[package]]
 name = "opaque-debug"
-version = "0.2.3"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
+checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
+
+[[package]]
+name = "panic-message-features"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "payable-features"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "payable-features-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "payable-features",
+]
+
+[[package]]
+name = "ping-pong-moax"
+version = "0.0.2"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "ping-pong-moax-abi"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "ping-pong-moax",
+]
 
 [[package]]
 name = "proc-macro2"
@@ -566,10 +848,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "random"
+version = "0.0.0"
+
+[[package]]
+name = "recursive-caller"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
 name = "ryu"
 version = "1.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
+
+[[package]]
+name = "second-contract"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "send-tx-repeat"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
 
 [[package]]
 name = "serde"
@@ -603,35 +919,28 @@ dependencies = [
 ]
 
 [[package]]
-name = "sha3"
-version = "0.8.2"
+name = "sha2"
+version = "0.9.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd26bc0e7a2e3a7c959bc494caf58b72ee0c71d67704e9520f736ca7e4853ecf"
+checksum = "4d58a1e1bf39749807d89cf2d98ac2dfa0ff1cb3faa38fbb64dd88ac8013d800"
 dependencies = [
  "block-buffer",
- "byte-tools",
+ "cfg-if 1.0.0",
+ "cpufeatures",
  "digest",
- "keccak",
  "opaque-debug",
 ]
 
 [[package]]
-name = "simple-erc20"
-version = "0.0.0"
+name = "sha3"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f81199417d4e5de3f04b1e871023acea7389672c4135918f05aa9cbf2f2fa809"
 dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "dharitri-wasm-derive",
- "dharitri-wasm-node",
-]
-
-[[package]]
-name = "simple-erc20-abi"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "simple-erc20",
+ "block-buffer",
+ "digest",
+ "keccak",
+ "opaque-debug",
 ]
 
 [[package]]
@@ -667,6 +976,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "test-gen"
+version = "0.0.0"
+
+[[package]]
 name = "typenum"
 version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -700,12 +1013,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "vault"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-derive",
+ "dharitri-wasm-node",
+]
+
+[[package]]
+name = "version_check"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
+
+[[package]]
 name = "wee_alloc"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dbb3b5a6b2bb17cb6ad44a2e68a43e8d2722c997da10e928665c72ec6c0a0b8e"
 dependencies = [
- "cfg-if",
+ "cfg-if 0.1.10",
  "libc",
  "memory_units",
  "winapi",

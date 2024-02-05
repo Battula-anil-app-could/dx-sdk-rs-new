@@ -1,5 +1,5 @@
-use dharitri_wasm::{BoxedBytes, Vec};
-derive_imports!();
+use dharitri_wasm::types::{BoxedBytes, Vec};
+dharitri_wasm::derive_imports!();
 
 /// Copied from dharitri-wasm serialization tests.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]

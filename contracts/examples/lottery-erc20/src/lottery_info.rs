@@ -1,5 +1,6 @@
-use dharitri_wasm::{Address, BigUintApi, Vec};
-derive_imports!();
+use dharitri_wasm::api::BigUintApi;
+use dharitri_wasm::types::{Address, Vec};
+dharitri_wasm::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<BigUint: BigUintApi> {
