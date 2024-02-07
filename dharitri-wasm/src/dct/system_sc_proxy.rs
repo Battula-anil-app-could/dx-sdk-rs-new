@@ -287,18 +287,18 @@ where
     /// The metachain system SC will evaluate the arguments and call “DCTSetRole@tokenId@listOfRoles” for the given address.
     /// This will be actually a cross shard call.
     /// This function as almost all in case of DCT can be called only by the owner.
-    pub fn set_special_roles(
+    pub fn set_special_roles<RoleIter: Iterator<Item = DctLocalRole>>(
         self,
         address: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
-        roles: &[DctLocalRole],
+        roles_iter: RoleIter,
     ) -> ContractCall<SA, ()> {
         let mut contract_call = self.dct_system_sc_call_no_args(b"setSpecialRole");
 
         contract_call.push_endpoint_arg(token_identifier);
         contract_call.push_endpoint_arg(address);
-        for role in roles {
-            if role != &DctLocalRole::None {
+        for role in roles_iter {
+            if role != DctLocalRole::None {
                 contract_call.push_argument_raw_bytes(role.as_role_name());
             }
         }
@@ -310,18 +310,18 @@ where
     /// The metachain system SC will evaluate the arguments and call “DCTUnsetRole@tokenId@listOfRoles” for the given address.
     /// This will be actually a cross shard call.
     /// This function as almost all in case of DCT can be called only by the owner.
-    pub fn unset_special_roles(
+    pub fn unset_special_roles<RoleIter: Iterator<Item = DctLocalRole>>(
         self,
         address: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
-        roles: &[DctLocalRole],
+        roles_iter: RoleIter,
     ) -> ContractCall<SA, ()> {
         let mut contract_call = self.dct_system_sc_call_no_args(b"unSetSpecialRole");
 
         contract_call.push_endpoint_arg(token_identifier);
         contract_call.push_endpoint_arg(address);
-        for role in roles {
-            if role != &DctLocalRole::None {
+        for role in roles_iter {
+            if role != DctLocalRole::None {
                 contract_call.push_argument_raw_bytes(role.as_role_name());
             }
         }

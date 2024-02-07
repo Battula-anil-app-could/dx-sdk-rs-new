@@ -83,7 +83,7 @@ mod module_1 {
         type Api = dharitri_wasm::api::uncallable::UncallableApi;
 
         fn abi() -> dharitri_wasm::abi::ContractAbi {
-            let mut contract_abi = dharitri_wasm :: abi :: ContractAbi { docs : & [ "One of the simplest smart contracts possible," , "it holds a single variable in storage, which anyone can increment." ] , name : "Adder" , constructor : None , endpoints : Vec :: new ( ) , type_descriptions : < dharitri_wasm :: abi :: TypeDescriptionContainerImpl as dharitri_wasm :: abi :: TypeDescriptionContainer > :: new ( ) , } ;
+            let mut contract_abi = dharitri_wasm :: abi :: ContractAbi { build_info : dharitri_wasm :: abi :: BuildInfoAbi { contract_crate : dharitri_wasm :: abi :: ContractCrateBuildAbi { name : "adder" , version : "0.0.0" , } , framework : dharitri_wasm :: abi :: FrameworkBuildAbi :: create () , } , docs : & ["One of the simplest smart contracts possible," , "it holds a single variable in storage, which anyone can increment."] , name : "Adder" , constructor : None , endpoints : Vec :: new () , type_descriptions : < dharitri_wasm :: abi :: TypeDescriptionContainerImpl as dharitri_wasm :: abi :: TypeDescriptionContainer > :: new () , } ;
             let mut endpoint_abi = dharitri_wasm::abi::EndpointAbi {
                 docs: &[],
                 name: "version",
@@ -321,7 +321,7 @@ mod sample_adder {
         type Api = dharitri_wasm::api::uncallable::UncallableApi;
 
         fn abi() -> dharitri_wasm::abi::ContractAbi {
-            let mut contract_abi = dharitri_wasm :: abi :: ContractAbi { docs : & [ "One of the simplest smart contracts possible," , "it holds a single variable in storage, which anyone can increment." ] , name : "Adder" , constructor : None , endpoints : Vec :: new ( ) , type_descriptions : < dharitri_wasm :: abi :: TypeDescriptionContainerImpl as dharitri_wasm :: abi :: TypeDescriptionContainer > :: new ( ) , } ;
+            let mut contract_abi = dharitri_wasm :: abi :: ContractAbi { build_info : dharitri_wasm :: abi :: BuildInfoAbi { contract_crate : dharitri_wasm :: abi :: ContractCrateBuildAbi { name : "adder" , version : "0.0.0" , } , framework : dharitri_wasm :: abi :: FrameworkBuildAbi :: create () , } , docs : & ["One of the simplest smart contracts possible," , "it holds a single variable in storage, which anyone can increment."] , name : "Adder" , constructor : None , endpoints : Vec :: new () , type_descriptions : < dharitri_wasm :: abi :: TypeDescriptionContainerImpl as dharitri_wasm :: abi :: TypeDescriptionContainer > :: new () , } ;
             let mut endpoint_abi = dharitri_wasm::abi::EndpointAbi {
                 docs: &[],
                 name: "getSum",
@@ -430,7 +430,7 @@ mod sample_adder {
     }
 
     pub trait CallbackProxy: dharitri_wasm::contract_base::CallbackProxyObjBase + Sized {
-        fn my_callback(self, caller: &Address) -> dharitri_wasm::types::CallbackCall<Self::Api> {
+        fn my_callback(self, caller: &Address) -> dharitri_wasm::types::CallbackClosure<Self::Api> {
             let mut ___callback_call___ =
                 dharitri_wasm::types::new_callback_call(self.cb_call_api(), &b"my_callback"[..]);
             ___callback_call___.push_endpoint_arg(caller);

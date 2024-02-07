@@ -64,18 +64,18 @@ pub trait MoaxDctSwap {
         caller: &ManagedAddress,
         #[payment_token] token_identifier: TokenIdentifier,
         #[payment] returned_tokens: BigUint,
-        #[call_result] result: AsyncCallResult<()>,
+        #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
         // callback is called with DCTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
-            AsyncCallResult::Ok(()) => {
+            ManagedAsyncCallResult::Ok(()) => {
                 self.issue_success_event(caller, &token_identifier, &returned_tokens);
                 self.unused_wrapped_moax().set(&returned_tokens);
                 self.wrapped_moax_token_id().set(&token_identifier);
             },
-            AsyncCallResult::Err(message) => {
-                self.issue_failure_event(caller, message.err_msg.as_slice());
+            ManagedAsyncCallResult::Err(message) => {
+                self.issue_failure_event(caller, &message.err_msg);
 
                 // return issue cost to the owner
                 // TODO: test that it works
@@ -111,16 +111,16 @@ pub trait MoaxDctSwap {
         &self,
         caller: &ManagedAddress,
         amount: &BigUint,
-        #[call_result] result: AsyncCallResult<()>,
+        #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
         match result {
-            AsyncCallResult::Ok(()) => {
+            ManagedAsyncCallResult::Ok(()) => {
                 self.mint_success_event(caller);
                 self.unused_wrapped_moax()
                     .update(|unused_wrapped_moax| *unused_wrapped_moax += amount);
             },
-            AsyncCallResult::Err(message) => {
-                self.mint_failure_event(caller, message.err_msg.as_slice());
+            ManagedAsyncCallResult::Err(message) => {
+                self.mint_failure_event(caller, &message.err_msg);
             },
         }
     }
@@ -237,7 +237,7 @@ pub trait MoaxDctSwap {
     );
 
     #[event("issue-failure")]
-    fn issue_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &[u8]);
+    fn issue_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &ManagedBuffer);
 
     #[event("mint-started")]
     fn mint_started_event(&self, #[indexed] caller: &ManagedAddress, amount: &BigUint);
@@ -246,7 +246,7 @@ pub trait MoaxDctSwap {
     fn mint_success_event(&self, #[indexed] caller: &ManagedAddress);
 
     #[event("mint-failure")]
-    fn mint_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &[u8]);
+    fn mint_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &ManagedBuffer);
 
     #[event("wrap-moax")]
     fn wrap_moax_event(&self, #[indexed] user: &ManagedAddress, amount: &BigUint);

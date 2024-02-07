@@ -10,7 +10,7 @@ pub fn execute(state: &mut BlockchainMock, tx: &TxTransfer) {
         .unwrap();
     let recipient_address = &tx.to.value.into();
     state.increase_balance(recipient_address, &tx.value.value);
-    let dct_token_identifier = tx.dct_token_name.value.clone();
+    let dct_token_identifier = tx.dct_token_identifier.value.clone();
     let dct_value = tx.dct_value.value.clone();
 
     if !dct_token_identifier.is_empty() && dct_value > 0u32.into() {

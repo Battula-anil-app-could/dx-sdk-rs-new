@@ -5,18 +5,21 @@ dharitri_wasm::imports!();
 #[dharitri_wasm::contract]
 pub trait SecondContract {
     #[init]
-    fn init(&self, dct_token_name: TokenIdentifier) {
-        self.set_contract_dct_token_name(&dct_token_name);
+    fn init(&self, dct_token_identifier: TokenIdentifier) {
+        self.set_contract_dct_token_identifier(&dct_token_identifier);
     }
 
     #[payable("*")]
     #[endpoint(acceptDctPayment)]
     fn accept_dct_payment(
         &self,
-        #[payment_token] actual_token_name: TokenIdentifier,
+        #[payment_token] actual_token_identifier: TokenIdentifier,
     ) -> SCResult<()> {
-        let expected_token_name = self.get_contract_dct_token_name();
-        require!(actual_token_name == expected_token_name, "Wrong dct token");
+        let expected_token_identifier = self.get_contract_dct_token_identifier();
+        require!(
+            actual_token_identifier == expected_token_identifier,
+            "Wrong dct token"
+        );
         Ok(())
     }
 
@@ -29,9 +32,9 @@ pub trait SecondContract {
     // storage
 
     #[storage_set("dctTokenName")]
-    fn set_contract_dct_token_name(&self, dct_token_name: &TokenIdentifier);
+    fn set_contract_dct_token_identifier(&self, dct_token_identifier: &TokenIdentifier);
 
-    #[view(getDctTokenName)]
+    #[view(getdctTokenName)]
     #[storage_get("dctTokenName")]
-    fn get_contract_dct_token_name(&self) -> TokenIdentifier;
+    fn get_contract_dct_token_identifier(&self) -> TokenIdentifier;
 }

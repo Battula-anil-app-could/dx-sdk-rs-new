@@ -105,7 +105,7 @@ pub trait LocalDctAndDctNft {
         color: Color,
         uri: ManagedBuffer,
     ) {
-        let mut uris = ManagedVec::new_empty(self.type_manager());
+        let mut uris = ManagedVec::new(self.type_manager());
         uris.push(uri);
 
         self.send().dct_nft_create::<Color>(
@@ -208,11 +208,11 @@ pub trait LocalDctAndDctNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: VarArgs<DctLocalRole>,
+        #[var_args] roles: ManagedVarArgs<DctLocalRole>,
     ) -> AsyncCall {
         self.send()
             .dct_system_sc_proxy()
-            .set_special_roles(&address, &token_identifier, roles.as_slice())
+            .set_special_roles(&address, &token_identifier, roles.into_iter())
             .async_call()
             .with_callback(self.callbacks().change_roles_callback())
     }
@@ -222,11 +222,11 @@ pub trait LocalDctAndDctNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: VarArgs<DctLocalRole>,
+        #[var_args] roles: ManagedVarArgs<DctLocalRole>,
     ) -> AsyncCall {
         self.send()
             .dct_system_sc_proxy()
-            .unset_special_roles(&address, &token_identifier, roles.as_slice())
+            .unset_special_roles(&address, &token_identifier, roles.into_iter())
             .async_call()
             .with_callback(self.callbacks().change_roles_callback())
     }
@@ -256,16 +256,16 @@ pub trait LocalDctAndDctNft {
         caller: &ManagedAddress,
         #[payment_token] token_identifier: TokenIdentifier,
         #[payment] returned_tokens: BigUint,
-        #[call_result] result: AsyncCallResult<()>,
+        #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
         // callback is called with DCTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
-            AsyncCallResult::Ok(()) => {
+            ManagedAsyncCallResult::Ok(()) => {
                 self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
             },
-            AsyncCallResult::Err(message) => {
+            ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_moax() && returned_tokens > 0 {
                     self.send().direct_moax(caller, &returned_tokens, &[]);
@@ -280,14 +280,14 @@ pub trait LocalDctAndDctNft {
     fn nft_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[call_result] result: AsyncCallResult<TokenIdentifier>,
+        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
     ) {
         match result {
-            AsyncCallResult::Ok(token_identifier) => {
+            ManagedAsyncCallResult::Ok(token_identifier) => {
                 self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
             },
-            AsyncCallResult::Err(message) => {
+            ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
                 if token_identifier.is_moax() && returned_tokens > 0 {
@@ -300,12 +300,12 @@ pub trait LocalDctAndDctNft {
     }
 
     #[callback]
-    fn change_roles_callback(&self, #[call_result] result: AsyncCallResult<()>) {
+    fn change_roles_callback(&self, #[call_result] result: ManagedAsyncCallResult<()>) {
         match result {
-            AsyncCallResult::Ok(()) => {
+            ManagedAsyncCallResult::Ok(()) => {
                 self.last_error_message().clear();
             },
-            AsyncCallResult::Err(message) => {
+            ManagedAsyncCallResult::Err(message) => {
                 self.last_error_message().set(&message.err_msg);
             },
         }
@@ -319,5 +319,5 @@ pub trait LocalDctAndDctNft {
 
     #[view(lastErrorMessage)]
     #[storage_mapper("lastErrorMessage")]
-    fn last_error_message(&self) -> SingleValueMapper<BoxedBytes>;
+    fn last_error_message(&self) -> SingleValueMapper<ManagedBuffer>;
 }

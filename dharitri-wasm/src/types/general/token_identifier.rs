@@ -61,7 +61,7 @@ impl<M: ManagedTypeApi> TokenIdentifier<M> {
     /// New instance of the special MOAX token representation.
     pub fn moax(api: M) -> Self {
         TokenIdentifier {
-            buffer: ManagedBuffer::new_empty(api),
+            buffer: ManagedBuffer::new(api),
         }
     }
 

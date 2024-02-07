@@ -20,7 +20,7 @@ path = ".."
 features=["wasm-output-mode-unmanaged-ei"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.6.7"
+version = "0.6.8"
 path = "../../../../../dharitri-wasm-output"
 features=["wasm-output-mode"]
 

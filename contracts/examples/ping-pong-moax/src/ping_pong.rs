@@ -82,7 +82,7 @@ pub trait PingPong {
             );
         }
 
-        let caller = self.blockchain().get_caller_legacy();
+        let caller = self.blockchain().get_caller();
         let user_id = self.user_mapper().get_or_create_user(&caller);
         let user_status = self.user_status(user_id).get();
         match user_status {
@@ -133,7 +133,7 @@ pub trait PingPong {
             "can't withdraw before deadline"
         );
 
-        let caller = self.blockchain().get_caller_legacy();
+        let caller = self.blockchain().get_caller();
         let user_id = self.user_mapper().get_user_id(&caller);
         self.pong_by_user_id(user_id)
     }
@@ -173,14 +173,14 @@ pub trait PingPong {
     /// Lists the addresses of all users that have `ping`-ed,
     /// in the order they have `ping`-ed
     #[view(getUserAddresses)]
-    fn get_user_addresses(&self) -> MultiResultVec<Address> {
+    fn get_user_addresses(&self) -> ManagedMultiResultVec<ManagedAddress> {
         self.user_mapper().get_all_addresses().into()
     }
 
     // storage
 
     #[view(getPingAmount)]
-    #[storage_mapper("ping_amount")]
+    #[storage_mapper("pingAmount")]
     fn ping_amount(&self) -> SingleValueMapper<BigUint>;
 
     #[view(getDeadline)]
@@ -190,12 +190,12 @@ pub trait PingPong {
     /// Block timestamp of the block where the contract got activated.
     /// If not specified in the constructor it is the the deploy block timestamp.
     #[view(getActivationTimestamp)]
-    #[storage_mapper("activation_timestamp")]
+    #[storage_mapper("activationTimestamp")]
     fn activation_timestamp(&self) -> SingleValueMapper<u64>;
 
     /// Optional funding cap.
     #[view(getMaxFunds)]
-    #[storage_mapper("max_funds")]
+    #[storage_mapper("maxFunds")]
     fn max_funds(&self) -> SingleValueMapper<Option<BigUint>>;
 
     #[storage_mapper("user")]
@@ -206,12 +206,12 @@ pub trait PingPong {
     /// 1 - `ping`-ed
     /// 2 - `pong`-ed
     #[view(getUserStatus)]
-    #[storage_mapper("user_status")]
+    #[storage_mapper("userStatus")]
     fn user_status(&self, user_id: usize) -> SingleValueMapper<UserStatus>;
 
     /// Part of the `pongAll` status, the last user to be processed.
     /// 0 if never called `pongAll` or `pongAll` completed..
     #[view(pongAllLastUser)]
-    #[storage_mapper("pong_all_last_user")]
+    #[storage_mapper("pongAllLastUser")]
     fn pong_all_last_user(&self) -> SingleValueMapper<usize>;
 }

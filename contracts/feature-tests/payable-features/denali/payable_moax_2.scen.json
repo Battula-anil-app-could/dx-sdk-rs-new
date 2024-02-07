@@ -36,7 +36,10 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "0", "str:MOAX" ],
+                "out": [
+                    "0",
+                    "str:MOAX"
+                ],
                 "status": "",
                 "logs": [],
                 "gas": "*",
@@ -56,7 +59,10 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "5", "str:MOAX" ],
+                "out": [
+                    "5",
+                    "str:MOAX"
+                ],
                 "status": "",
                 "logs": [],
                 "gas": "*",

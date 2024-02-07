@@ -22,7 +22,7 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
     ) {
         let data = match opt_data {
             OptionalArg::Some(data) => data,
-            OptionalArg::None => self.types().managed_buffer_empty(),
+            OptionalArg::None => ManagedBuffer::new(),
         };
         self.send().direct(to, &token_id, 0, amount, data);
     }
@@ -53,7 +53,7 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
     ) {
         let data = match opt_data {
             OptionalArg::Some(data) => data,
-            OptionalArg::None => self.types().managed_buffer_empty(),
+            OptionalArg::None => ManagedBuffer::new(),
         };
         self.send()
             .direct(to, &token_id, 0, amount_first_time, data.clone());
@@ -65,14 +65,14 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
     fn send_dct_direct_multi_transfer(
         &self,
         to: ManagedAddress,
-        #[var_args] token_payments: VarArgs<MultiArg3<TokenIdentifier, u64, BigUint>>,
+        #[var_args] token_payments: ManagedVarArgs<MultiArg3<TokenIdentifier, u64, BigUint>>,
     ) {
-        let mut all_token_payments = ManagedVec::new_empty(self.type_manager());
+        let mut all_token_payments = ManagedVec::new(self.type_manager());
 
-        for multi_arg in token_payments.into_vec() {
-            let (token_name, token_nonce, amount) = multi_arg.into_tuple();
+        for multi_arg in token_payments.into_iter() {
+            let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
             let payment = DctTokenPayment {
-                token_name,
+                token_identifier,
                 token_nonce,
                 amount,
                 token_type: DctTokenType::Invalid, // not used
@@ -85,7 +85,7 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
             &to,
             &all_token_payments,
             self.blockchain().get_gas_left(),
-            &self.types().managed_buffer_empty(),
+            &ManagedBuffer::new(),
             &ManagedArgBuffer::new_empty(self.type_manager()),
         );
     }
@@ -130,16 +130,16 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
         caller: &ManagedAddress,
         #[payment_token] token_identifier: TokenIdentifier,
         #[payment] returned_tokens: BigUint,
-        #[call_result] result: AsyncCallResult<()>,
+        #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
         // callback is called with DCTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
-            AsyncCallResult::Ok(()) => {
+            ManagedAsyncCallResult::Ok(()) => {
                 self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
             },
-            AsyncCallResult::Err(message) => {
+            ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_moax() && returned_tokens > 0 {
                     self.send().direct_moax(caller, &returned_tokens, &[]);

@@ -12,7 +12,7 @@ use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecod
 #[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Debug)]
 pub struct DctTokenPayment<M: ManagedTypeApi> {
     pub token_type: DctTokenType,
-    pub token_name: TokenIdentifier<M>,
+    pub token_identifier: TokenIdentifier<M>,
     pub token_nonce: u64,
     pub amount: BigUint<M>,
 }
@@ -27,14 +27,18 @@ impl<M: ManagedTypeApi> DctTokenPayment<M> {
     pub fn no_payment(api: M) -> Self {
         DctTokenPayment {
             token_type: DctTokenType::Invalid,
-            token_name: TokenIdentifier::moax(api.clone()),
+            token_identifier: TokenIdentifier::moax(api.clone()),
             token_nonce: 0,
             amount: BigUint::zero(api),
         }
     }
 
-    pub fn from(token_name: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
-        let token_type = if amount != 0 && token_name.is_valid_dct_identifier() {
+    pub fn from(
+        token_identifier: TokenIdentifier<M>,
+        token_nonce: u64,
+        amount: BigUint<M>,
+    ) -> Self {
+        let token_type = if amount != 0 && token_identifier.is_valid_dct_identifier() {
             if token_nonce == 0 {
                 DctTokenType::Fungible
             } else if amount == 1u64 {
@@ -48,7 +52,7 @@ impl<M: ManagedTypeApi> DctTokenPayment<M> {
 
         DctTokenPayment {
             token_type,
-            token_name,
+            token_identifier,
             token_nonce,
             amount,
         }
@@ -66,7 +70,8 @@ impl<M: ManagedTypeApi> ManagedVecItem<M> for DctTokenPayment<M> {
         let mut token_id_handle_raw = [0u8; 4];
         token_id_handle_raw.copy_from_slice(&arr[0..4]);
         let token_id_handle = u32::from_be_bytes(token_id_handle_raw);
-        let token_name_buf = ManagedBuffer::from_raw_handle(api.clone(), token_id_handle as Handle);
+        let token_identifier_buf =
+            ManagedBuffer::from_raw_handle(api.clone(), token_id_handle as Handle);
 
         let mut nonce_raw = [0u8; 8];
         nonce_raw.copy_from_slice(&arr[4..12]);
@@ -85,7 +90,7 @@ impl<M: ManagedTypeApi> ManagedVecItem<M> for DctTokenPayment<M> {
 
         DctTokenPayment {
             token_type,
-            token_name: TokenIdentifier::from(token_name_buf),
+            token_identifier: TokenIdentifier::from(token_identifier_buf),
             token_nonce,
             amount,
         }
@@ -95,7 +100,7 @@ impl<M: ManagedTypeApi> ManagedVecItem<M> for DctTokenPayment<M> {
         let mut arr: [u8; 16] = [0u8; 16];
 
         let token_id_handle_raw = self
-            .token_name
+            .token_identifier
             .as_managed_buffer()
             .get_raw_handle()
             .to_be_bytes();

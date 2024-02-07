@@ -74,7 +74,7 @@ pub fn contract_implementation(
                 #function_selector_body
             }
 
-            fn callback_selector<'a>(&self, mut ___cb_data_deserializer___: dharitri_wasm::hex_call_data::HexCallDataDeserializer<'a>) -> dharitri_wasm::types::CallbackSelectorResult<'a> {
+            fn callback_selector(&self, mut ___cb_closure___: dharitri_wasm::types::CallbackClosureForDeser<Self::Api>) -> dharitri_wasm::types::CallbackSelectorResult<Self::Api> {
                 #callback_selector_body
             }
 

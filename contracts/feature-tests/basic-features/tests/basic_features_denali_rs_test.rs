@@ -9,9 +9,20 @@ fn contract_map() -> ContractMap<TxContext> {
     );
     contract_map
 }
+
 #[test]
 fn big_int_to_i64_rs() {
     dharitri_wasm_debug::denali_rs("denali/big_int_to_i64.scen.json", &contract_map());
+}
+
+#[test]
+fn big_num_conversions_rs() {
+    dharitri_wasm_debug::denali_rs("denali/big_num_conversions.scen.json", &contract_map());
+}
+
+#[test]
+fn big_uint_sqrt_rs() {
+    dharitri_wasm_debug::denali_rs("denali/big_uint_sqrt.scen.json", &contract_map());
 }
 
 #[test]
@@ -75,6 +86,14 @@ fn echo_async_result_empty_rs() {
 }
 
 #[test]
+fn echo_async_result_empty_managed_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/echo_async_result_empty_managed.scen.json",
+        &contract_map(),
+    );
+}
+
+#[test]
 fn echo_big_int_nested_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_big_int_nested.scen.json", &contract_map());
 }
@@ -110,6 +129,11 @@ fn echo_managed_bytes_rs() {
 }
 
 #[test]
+fn echo_managed_vec_rs() {
+    dharitri_wasm_debug::denali_rs("denali/echo_managed_vec.scen.json", &contract_map());
+}
+
+#[test]
 fn echo_nothing_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_nothing.scen.json", &contract_map());
 }
@@ -137,6 +161,14 @@ fn echo_str_box_rs() {
 #[test]
 fn echo_string_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_string.scen.json", &contract_map());
+}
+
+#[test]
+fn echo_tuple_into_multiresult_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/echo_tuple_into_multiresult.scen.json",
+        &contract_map(),
+    );
 }
 
 #[test]
@@ -197,11 +229,6 @@ fn get_cumulated_validator_rewards_rs() {
 // }
 
 #[test]
-fn log2_func_rs() {
-    dharitri_wasm_debug::denali_rs("denali/log2_func.scen.json", &contract_map());
-}
-
-#[test]
 fn managed_buffer_concat_1_rs() {
     dharitri_wasm_debug::denali_rs("denali/managed_buffer_concat_1.scen.json", &contract_map());
 }
@@ -258,11 +285,6 @@ fn panic_rs() {
 }
 
 #[test]
-fn pow_func_rs() {
-    dharitri_wasm_debug::denali_rs("denali/pow_func.scen.json", &contract_map());
-}
-
-#[test]
 fn return_codes_rs() {
     dharitri_wasm_debug::denali_rs("denali/return_codes.scen.json", &contract_map());
 }
@@ -278,11 +300,6 @@ fn sc_properties_rs() {
 #[test]
 fn sc_result_rs() {
     dharitri_wasm_debug::denali_rs("denali/sc_result.scen.json", &contract_map());
-}
-
-#[test]
-fn sqrt_rs() {
-    dharitri_wasm_debug::denali_rs("denali/sqrt.scen.json", &contract_map());
 }
 
 #[test]
@@ -341,6 +358,11 @@ fn storage_mapper_linked_list_rs() {
         "denali/storage_mapper_linked_list.scen.json",
         &contract_map(),
     );
+}
+
+#[test]
+fn storage_mapper_queue_rs() {
+    dharitri_wasm_debug::denali_rs("denali/storage_mapper_queue.scen.json", &contract_map());
 }
 
 #[test]

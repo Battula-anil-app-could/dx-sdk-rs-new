@@ -15,13 +15,19 @@ pub trait Vault {
         opt_arg_to_echo
     }
 
+    #[payable("*")]
+    #[endpoint]
+    fn just_accept_funds(&self) {
+        self.call_counts(b"accept_funds").update(|c| *c += 1);
+    }
+
     #[endpoint]
     fn echo_arguments(
         &self,
-        #[var_args] args: VarArgs<BoxedBytes>,
-    ) -> SCResult<MultiResultVec<BoxedBytes>> {
+        #[var_args] args: ManagedVarArgs<ManagedBuffer>,
+    ) -> SCResult<ManagedMultiResultVec<ManagedBuffer>> {
         self.call_counts(b"echo_arguments").update(|c| *c += 1);
-        Ok(args.into_vec().into())
+        Ok(args)
     }
 
     #[endpoint]
@@ -51,7 +57,7 @@ pub trait Vault {
 
         for payment in payments.into_iter() {
             self.accept_funds_event(
-                &payment.token_name,
+                &payment.token_identifier,
                 payment.token_type.as_type_name(),
                 &payment.amount,
                 payment.token_nonce,
@@ -69,7 +75,14 @@ pub trait Vault {
         let mut result = Vec::new();
 
         for payment in payments.into_iter() {
-            result.push((payment.token_name, payment.token_nonce, payment.amount).into());
+            result.push(
+                (
+                    payment.token_identifier,
+                    payment.token_nonce,
+                    payment.amount,
+                )
+                    .into(),
+            );
         }
 
         result.into()
@@ -128,7 +141,7 @@ pub trait Vault {
         let caller = self.blockchain().get_caller();
         let data = match return_message {
             OptionalArg::Some(data) => data,
-            OptionalArg::None => self.types().managed_buffer_empty(),
+            OptionalArg::None => ManagedBuffer::new(),
         };
 
         if token.is_moax() {
@@ -137,6 +150,75 @@ pub trait Vault {
             self.send()
                 .transfer_dct_via_async_call(&caller, &token, nonce, &amount, data);
         }
+    }
+
+    #[endpoint]
+    fn retrieve_multi_funds_async(
+        &self,
+        #[var_args] token_payments: ManagedVarArgs<MultiArg3<TokenIdentifier, u64, BigUint>>,
+    ) {
+        let caller = self.blockchain().get_caller();
+        let mut all_payments = Vec::new();
+
+        for multi_arg in token_payments.into_iter() {
+            let (token_id, nonce, amount) = multi_arg.into_tuple();
+
+            all_payments.push(DctTokenPayment {
+                token_identifier: token_id,
+                token_nonce: nonce,
+                amount,
+                token_type: DctTokenType::Invalid,
+            });
+        }
+
+        self.send().transfer_multiple_dct_via_async_call(
+            &caller,
+            &all_payments.managed_into(self.raw_vm_api()),
+            b"",
+        );
+    }
+
+    #[payable("*")]
+    #[endpoint]
+    fn burn_and_create_retrive_async(&self) {
+        let payments = self.call_value().all_dct_transfers();
+        let mut uris = ManagedVec::new(self.type_manager());
+        uris.push(ManagedBuffer::new());
+
+        let mut new_tokens = Vec::new();
+
+        for payment in payments.into_iter() {
+            // burn old tokens
+            self.send().dct_local_burn(
+                &payment.token_identifier,
+                payment.token_nonce,
+                &payment.amount,
+            );
+
+            // create new ones
+            let new_token_nonce = self.send().dct_nft_create(
+                &payment.token_identifier,
+                &payment.amount,
+                &ManagedBuffer::new(),
+                &self.types().big_uint_zero(),
+                &ManagedBuffer::new(),
+                &(),
+                &uris,
+            );
+
+            new_tokens.push(DctTokenPayment {
+                token_identifier: payment.token_identifier,
+                token_nonce: new_token_nonce,
+                amount: payment.amount,
+                token_type: DctTokenType::Invalid, // ignored
+            });
+        }
+
+        self.send().transfer_multiple_dct_via_async_call(
+            &self.blockchain().get_caller(),
+            &new_tokens.managed_into(self.raw_vm_api()),
+            &[],
+        );
     }
 
     #[event("accept_funds")]

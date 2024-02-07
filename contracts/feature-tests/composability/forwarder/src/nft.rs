@@ -89,14 +89,14 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
     fn nft_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[call_result] result: AsyncCallResult<TokenIdentifier>,
+        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
     ) {
         match result {
-            AsyncCallResult::Ok(token_identifier) => {
+            ManagedAsyncCallResult::Ok(token_identifier) => {
                 self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
             },
-            AsyncCallResult::Err(message) => {
+            ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
                 if token_identifier.is_moax() && returned_tokens > 0 {
@@ -119,7 +119,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         color: Color,
         uri: ManagedBuffer,
     ) -> u64 {
-        let mut uris = ManagedVec::new_empty(self.type_manager());
+        let mut uris = ManagedVec::new(self.type_manager());
         uris.push(uri);
         let token_nonce = self.send().dct_nft_create::<Color>(
             &token_identifier,
@@ -156,7 +156,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
             boxed_bytes: attrs_pieces.4,
         };
 
-        let mut uris = ManagedVec::new_empty(self.type_manager());
+        let mut uris = ManagedVec::new(self.type_manager());
         uris.push(uri);
         let token_nonce = self.send().dct_nft_create::<ComplexAttributes<Self::Api>>(
             &token_identifier,
@@ -220,7 +220,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
-        #[var_args] arguments: VarArgs<ManagedBuffer>,
+        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
     ) {
         let _ = self.raw_vm_api().direct_dct_nft_execute(
             &to,
@@ -229,7 +229,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
             &amount,
             self.blockchain().get_gas_left(),
             &function,
-            &arguments.into_vec().managed_into(),
+            &arguments.to_arg_buffer(),
         );
     }
 

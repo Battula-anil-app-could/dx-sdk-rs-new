@@ -211,12 +211,12 @@ impl InterpretableFrom<BlockInfoRaw> for BlockInfo {
     }
 }
 
-fn interpret_dct_token_name(
-    dct_token_name: Option<ValueSubTree>,
+fn interpret_dct_token_identifier(
+    dct_token_identifier: Option<ValueSubTree>,
     context: &InterpreterContext,
 ) -> BytesValue {
-    if let Some(dct_token_name_raw) = dct_token_name {
-        BytesValue::interpret_from(dct_token_name_raw, context)
+    if let Some(dct_token_identifier_raw) = dct_token_identifier {
+        BytesValue::interpret_from(dct_token_identifier_raw, context)
     } else {
         BytesValue::empty()
     }
@@ -224,14 +224,14 @@ fn interpret_dct_token_name(
 
 #[derive(Debug)]
 pub struct TxDCT {
-    pub dct_token_name: BytesValue,
+    pub dct_token_identifier: BytesValue,
     pub dct_value: BigUintValue,
 }
 
 impl InterpretableFrom<TxDCTRaw> for TxDCT {
     fn interpret_from(from: TxDCTRaw, context: &InterpreterContext) -> Self {
         TxDCT {
-            dct_token_name: interpret_dct_token_name(from.token_identifier, context),
+            dct_token_identifier: interpret_dct_token_identifier(from.token_identifier, context),
             dct_value: BigUintValue::interpret_from(from.value, context),
         }
     }
@@ -296,7 +296,7 @@ pub struct TxDeploy {
     pub from: AddressValue,
     pub call_value: BigUintValue,
     pub dct_value: BigUintValue,
-    pub dct_token_name: BytesValue,
+    pub dct_token_identifier: BytesValue,
     pub contract_code: BytesValue,
     pub arguments: Vec<BytesValue>,
     pub gas_limit: U64Value,
@@ -309,7 +309,10 @@ impl InterpretableFrom<TxDeployRaw> for TxDeploy {
             from: AddressValue::interpret_from(from.from, context),
             call_value: BigUintValue::interpret_from(from.value, context),
             dct_value: BigUintValue::interpret_from(from.dct_value, context),
-            dct_token_name: interpret_dct_token_name(from.dct_token_name, context),
+            dct_token_identifier: interpret_dct_token_identifier(
+                from.dct_token_identifier,
+                context,
+            ),
             contract_code: BytesValue::interpret_from(from.contract_code, context),
             arguments: from
                 .arguments
@@ -328,7 +331,7 @@ pub struct TxTransfer {
     pub to: AddressValue,
     pub value: BigUintValue,
     pub dct_value: BigUintValue,
-    pub dct_token_name: BytesValue,
+    pub dct_token_identifier: BytesValue,
 }
 
 impl InterpretableFrom<TxTransferRaw> for TxTransfer {
@@ -338,7 +341,10 @@ impl InterpretableFrom<TxTransferRaw> for TxTransfer {
             to: AddressValue::interpret_from(from.to, context),
             value: BigUintValue::interpret_from(from.value, context),
             dct_value: BigUintValue::interpret_from(from.dct_value, context),
-            dct_token_name: interpret_dct_token_name(from.dct_token_name, context),
+            dct_token_identifier: interpret_dct_token_identifier(
+                from.dct_token_identifier,
+                context,
+            ),
         }
     }
 }

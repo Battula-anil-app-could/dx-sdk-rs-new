@@ -139,7 +139,7 @@ impl BigIntApi for TxContext {
         let tx_output = self.tx_output_cell.borrow();
         let bi = tx_output.managed_types.big_int_map.get(x);
         match bi.sign() {
-            num_bigint::Sign::Minus => dharitri_wasm::api::Sign::NoSign,
+            num_bigint::Sign::Minus => dharitri_wasm::api::Sign::Minus,
             num_bigint::Sign::NoSign => dharitri_wasm::api::Sign::NoSign,
             num_bigint::Sign::Plus => dharitri_wasm::api::Sign::Plus,
         }
