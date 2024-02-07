@@ -7,6 +7,9 @@ dharitri_wasm::imports!();
 /// i.e. the framework/Arwen functionality for accepting MOAX and DCT payments.
 #[dharitri_wasm::contract]
 pub trait PayableFeatures {
+    #[init]
+    fn init(&self) {}
+
     #[view]
     #[payable("*")]
     fn echo_call_value(
@@ -23,8 +26,8 @@ pub trait PayableFeatures {
     #[payable("*")]
     fn payment_multiple(
         &self,
-        #[payment_multi] payments: ManagedVec<Self::Api, DctTokenPayment<Self::Api>>,
-    ) -> ManagedVec<Self::Api, DctTokenPayment<Self::Api>> {
+        #[payment_multi] payments: ManagedVec<DctTokenPayment<Self::Api>>,
+    ) -> ManagedVec<DctTokenPayment<Self::Api>> {
         payments
     }
 

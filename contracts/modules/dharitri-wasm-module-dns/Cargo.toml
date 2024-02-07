@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-module-dns"
-version = "0.7.1"
+version = "0.7.2"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -13,18 +13,10 @@ description = "Dharitri WebAssembly smart contract module that allows a contract
 keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
-[features]
-wasm-output-mode = ["dharitri-wasm-node"]
-
 [dependencies.dharitri-wasm]
-version = "0.7.1"
+version = "0.7.2"
 path = "../../../dharitri-wasm"
 
-[dependencies.dharitri-wasm-node]
-version = "0.7.1"
-path = "../../../dharitri-wasm-node"
-optional = true
-
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.7.1"
+version = "0.7.2"
 path = "../../../dharitri-wasm-debug"

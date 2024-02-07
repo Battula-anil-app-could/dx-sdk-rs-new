@@ -1,7 +1,7 @@
 use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> BlockchainMock {
+fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/crowdfunding-dct");
 
@@ -14,56 +14,44 @@ fn contract_map() -> BlockchainMock {
 
 #[test]
 fn crowdfunding_claim_failed_rs() {
-    dharitri_wasm_debug::denali_rs("denali/crowdfunding-claim-failed.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/crowdfunding-claim-failed.scen.json", world());
 }
 
 #[test]
 fn crowdfunding_claim_successful_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/crowdfunding-claim-successful.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/crowdfunding-claim-successful.scen.json", world());
 }
 
 #[test]
 fn crowdfunding_claim_too_early_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/crowdfunding-claim-too-early.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/crowdfunding-claim-too-early.scen.json", world());
 }
 
 #[test]
 fn crowdfunding_fund_rs() {
-    dharitri_wasm_debug::denali_rs("denali/crowdfunding-fund.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/crowdfunding-fund.scen.json", world());
 }
 
 #[test]
 fn crowdfunding_fund_too_late_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/crowdfunding-fund-too-late.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/crowdfunding-fund-too-late.scen.json", world());
 }
 
 #[test]
 fn crowdfunding_init_rs() {
-    dharitri_wasm_debug::denali_rs("denali/crowdfunding-init.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/crowdfunding-init.scen.json", world());
 }
 
 #[test]
 fn moax_crowdfunding_claim_failed_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/moax-crowdfunding-claim-failed.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/moax-crowdfunding-claim-failed.scen.json", world());
 }
 
 #[test]
 fn moax_crowdfunding_claim_successful_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/moax-crowdfunding-claim-successful.scen.json",
-        contract_map(),
+        world(),
     );
 }
 
@@ -71,24 +59,21 @@ fn moax_crowdfunding_claim_successful_rs() {
 fn moax_crowdfunding_claim_too_early_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/moax-crowdfunding-claim-too-early.scen.json",
-        contract_map(),
+        world(),
     );
 }
 
 #[test]
 fn moax_crowdfunding_fund_rs() {
-    dharitri_wasm_debug::denali_rs("denali/moax-crowdfunding-fund.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/moax-crowdfunding-fund.scen.json", world());
 }
 
 #[test]
 fn moax_crowdfunding_fund_too_late_rs() {
-    dharitri_wasm_debug::denali_rs(
-        "denali/moax-crowdfunding-fund-too-late.scen.json",
-        contract_map(),
-    );
+    dharitri_wasm_debug::denali_rs("denali/moax-crowdfunding-fund-too-late.scen.json", world());
 }
 
 #[test]
 fn moax_crowdfunding_init_rs() {
-    dharitri_wasm_debug::denali_rs("denali/moax-crowdfunding-init.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/moax-crowdfunding-init.scen.json", world());
 }

@@ -8,28 +8,16 @@ publish = false
 [lib]
 path = "src/forwarder_raw.rs"
 
-[features]
-wasm-output-mode = [
-    "dharitri-wasm-node",
-]
-wasm-output-mode-managed-ei = [
-    "wasm-output-mode",
-]
-wasm-output-mode-unmanaged-ei = [
-    "wasm-output-mode",
-    "dharitri-wasm-node/unmanaged-ei"
-]
-
 [dependencies.dharitri-wasm]
-version = "0.7.1"
+version = "0.7.2"
 path = "../../../../dharitri-wasm"
 features = ["cb_closure_managed_deser"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.7.1"
+version = "0.7.2"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.7.1"
+version = "0.7.2"
 path = "../../../../dharitri-wasm-debug"

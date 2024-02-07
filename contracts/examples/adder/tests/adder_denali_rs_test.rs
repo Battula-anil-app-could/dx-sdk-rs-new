@@ -1,7 +1,7 @@
 use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> BlockchainMock {
+fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/adder");
 
@@ -14,5 +14,5 @@ fn contract_map() -> BlockchainMock {
 
 #[test]
 fn adder_rs() {
-    dharitri_wasm_debug::denali_rs("denali/adder.scen.json", contract_map());
+    dharitri_wasm_debug::denali_rs("denali/adder.scen.json", world());
 }

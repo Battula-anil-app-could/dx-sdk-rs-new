@@ -29,6 +29,11 @@ fn deployfactorial_go() {
 }
 
 #[test]
+fn deployothermultisig_go() {
+    dharitri_wasm_debug::denali_go("denali/deployOtherMultisig.scen.json");
+}
+
+#[test]
 fn deploy_duplicate_bm_go() {
     dharitri_wasm_debug::denali_go("denali/deploy_duplicate_bm.scen.json");
 }
@@ -36,4 +41,19 @@ fn deploy_duplicate_bm_go() {
 #[test]
 fn remove_everyone_go() {
     dharitri_wasm_debug::denali_go("denali/remove_everyone.scen.json");
+}
+
+#[test]
+fn senddct_go() {
+    dharitri_wasm_debug::denali_go("denali/sendDct.scen.json");
+}
+
+#[test]
+fn upgrade_go() {
+    dharitri_wasm_debug::denali_go("denali/upgrade.scen.json");
+}
+
+#[test]
+fn upgrade_from_source_go() {
+    dharitri_wasm_debug::denali_go("denali/upgrade_from_source.scen.json");
 }

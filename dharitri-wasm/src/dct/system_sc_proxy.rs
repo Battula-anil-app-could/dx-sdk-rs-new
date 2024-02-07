@@ -317,6 +317,21 @@ where
         contract_call
     }
 
+    /// This function converts an SFT to a metaDCT by adding decimals to its structure in the metachain DCT System SC.
+    /// This function as almost all in case of DCT can be called only by the owner.
+    pub fn change_sft_to_meta_dct(
+        self,
+        token_identifier: &TokenIdentifier<SA>,
+        num_decimals: usize,
+    ) -> ContractCall<SA, ()> {
+        let mut contract_call = self.dct_system_sc_call_no_args(b"changeSFTToMetaDCT");
+
+        contract_call.push_endpoint_arg(token_identifier);
+        contract_call.push_endpoint_arg(num_decimals);
+
+        contract_call
+    }
+
     /// This function can be called only if canSetSpecialRoles was set to true.
     /// The metachain system SC will evaluate the arguments and call “DCTSetRole@tokenId@listOfRoles” for the given address.
     /// This will be actually a cross shard call.
