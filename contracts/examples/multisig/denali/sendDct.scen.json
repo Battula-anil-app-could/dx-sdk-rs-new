@@ -1,5 +1,4 @@
 {
-    "gasSchedule": "v4",
     "steps": [
         {
             "step": "externalSteps",
@@ -75,8 +74,11 @@
             "tx": {
                 "from": "address:paul",
                 "to": "sc:multisig",
-                "function": "proposeSendDct",
+                "function": "proposeAsyncCall",
                 "arguments": [
+                    "sc:multisig",
+                    "0",
+                    "str:MultiDCTNFTTransfer",
                     "address:dct-owner",
                     "3",
                     "str:FUNG-TOKEN",

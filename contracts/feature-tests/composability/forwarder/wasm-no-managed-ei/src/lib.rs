@@ -5,8 +5,8 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   forwarder
-   (
+    forwarder
+    (
         init
         callBack
         buy_nft
@@ -62,5 +62,5 @@ dharitri_wasm_node::wasm_endpoints! {
         unsetLocalRoles
         upgradeVault
         upgrade_vault_from_source
-   )
+    )
 }

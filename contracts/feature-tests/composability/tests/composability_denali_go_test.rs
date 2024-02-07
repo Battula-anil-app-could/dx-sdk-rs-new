@@ -21,6 +21,16 @@ fn forw_raw_async_send_and_retrieve_multi_transfer_funds_go() {
 }
 
 #[test]
+fn forw_raw_builtin_nft_local_mint_via_async_call_go() {
+    dharitri_wasm_debug::denali_go("denali/forw_raw_builtin_nft_local_mint_via_async_call.scen.json");
+}
+
+#[test]
+fn forw_raw_builtin_nft_local_mint_via_sync_call_go() {
+    dharitri_wasm_debug::denali_go("denali/forw_raw_builtin_nft_local_mint_via_sync_call.scen.json");
+}
+
+#[test]
 fn forw_raw_call_async_retrieve_multi_transfer_go() {
     dharitri_wasm_debug::denali_go("denali/forw_raw_call_async_retrieve_multi_transfer.scen.json");
 }
@@ -33,6 +43,11 @@ fn forw_raw_contract_deploy_go() {
 #[test]
 fn forw_raw_contract_upgrade_go() {
     dharitri_wasm_debug::denali_go("denali/forw_raw_contract_upgrade.scen.json");
+}
+
+#[test]
+fn forw_raw_contract_upgrade_self_go() {
+    dharitri_wasm_debug::denali_go("denali/forw_raw_contract_upgrade_self.scen.json");
 }
 
 #[test]
@@ -253,6 +268,11 @@ fn forwarder_nft_create_and_send_go() {
 }
 
 #[test]
+fn forwarder_nft_current_nonce_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_nft_current_nonce.scen.json");
+}
+
+#[test]
 fn forwarder_nft_decode_complex_attributes_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_nft_decode_complex_attributes.scen.json");
 }
@@ -268,7 +288,7 @@ fn forwarder_nft_transfer_exec_go() {
 }
 
 #[test]
-fn forwarder_send_no_endpoint_go() {
+fn forwarder_no_endpoint_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_no_endpoint.scen.json");
 }
 

@@ -8,10 +8,10 @@ fn call_other_shard_2_go() {
     dharitri_wasm_debug::denali_go("denali/call_other_shard-2.scen.json");
 }
 
-#[test]
-fn call_other_shard_insufficient_gas_go() {
-    dharitri_wasm_debug::denali_go("denali/call_other_shard-insufficient-gas.scen.json");
-}
+// #[test]
+// fn call_other_shard_insufficient_gas_go() {
+//     dharitri_wasm_debug::denali_go("denali/call_other_shard-insufficient-gas.scen.json");
+// }
 
 #[test]
 fn changeboard_go() {

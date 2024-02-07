@@ -47,7 +47,7 @@ await multisig.sender(carol).call.sign(deployId);
 // Perform the deploy. The address of the deployed adder will be returned.
 var deployAddress = await multisig.call.performAction(deployId);
 
-// Check the deploy address. bech32() will output it as moa1...
+// Check the deploy address. bech32() will output it as erd1...
 deployAddress.bech32();
 
 // We can also access the adder smart contract by setting its deployed address to the smart contract wrapper instance.

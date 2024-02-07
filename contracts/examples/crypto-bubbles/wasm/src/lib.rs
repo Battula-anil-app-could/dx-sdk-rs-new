@@ -5,15 +5,16 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   crypto_bubbles
-   (
+    crypto_bubbles
+    (
         init
-        callBack
         balanceOf
         joinGame
         rewardAndSendToWallet
         rewardWinner
         topUp
         withdraw
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

@@ -13,7 +13,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.7.3"
+            "version": "0.7.4"
         }
     },
     "docs": [
@@ -540,6 +540,7 @@
             "outputs": []
         }
     ],
+    "hasCallback": true,
     "types": {
         "GovernanceProposalStatus": {
             "type": "enum",

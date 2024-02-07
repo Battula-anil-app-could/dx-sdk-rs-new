@@ -5,11 +5,12 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   adder
-   (
+    adder
+    (
         init
-        callBack
         add
         getSum
-   )
+    )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

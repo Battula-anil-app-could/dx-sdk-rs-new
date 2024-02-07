@@ -5,8 +5,8 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   erc1155
-   (
+    erc1155
+    (
         init
         callBack
         balanceOf
@@ -22,5 +22,5 @@ dharitri_wasm_node::wasm_endpoints! {
         safeBatchTransferFrom
         safeTransferFrom
         setApprovalForAll
-   )
+    )
 }

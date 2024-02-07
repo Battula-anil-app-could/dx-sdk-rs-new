@@ -29,7 +29,7 @@ impl<M: ManagedTypeApi> DctTokenPayment<M> {
     }
 
     pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
-        let token_type = if amount != 0 && token_identifier.is_valid_dct_identifier() {
+        let token_type = if amount != 0 && token_identifier.is_dct() {
             if token_nonce == 0 {
                 DctTokenType::Fungible
             } else if amount == 1u64 {

@@ -5,8 +5,8 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   local_dct_and_nft
-   (
+    local_dct_and_nft
+    (
         init
         callBack
         getCurrentNftNonce
@@ -26,5 +26,5 @@ dharitri_wasm_node::wasm_endpoints! {
         transferNftViaAsyncCall
         transfer_nft_and_execute
         unsetLocalRoles
-   )
+    )
 }

@@ -5,8 +5,8 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-   use_module
-   (
+    use_module
+    (
         init
         callBack
         call_mod_a
@@ -49,5 +49,5 @@ dharitri_wasm_node::wasm_endpoints! {
         unpause
         vote
         withdrawGovernanceTokens
-   )
+    )
 }
