@@ -1,7 +1,7 @@
 use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+fn contract_map() -> ContractMap<DebugApi> {
     let mut contract_map = ContractMap::new();
 
     contract_map.register_contract(
@@ -21,7 +21,7 @@ fn contract_map() -> ContractMap<TxContext> {
 fn deploy_erc20_and_crowdfunding_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/deploy_erc20_and_crowdfunding.scen.json",
-        &contract_map(),
+        contract_map(),
     );
 }
 
@@ -29,7 +29,7 @@ fn deploy_erc20_and_crowdfunding_rs() {
 fn fund_with_insufficient_allowance_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/fund_with_insufficient_allowance.scen.json",
-        &contract_map(),
+        contract_map(),
     );
 }
 
@@ -37,11 +37,11 @@ fn fund_with_insufficient_allowance_rs() {
 fn fund_with_sufficient_allowance_rs() {
     dharitri_wasm_debug::denali_rs(
         "denali/fund_with_sufficient_allowance.scen.json",
-        &contract_map(),
+        contract_map(),
     );
 }
 
 #[test]
 fn fund_without_allowance_rs() {
-    dharitri_wasm_debug::denali_rs("denali/fund_without_allowance.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/fund_without_allowance.scen.json", contract_map());
 }

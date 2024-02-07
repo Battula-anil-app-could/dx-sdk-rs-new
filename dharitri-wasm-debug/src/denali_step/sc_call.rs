@@ -1,28 +1,26 @@
-use crate::execute_helper_functions::{self, *};
-use denali::{TxCall, TxExpect};
-use num_bigint::BigUint;
-use num_traits::Zero;
+use std::rc::Rc;
 
-use crate::{BlockchainMock, ContractMap, TxContext, TxInput};
+use denali::model::{TxCall, TxDCT, TxExpect};
+
+use crate::{
+    tx_execution::sc_call_with_async_and_callback,
+    tx_mock::{generate_tx_hash_dummy, TxInput, TxInputDCT},
+    world_mock::BlockchainMock,
+};
+
+use super::check_tx_output;
+
 pub fn execute(
-    state: &mut BlockchainMock,
-    contract_map: &ContractMap<TxContext>,
+    state: &mut Rc<BlockchainMock>,
     tx_id: &str,
     tx: &TxCall,
     expect: &Option<TxExpect>,
 ) {
-    let mut dct_value = BigUint::zero();
-    let mut dct_token_identifier = Vec::new();
-    if let Some(value) = tx.dct_value.as_ref() {
-        dct_value = value.dct_value.value.clone();
-        dct_token_identifier = value.dct_token_identifier.value.clone();
-    };
     let tx_input = TxInput {
         from: tx.from.value.into(),
         to: tx.to.value.into(),
-        call_value: tx.call_value.value.clone(),
-        dct_value,
-        dct_token_identifier,
+        moax_value: tx.moax_value.value.clone(),
+        dct_values: tx_dct_transfers_from_denali(tx.dct_value.as_slice()),
         func_name: tx.function.as_bytes().to_vec(),
         args: tx
             .arguments
@@ -31,11 +29,25 @@ pub fn execute(
             .collect(),
         gas_limit: tx.gas_limit.value,
         gas_price: tx.gas_price.value,
-        tx_hash: execute_helper_functions::generate_tx_hash_dummy(tx_id),
+        tx_hash: generate_tx_hash_dummy(tx_id),
     };
-    state.increase_nonce(&tx_input.from);
-    let tx_result = sc_call_with_async_and_callback(tx_input, state, contract_map).unwrap();
+    let tx_result = sc_call_with_async_and_callback(tx_input, state, true);
     if let Some(tx_expect) = expect {
         check_tx_output(tx_id, tx_expect, &tx_result);
+    }
+}
+
+pub fn tx_dct_transfers_from_denali(denali_transf_dct: &[TxDCT]) -> Vec<TxInputDCT> {
+    denali_transf_dct
+        .iter()
+        .map(tx_dct_transfer_from_denali)
+        .collect()
+}
+
+pub fn tx_dct_transfer_from_denali(denali_transf_dct: &TxDCT) -> TxInputDCT {
+    TxInputDCT {
+        token_identifier: denali_transf_dct.dct_token_identifier.value.clone(),
+        nonce: denali_transf_dct.nonce.value,
+        value: denali_transf_dct.dct_value.value.clone(),
     }
 }

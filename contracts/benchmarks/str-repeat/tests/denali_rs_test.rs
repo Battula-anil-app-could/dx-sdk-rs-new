@@ -1,6 +1,6 @@
 use dharitri_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+fn contract_map() -> ContractMap<DebugApi> {
     let mut contract_map = ContractMap::new();
     contract_map.register_contract(
         "file:../output/str-repeat.wasm",
@@ -11,5 +11,5 @@ fn contract_map() -> ContractMap<TxContext> {
 
 #[test]
 fn test_str_repeat_denali_rs() {
-    dharitri_wasm_debug::denali_rs("denali/str_repeat.scen.json", &contract_map());
+    dharitri_wasm_debug::denali_rs("denali/str_repeat.scen.json", contract_map());
 }

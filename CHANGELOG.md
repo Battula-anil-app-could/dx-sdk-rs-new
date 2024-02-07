@@ -4,11 +4,24 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.6.9]
+## [dharitri-wasm 0.7.0, dharitri-codec 0.2.8, denali 0.2.6] - 2021-10-22
+- Denali support for NFT syntax. Many more small improvements and some major refactoring.
+- Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
+	- support for synchronous calls, also nested synchronous calls
+	- support for NFT simple transfers
+	- support for DCT multitransfer (FT + NFT)
+	- builtin functions mocked in the debugger: `DCTLocalMint`, `DCTLocalBurn`, `MultiDCTNFTTransfer`, `DCTNFTTransfer`, `DCTNFTCreate`, `DCTNFTAddQuantity`, `DCTNFTBurn`, `DCTTransfer`, `ChangeOwnerAddress`, `SetUserName`
+	- supports deploy/deploy from source/upgrade/upgrade from source from contracts
+- `#[payment_multi]` annotation
+- `ManagedRef` type, that allows easier handling of managed types
+- ABI contains endpoint mutability flag (mutable/readonly)
+- reverse iteration for `ManagedVec`
+
+## [dharitri-wasm 0.20.1] - 2021-10-05
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [dharitri-wasm 0.20.0, dharitri-codec 0.2.7, denali 0.2.5] - 2021-10-02
+## [dharitri-wasm 0.20.0, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -53,7 +66,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
+## [dharitri-wasm 0.18.0, denali 0.2.6] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -167,7 +180,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [dharitri-wasm 0.11.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [dharitri-wasm 0.1.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -259,9 +272,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
-- Completely ditched the approach from dharitri-wasm 0.8.0.
+- Completely ditched the approach from dharitri-wasm 0.1.0.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.1.0, dharitri-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -274,7 +287,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.2.6] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -300,7 +313,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.2.8] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -365,7 +378,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Multi args
 - Multi args in async calls
 
-## [dharitri-wasm 0.2.0] - 2020-03-18
+## [dharitri-wasm 0.7.0] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 

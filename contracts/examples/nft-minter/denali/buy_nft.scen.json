@@ -11,7 +11,7 @@
             "tx": {
                 "from": "address:buyer",
                 "to": "sc:nft-minter",
-                "value": "400",
+                "moaxValue": "400",
                 "function": "buyNft",
                 "arguments": [
                     "1"
@@ -33,7 +33,7 @@
             "tx": {
                 "from": "address:buyer",
                 "to": "sc:nft-minter",
-                "value": "500",
+                "moaxValue": "500",
                 "function": "buyNft",
                 "arguments": [
                     "3"
@@ -55,7 +55,7 @@
             "tx": {
                 "from": "address:buyer",
                 "to": "sc:nft-minter",
-                "value": "500",
+                "moaxValue": "500",
                 "function": "buyNft",
                 "arguments": [
                     "1"
@@ -116,10 +116,6 @@
                     "balance": "0",
                     "dct": {
                         "str:NFT-123456": {
-                            "lastNonce": "2",
-                            "roles": [
-                                "DCTRoleNFTCreate"
-                            ],
                             "instances": [
                                 {
                                     "nonce": "2",
@@ -129,6 +125,10 @@
                                     "uri": "str:www.mycoolnft.com/nft2.jpg",
                                     "attributes": "u64:200,000"
                                 }
+                            ],
+                            "lastNonce": "2",
+                            "roles": [
+                                "DCTRoleNFTCreate"
                             ]
                         }
                     },
@@ -151,12 +151,13 @@
             "tx": {
                 "from": "address:buyer",
                 "to": "sc:nft-minter",
-                "value": "0",
-                "dct": {
-                    "tokenIdentifier": "str:SEMIFUNG-123456",
-                    "nonce": "1",
-                    "value": "500"
-                },
+                "dctValue": [
+                    {
+                        "tokenIdentifier": "str:SEMIFUNG-123456",
+                        "nonce": "1",
+                        "value": "500"
+                    }
+                ],
                 "function": "buyNft",
                 "arguments": [
                     "2"
@@ -178,12 +179,13 @@
             "tx": {
                 "from": "address:buyer",
                 "to": "sc:nft-minter",
-                "value": "0",
-                "dct": {
-                    "tokenIdentifier": "str:SEMIFUNG-123456",
-                    "nonce": "2",
-                    "value": "500"
-                },
+                "dctValue": [
+                    {
+                        "tokenIdentifier": "str:SEMIFUNG-123456",
+                        "nonce": "2",
+                        "value": "500"
+                    }
+                ],
                 "function": "buyNft",
                 "arguments": [
                     "2"
@@ -265,8 +267,7 @@
                             "lastNonce": "2",
                             "roles": [
                                 "DCTRoleNFTCreate"
-                            ],
-                            "instances": []
+                            ]
                         }
                     },
                     "storage": {

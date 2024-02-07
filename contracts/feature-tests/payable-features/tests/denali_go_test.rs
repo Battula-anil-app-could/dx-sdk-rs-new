@@ -1,4 +1,9 @@
 #[test]
+fn call_value_check_go() {
+    dharitri_wasm_debug::denali_go("denali/call-value-check.scen.json");
+}
+
+#[test]
 fn payable_any_1_go() {
     dharitri_wasm_debug::denali_go("denali/payable_any_1.scen.json");
 }
