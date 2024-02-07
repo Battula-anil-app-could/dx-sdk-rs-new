@@ -13,12 +13,13 @@ pub trait Child {
     #[endpoint(issueWrappedMoax)]
     fn issue_wrapped_moax(
         &self,
-        token_display_name: BoxedBytes,
-        token_ticker: BoxedBytes,
-        initial_supply: Self::BigUint,
-        #[payment] issue_cost: Self::BigUint,
-    ) -> AsyncCall<Self::SendApi> {
-        DCTSystemSmartContractProxy::new_proxy_obj(self.send())
+        token_display_name: ManagedBuffer,
+        token_ticker: ManagedBuffer,
+        initial_supply: BigUint,
+        #[payment] issue_cost: BigUint,
+    ) -> AsyncCall {
+        self.send()
+            .dct_system_sc_proxy()
             .issue_fungible(
                 issue_cost,
                 &token_display_name,
@@ -46,7 +47,7 @@ pub trait Child {
     fn dct_issue_callback(
         &self,
         #[payment_token] token_identifier: TokenIdentifier,
-        #[payment] _amount: Self::BigUint,
+        #[payment] _amount: BigUint,
         #[call_result] _result: AsyncCallResult<()>,
     ) {
         self.wrapped_moax_token_identifier().set(&token_identifier);
@@ -56,5 +57,5 @@ pub trait Child {
 
     #[view(getWrappedMoaxTokenIdentifier)]
     #[storage_mapper("wrappedMoaxTokenIdentifier")]
-    fn wrapped_moax_token_identifier(&self) -> SingleValueMapper<Self::Storage, TokenIdentifier>;
+    fn wrapped_moax_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
 }

@@ -22,7 +22,7 @@ fn payable_snippet_for_metadata(
             let token_init = moax_token_init(payment_token_arg);
             let nonce_init = zero_nonce_init(payment_nonce_arg);
             quote! {
-                self.call_value().check_not_payable();
+                dharitri_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
                 #amount_init
                 #token_init
                 #nonce_init
@@ -33,7 +33,7 @@ fn payable_snippet_for_metadata(
             let token_init = moax_token_init(payment_token_arg);
             let nonce_init = zero_nonce_init(payment_nonce_arg);
             quote! {
-                let #payment_var_name = self.call_value().require_moax();
+                let #payment_var_name = dharitri_wasm::api::CallValueApi::require_moax(&self.raw_vm_api());
                 #token_init
                 #nonce_init
             }
@@ -44,14 +44,14 @@ fn payable_snippet_for_metadata(
             let token_init = if let Some(arg) = payment_token_arg {
                 let pat = &arg.pat;
                 quote! {
-                    let #pat = TokenIdentifier::from(#token_literal);
+                    let #pat = TokenIdentifier::from_dct_bytes(self.raw_vm_api(), #token_literal);
                 }
             } else {
                 quote! {}
             };
             let nonce_init = nonce_getter_init(payment_nonce_arg);
             quote! {
-                let #payment_var_name = self.call_value().require_dct(#token_literal);
+                let #payment_var_name = dharitri_wasm::api::CallValueApi::require_dct(&self.raw_vm_api(), #token_literal);
                 #token_init
                 #nonce_init
             }
@@ -64,7 +64,7 @@ fn payable_snippet_for_metadata(
                 let payment_var_name = var_name_or_underscore(payment_amount_arg);
                 let token_var_name = var_name_or_underscore(payment_token_arg);
                 quote! {
-                    let (#payment_var_name, #token_var_name) = self.call_value().payment_token_pair();
+                    let (#payment_var_name, #token_var_name) = dharitri_wasm::api::CallValueApi::payment_token_pair(&self.raw_vm_api());
                     #nonce_init
                 }
             }
@@ -87,7 +87,7 @@ fn moax_token_init(opt_arg: &Option<MethodArgument>) -> proc_macro2::TokenStream
     if let Some(arg) = opt_arg {
         let pat = &arg.pat;
         quote! {
-            let #pat = TokenIdentifier::moax();
+            let #pat = TokenIdentifier::moax(self.raw_vm_api());
         }
     } else {
         quote! {}

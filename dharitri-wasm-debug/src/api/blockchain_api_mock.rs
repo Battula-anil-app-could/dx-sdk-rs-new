@@ -1,18 +1,12 @@
-use super::managed_types::RustBigUint;
 use crate::TxContext;
-use dharitri_wasm::{
-    api::BigUintApi,
-    types::{Address, DctTokenData, TokenIdentifier, H256},
-};
+use dharitri_wasm::types::{Address, BigUint, DctTokenData, ManagedAddress, TokenIdentifier, H256};
 
 impl dharitri_wasm::api::BlockchainApi for TxContext {
-    type BalanceType = RustBigUint;
-
-    fn get_sc_address(&self) -> Address {
+    fn get_sc_address_legacy(&self) -> Address {
         self.tx_input_box.to.clone()
     }
 
-    fn get_owner_address(&self) -> Address {
+    fn get_owner_address_legacy(&self) -> Address {
         self.blockchain_info_box
             .contract_owner
             .clone()
@@ -37,15 +31,19 @@ impl dharitri_wasm::api::BlockchainApi for TxContext {
         */
     }
 
-    fn get_caller(&self) -> Address {
+    fn get_caller_legacy(&self) -> Address {
         self.tx_input_box.from.clone()
     }
 
-    fn get_balance(&self, address: &Address) -> RustBigUint {
-        if address != &self.get_sc_address() {
+    fn get_balance(&self, address: &Address) -> BigUint<Self> {
+        if address != &self.get_sc_address_legacy() {
             panic!("get balance not yet implemented for accounts other than the contract itself");
         }
-        self.blockchain_info_box.contract_balance.clone().into()
+        self.insert_new_big_uint(self.blockchain_info_box.contract_balance.clone())
+    }
+
+    fn get_state_root_hash(&self) -> H256 {
+        panic!("get_state_root_hash not yet implemented")
     }
 
     fn get_tx_hash(&self) -> H256 {
@@ -102,7 +100,11 @@ impl dharitri_wasm::api::BlockchainApi for TxContext {
             .clone()
     }
 
-    fn get_current_dct_nft_nonce(&self, _address: &Address, _token: &TokenIdentifier) -> u64 {
+    fn get_current_dct_nft_nonce(
+        &self,
+        _address: &Address,
+        _token: &TokenIdentifier<Self>,
+    ) -> u64 {
         // TODO: Implement
         0u64
     }
@@ -110,10 +112,10 @@ impl dharitri_wasm::api::BlockchainApi for TxContext {
     // TODO: Include nonce and create a map like: TokenId -> Nonce -> Amount
     fn get_dct_balance(
         &self,
-        address: &Address,
-        token: &TokenIdentifier,
+        address: &ManagedAddress<Self>,
+        token: &TokenIdentifier<Self>,
         _nonce: u64,
-    ) -> RustBigUint {
+    ) -> BigUint<Self> {
         if address != &self.get_sc_address() {
             panic!(
                 "get_dct_balance not yet implemented for accounts other than the contract itself"
@@ -123,19 +125,19 @@ impl dharitri_wasm::api::BlockchainApi for TxContext {
         match self
             .blockchain_info_box
             .contract_dct
-            .get(&token.as_dct_identifier().to_vec())
+            .get(&token.to_dct_identifier().into_vec())
         {
-            Some(value) => value.clone().into(),
-            None => RustBigUint::zero(),
+            Some(value) => self.insert_new_big_uint(value.clone()),
+            None => BigUint::zero(self.clone()),
         }
     }
 
     fn get_dct_token_data(
         &self,
-        _address: &Address,
-        _token: &TokenIdentifier,
+        _address: &ManagedAddress<Self>,
+        _token: &TokenIdentifier<Self>,
         _nonce: u64,
-    ) -> DctTokenData<RustBigUint> {
+    ) -> DctTokenData<Self> {
         panic!("get_dct_token_data not yet implemented")
     }
 }

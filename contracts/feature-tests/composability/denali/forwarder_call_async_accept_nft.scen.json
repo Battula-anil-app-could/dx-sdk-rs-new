@@ -50,7 +50,7 @@
                 "arguments": [
                     "sc:vault"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "60,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -63,6 +63,7 @@
                         "topics": [
                             "str:NFT-0001",
                             "5",
+                            "01",
                             "sc:vault"
                         ],
                         "data": ""

@@ -4,7 +4,7 @@ mod user_builtin {
     #[dharitri_wasm::proxy]
     pub trait UserBuiltin {
         #[endpoint(SetUserName)]
-        fn set_user_name(&self, name: &BoxedBytes) -> Self::BigUint;
+        fn set_user_name(&self, name: &BoxedBytes) -> BigUint;
     }
 }
 
@@ -14,15 +14,11 @@ mod dns_mock {
     #[dharitri_wasm::contract]
     pub trait DnsMock {
         #[proxy]
-        fn user_builtin_proxy(&self, to: Address) -> super::user_builtin::Proxy<Self::SendApi>;
+        fn user_builtin_proxy(&self, to: ManagedAddress) -> super::user_builtin::Proxy<Self::Api>;
 
         #[payable("MOAX")]
         #[endpoint]
-        fn register(
-            &self,
-            name: BoxedBytes,
-            #[payment] _payment: Self::BigUint,
-        ) -> AsyncCall<Self::SendApi> {
+        fn register(&self, name: BoxedBytes, #[payment] _payment: BigUint) -> AsyncCall {
             let address = self.blockchain().get_caller();
             self.user_builtin_proxy(address)
                 .set_user_name(&name)

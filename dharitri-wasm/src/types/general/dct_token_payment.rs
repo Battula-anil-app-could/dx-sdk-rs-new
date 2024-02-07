@@ -1,0 +1,112 @@
+use crate::{
+    abi::TypeAbi,
+    api::{Handle, ManagedTypeApi},
+    types::{BigUint, ManagedBuffer, ManagedType, ManagedVecItem},
+};
+use alloc::string::String;
+
+use super::{DctTokenType, TokenIdentifier};
+
+use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
+
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Debug)]
+pub struct DctTokenPayment<M: ManagedTypeApi> {
+    pub token_type: DctTokenType,
+    pub token_name: TokenIdentifier<M>,
+    pub token_nonce: u64,
+    pub amount: BigUint<M>,
+}
+
+impl<M: ManagedTypeApi> TypeAbi for DctTokenPayment<M> {
+    fn type_name() -> String {
+        "DctTokenPayment".into()
+    }
+}
+
+impl<M: ManagedTypeApi> DctTokenPayment<M> {
+    pub fn no_payment(api: M) -> Self {
+        DctTokenPayment {
+            token_type: DctTokenType::Invalid,
+            token_name: TokenIdentifier::moax(api.clone()),
+            token_nonce: 0,
+            amount: BigUint::zero(api),
+        }
+    }
+
+    pub fn from(token_name: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
+        let token_type = if amount != 0 && token_name.is_valid_dct_identifier() {
+            if token_nonce == 0 {
+                DctTokenType::Fungible
+            } else if amount == 1u64 {
+                DctTokenType::NonFungible
+            } else {
+                DctTokenType::SemiFungible
+            }
+        } else {
+            DctTokenType::Invalid
+        };
+
+        DctTokenPayment {
+            token_type,
+            token_name,
+            token_nonce,
+            amount,
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> ManagedVecItem<M> for DctTokenPayment<M> {
+    const PAYLOAD_SIZE: usize = 16;
+    const NEEDS_RESERIALIZATION: bool = true;
+
+    fn from_byte_reader<Reader: FnMut(&mut [u8])>(api: M, mut reader: Reader) -> Self {
+        let mut arr: [u8; 16] = [0u8; 16];
+        reader(&mut arr[..]);
+
+        let mut token_id_handle_raw = [0u8; 4];
+        token_id_handle_raw.copy_from_slice(&arr[0..4]);
+        let token_id_handle = u32::from_be_bytes(token_id_handle_raw);
+        let token_name_buf = ManagedBuffer::from_raw_handle(api.clone(), token_id_handle as Handle);
+
+        let mut nonce_raw = [0u8; 8];
+        nonce_raw.copy_from_slice(&arr[4..12]);
+        let token_nonce = u64::from_be_bytes(nonce_raw);
+
+        let mut amount_handle_raw = [0u8; 4];
+        amount_handle_raw.copy_from_slice(&arr[12..16]);
+        let amount_handle = u32::from_be_bytes(amount_handle_raw);
+        let amount = BigUint::from_raw_handle(api, amount_handle as Handle);
+
+        let token_type = if token_nonce > 0 {
+            DctTokenType::SemiFungible
+        } else {
+            DctTokenType::Fungible
+        };
+
+        DctTokenPayment {
+            token_type,
+            token_name: TokenIdentifier::from(token_name_buf),
+            token_nonce,
+            amount,
+        }
+    }
+
+    fn to_byte_writer<R, Writer: FnMut(&[u8]) -> R>(&self, mut writer: Writer) -> R {
+        let mut arr: [u8; 16] = [0u8; 16];
+
+        let token_id_handle_raw = self
+            .token_name
+            .as_managed_buffer()
+            .get_raw_handle()
+            .to_be_bytes();
+        arr[0..4].copy_from_slice(&token_id_handle_raw[..]);
+
+        let nonce_raw = self.token_nonce.to_be_bytes();
+        arr[4..12].copy_from_slice(&nonce_raw[..]);
+
+        let amount_handle_raw = self.amount.get_raw_handle().to_be_bytes();
+        arr[12..16].copy_from_slice(&amount_handle_raw[..]);
+
+        writer(&arr[..])
+    }
+}

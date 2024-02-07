@@ -1,4 +1,4 @@
-use dharitri_wasm::api::CallableContract;
+use dharitri_wasm::contract_base::CallableContract;
 use dharitri_wasm_debug::*;
 
 #[test]

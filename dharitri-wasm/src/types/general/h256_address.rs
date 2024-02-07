@@ -1,9 +1,6 @@
 use super::h256::H256;
-use crate::abi::TypeAbi;
-use crate::types::BoxedBytes;
-use alloc::boxed::Box;
-use alloc::string::String;
-use alloc::vec::Vec;
+use crate::{abi::TypeAbi, types::BoxedBytes};
+use alloc::{boxed::Box, string::String, vec::Vec};
 use core::fmt::Debug;
 
 /// An Address is just a H256 with a different name.
@@ -105,6 +102,11 @@ impl Address {
     #[inline]
     pub fn as_bytes(&self) -> &[u8] {
         self.0.as_bytes()
+    }
+
+    #[inline]
+    pub fn as_array(&self) -> &[u8; 32] {
+        self.0.as_array()
     }
 
     #[inline]
@@ -213,12 +215,12 @@ impl TypeAbi for Address {
 mod address_tests {
     use super::*;
     use alloc::vec::Vec;
-    use dharitri_codec::test_util::{check_top_encode, ser_deser_ok};
+    use dharitri_codec::test_util::{check_top_encode, check_top_encode_decode};
 
     #[test]
     fn test_address() {
         let addr = Address::from([4u8; 32]);
-        ser_deser_ok(addr, &[4u8; 32]);
+        check_top_encode_decode(addr, &[4u8; 32]);
     }
 
     #[test]
@@ -227,7 +229,7 @@ mod address_tests {
         let mut expected: Vec<u8> = Vec::new();
         expected.push(1u8);
         expected.extend_from_slice(&[4u8; 32]);
-        ser_deser_ok(Some(addr), expected.as_slice());
+        check_top_encode_decode(Some(addr), expected.as_slice());
     }
 
     #[test]

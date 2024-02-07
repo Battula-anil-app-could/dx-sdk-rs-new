@@ -40,7 +40,7 @@
                     "str:FWD-TOKEN",
                     "1"
                 ],
-                "gasLimit": "80,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -52,6 +52,7 @@
                         "endpoint": "str:DCTTransfer",
                         "topics": [
                             "str:FWD-TOKEN",
+                            "",
                             "1",
                             "sc:vault"
                         ],
@@ -74,6 +75,7 @@
                         "endpoint": "str:DCTTransfer",
                         "topics": [
                             "str:FWD-TOKEN",
+                            "",
                             "1",
                             "sc:vault"
                         ],

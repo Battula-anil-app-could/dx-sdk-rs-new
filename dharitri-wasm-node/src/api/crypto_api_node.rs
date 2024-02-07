@@ -1,8 +1,9 @@
-use super::ArwenBigUint;
 use crate::ArwenApiImpl;
-use dharitri_wasm::api::CryptoApi;
-use dharitri_wasm::types::{BoxedBytes, MessageHashType, H256};
-use dharitri_wasm::Box;
+use dharitri_wasm::{
+    api::CryptoApi,
+    types::{BoxedBytes, MessageHashType, H256},
+    Box,
+};
 
 extern "C" {
 
@@ -54,8 +55,6 @@ extern "C" {
 }
 
 impl CryptoApi for ArwenApiImpl {
-    type BigUint = ArwenBigUint;
-
     fn sha256(&self, data: &[u8]) -> H256 {
         unsafe {
             let mut res = H256::zero();

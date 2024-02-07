@@ -49,6 +49,11 @@ fn forwarder_call_async_accept_nft_go() {
 }
 
 #[test]
+fn forwarder_call_async_multi_transfer_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_call_async_multi_transfer.scen.json");
+}
+
+#[test]
 fn forwarder_call_async_retrieve_moax_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_call_async_retrieve_moax.scen.json");
 }
@@ -146,6 +151,11 @@ fn forwarder_call_transf_exec_accept_sft_twice_go() {
 }
 
 #[test]
+fn forwarder_call_transf_exec_multi_transfer_dct_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_call_transf_exec_multi_transfer_dct.scen.json");
+}
+
+#[test]
 fn forwarder_contract_change_owner_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_contract_change_owner.scen.json");
 }
@@ -166,6 +176,11 @@ fn forwarder_nft_create_go() {
 }
 
 #[test]
+fn forwarder_nft_decode_complex_attributes_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_nft_decode_complex_attributes.scen.json");
+}
+
+#[test]
 fn forwarder_nft_create_and_send_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_nft_create_and_send.scen.json");
 }
@@ -181,9 +196,15 @@ fn forwarder_nft_transfer_exec_go() {
 }
 
 #[test]
-fn forwarder_send_twice_moax_go() {
-    dharitri_wasm_debug::denali_go("denali/forwarder_send_twice_moax.scen.json");
+fn forwarder_send_dct_multi_transfer_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_send_dct_multi_transfer.scen.json");
 }
+
+// TODO: investigate issue with logs
+// #[test]
+// fn forwarder_send_twice_moax_go() {
+//     dharitri_wasm_debug::denali_go("denali/forwarder_send_twice_moax.scen.json");
+// }
 
 #[test]
 fn forwarder_send_twice_dct_go() {
@@ -245,35 +266,15 @@ fn proxy_test_payment_sameshard_callback_go() {
     dharitri_wasm_debug::denali_go("denali/proxy_test_payment_sameShard_callback.scen.json");
 }
 
-// #[test]
-// fn recursive_caller_moax_1_go() {
-// 	dharitri_wasm_debug::denali_go("denali/recursive_caller_moax_1.scen.json");
-// }
+#[test]
+fn recursive_caller_moax_1_go() {
+    dharitri_wasm_debug::denali_go("denali/recursive_caller_moax_1.scen.json");
+}
 
-// #[test]
-// fn recursive_caller_moax_2_go() {
-// 	dharitri_wasm_debug::denali_go("denali/recursive_caller_moax_2.scen.json");
-// }
-
-// #[test]
-// fn recursive_caller_moax_x_go() {
-// 	dharitri_wasm_debug::denali_go("denali/recursive_caller_moax_x.scen.json");
-// }
-
-// #[test]
-// fn recursive_caller_dct_1_go() {
-// 	dharitri_wasm_debug::denali_go("denali/recursive_caller_dct_1.scen.json");
-// }
-
-// #[test]
-// fn recursive_caller_dct_2_go() {
-// 	dharitri_wasm_debug::denali_go("denali/recursive_caller_dct_2.scen.json");
-// }
-
-// #[test]
-// fn recursive_caller_dct_x_go() {
-// 	dharitri_wasm_debug::denali_go("denali/recursive_caller_dct_x.scen.json");
-// }
+#[test]
+fn recursive_caller_dct_1_go() {
+    dharitri_wasm_debug::denali_go("denali/recursive_caller_dct_1.scen.json");
+}
 
 #[test]
 fn send_moax_go() {

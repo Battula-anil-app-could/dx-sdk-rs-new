@@ -2,8 +2,6 @@
 
 dharitri_wasm::imports!();
 
-use dharitri_wasm::HexCallDataSerializer;
-
 const DCT_TRANSFER_STRING: &[u8] = b"DCTTransfer";
 const SECOND_CONTRACT_ACCEPT_DCT_PAYMENT: &[u8] = b"acceptDctPayment";
 const SECOND_CONTRACT_REJECT_DCT_PAYMENT: &[u8] = b"rejectDctPayment";
@@ -11,7 +9,7 @@ const SECOND_CONTRACT_REJECT_DCT_PAYMENT: &[u8] = b"rejectDctPayment";
 #[dharitri_wasm::contract]
 pub trait FirstContract {
     #[init]
-    fn init(&self, dct_token_name: TokenIdentifier, second_contract_address: Address) {
+    fn init(&self, dct_token_name: TokenIdentifier, second_contract_address: ManagedAddress) {
         self.set_contract_dct_token_name(&dct_token_name);
         self.set_second_contract_address(&second_contract_address);
     }
@@ -20,7 +18,7 @@ pub trait FirstContract {
     #[endpoint(transferToSecondContractFull)]
     fn transfer_to_second_contract_full(
         &self,
-        #[payment] dct_value: Self::BigUint,
+        #[payment] dct_value: BigUint,
         #[payment_token] actual_token_name: TokenIdentifier,
     ) -> SCResult<()> {
         let expected_token_name = self.get_contract_dct_token_name();
@@ -32,8 +30,10 @@ pub trait FirstContract {
             &expected_token_name,
             &dct_value,
             &self.get_second_contract_address(),
-            SECOND_CONTRACT_ACCEPT_DCT_PAYMENT,
-            &[],
+            &self
+                .types()
+                .managed_buffer_from(SECOND_CONTRACT_ACCEPT_DCT_PAYMENT),
+            &ManagedVec::new_empty(self.type_manager()),
         );
 
         Ok(())
@@ -43,7 +43,7 @@ pub trait FirstContract {
     #[endpoint(transferToSecondContractHalf)]
     fn transfer_to_second_contract_half(
         &self,
-        #[payment] dct_value: Self::BigUint,
+        #[payment] dct_value: BigUint,
         #[payment_token] actual_token_name: TokenIdentifier,
     ) -> SCResult<()> {
         let expected_token_name = self.get_contract_dct_token_name();
@@ -53,10 +53,12 @@ pub trait FirstContract {
 
         self.call_dct_second_contract(
             &expected_token_name,
-            &(dct_value / Self::BigUint::from(2u32)),
+            &(dct_value / 2u32),
             &self.get_second_contract_address(),
-            SECOND_CONTRACT_ACCEPT_DCT_PAYMENT,
-            &[],
+            &self
+                .types()
+                .managed_buffer_from(SECOND_CONTRACT_ACCEPT_DCT_PAYMENT),
+            &ManagedVec::new_empty(self.type_manager()),
         );
 
         Ok(())
@@ -66,7 +68,7 @@ pub trait FirstContract {
     #[endpoint(transferToSecondContractRejected)]
     fn transfer_to_second_contract_rejected(
         &self,
-        #[payment] dct_value: Self::BigUint,
+        #[payment] dct_value: BigUint,
         #[payment_token] actual_token_name: TokenIdentifier,
     ) -> SCResult<()> {
         let expected_token_name = self.get_contract_dct_token_name();
@@ -78,8 +80,10 @@ pub trait FirstContract {
             &expected_token_name,
             &dct_value,
             &self.get_second_contract_address(),
-            SECOND_CONTRACT_REJECT_DCT_PAYMENT,
-            &[],
+            &self
+                .types()
+                .managed_buffer_from(SECOND_CONTRACT_REJECT_DCT_PAYMENT),
+            &ManagedVec::new_empty(self.type_manager()),
         );
 
         Ok(())
@@ -89,7 +93,7 @@ pub trait FirstContract {
     #[endpoint(transferToSecondContractRejectedWithTransferAndExecute)]
     fn transfer_to_second_contract_rejected_with_transfer_and_execute(
         &self,
-        #[payment] dct_value: Self::BigUint,
+        #[payment] dct_value: BigUint,
         #[payment_token] actual_token_name: TokenIdentifier,
     ) -> SCResult<()> {
         let second_contract_address = self.get_second_contract_address();
@@ -98,13 +102,15 @@ pub trait FirstContract {
         require!(dct_value > 0, "no dct transfered!");
         require!(actual_token_name == expected_token_name, "Wrong dct token");
 
-        let _ = self.send().direct_dct_execute(
+        let _ = self.raw_vm_api().direct_dct_execute(
             &second_contract_address,
             &expected_token_name,
             &dct_value,
             self.blockchain().get_gas_left(),
-            SECOND_CONTRACT_REJECT_DCT_PAYMENT,
-            &ArgBuffer::new(),
+            &self
+                .types()
+                .managed_buffer_from(SECOND_CONTRACT_REJECT_DCT_PAYMENT),
+            &ManagedArgBuffer::new_empty(self.type_manager()),
         );
 
         Ok(())
@@ -114,7 +120,7 @@ pub trait FirstContract {
     #[endpoint(transferToSecondContractFullWithTransferAndExecute)]
     fn transfer_to_second_contract_full_with_transfer_and_execute(
         &self,
-        #[payment] dct_value: Self::BigUint,
+        #[payment] dct_value: BigUint,
         #[payment_token] actual_token_name: TokenIdentifier,
     ) -> SCResult<()> {
         let second_contract_address = self.get_second_contract_address();
@@ -123,13 +129,15 @@ pub trait FirstContract {
         require!(dct_value > 0, "no dct transfered!");
         require!(actual_token_name == expected_token_name, "Wrong dct token");
 
-        let _ = self.send().direct_dct_execute(
+        let _ = self.raw_vm_api().direct_dct_execute(
             &second_contract_address,
             &expected_token_name,
             &dct_value,
             self.blockchain().get_gas_left(),
-            SECOND_CONTRACT_ACCEPT_DCT_PAYMENT,
-            &ArgBuffer::new(),
+            &self
+                .types()
+                .managed_buffer_from(SECOND_CONTRACT_ACCEPT_DCT_PAYMENT),
+            &ManagedArgBuffer::new_empty(self.type_manager()),
         );
 
         Ok(())
@@ -138,21 +146,25 @@ pub trait FirstContract {
     fn call_dct_second_contract(
         &self,
         dct_token_name: &TokenIdentifier,
-        amount: &Self::BigUint,
-        to: &Address,
-        func_name: &[u8],
-        args: &[BoxedBytes],
+        amount: &BigUint,
+        to: &ManagedAddress,
+        func_name: &ManagedBuffer,
+        args: &ManagedVec<Self::Api, ManagedBuffer>,
     ) {
-        let mut serializer = HexCallDataSerializer::new(DCT_TRANSFER_STRING);
-        serializer.push_argument_bytes(dct_token_name.as_dct_identifier());
-        serializer.push_argument_bytes(amount.to_bytes_be().as_slice());
-        serializer.push_argument_bytes(func_name);
-        for arg in args {
-            serializer.push_argument_bytes(arg.as_slice());
+        let mut arg_buffer = ManagedArgBuffer::new_empty(self.type_manager());
+        arg_buffer.push_arg(dct_token_name);
+        arg_buffer.push_arg(amount);
+        arg_buffer.push_arg(func_name);
+        for arg in args.into_iter() {
+            arg_buffer.push_arg_raw(arg);
         }
 
-        self.send()
-            .async_call_raw(to, &Self::BigUint::zero(), serializer.as_slice());
+        self.raw_vm_api().async_call_raw(
+            to,
+            &self.types().big_uint_zero(),
+            &self.types().managed_buffer_from(DCT_TRANSFER_STRING),
+            &arg_buffer,
+        );
     }
 
     // storage
@@ -165,9 +177,9 @@ pub trait FirstContract {
     fn get_contract_dct_token_name(&self) -> TokenIdentifier;
 
     #[storage_set("secondContractAddress")]
-    fn set_second_contract_address(&self, address: &Address);
+    fn set_second_contract_address(&self, address: &ManagedAddress);
 
     #[view(getSecondContractAddress)]
     #[storage_get("secondContractAddress")]
-    fn get_second_contract_address(&self) -> Address;
+    fn get_second_contract_address(&self) -> ManagedAddress;
 }

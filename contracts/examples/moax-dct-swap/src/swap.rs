@@ -20,11 +20,11 @@ pub trait MoaxDctSwap {
     #[endpoint(issueWrappedMoax)]
     fn issue_wrapped_moax(
         &self,
-        token_display_name: BoxedBytes,
-        token_ticker: BoxedBytes,
-        initial_supply: Self::BigUint,
-        #[payment] issue_cost: Self::BigUint,
-    ) -> SCResult<AsyncCall<Self::SendApi>> {
+        token_display_name: ManagedBuffer,
+        token_ticker: ManagedBuffer,
+        initial_supply: BigUint,
+        #[payment] issue_cost: BigUint,
+    ) -> SCResult<AsyncCall> {
         require!(
             self.wrapped_moax_token_id().is_empty(),
             "wrapped moax was already issued"
@@ -32,9 +32,11 @@ pub trait MoaxDctSwap {
 
         let caller = self.blockchain().get_caller();
 
-        self.issue_started_event(&caller, token_ticker.as_slice(), &initial_supply);
+        self.issue_started_event(&caller, &token_ticker, &initial_supply);
 
-        Ok(DCTSystemSmartContractProxy::new_proxy_obj(self.send())
+        Ok(self
+            .send()
+            .dct_system_sc_proxy()
             .issue_fungible(
                 issue_cost,
                 &token_display_name,
@@ -59,9 +61,9 @@ pub trait MoaxDctSwap {
     #[callback]
     fn dct_issue_callback(
         &self,
-        caller: &Address,
+        caller: &ManagedAddress,
         #[payment_token] token_identifier: TokenIdentifier,
-        #[payment] returned_tokens: Self::BigUint,
+        #[payment] returned_tokens: BigUint,
         #[call_result] result: AsyncCallResult<()>,
     ) {
         // callback is called with DCTTransfer of the newly issued token, with the amount requested,
@@ -86,7 +88,7 @@ pub trait MoaxDctSwap {
 
     #[only_owner]
     #[endpoint(mintWrappedMoax)]
-    fn mint_wrapped_moax(&self, amount: Self::BigUint) -> SCResult<AsyncCall<Self::SendApi>> {
+    fn mint_wrapped_moax(&self, amount: BigUint) -> SCResult<AsyncCall> {
         require!(
             !self.wrapped_moax_token_id().is_empty(),
             "Wrapped MOAX was not issued yet"
@@ -96,7 +98,9 @@ pub trait MoaxDctSwap {
         let caller = self.blockchain().get_caller();
         self.mint_started_event(&caller, &amount);
 
-        Ok(DCTSystemSmartContractProxy::new_proxy_obj(self.send())
+        Ok(self
+            .send()
+            .dct_system_sc_proxy()
             .mint(&wrapped_moax_token_id, &amount)
             .async_call()
             .with_callback(self.callbacks().dct_mint_callback(&caller, &amount)))
@@ -105,8 +109,8 @@ pub trait MoaxDctSwap {
     #[callback]
     fn dct_mint_callback(
         &self,
-        caller: &Address,
-        amount: &Self::BigUint,
+        caller: &ManagedAddress,
+        amount: &BigUint,
         #[call_result] result: AsyncCallResult<()>,
     ) {
         match result {
@@ -125,7 +129,7 @@ pub trait MoaxDctSwap {
 
     #[payable("MOAX")]
     #[endpoint(wrapMoax)]
-    fn wrap_moax(&self, #[payment] payment: Self::BigUint) -> SCResult<()> {
+    fn wrap_moax(&self, #[payment] payment: BigUint) -> SCResult<()> {
         require!(payment > 0, "Payment must be more than 0");
         require!(
             !self.wrapped_moax_token_id().is_empty(),
@@ -161,7 +165,7 @@ pub trait MoaxDctSwap {
     #[endpoint(unwrapMoax)]
     fn unwrap_moax(
         &self,
-        #[payment] wrapped_moax_payment: Self::BigUint,
+        #[payment] wrapped_moax_payment: BigUint,
         #[payment_token] token_identifier: TokenIdentifier,
     ) -> SCResult<()> {
         require!(
@@ -181,7 +185,7 @@ pub trait MoaxDctSwap {
             wrapped_moax_payment
                 <= self
                     .blockchain()
-                    .get_sc_balance(&TokenIdentifier::moax(), 0),
+                    .get_sc_balance(&self.types().token_identifier_moax(), 0),
             "Contract does not have enough funds"
         );
 
@@ -199,54 +203,54 @@ pub trait MoaxDctSwap {
     }
 
     #[view(getLockedMoaxBalance)]
-    fn get_locked_moax_balance(&self) -> Self::BigUint {
+    fn get_locked_moax_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&TokenIdentifier::moax(), 0)
+            .get_sc_balance(&self.types().token_identifier_moax(), 0)
     }
 
     // storage
 
     #[view(getWrappedMoaxTokenIdentifier)]
     #[storage_mapper("wrapped_moax_token_id")]
-    fn wrapped_moax_token_id(&self) -> SingleValueMapper<Self::Storage, TokenIdentifier>;
+    fn wrapped_moax_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 
     #[view(getUnusedWrappedMoax)]
     #[storage_mapper("unused_wrapped_moax")]
-    fn unused_wrapped_moax(&self) -> SingleValueMapper<Self::Storage, Self::BigUint>;
+    fn unused_wrapped_moax(&self) -> SingleValueMapper<BigUint>;
 
     // events
 
     #[event("issue-started")]
     fn issue_started_event(
         &self,
-        #[indexed] caller: &Address,
-        #[indexed] token_ticker: &[u8],
-        initial_supply: &Self::BigUint,
+        #[indexed] caller: &ManagedAddress,
+        #[indexed] token_ticker: &ManagedBuffer,
+        initial_supply: &BigUint,
     );
 
     #[event("issue-success")]
     fn issue_success_event(
         &self,
-        #[indexed] caller: &Address,
+        #[indexed] caller: &ManagedAddress,
         #[indexed] token_identifier: &TokenIdentifier,
-        initial_supply: &Self::BigUint,
+        initial_supply: &BigUint,
     );
 
     #[event("issue-failure")]
-    fn issue_failure_event(&self, #[indexed] caller: &Address, message: &[u8]);
+    fn issue_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &[u8]);
 
     #[event("mint-started")]
-    fn mint_started_event(&self, #[indexed] caller: &Address, amount: &Self::BigUint);
+    fn mint_started_event(&self, #[indexed] caller: &ManagedAddress, amount: &BigUint);
 
     #[event("mint-success")]
-    fn mint_success_event(&self, #[indexed] caller: &Address);
+    fn mint_success_event(&self, #[indexed] caller: &ManagedAddress);
 
     #[event("mint-failure")]
-    fn mint_failure_event(&self, #[indexed] caller: &Address, message: &[u8]);
+    fn mint_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &[u8]);
 
     #[event("wrap-moax")]
-    fn wrap_moax_event(&self, #[indexed] user: &Address, amount: &Self::BigUint);
+    fn wrap_moax_event(&self, #[indexed] user: &ManagedAddress, amount: &BigUint);
 
     #[event("unwrap-moax")]
-    fn unwrap_moax_event(&self, #[indexed] user: &Address, amount: &Self::BigUint);
+    fn unwrap_moax_event(&self, #[indexed] user: &ManagedAddress, amount: &BigUint);
 }

@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm"
-version = "0.6.6"
+version = "0.6.7"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -14,7 +14,6 @@ keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
 [features]
-legacy-nft-transfer = []
 derive = ["dharitri-wasm-derive"]
 
 [dependencies]
@@ -24,11 +23,11 @@ hashbrown = "0.11.2"
 hex-literal = "0.3.1"
 
 [dependencies.dharitri-wasm-derive]
-version = "=0.6.6"
+version = "=0.6.7"
 path = "../dharitri-wasm-derive"
 optional = true
 
 [dependencies.dharitri-codec]
-version = "0.2.5"
+version = "0.2.6"
 path = "../dharitri-codec"
 features = ["derive"]

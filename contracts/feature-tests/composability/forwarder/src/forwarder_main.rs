@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(clippy::type_complexity)]
 
 mod call_async;
 mod call_sync;
@@ -35,13 +36,13 @@ pub trait Forwarder:
     #[endpoint]
     fn send_moax(
         &self,
-        to: &Address,
-        amount: &Self::BigUint,
-        #[var_args] opt_data: OptionalArg<BoxedBytes>,
+        to: &ManagedAddress,
+        amount: &BigUint,
+        #[var_args] opt_data: OptionalArg<ManagedBuffer>,
     ) {
-        let data = match &opt_data {
-            OptionalArg::Some(data) => data.as_slice(),
-            OptionalArg::None => &[],
+        let data = match opt_data {
+            OptionalArg::Some(data) => data,
+            OptionalArg::None => self.types().managed_buffer_empty(),
         };
         self.send().direct_moax(to, amount, data);
     }

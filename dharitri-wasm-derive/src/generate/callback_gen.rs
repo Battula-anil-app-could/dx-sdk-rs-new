@@ -35,13 +35,13 @@ pub fn generate_callback_selector_and_main(
         } else {
             let cb_selector_body = callback_selector_body(match_arms, module_calls);
             let cb_main_body = quote! {
-                let ___tx_hash___ = dharitri_wasm::api::BlockchainApi::get_tx_hash(&self.blockchain());
-                let ___cb_data_raw___ = dharitri_wasm::api::StorageReadApi::storage_load_boxed_bytes(&self.get_storage_raw(), &___tx_hash___.as_bytes());
-                dharitri_wasm::api::StorageWriteApi::storage_store_slice_u8(&self.get_storage_raw(), &___tx_hash___.as_bytes(), &[]); // cleanup
+                let ___tx_hash___ = dharitri_wasm::api::BlockchainApi::get_tx_hash(&self.raw_vm_api());
+                let ___cb_data_raw___ = dharitri_wasm::api::StorageReadApi::storage_load_boxed_bytes(&self.raw_vm_api(), &___tx_hash___.as_bytes());
+                dharitri_wasm::api::StorageWriteApi::storage_store_slice_u8(&self.raw_vm_api(), &___tx_hash___.as_bytes(), &[]); // cleanup
                 let mut ___cb_data_deserializer___ = dharitri_wasm::hex_call_data::HexCallDataDeserializer::new(___cb_data_raw___.as_slice());
                 if let dharitri_wasm::types::CallbackSelectorResult::NotProcessed(_) =
                     self::EndpointWrappers::callback_selector(self, ___cb_data_deserializer___)	{
-                    self.error_api().signal_error(err_msg::CALLBACK_BAD_FUNC);
+                    dharitri_wasm::api::ErrorApi::signal_error(&self.raw_vm_api(), err_msg::CALLBACK_BAD_FUNC);
                 }
             };
             (cb_selector_body, cb_main_body)
@@ -61,7 +61,7 @@ fn callback_selector_body(
     module_calls: Vec<proc_macro2::TokenStream>,
 ) -> proc_macro2::TokenStream {
     quote! {
-        let mut ___call_result_loader___ = EndpointDynArgLoader::new(self.argument_api());
+        let mut ___call_result_loader___ = EndpointDynArgLoader::new(self.raw_vm_api());
         match ___cb_data_deserializer___.get_func_name() {
             [] => {
                 return dharitri_wasm::types::CallbackSelectorResult::Processed;
@@ -76,60 +76,63 @@ fn callback_selector_body(
 
 fn match_arms(methods: &[Method]) -> Vec<proc_macro2::TokenStream> {
     methods
-		.iter()
-		.filter_map(|m| {
-			if let PublicRole::Callback(callback) = &m.public_role {
-				let payable_snippet = generate_payable_snippet(m);
-				let mut has_call_result = false;
-				let arg_init_snippets: Vec<proc_macro2::TokenStream> = m
-					.method_args
-					.iter()
-					.map(|arg| {
-						if arg.metadata.payment.is_payment_arg() {
-							quote! {}
-						} else if arg.metadata.callback_call_result {
-							has_call_result = true;
+        .iter()
+        .filter_map(|m| {
+            if let PublicRole::Callback(callback) = &m.public_role {
+                let payable_snippet = generate_payable_snippet(m);
+                let mut has_call_result = false;
+                let arg_init_snippets: Vec<proc_macro2::TokenStream> = m
+                    .method_args
+                    .iter()
+                    .map(|arg| {
+                        if arg.metadata.payment.is_payment_arg() {
+                            quote! {}
+                        } else if arg.metadata.callback_call_result {
+                            has_call_result = true;
 
-							// Should be an AsyncCallResult argument that wraps what comes from the async call.
-							// But in principle, one can express it it any way.
-							generate_load_dyn_arg(arg, &quote! { &mut ___call_result_loader___ })
-						} else {
-							// callback args, loaded from storage via the tx hash
-							generate_load_dyn_arg(arg, &quote! { &mut ___cb_closure_loader___ })
-						}
-					})
-					.collect();
+                            // Should be an AsyncCallResult argument that wraps what comes from the async call.
+                            // But in principle, one can express it it any way.
+                            generate_load_dyn_arg(arg, &quote! { &mut ___call_result_loader___ })
+                        } else {
+                            // callback args, loaded from storage via the tx hash
+                            generate_load_dyn_arg(arg, &quote! { &mut ___cb_closure_loader___ })
+                        }
+                    })
+                    .collect();
 
-				let callback_name_str = &callback.callback_name.to_string();
-				let callback_name_literal = array_literal(callback_name_str.as_bytes());
-				let call = generate_call_to_method_expr(m);
-				let call_result_assert_no_more_args = if has_call_result {
-					quote! {
-						___call_result_loader___.assert_no_more_args();
-					}
-				} else {
-					quote! {}
-				};
-				let body_with_result = generate_body_with_result(&m.return_type, &call);
+                let callback_name_str = &callback.callback_name.to_string();
+                let callback_name_literal = array_literal(callback_name_str.as_bytes());
+                let call = generate_call_to_method_expr(m);
+                let call_result_assert_no_more_args = if has_call_result {
+                    quote! {
+                        ___call_result_loader___.assert_no_more_args();
+                    }
+                } else {
+                    quote! {}
+                };
+                let body_with_result = generate_body_with_result(&m.return_type, &call);
 
-				let match_arm = quote! {
-					#callback_name_literal =>
-					{
-						#payable_snippet
-						let mut ___cb_closure_loader___ = CallDataArgLoader::new(___cb_data_deserializer___, self.error_api());
-						#(#arg_init_snippets)*
-						___cb_closure_loader___.assert_no_more_args();
-						#call_result_assert_no_more_args
-						#body_with_result ;
-						return dharitri_wasm::types::CallbackSelectorResult::Processed;
-					},
-				};
-				Some(match_arm)
-			} else {
-				None
-			}
-		})
-		.collect()
+                let match_arm = quote! {
+                    #callback_name_literal =>
+                    {
+                        #payable_snippet
+                        let mut ___cb_closure_loader___ = CallDataArgLoader::new(
+                            ___cb_data_deserializer___,
+                            self.raw_vm_api(),
+                        );
+                        #(#arg_init_snippets)*
+                        ___cb_closure_loader___.assert_no_more_args();
+                        #call_result_assert_no_more_args
+                        #body_with_result ;
+                        return dharitri_wasm::types::CallbackSelectorResult::Processed;
+                    },
+                };
+                Some(match_arm)
+            } else {
+                None
+            }
+        })
+        .collect()
 }
 
 pub fn module_calls(supertraits: &[Supertrait]) -> Vec<proc_macro2::TokenStream> {

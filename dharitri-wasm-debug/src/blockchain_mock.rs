@@ -1,18 +1,16 @@
 use super::mock_error::BlockchainMockError;
-use crate::contract_map::*;
-use crate::display_util::*;
-use crate::dct_transfer_event_log;
-use crate::tx_context::*;
-use alloc::boxed::Box;
-use alloc::vec::Vec;
+use crate::{
+    contract_map::*, display_util::*, dct_transfer_event_log, tx_context::*, SendBalance, TxInput,
+    TxLog, TxOutput, TxPanic,
+};
+use alloc::{boxed::Box, vec::Vec};
 use dharitri_wasm::types::Address;
 use num_bigint::BigUint;
 use num_traits::Zero;
-use std::collections::HashMap;
-use std::fmt;
-use std::fmt::Write;
+use std::{collections::HashMap, fmt, fmt::Write};
 
 const DHARITRI_REWARD_KEY: &[u8] = b"DHARITRIreward";
+const SC_ADDRESS_NUM_LEADING_ZEROS: u8 = 8;
 
 pub type AccountStorage = HashMap<Vec<u8>, Vec<u8>>;
 pub type AccountDct = HashMap<Vec<u8>, BigUint>;
@@ -135,6 +133,11 @@ impl BlockchainMock {
         self.accounts.insert(acct.address.clone(), acct);
     }
 
+    pub fn validate_and_add_account(&mut self, acct: AccountData) {
+        self.validate_account(&acct);
+        self.add_account(acct);
+    }
+
     pub fn print_accounts(&self) {
         let mut accounts_buf = String::new();
         for (address, account) in &self.accounts {
@@ -165,19 +168,33 @@ impl BlockchainMock {
             .cloned()
     }
 
-    pub fn get_contract_path(&self, contract_address: &Address) -> Vec<u8> {
-        if let Some(account) = self.accounts.get(contract_address) {
-            if let Some(contract_path) = &account.contract_path {
-                contract_path.clone()
-            } else {
-                panic!("Recipient account is not a smart contract");
-            }
-        } else {
-            panic!(
-                "Account not found: {}",
-                &std::str::from_utf8(contract_address.as_ref()).unwrap()
-            );
+    pub fn validate_account(&self, account: &AccountData) {
+        let is_sc = self.is_smart_contract_address(&account.address);
+        let has_code = self.check_account_has_code(account);
+
+        if is_sc && !has_code {
+            panic!("Account has a smart contract address but no code");
         }
+
+        if !is_sc && has_code {
+            panic!("Account has no smart contract address but has code");
+        }
+    }
+
+    pub fn is_smart_contract_address(&self, address: &Address) -> bool {
+        address
+            .as_bytes()
+            .iter()
+            .take(SC_ADDRESS_NUM_LEADING_ZEROS.into())
+            .all(|item| item == &0u8)
+    }
+
+    pub fn check_account_has_code(&self, account: &AccountData) -> bool {
+        !account
+            .contract_path
+            .as_ref()
+            .unwrap_or(&Vec::<u8>::new())
+            .is_empty()
     }
 
     pub fn subtract_tx_payment(
@@ -224,11 +241,11 @@ impl BlockchainMock {
         result_logs: &mut Vec<TxLog>,
     ) -> Result<(), BlockchainMockError> {
         for send_balance in send_balance_list {
-            if send_balance.token.is_moax() {
+            if send_balance.token_name.is_empty() {
                 self.subtract_tx_payment(contract_address, &send_balance.amount)?;
                 self.increase_balance(&send_balance.recipient, &send_balance.amount);
             } else {
-                let dct_token_identifier = send_balance.token.as_dct_identifier();
+                let dct_token_identifier = send_balance.token_name.as_slice();
                 self.substract_dct_balance(
                     contract_address,
                     dct_token_identifier,
