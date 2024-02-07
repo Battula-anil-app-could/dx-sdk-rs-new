@@ -4,7 +4,15 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.7.0, dharitri-codec 0.2.8, denali 0.2.6] - 2021-10-22
+## [dharitri-wasm 0.7.1, dharitri-codec 0.2.9, denali 0.2.7] - 2021-10-26
+- Relative path improvements and fixes in `dharitri-wasm-debug`:
+	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
+	- debugging now works seamlessly, without needing to temporarily change paths in the tests
+- SC proxy - `register_meta_dct`
+- Debugger builtin function mocks check for DCT roles
+- ABI provides definitions for DctTokenPayment, DctTokenData, DctTokenType
+
+## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -66,7 +74,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.18.0, denali 0.2.6] - 2021-07-28
+## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -180,7 +188,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [dharitri-wasm 0.1.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [dharitri-wasm 0.11.0, dharitri-codec 0.5.0, denali 0.5.0] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -272,9 +280,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
-- Completely ditched the approach from dharitri-wasm 0.1.0.
+- Completely ditched the approach from dharitri-wasm 0.8.0.
 
-## [dharitri-wasm 0.1.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -287,7 +295,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.2.6] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -309,11 +317,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.2.9] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.2.8] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -378,7 +386,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Multi args
 - Multi args in async calls
 
-## [dharitri-wasm 0.7.0] - 2020-03-18
+## [dharitri-wasm 0.2.0] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 

@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-debug"
-version = "0.7.0"
+version = "0.7.1"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -27,10 +27,9 @@ rustc_version = "0.4"
 arwen-tests = []
 
 [dependencies.dharitri-wasm]
-version = "0.7.0"
+version = "0.7.1"
 path = "../dharitri-wasm"
-features = ["derive"]
 
 [dependencies.denali]
-version = "0.2.6"
+version = "0.2.7"
 path = "../denali"

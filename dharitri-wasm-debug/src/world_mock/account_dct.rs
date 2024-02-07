@@ -25,6 +25,10 @@ impl DctData {
             && self.roles.is_empty()
             && !self.frozen
     }
+
+    pub fn get_roles(&self) -> Vec<Vec<u8>> {
+        self.roles.get()
+    }
 }
 
 #[derive(Clone, Default, Debug)]
@@ -35,6 +39,10 @@ impl AccountDct {
         self.0.get(identifier)
     }
 
+    /// Will provide a clone.
+    pub fn get_roles(&self, identifier: &[u8]) -> Vec<Vec<u8>> {
+        self.get_by_identifier_or_default(identifier).get_roles()
+    }
     /// Will provide a clone.
     pub fn get_by_identifier_or_default(&self, identifier: &[u8]) -> DctData {
         if let Some(value) = self.0.get(identifier) {

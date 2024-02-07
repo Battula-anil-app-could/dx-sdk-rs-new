@@ -2,13 +2,13 @@ use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
 #[allow(unused)]
-fn contract_map() -> ContractMap<DebugApi> {
-    let mut contract_map = ContractMap::new();
-    contract_map.register_contract(
-        "file:../output/moax-dct-swap.wasm",
+fn contract_map() -> BlockchainMock {
+    let mut blockchain = BlockchainMock::new();
+    blockchain.register_contract(
+        "file:output/moax-dct-swap.wasm",
         Box::new(|context| Box::new(moax_dct_swap::contract_obj(context))),
     );
-    contract_map
+    blockchain
 }
 
 #[test]

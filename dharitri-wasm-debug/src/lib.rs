@@ -20,6 +20,7 @@ pub use denali_step::*;
 pub use arwen_denali_runner::denali_go;
 pub use execute_denali::denali_rs;
 pub use tx_mock::DebugApi;
+pub use world_mock::BlockchainMock;
 
 #[macro_use]
 extern crate alloc;

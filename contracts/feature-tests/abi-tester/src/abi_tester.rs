@@ -97,6 +97,16 @@ pub trait AbiTester {
         DctLocalRole::None
     }
 
+    #[endpoint]
+    fn dct_token_payment(&self) -> DctTokenPayment<Self::Api> {
+        unreachable!()
+    }
+
+    #[endpoint]
+    fn dct_token_data(&self) -> DctTokenData<Self::Api> {
+        unreachable!()
+    }
+
     #[view]
     #[storage_mapper("sample_storage_mapper")]
     fn sample_storage_mapper(&self) -> SingleValueMapper<OnlyShowsUpAsNested10>;

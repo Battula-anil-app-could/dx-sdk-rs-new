@@ -2,18 +2,18 @@ use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
 #[allow(dead_code)]
-fn contract_map() -> ContractMap<DebugApi> {
-    let mut contract_map = ContractMap::new();
-    contract_map.register_contract(
-        "file:../output/erc1155-marketplace.wasm",
+fn contract_map() -> BlockchainMock {
+    let mut blockchain = BlockchainMock::new();
+    blockchain.register_contract(
+        "file:output/erc1155-marketplace.wasm",
         Box::new(|context| Box::new(erc1155_marketplace::contract_obj(context))),
     );
-    contract_map.register_contract(
-        "file:../../erc1155/output/erc1155.wasm",
+    blockchain.register_contract(
+        "file:../erc1155/output/erc1155.wasm",
         Box::new(|context| Box::new(erc1155::contract_obj(context))),
     );
 
-    contract_map
+    blockchain
 }
 
 #[test]
