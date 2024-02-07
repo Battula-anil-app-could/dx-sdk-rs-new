@@ -12,6 +12,11 @@ fn world() -> BlockchainMock {
 }
 
 #[test]
-fn linked_list_repeat_denali_rs() {
+fn linked_list_repeat_struct_rs() {
+    dharitri_wasm_debug::denali_rs("denali/linked_list_repeat_struct.scen.json", world());
+}
+
+#[test]
+fn linked_list_repeat_rs() {
     dharitri_wasm_debug::denali_rs("denali/linked_list_repeat.scen.json", world());
 }
