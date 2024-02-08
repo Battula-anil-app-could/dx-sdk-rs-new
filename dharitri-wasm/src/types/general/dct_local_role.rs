@@ -1,7 +1,8 @@
 use dharitri_codec::dharitri_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
-use crate as dharitri_wasm; // needed by the TypeAbi generated code
-use crate::derive::TypeAbi;
+use super::DctLocalRoleFlags;
+use crate as dharitri_wasm;
+use crate::{api::ManagedTypeApi, derive::TypeAbi, types::ManagedVecItem};
 
 const DCT_ROLE_NONE: &[u8] = &[];
 const DCT_ROLE_LOCAL_MINT: &[u8] = b"DCTRoleLocalMint";
@@ -10,7 +11,9 @@ const DCT_ROLE_NFT_CREATE: &[u8] = b"DCTRoleNFTCreate";
 const DCT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCTRoleNFTAddQuantity";
 const DCT_ROLE_NFT_BURN: &[u8] = b"DCTRoleNFTBurn";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
+#[derive(
+    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug, Copy,
+)]
 pub enum DctLocalRole {
     None,
     Mint,
@@ -41,6 +44,33 @@ impl DctLocalRole {
             Self::NftAddQuantity => DCT_ROLE_NFT_ADD_QUANTITY,
             Self::NftBurn => DCT_ROLE_NFT_BURN,
         }
+    }
+
+    pub fn to_flag(&self) -> DctLocalRoleFlags {
+        match self {
+            Self::None => DctLocalRoleFlags::NONE,
+            Self::Mint => DctLocalRoleFlags::MINT,
+            Self::Burn => DctLocalRoleFlags::BURN,
+            Self::NftCreate => DctLocalRoleFlags::NFT_CREATE,
+            Self::NftAddQuantity => DctLocalRoleFlags::NFT_ADD_QUANTITY,
+            Self::NftBurn => DctLocalRoleFlags::NFT_BURN,
+        }
+    }
+}
+
+// TODO: can be done with macros, but I didn't find a public library that does it and is no_std
+// we can implement it, it's easy
+const ALL_ROLES: [DctLocalRole; 5] = [
+    DctLocalRole::Mint,
+    DctLocalRole::Burn,
+    DctLocalRole::NftCreate,
+    DctLocalRole::NftAddQuantity,
+    DctLocalRole::NftBurn,
+];
+
+impl DctLocalRole {
+    pub fn iter_all() -> core::slice::Iter<'static, DctLocalRole> {
+        ALL_ROLES.iter()
     }
 }
 
@@ -74,5 +104,18 @@ impl<'a> From<&'a [u8]> for DctLocalRole {
         } else {
             Self::None
         }
+    }
+}
+
+impl<M: ManagedTypeApi> ManagedVecItem<M> for DctLocalRole {
+    const PAYLOAD_SIZE: usize = 1;
+    const SKIPS_RESERIALIZATION: bool = false; // TODO: might be ok to be true, but needs testing
+
+    fn from_byte_reader<Reader: FnMut(&mut [u8])>(api: M, reader: Reader) -> Self {
+        u8::from_byte_reader(api, reader).into()
+    }
+
+    fn to_byte_writer<R, Writer: FnMut(&[u8]) -> R>(&self, writer: Writer) -> R {
+        <u8 as ManagedVecItem<M>>::to_byte_writer(&self.as_u8(), writer)
     }
 }

@@ -1,6 +1,7 @@
 mod boxed_bytes;
 mod code_metadata;
 mod dct_local_role;
+mod dct_local_role_flags;
 mod dct_token_data;
 mod dct_token_payment;
 mod dct_token_payment_multi_arg;
@@ -13,6 +14,7 @@ mod token_identifier;
 pub use boxed_bytes::BoxedBytes;
 pub use code_metadata::CodeMetadata;
 pub use dct_local_role::DctLocalRole;
+pub use dct_local_role_flags::DctLocalRoleFlags;
 pub use dct_token_data::DctTokenData;
 pub use dct_token_payment::DctTokenPayment;
 pub use dct_token_payment_multi_arg::DctTokenPaymentMultiArg;

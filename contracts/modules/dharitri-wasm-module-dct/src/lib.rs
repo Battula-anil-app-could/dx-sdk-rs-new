@@ -112,7 +112,7 @@ pub trait DctModule {
     fn require_local_roles_set(&self, token_id: &TokenIdentifier) -> SCResult<()> {
         let roles = self.blockchain().get_dct_local_roles(token_id);
         require!(
-            roles.contains(&DctLocalRole::Mint) && roles.contains(&DctLocalRole::Burn),
+            roles.has_role(&DctLocalRole::Mint) && roles.has_role(&DctLocalRole::Burn),
             "Must set local roles first"
         );
         Ok(())
