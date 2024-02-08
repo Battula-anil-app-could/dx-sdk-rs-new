@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-module-governance"
-version = "0.8.0"
+version = "0.8.1"
 edition = "2018"
 
 authors = ["Dorin Iancu <dorin.iancu@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -14,9 +14,9 @@ keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
 [dependencies.dharitri-wasm]
-version = "0.8.0"
+version = "0.8.1"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.8.0"
+version = "0.8.1"
 path = "../../../dharitri-wasm-debug"

@@ -183,6 +183,16 @@ fn echo_usize_rs() {
 }
 
 #[test]
+fn echo_varargs_managed_eager_rs() {
+    dharitri_wasm_debug::denali_rs("denali/echo_varargs_managed_eager.scen.json", world());
+}
+
+#[test]
+fn echo_varargs_managed_sum_rs() {
+    dharitri_wasm_debug::denali_rs("denali/echo_varargs_managed_sum.scen.json", world());
+}
+
+#[test]
 fn echo_varags_tuples_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_varags_tuples.scen.json", world());
 }
@@ -190,11 +200,6 @@ fn echo_varags_tuples_rs() {
 #[test]
 fn echo_varargs_u32_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_varargs_u32.scen.json", world());
-}
-
-#[test]
-fn echo_varargs_u32_managed_eager_rs() {
-    dharitri_wasm_debug::denali_rs("denali/echo_varargs_u32_managed_eager.scen.json", world());
 }
 
 #[test]

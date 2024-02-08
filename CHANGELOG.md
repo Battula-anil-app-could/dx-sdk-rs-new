@@ -4,7 +4,15 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.8.0] - 2021-11-12
+
+## [dharitri-wasm 0.8.1] - 2021-11-17
+- Derive `ManagedVecItem` generics fix
+- Constructor can reside in module
+
+## [dharitri-wasm 0.22.10] - 2021-11-12
+- `ManagedMultiResultVec` push accepts multi result
+
+## [dharitri-wasm 0.22.9] - 2021-11-12
 - `ManagedVarArgsEager` implementation
 - `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
 
@@ -56,7 +64,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Debugger builtin function mocks check for DCT roles
 - ABI provides definitions for DctTokenPayment, DctTokenData, DctTokenType
 
-## [dharitri-wasm 0.21.0, dharitri-codec 0.3.0, denali 0.11.0] - 2021-10-22
+## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -424,7 +432,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.3.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
-## [dharitri-wasm 0.8.0] - 2020-04-03
+## [dharitri-wasm 0.3.0] - 2020-04-03
 - Raw callback support
 - `storage_load_len` hook
 - Multi args

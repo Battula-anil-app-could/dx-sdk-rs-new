@@ -4,6 +4,7 @@ mod internal_mod_a;
 mod internal_mod_b;
 mod internal_mod_c;
 mod internal_mod_d;
+mod internal_mod_init;
 
 dharitri_wasm::imports!();
 
@@ -19,6 +20,7 @@ pub trait UseModule:
     internal_mod_a::InternalModuleA
     + internal_mod_b::InternalModuleB
     + internal_mod_c::InternalModuleC
+    + internal_mod_init::InternalModuleInit
     + dharitri_wasm_module_dns::DnsModule
     + dharitri_wasm_module_dct::DctModule
     + dharitri_wasm_module_features::FeaturesModule
@@ -26,9 +28,6 @@ pub trait UseModule:
     + dharitri_wasm_module_governance::governance_configurable::GovernanceConfigurablePropertiesModule
     + dharitri_wasm_module_pause::PauseModule
 {
-    #[init]
-    fn init(&self) {}
-
     /// Validates that the "featureName" feature is on.
     /// Uses the `feature_guard!` macro.
     #[endpoint(checkFeatureGuard)]
