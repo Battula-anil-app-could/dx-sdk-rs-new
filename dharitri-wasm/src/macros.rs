@@ -38,7 +38,7 @@ macro_rules! imports {
 macro_rules! derive_imports {
     () => {
         use dharitri_wasm::{
-            derive::TypeAbi,
+            derive::{ManagedVecItem, TypeAbi},
             dharitri_codec,
             dharitri_codec::dharitri_codec_derive::{
                 NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
