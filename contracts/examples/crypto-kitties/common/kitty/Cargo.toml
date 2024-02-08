@@ -9,7 +9,7 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.7.8"
+version = "0.7.9"
 path = "../../../../../dharitri-wasm"
 
 [dependencies.random]

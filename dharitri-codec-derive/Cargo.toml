@@ -1,12 +1,12 @@
 [package]
 name = "dharitri-codec-derive"
-version = "0.2.9"
+version = "0.3.0"
 edition = "2018"
 
 authors = ["dorin.iancu <dorin.iancu@dharitri.com>", "Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/DharitriNetwork/dharitri-wasm-rs"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Macro implementations of dharitri-codec #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]"
