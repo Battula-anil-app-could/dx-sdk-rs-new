@@ -47,6 +47,11 @@ fn forw_raw_async_echo_rs() {
     dharitri_wasm_debug::denali_rs("denali/forw_raw_async_echo.scen.json", world());
 }
 
+#[test]
+fn forwarder_get_dct_local_roles_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forwarder_get_dct_local_roles.scen.json", world());
+}
+
 // #[test]
 // fn forw_raw_async_send_and_retrieve_multi_transfer_funds_rs() {
 //     dharitri_wasm_debug::denali_rs(
@@ -188,6 +193,14 @@ fn forwarder_call_async_accept_dct_rs() {
 #[test]
 fn forwarder_call_async_accept_nft_rs() {
     dharitri_wasm_debug::denali_rs("denali/forwarder_call_async_accept_nft.scen.json", world());
+}
+
+#[test]
+fn forwarder_validate_token_identifier_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_validate_token_identifier.scen.json",
+        world(),
+    );
 }
 
 #[test]

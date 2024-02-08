@@ -9,6 +9,11 @@ fn forw_raw_async_accept_dct_go() {
 }
 
 #[test]
+fn forwarder_get_dct_local_roles_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_get_dct_local_roles.scen.json");
+}
+
+#[test]
 fn forw_raw_async_echo_go() {
     dharitri_wasm_debug::denali_go("denali/forw_raw_async_echo.scen.json");
 }
@@ -138,6 +143,11 @@ fn forwarder_call_async_accept_dct_go() {
 #[test]
 fn forwarder_call_async_accept_nft_go() {
     dharitri_wasm_debug::denali_go("denali/forwarder_call_async_accept_nft.scen.json");
+}
+
+#[test]
+fn forwarder_validate_token_identifier_go() {
+    dharitri_wasm_debug::denali_go("denali/forwarder_validate_token_identifier.scen.json");
 }
 
 #[test]

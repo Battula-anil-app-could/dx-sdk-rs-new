@@ -63,6 +63,11 @@ fn count_ones_rs() {
 // }
 
 #[test]
+fn crypto_keccak256_legacy_rs() {
+    dharitri_wasm_debug::denali_rs("denali/crypto_keccak256_legacy.scen.json", world());
+}
+
+#[test]
 fn crypto_keccak256_rs() {
     dharitri_wasm_debug::denali_rs("denali/crypto_keccak256.scen.json", world());
 }
@@ -71,6 +76,11 @@ fn crypto_keccak256_rs() {
 // fn crypto_ripemd160_rs() {
 //     dharitri_wasm_debug::denali_rs("denali/crypto_ripemd160.scen.json", world());
 // }
+
+#[test]
+fn crypto_sha256_legacy_rs() {
+    dharitri_wasm_debug::denali_rs("denali/crypto_sha256_legacy.scen.json", world());
+}
 
 #[test]
 fn crypto_sha256_rs() {
@@ -231,15 +241,6 @@ fn get_caller_rs() {
 fn get_cumulated_validator_rewards_rs() {
     dharitri_wasm_debug::denali_rs("denali/get_cumulated_validator_rewards.scen.json", world());
 }
-
-// TODO: uncomment after implemented the full DCT format in denali-rs
-// #[test]
-// fn get_dct_local_roles_rs() {
-// 	dharitri_wasm_debug::denali_rs(
-// 		"denali/get_dct_local_roles.scen.json",
-// 		world(),
-// 	);
-// }
 
 #[test]
 fn managed_address_array_rs() {

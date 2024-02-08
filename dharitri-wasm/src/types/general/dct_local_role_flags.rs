@@ -2,7 +2,7 @@ use super::DctLocalRole;
 use bitflags::bitflags;
 
 bitflags! {
-    pub struct DctLocalRoleFlags: u32 {
+    pub struct DctLocalRoleFlags: u64 {
         const NONE             = 0b00000000;
         const MINT             = 0b00000001;
         const BURN             = 0b00000010;

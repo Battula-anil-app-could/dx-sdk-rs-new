@@ -3,8 +3,8 @@ use crate::{
     DebugApi,
 };
 use dharitri_wasm::types::{
-    Address, BigUint, DctTokenData, DctTokenType, ManagedAddress, ManagedBuffer, ManagedVec,
-    TokenIdentifier, H256,
+    Address, BigUint, DctLocalRole, DctLocalRoleFlags, DctTokenData, DctTokenType,
+    ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier, H256,
 };
 
 impl dharitri_wasm::api::BlockchainApi for DebugApi {
@@ -154,6 +154,24 @@ impl dharitri_wasm::api::BlockchainApi for DebugApi {
                     .unwrap();
 
                 self.dct_token_data_from_instance(nonce, instance)
+            })
+    }
+
+    fn get_dct_local_roles(&self, token_id: &TokenIdentifier<Self>) -> DctLocalRoleFlags {
+        let sc_address = self.input_ref().to.clone();
+        self.blockchain_cache()
+            .with_account(&sc_address, |account| {
+                let mut result = DctLocalRoleFlags::NONE;
+                if let Some(dct_data) = account
+                    .dct
+                    .get_by_identifier(token_id.to_dct_identifier().as_slice())
+                {
+                    for role_name in dct_data.roles.get() {
+                        result |= DctLocalRole::from(role_name.as_slice()).to_flag();
+                    }
+                }
+
+                result
             })
     }
 }
