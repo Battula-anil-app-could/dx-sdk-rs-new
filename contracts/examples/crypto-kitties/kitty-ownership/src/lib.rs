@@ -55,7 +55,7 @@ pub trait KittyOwnership {
             &self.blockchain().get_caller(),
             &self
                 .blockchain()
-                .get_sc_balance(&self.types().token_identifier_moax(), 0),
+                .get_sc_balance(&TokenIdentifier::moax(), 0),
             b"claim",
         );
 

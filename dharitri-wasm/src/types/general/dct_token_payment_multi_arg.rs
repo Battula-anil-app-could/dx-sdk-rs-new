@@ -30,13 +30,13 @@ impl<M: ManagedTypeApi> DctTokenPaymentMultiArg<M> {
     }
 }
 
-impl<M: ManagedTypeApi> ManagedVecItem<M> for DctTokenPaymentMultiArg<M> {
+impl<M: ManagedTypeApi> ManagedVecItem for DctTokenPaymentMultiArg<M> {
     const PAYLOAD_SIZE: usize = DctTokenPayment::<M>::PAYLOAD_SIZE;
     const SKIPS_RESERIALIZATION: bool = DctTokenPayment::<M>::SKIPS_RESERIALIZATION;
 
     #[inline]
-    fn from_byte_reader<Reader: FnMut(&mut [u8])>(api: M, reader: Reader) -> Self {
-        DctTokenPayment::from_byte_reader(api, reader).into()
+    fn from_byte_reader<Reader: FnMut(&mut [u8])>(reader: Reader) -> Self {
+        DctTokenPayment::from_byte_reader(reader).into()
     }
 
     #[inline]

@@ -185,7 +185,7 @@ pub trait MoaxDctSwap {
             wrapped_moax_payment
                 <= self
                     .blockchain()
-                    .get_sc_balance(&self.types().token_identifier_moax(), 0),
+                    .get_sc_balance(&TokenIdentifier::moax(), 0),
             "Contract does not have enough funds"
         );
 
@@ -205,7 +205,7 @@ pub trait MoaxDctSwap {
     #[view(getLockedMoaxBalance)]
     fn get_locked_moax_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&self.types().token_identifier_moax(), 0)
+            .get_sc_balance(&TokenIdentifier::moax(), 0)
     }
 
     // storage

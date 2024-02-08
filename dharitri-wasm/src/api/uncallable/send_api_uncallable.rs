@@ -2,14 +2,14 @@ use crate::{
     api::SendApi,
     types::{
         BigUint, CodeMetadata, DctTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
-        ManagedInto, ManagedVec, TokenIdentifier,
+        ManagedVec, TokenIdentifier,
     },
 };
 
 impl SendApi for super::UncallableApi {
     fn direct_moax<D>(&self, _to: &ManagedAddress<Self>, _amount: &BigUint<Self>, _data: D)
     where
-        D: ManagedInto<Self, ManagedBuffer<Self>>,
+        D: Into<ManagedBuffer<Self>>,
     {
         unreachable!()
     }
