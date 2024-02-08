@@ -69,6 +69,11 @@ fn echo_array_u8_go() {
 }
 
 #[test]
+fn echo_arrayvec_go() {
+    dharitri_wasm_debug::denali_go("denali/echo_arrayvec.scen.json");
+}
+
+#[test]
 fn echo_async_result_empty_go() {
     dharitri_wasm_debug::denali_go("denali/echo_async_result_empty.scen.json");
 }
@@ -216,6 +221,16 @@ fn get_cumulated_validator_rewards_go() {
 #[test]
 fn get_dct_local_roles_go() {
     dharitri_wasm_debug::denali_go("denali/get_dct_local_roles.scen.json");
+}
+
+#[test]
+fn managed_address_array_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_address_array.scen.json");
+}
+
+#[test]
+fn managed_address_managed_buffer_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_address_managed_buffer.scen.json");
 }
 
 #[test]

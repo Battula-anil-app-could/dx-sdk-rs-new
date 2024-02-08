@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.8.2] - 2021-11-23
+## [dharitri-wasm 0.8.3, dharitri-codec 0.3.1] - 2021-11-25
+- `ArrayVec` serialization
+- `ManagedAddress` additional conversions
+
+## [dharitri-wasm 0.23.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
 ## [dharitri-wasm 0.22.11] - 2021-11-17
@@ -18,7 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - `ManagedVarArgsEager` implementation
 - `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
 
-## [dharitri-wasm 0.22.8, dharitri-codec 0.3.0] - 2021-11-12
+## [dharitri-wasm 0.22.8, dharitri-codec 0.8.2] - 2021-11-12
 - Optimized decode unsigned number from slice
 
 ## [dharitri-wasm 0.22.7] - 2021-11-12
@@ -357,12 +361,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.6.2] - 2020-09-16
 - NonZeroUsize iterator and utils
 
-## [dharitri-wasm 0.6.1, dharitri-codec 0.1.3] - 2020-09-15
+## [dharitri-wasm 0.6.1, dharitri-codec 0.3.1] - 2020-09-15
 - Integrated NonZeroUsize into the framework
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.6.0, dharitri-codec 0.3.0] - 2020-08-25
+## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -431,7 +435,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 	- Generate storage getters & setters
 	- Variable length storage keys
 
-## [dharitri-wasm 0.8.2] - 2020-04-13
+## [dharitri-wasm 0.3.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
 ## [dharitri-wasm 0.3.0] - 2020-04-03

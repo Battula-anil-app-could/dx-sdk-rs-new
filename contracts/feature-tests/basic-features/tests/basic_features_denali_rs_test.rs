@@ -88,6 +88,11 @@ fn echo_array_u8_rs() {
 }
 
 #[test]
+fn echo_arrayvec_rs() {
+    dharitri_wasm_debug::denali_rs("denali/echo_arrayvec.scen.json", world());
+}
+
+#[test]
 fn echo_async_result_empty_rs() {
     dharitri_wasm_debug::denali_rs("denali/echo_async_result_empty.scen.json", world());
 }
@@ -235,6 +240,16 @@ fn get_cumulated_validator_rewards_rs() {
 // 		world(),
 // 	);
 // }
+
+#[test]
+fn managed_address_array_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_address_array.scen.json", world());
+}
+
+#[test]
+fn managed_address_managed_buffer_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_address_managed_buffer.scen.json", world());
+}
 
 #[test]
 fn managed_buffer_concat_1_rs() {
