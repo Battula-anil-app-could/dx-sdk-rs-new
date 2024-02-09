@@ -71,7 +71,7 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
     fn send_dct_direct_multi_transfer(
         &self,
         to: ManagedAddress,
-        #[var_args] token_payments: ManagedVarArgs<MultiValue3<TokenIdentifier, u64, BigUint>>,
+        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
         let mut all_token_payments = ManagedVec::new();
 
@@ -168,12 +168,9 @@ pub trait ForwarderDctModule: storage::ForwarderStorageModule {
     }
 
     #[endpoint]
-    fn get_dct_local_roles(
-        &self,
-        token_id: TokenIdentifier,
-    ) -> ManagedMultiResultVec<ManagedBuffer> {
+    fn get_dct_local_roles(&self, token_id: TokenIdentifier) -> MultiValueEncoded<ManagedBuffer> {
         let roles = self.blockchain().get_dct_local_roles(&token_id);
-        let mut result = ManagedMultiResultVec::new();
+        let mut result = MultiValueEncoded::new();
         for role in roles.iter_roles() {
             result.push(role.as_role_name().into());
         }

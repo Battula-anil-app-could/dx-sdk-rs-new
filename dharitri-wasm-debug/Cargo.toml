@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-debug"
-version = "0.9.2"
+version = "0.9.3"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -33,7 +33,7 @@ pathdiff = "0.2.1"
 denali-go-tests = []
 
 [dependencies.dharitri-wasm]
-version = "=0.9.2"
+version = "=0.9.3"
 path = "../dharitri-wasm"
 
 [dependencies.denali]

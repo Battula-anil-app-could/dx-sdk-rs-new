@@ -211,7 +211,7 @@ pub trait LocalDctAndDctNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: ManagedVarArgs<DctLocalRole>,
+        #[var_args] roles: MultiValueEncoded<DctLocalRole>,
     ) {
         self.send()
             .dct_system_sc_proxy()
@@ -226,7 +226,7 @@ pub trait LocalDctAndDctNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: ManagedVarArgs<DctLocalRole>,
+        #[var_args] roles: MultiValueEncoded<DctLocalRole>,
     ) {
         self.send()
             .dct_system_sc_proxy()

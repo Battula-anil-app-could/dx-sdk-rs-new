@@ -25,12 +25,12 @@ pub trait UseModule:
     + internal_mod_init::InternalModuleInit
     + only_owner_mod::OnlyOwnerModule
     + only_owner_derived_mod::OnlyOwnerDerivedModule
-    + dharitri_wasm_module_dns::DnsModule
+    + dharitri_wasm_modules::dns::DnsModule
     + dharitri_wasm_modules::dct::DctModule
-    + dharitri_wasm_module_features::FeaturesModule
+    + dharitri_wasm_modules::features::FeaturesModule
     + dharitri_wasm_modules::governance::GovernanceModule
     + dharitri_wasm_modules::governance::governance_configurable::GovernanceConfigurablePropertiesModule
-    + dharitri_wasm_module_pause::PauseModule
+    + dharitri_wasm_modules::pause::PauseModule
     + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     /// Validates that the "featureName" feature is on.

@@ -9,11 +9,12 @@
         },
         "contractCrate": {
             "name": "use-module",
-            "version": "0.0.0"
+            "version": "0.0.0",
+            "git_version": "<git version here>"
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.9.2"
+            "version": "0.9.3"
         }
     },
     "docs": [
@@ -135,6 +136,7 @@
         },
         {
             "name": "setFeatureFlag",
+            "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [
                 {
@@ -539,12 +541,14 @@
         },
         {
             "name": "pause",
+            "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [],
             "outputs": []
         },
         {
             "name": "unpause",
+            "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [],
             "outputs": []
