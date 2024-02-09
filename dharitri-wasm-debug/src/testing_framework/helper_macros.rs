@@ -1,3 +1,5 @@
+pub use dharitri_wasm::types::{BigUint, ManagedAddress, TokenIdentifier};
+
 #[macro_export]
 macro_rules! rust_biguint {
     ($value:expr) => {{

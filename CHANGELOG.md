@@ -4,7 +4,11 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.8.4] - 2021-12-07
+## [dharitri-wasm 0.8.5] - 2021-12-14
+- Rust testing framework - denali generation fixes and some more getters
+- Standard modules moved to `dharitri-wasm-modules` crates
+
+## [dharitri-wasm 0.24.0] - 2021-12-07
 - Rust testing framework
 - Managed Crypto API - keccak256 and sha256
 - New hook for DCT local roles
@@ -381,7 +385,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.2.7] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -454,7 +458,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [dharitri-wasm 0.1.1] - 2020-02-27
+## [dharitri-wasm 0.2.7] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [dharitri-wasm 0.1.0] - 2020-02-05 

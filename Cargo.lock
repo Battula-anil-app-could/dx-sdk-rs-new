@@ -126,7 +126,7 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-module-bonding-curve",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]
@@ -271,7 +271,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "bitflags",
  "dharitri-codec",
@@ -283,7 +283,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "denali",
  "dharitri-wasm",
@@ -300,7 +300,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -310,56 +310,44 @@ dependencies = [
 ]
 
 [[package]]
-name = "dharitri-wasm-module-bonding-curve"
-version = "0.8.4"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
-]
-
-[[package]]
-name = "dharitri-wasm-module-dct"
-version = "0.8.4"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
-]
-
-[[package]]
 name = "dharitri-wasm-module-dns"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
-]
-
-[[package]]
-name = "dharitri-wasm-module-governance"
-version = "0.8.4"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.8.4"
+version = "0.8.5"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
+]
+
+[[package]]
+name = "dharitri-wasm-modules"
+version = "0.8.5"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -367,7 +355,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -678,9 +666,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.153"
+version = "0.2.152"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
+checksum = "13e3bf6590cbc649f4d1a3eefc9d5d6eb746f5200ffb04e5e142700b8faa56e7"
 
 [[package]]
 name = "linked-list-repeat"
@@ -866,18 +854,19 @@ dependencies = [
 
 [[package]]
 name = "num-integer"
-version = "0.1.46"
+version = "0.1.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7969661fd2958a5cb096e56c8e1ad0444ac2bbcd0061bd28660485a44879858f"
+checksum = "225d3389fb3509a24c93f5c29eb6bde2586b98d9f016636dff58d7c6f7569cd9"
 dependencies = [
+ "autocfg",
  "num-traits",
 ]
 
 [[package]]
 name = "num-traits"
-version = "0.2.18"
+version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da0df0e5185db44f69b44f26786fe401b6c293d1907744beaa7fa62b2e5a517a"
+checksum = "39e3200413f237f41ab11ad6d161bc7239c84dcb631773ccd7de3dfe4b5c267c"
 dependencies = [
  "autocfg",
 ]
@@ -1329,11 +1318,10 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
- "dharitri-wasm-module-dct",
  "dharitri-wasm-module-dns",
  "dharitri-wasm-module-features",
- "dharitri-wasm-module-governance",
  "dharitri-wasm-module-pause",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]

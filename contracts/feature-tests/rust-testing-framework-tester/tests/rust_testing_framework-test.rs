@@ -1,14 +1,15 @@
-use dharitri_wasm::types::{
-    BigUint, DctLocalRole, DctTokenPayment, ManagedAddress, SCResult, TokenIdentifier,
-};
+use adder::*;
+use dharitri_wasm::types::{BigInt, DctLocalRole, DctTokenPayment, ManagedBuffer, SCResult};
 use dharitri_wasm_debug::{
     assert_sc_error, managed_address, managed_biguint, managed_token_id, rust_biguint,
-    testing_framework::*, tx_mock::TxInputDCT,
+    testing_framework::*, tx_mock::TxInputDCT, DebugApi,
 };
 use rust_testing_framework_tester::*;
 
 const TEST_OUTPUT_PATH: &'static str = "test.scen.json";
 const TEST_MULTIPLE_SC_OUTPUT_PATH: &'static str = "test_multiple_sc.scen.json";
+const TEST_DCT_OUTPUT_PATH: &'static str = "test_dct_generation.scen.json";
+
 const SC_WASM_PATH: &'static str = "output/rust-testing-framework-tester.wasm";
 const ADDER_WASM_PATH: &'static str = "../../examples/adder/output/adder.wasm";
 
@@ -162,6 +163,9 @@ fn test_dct_balance() {
         let expected_balance = managed_biguint!(1_000);
         assert_eq!(expected_balance, actual_balance);
     });
+
+    wrapper.add_denali_check_account(sc_wrapper.address_ref());
+    wrapper.write_denali_output(TEST_DCT_OUTPUT_PATH);
 }
 
 #[test]
@@ -916,4 +920,103 @@ fn test_multiple_contracts() {
     );
 
     wrapper.write_denali_output(TEST_MULTIPLE_SC_OUTPUT_PATH);
+}
+
+// TODO: Fix async calls
+#[should_panic]
+#[test]
+fn test_async_call() {
+    let rust_zero = rust_biguint!(0);
+    let mut wrapper = BlockchainStateWrapper::new();
+    let user_addr = wrapper.create_user_account(&rust_zero);
+    let sc_wrapper = wrapper.create_sc_account(
+        &rust_zero,
+        None,
+        rust_testing_framework_tester::contract_obj,
+        SC_WASM_PATH,
+    );
+    let adder_wrapper =
+        wrapper.create_sc_account(&rust_zero, None, adder::contract_obj, ADDER_WASM_PATH);
+
+    wrapper.execute_tx(&user_addr, &sc_wrapper, &rust_zero, |sc| {
+        let adder_address = managed_address!(adder_wrapper.address_ref());
+        let value_to_add = managed_biguint!(10);
+        sc.call_other_contract_add_async_call(adder_address, value_to_add);
+
+        StateChange::Commit
+    });
+
+    wrapper.execute_query(&sc_wrapper, |sc| {
+        let callback_executed = sc.callback_executed().get();
+        assert!(callback_executed);
+    });
+
+    wrapper.execute_query(&adder_wrapper, |sc| {
+        let current_sum = sc.sum().get();
+        let expected_sum = BigInt::from(10);
+        assert_eq!(current_sum, expected_sum);
+    });
+}
+
+#[test]
+fn test_wrapper_getters() {
+    let mut wrapper = BlockchainStateWrapper::new();
+    let moax_balance = rust_biguint!(1_000);
+
+    let dct_token_id = b"DCT-123456";
+    let dct_balance = rust_biguint!(100);
+
+    let nft_token_id = b"NFT-123456";
+    let nft_nonce = 5;
+    let nft_balance = rust_biguint!(10);
+    let nft_attributes = NftDummyAttributes {
+        creation_epoch: 2,
+        cool_factor: 100,
+    };
+
+    let user_addr = wrapper.create_user_account(&moax_balance);
+    wrapper.set_dct_balance(&user_addr, dct_token_id, &dct_balance);
+    wrapper.set_nft_balance(
+        &user_addr,
+        nft_token_id,
+        nft_nonce,
+        &nft_balance,
+        &nft_attributes,
+    );
+
+    let actual_moax_balance = wrapper.get_moax_balance(&user_addr);
+    let actual_dct_balance = wrapper.get_dct_balance(&user_addr, dct_token_id, 0);
+    let actual_nft_balance = wrapper.get_dct_balance(&user_addr, nft_token_id, nft_nonce);
+    let actual_attributes = wrapper
+        .get_nft_attributes::<NftDummyAttributes>(&user_addr, nft_token_id, nft_nonce)
+        .unwrap();
+
+    assert_eq!(moax_balance, actual_moax_balance);
+    assert_eq!(dct_balance, actual_dct_balance);
+    assert_eq!(nft_balance, actual_nft_balance);
+    assert_eq!(
+        nft_attributes.creation_epoch,
+        actual_attributes.creation_epoch
+    );
+    assert_eq!(nft_attributes.cool_factor, actual_attributes.cool_factor);
+}
+
+#[test]
+fn managed_environment_test() {
+    let wrapper = BlockchainStateWrapper::new();
+    wrapper.execute_in_managed_environment(|| {
+        let _my_struct = StructWithManagedTypes::<DebugApi> {
+            big_uint: managed_biguint!(500),
+            buffer: ManagedBuffer::new_from_bytes(b"MyBuffer"),
+        };
+    })
+}
+
+#[should_panic]
+#[test]
+fn test_managed_types_without_environment() {
+    let _my_struct = StructWithManagedTypes::<DebugApi> {
+        big_uint: managed_biguint!(500),
+        buffer: ManagedBuffer::new_from_bytes(b"MyBuffer"),
+    };
 }

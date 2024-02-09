@@ -22,7 +22,7 @@ pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
 
     let mut all_dct_raw = BTreeMap::new();
     for (token_id, dct_data) in acc.dct.iter() {
-        let token_id_raw = String::from_utf8(token_id.clone()).unwrap();
+        let token_id_raw = bytes_to_denali_string_or_hex(token_id);
         let dct_raw = dct_data_as_raw(dct_data);
 
         let _ = all_dct_raw.insert(token_id_raw, dct_raw);
@@ -81,7 +81,7 @@ pub(crate) fn dct_data_as_raw(dct: &DctData) -> DctRaw {
         instances: instances_raw,
         last_nonce: last_nonce_raw,
         roles: roles_raw,
-        token_identifier: Some(bytes_as_raw(&dct.token_identifier)),
+        token_identifier: None,
     })
 }
 
@@ -99,7 +99,9 @@ pub(crate) fn tx_call_as_raw(tx_call: &ScCallDenali) -> TxCallRaw {
     let mut all_dct_raw = Vec::with_capacity(tx_call.dct.len());
     for dct in tx_call.dct.iter() {
         let dct_raw = TxDCTRaw {
-            token_identifier: Some(bytes_as_raw(&dct.token_identifier)),
+            token_identifier: Some(ValueSubTree::Str(bytes_to_denali_string_or_hex(
+                &dct.token_identifier,
+            ))),
             nonce: Some(u64_as_raw(dct.nonce)),
             value: rust_biguint_as_raw(&dct.value),
         };
@@ -209,7 +211,7 @@ pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw 
             roles: roles_as_str,
         };
 
-        let token_id_str = String::from_utf8(token_id.clone()).unwrap();
+        let token_id_str = bytes_to_denali_string_or_hex(token_id);
         all_check_dct_raw.insert(token_id_str, CheckDctRaw::Full(dct_check_raw));
     }
 

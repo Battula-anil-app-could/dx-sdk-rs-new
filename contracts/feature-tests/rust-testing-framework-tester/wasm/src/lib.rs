@@ -8,8 +8,10 @@ dharitri_wasm_node::wasm_endpoints! {
     rust_testing_framework_tester
     (
         init
+        callBack
         addValue
         burn_dct
+        call_other_contract_add_async_call
         call_other_contract_execute_on_dest
         create_nft
         execute_on_dest_add_value
@@ -31,5 +33,3 @@ dharitri_wasm_node::wasm_endpoints! {
         sum_sc_result
     )
 }
-
-dharitri_wasm_node::wasm_empty_callback! {}
