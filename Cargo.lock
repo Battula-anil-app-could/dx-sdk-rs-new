@@ -77,8 +77,10 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 name = "basic-features"
 version = "0.0.0"
 dependencies = [
+ "dct-system-sc-mock",
  "dharitri-wasm",
  "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]
@@ -258,8 +260,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "dct-system-sc-mock"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "dct-system-sc-mock-meta"
+version = "0.0.0"
+dependencies = [
+ "dct-system-sc-mock",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
 name = "denali"
-version = "0.2.7"
+version = "0.2.8"
 dependencies = [
  "hex",
  "num-bigint",
@@ -271,7 +290,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "arrayvec",
  "dharitri-codec-derive",
@@ -280,7 +299,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec-derive"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -290,7 +309,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "bitflags",
  "dharitri-codec",
@@ -302,7 +321,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "cargo_toml",
  "denali",
@@ -324,7 +343,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -335,7 +354,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-dns"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -344,7 +363,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-features"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -353,7 +372,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-pause"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -362,7 +381,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-module-users"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -371,7 +390,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -379,7 +398,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -1280,6 +1299,9 @@ dependencies = [
 [[package]]
 name = "random"
 version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+]
 
 [[package]]
 name = "recursive-caller"

@@ -175,8 +175,8 @@ where
         )
         .with_moax_transfer(issue_cost);
 
-        contract_call.push_endpoint_arg(token_display_name);
-        contract_call.push_endpoint_arg(token_ticker);
+        contract_call.push_endpoint_arg(&token_display_name);
+        contract_call.push_endpoint_arg(&token_ticker);
 
         let token_type_name = match token_type {
             DctTokenType::Fungible => &b"FNG"[..],
@@ -185,8 +185,8 @@ where
             DctTokenType::Meta => &b"META"[..],
             DctTokenType::Invalid => &[],
         };
-        contract_call.push_endpoint_arg(token_type_name);
-        contract_call.push_endpoint_arg(num_decimals);
+        contract_call.push_endpoint_arg(&token_type_name);
+        contract_call.push_endpoint_arg(&num_decimals);
 
         contract_call
     }
@@ -361,8 +361,8 @@ where
     ) -> ContractCall<SA, ()> {
         let mut contract_call = self.dct_system_sc_call_no_args(b"changeSFTToMetaDCT");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(num_decimals);
+        contract_call.push_endpoint_arg(&token_identifier);
+        contract_call.push_endpoint_arg(&num_decimals);
 
         contract_call
     }

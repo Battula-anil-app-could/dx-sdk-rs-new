@@ -13,8 +13,7 @@
             "step": "checkState",
             "accounts": {
                 "address:the-address": {
-                    "username": "str:theusername.dharitri",
-                    "storage": {}
+                    "username": "str:theusername.dharitri"
                 }
             }
         },
@@ -22,8 +21,7 @@
             "step": "checkState",
             "accounts": {
                 "address:the-address": {
-                    "username": "*",
-                    "storage": {}
+                    "username": "*"
                 }
             }
         }

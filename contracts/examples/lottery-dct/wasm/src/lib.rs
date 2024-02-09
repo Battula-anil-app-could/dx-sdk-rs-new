@@ -11,6 +11,7 @@ dharitri_wasm_node::wasm_endpoints! {
         createLotteryPool
         determine_winner
         getLotteryInfo
+        getLotteryWhitelist
         start
         status
     )

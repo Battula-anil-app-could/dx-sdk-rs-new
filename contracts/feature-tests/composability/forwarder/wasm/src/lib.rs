@@ -47,11 +47,14 @@ dharitri_wasm_node::wasm_endpoints! {
         local_mint
         multi_transfer_via_async
         nft_add_quantity
+        nft_add_uris
         nft_burn
         nft_create
+        nft_create_compact
         nft_create_on_caller_behalf
         nft_decode_complex_attributes
         nft_issue
+        nft_update_attributes
         send_moax
         send_dct
         send_dct_direct_multi_transfer

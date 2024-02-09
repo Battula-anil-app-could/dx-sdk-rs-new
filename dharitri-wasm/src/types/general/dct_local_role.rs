@@ -10,6 +10,8 @@ const DCT_ROLE_LOCAL_BURN: &[u8] = b"DCTRoleLocalBurn";
 const DCT_ROLE_NFT_CREATE: &[u8] = b"DCTRoleNFTCreate";
 const DCT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCTRoleNFTAddQuantity";
 const DCT_ROLE_NFT_BURN: &[u8] = b"DCTRoleNFTBurn";
+const DCT_ROLE_NFT_ADD_URI: &[u8] = b"DCTRoleNFTAddURI";
+const DCT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCTRoleNFTUpdateAttributes";
 
 #[derive(
     TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug, Copy,
@@ -21,6 +23,8 @@ pub enum DctLocalRole {
     NftCreate,
     NftAddQuantity,
     NftBurn,
+    NftAddUri,
+    NftUpdateAttributes,
 }
 
 impl DctLocalRole {
@@ -32,6 +36,8 @@ impl DctLocalRole {
             Self::NftCreate => 3,
             Self::NftAddQuantity => 4,
             Self::NftBurn => 5,
+            Self::NftAddUri => 6,
+            Self::NftUpdateAttributes => 7,
         }
     }
 
@@ -43,6 +49,8 @@ impl DctLocalRole {
             Self::NftCreate => DCT_ROLE_NFT_CREATE,
             Self::NftAddQuantity => DCT_ROLE_NFT_ADD_QUANTITY,
             Self::NftBurn => DCT_ROLE_NFT_BURN,
+            Self::NftAddUri => DCT_ROLE_NFT_ADD_URI,
+            Self::NftUpdateAttributes => DCT_ROLE_NFT_UPDATE_ATTRIBUTES,
         }
     }
 
@@ -54,18 +62,22 @@ impl DctLocalRole {
             Self::NftCreate => DctLocalRoleFlags::NFT_CREATE,
             Self::NftAddQuantity => DctLocalRoleFlags::NFT_ADD_QUANTITY,
             Self::NftBurn => DctLocalRoleFlags::NFT_BURN,
+            Self::NftAddUri => DctLocalRoleFlags::NFT_ADD_URI,
+            Self::NftUpdateAttributes => DctLocalRoleFlags::NFT_UPDATE_ATTRIBUTES,
         }
     }
 }
 
 // TODO: can be done with macros, but I didn't find a public library that does it and is no_std
 // we can implement it, it's easy
-const ALL_ROLES: [DctLocalRole; 5] = [
+const ALL_ROLES: [DctLocalRole; 7] = [
     DctLocalRole::Mint,
     DctLocalRole::Burn,
     DctLocalRole::NftCreate,
     DctLocalRole::NftAddQuantity,
     DctLocalRole::NftBurn,
+    DctLocalRole::NftAddUri,
+    DctLocalRole::NftUpdateAttributes,
 ];
 
 impl DctLocalRole {

@@ -50,21 +50,36 @@ where
     /// but the MOAX TokenIdentifier is serialized as `MOAX`.
     /// Warning, not tested with multi transfer, use `all_dct_transfers` instead!
     pub fn token(&self) -> TokenIdentifier<A> {
-        TokenIdentifier::from_raw_handle(A::call_value_api_impl().token())
+        let call_value_api = A::call_value_api_impl();
+        if call_value_api.dct_num_transfers() == 0 {
+            TokenIdentifier::moax()
+        } else {
+            TokenIdentifier::from_raw_handle(call_value_api.token())
+        }
     }
 
     /// Returns the nonce of the received DCT token.
     /// Will return 0 in case of MOAX or fungible DCT transfer.
     /// Warning, not tested with multi transfer, use `all_dct_transfers` instead!
     pub fn dct_token_nonce(&self) -> u64 {
-        A::call_value_api_impl().dct_token_nonce()
+        let call_value_api = A::call_value_api_impl();
+        if call_value_api.dct_num_transfers() > 0 {
+            call_value_api.dct_token_nonce()
+        } else {
+            0
+        }
     }
 
     /// Returns the DCT token type.
     /// Will return "Fungible" for MOAX.
     /// Warning, not tested with multi transfer, use `all_dct_transfers` instead!
     pub fn dct_token_type(&self) -> DctTokenType {
-        A::call_value_api_impl().dct_token_type()
+        let call_value_api = A::call_value_api_impl();
+        if call_value_api.dct_num_transfers() > 0 {
+            A::call_value_api_impl().dct_token_type()
+        } else {
+            DctTokenType::Fungible
+        }
     }
 
     pub fn require_moax(&self) -> BigUint<A> {
@@ -86,5 +101,21 @@ where
             BigUint::from_raw_handle(amount_handle),
             TokenIdentifier::from_raw_handle(token_handle),
         )
+    }
+
+    pub fn payment(&self) -> DctTokenPayment<A> {
+        let api = A::call_value_api_impl();
+        if api.dct_num_transfers() == 0 {
+            DctTokenPayment::new(TokenIdentifier::moax(), 0, self.moax_value())
+        } else {
+            DctTokenPayment::new(self.token(), self.dct_token_nonce(), self.dct_value())
+        }
+    }
+
+    pub fn payment_as_tuple(&self) -> (TokenIdentifier<A>, u64, BigUint<A>) {
+        let (amount, token) = self.payment_token_pair();
+        let nonce = self.dct_token_nonce();
+
+        (token, nonce, amount)
     }
 }

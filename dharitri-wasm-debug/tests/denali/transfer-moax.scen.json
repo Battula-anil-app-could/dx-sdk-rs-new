@@ -1,5 +1,4 @@
 {
-    "name": "test external steps resolution",
     "comment": "simple MOAX transfer, no SC",
     "steps": [
         {

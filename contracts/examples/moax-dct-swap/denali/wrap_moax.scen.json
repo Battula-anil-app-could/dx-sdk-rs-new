@@ -1,5 +1,6 @@
 {
     "name": "wrap moax",
+    "gasSchedule": "v4",
     "steps": [
         {
             "step": "setState",
@@ -8,15 +9,25 @@
                     "nonce": "0",
                     "balance": "1000"
                 },
-                "sc:moax-dct-swap": {
+                "sc:moax_dct_swap": {
                     "nonce": "0",
                     "balance": "0",
                     "dct": {
-                        "str:WMOAX-abcdef": "2000"
+                        "str:MOAX-abcdef": {
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
+                            "roles": [
+                                "DCTRoleLocalMint",
+                                "DCTRoleLocalBurn"
+                            ]
+                        }
                     },
                     "storage": {
-                        "str:wrapped_moax_token_id": "str:WMOAX-abcdef",
-                        "str:unused_wrapped_moax": "2000"
+                        "str:wrappedMoaxTokenId": "str:MOAX-abcdef"
                     },
                     "code": "file:../output/moax-dct-swap.wasm"
                 }
@@ -27,39 +38,17 @@
             "txId": "wrap-moax",
             "tx": {
                 "from": "address:user",
-                "to": "sc:moax-dct-swap",
+                "to": "sc:moax_dct_swap",
                 "moaxValue": "500",
                 "function": "wrapMoax",
                 "arguments": [],
-                "gasLimit": "100,000,000",
+                "gasLimit": "5,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "0",
                 "message": "",
-                "logs": [
-                    {
-                        "address": "sc:moax-dct-swap",
-                        "endpoint": "str:DCTTransfer",
-                        "topics": [
-                            "str:WMOAX-abcdef",
-                            "",
-                            "500",
-                            "address:user"
-                        ],
-                        "data": ""
-                    },
-                    {
-                        "address": "sc:moax-dct-swap",
-                        "endpoint": "str:wrapMoax",
-                        "topics": [
-                            "str:wrap-moax",
-                            "address:user"
-                        ],
-                        "data": "500"
-                    }
-                ],
                 "gas": "*",
                 "refund": "*"
             }
@@ -71,19 +60,29 @@
                     "nonce": "1",
                     "balance": "500",
                     "dct": {
-                        "str:WMOAX-abcdef": "500"
+                        "str:MOAX-abcdef": "500"
                     },
                     "storage": {}
                 },
-                "sc:moax-dct-swap": {
+                "sc:moax_dct_swap": {
                     "nonce": "0",
                     "balance": "500",
                     "dct": {
-                        "str:WMOAX-abcdef": "1500"
+                        "str:MOAX-abcdef": {
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
+                            "roles": [
+                                "DCTRoleLocalMint",
+                                "DCTRoleLocalBurn"
+                            ]
+                        }
                     },
                     "storage": {
-                        "str:wrapped_moax_token_id": "str:WMOAX-abcdef",
-                        "str:unused_wrapped_moax": "1500"
+                        "str:wrappedMoaxTokenId": "str:MOAX-abcdef"
                     },
                     "code": "file:../output/moax-dct-swap.wasm"
                 }

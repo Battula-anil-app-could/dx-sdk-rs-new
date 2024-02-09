@@ -18,19 +18,15 @@ pub trait MoaxDctSwap {
     #[only_owner]
     #[payable("MOAX")]
     #[endpoint(issueWrappedMoax)]
-    fn issue_wrapped_moax(
-        &self,
-        token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-        initial_supply: BigUint,
-        #[payment] issue_cost: BigUint,
-    ) -> AsyncCall {
+    fn issue_wrapped_moax(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         require!(
             self.wrapped_moax_token_id().is_empty(),
             "wrapped moax was already issued"
         );
 
+        let issue_cost = self.call_value().moax_value();
         let caller = self.blockchain().get_caller();
+        let initial_supply = BigUint::zero();
 
         self.issue_started_event(&caller, &token_ticker, &initial_supply);
 
@@ -55,23 +51,23 @@ pub trait MoaxDctSwap {
             )
             .async_call()
             .with_callback(self.callbacks().dct_issue_callback(&caller))
+            .call_and_exit()
     }
 
     #[callback]
     fn dct_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[payment_token] token_identifier: TokenIdentifier,
-        #[payment] returned_tokens: BigUint,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
+        let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
+
         // callback is called with DCTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.issue_success_event(caller, &token_identifier, &returned_tokens);
-                self.unused_wrapped_moax().set(returned_tokens.as_ref());
-                self.wrapped_moax_token_id().set(token_identifier.as_ref());
+                self.wrapped_moax_token_id().set(&token_identifier);
             },
             ManagedAsyncCallResult::Err(message) => {
                 self.issue_failure_event(caller, &message.err_msg);
@@ -86,112 +82,63 @@ pub trait MoaxDctSwap {
     }
 
     #[only_owner]
-    #[endpoint(mintWrappedMoax)]
-    fn mint_wrapped_moax(&self, amount: BigUint) -> AsyncCall {
+    #[endpoint(setLocalRoles)]
+    fn set_local_roles(&self) {
         require!(
             !self.wrapped_moax_token_id().is_empty(),
-            "Wrapped MOAX was not issued yet"
+            "Must issue token first"
         );
 
-        let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
-        let caller = self.blockchain().get_caller();
-        self.mint_started_event(&caller, &amount);
-
+        let roles = [DctLocalRole::Mint, DctLocalRole::Burn];
         self.send()
             .dct_system_sc_proxy()
-            .mint(&wrapped_moax_token_id, &amount)
+            .set_special_roles(
+                &self.blockchain().get_sc_address(),
+                &self.wrapped_moax_token_id().get(),
+                roles[..].iter().cloned(),
+            )
             .async_call()
-            .with_callback(self.callbacks().dct_mint_callback(&caller, &amount))
-    }
-
-    #[callback]
-    fn dct_mint_callback(
-        &self,
-        caller: &ManagedAddress,
-        amount: &BigUint,
-        #[call_result] result: ManagedAsyncCallResult<()>,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(()) => {
-                self.mint_success_event(caller);
-                self.unused_wrapped_moax()
-                    .update(|unused_wrapped_moax| *unused_wrapped_moax += amount);
-            },
-            ManagedAsyncCallResult::Err(message) => {
-                self.mint_failure_event(caller, &message.err_msg);
-            },
-        }
+            .call_and_exit()
     }
 
     // endpoints
 
     #[payable("MOAX")]
     #[endpoint(wrapMoax)]
-    fn wrap_moax(&self, #[payment] payment: BigUint) {
-        require!(payment > 0u32, "Payment must be more than 0");
-        require!(
-            !self.wrapped_moax_token_id().is_empty(),
-            "Wrapped MOAX was not issued yet"
-        );
+    fn wrap_moax(&self) {
+        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
+        require!(payment_token.is_moax(), "Only MOAX accepted");
+        require!(payment_amount > 0u32, "Payment must be more than 0");
 
-        self.unused_wrapped_moax().update(|unused_wrapped_moax| {
-            require!(
-                *unused_wrapped_moax > payment,
-                "Contract does not have enough wrapped MOAX. Please try again once more is minted."
-            );
-
-            *unused_wrapped_moax -= &payment;
-        });
+        let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
+        self.send()
+            .dct_local_mint(&wrapped_moax_token_id, 0, &payment_amount);
 
         let caller = self.blockchain().get_caller();
-        self.send().direct(
-            &caller,
-            &self.wrapped_moax_token_id().get(),
-            0,
-            &payment,
-            b"wrapping",
-        );
-
-        self.wrap_moax_event(&caller, &payment);
+        self.send()
+            .direct(&caller, &wrapped_moax_token_id, 0, &payment_amount, &[]);
     }
 
     #[payable("*")]
     #[endpoint(unwrapMoax)]
-    fn unwrap_moax(
-        &self,
-        #[payment] wrapped_moax_payment: BigUint,
-        #[payment_token] token_identifier: TokenIdentifier,
-    ) {
-        require!(
-            !self.wrapped_moax_token_id().is_empty(),
-            "Wrapped MOAX was not issued yet"
-        );
+    fn unwrap_moax(&self) {
+        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
+        let wrapped_moax_token_id = self.wrapped_moax_token_id().get();
 
-        let wrapped_moax_token_identifier = self.wrapped_moax_token_id().get();
-        require!(
-            token_identifier == wrapped_moax_token_identifier,
-            "Wrong dct token"
-        );
-
-        require!(wrapped_moax_payment > 0u32, "Must pay more than 0 tokens!");
+        require!(payment_token == wrapped_moax_token_id, "Wrong dct token");
+        require!(payment_amount > 0u32, "Must pay more than 0 tokens!");
         // this should never happen, but we'll check anyway
         require!(
-            wrapped_moax_payment
-                <= self
-                    .blockchain()
-                    .get_sc_balance(&TokenIdentifier::moax(), 0),
+            payment_amount <= self.get_locked_moax_balance(),
             "Contract does not have enough funds"
         );
 
-        self.unused_wrapped_moax()
-            .update(|unused_wrapped_moax| *unused_wrapped_moax += &wrapped_moax_payment);
+        self.send()
+            .dct_local_burn(&wrapped_moax_token_id, 0, &payment_amount);
 
         // 1 wrapped MOAX = 1 MOAX, so we pay back the same amount
         let caller = self.blockchain().get_caller();
-        self.send()
-            .direct_moax(&caller, &wrapped_moax_payment, b"unwrapping");
-
-        self.unwrap_moax_event(&caller, &wrapped_moax_payment);
+        self.send().direct_moax(&caller, &payment_amount, &[]);
     }
 
     #[view(getLockedMoaxBalance)]
@@ -203,12 +150,8 @@ pub trait MoaxDctSwap {
     // storage
 
     #[view(getWrappedMoaxTokenIdentifier)]
-    #[storage_mapper("wrapped_moax_token_id")]
+    #[storage_mapper("wrappedMoaxTokenId")]
     fn wrapped_moax_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
-
-    #[view(getUnusedWrappedMoax)]
-    #[storage_mapper("unused_wrapped_moax")]
-    fn unused_wrapped_moax(&self) -> SingleValueMapper<BigUint>;
 
     // events
 
@@ -230,15 +173,6 @@ pub trait MoaxDctSwap {
 
     #[event("issue-failure")]
     fn issue_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &ManagedBuffer);
-
-    #[event("mint-started")]
-    fn mint_started_event(&self, #[indexed] caller: &ManagedAddress, amount: &BigUint);
-
-    #[event("mint-success")]
-    fn mint_success_event(&self, #[indexed] caller: &ManagedAddress);
-
-    #[event("mint-failure")]
-    fn mint_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &ManagedBuffer);
 
     #[event("wrap-moax")]
     fn wrap_moax_event(&self, #[indexed] user: &ManagedAddress, amount: &BigUint);
