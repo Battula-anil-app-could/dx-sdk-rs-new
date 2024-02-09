@@ -24,7 +24,7 @@ pub trait MoaxDctSwap {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
         #[payment] issue_cost: BigUint,
-    ) -> SCResult<AsyncCall> {
+    ) -> AsyncCall {
         require!(
             self.wrapped_moax_token_id().is_empty(),
             "wrapped moax was already issued"
@@ -34,8 +34,7 @@ pub trait MoaxDctSwap {
 
         self.issue_started_event(&caller, &token_ticker, &initial_supply);
 
-        Ok(self
-            .send()
+        self.send()
             .dct_system_sc_proxy()
             .issue_fungible(
                 issue_cost,
@@ -55,7 +54,7 @@ pub trait MoaxDctSwap {
                 },
             )
             .async_call()
-            .with_callback(self.callbacks().dct_issue_callback(&caller)))
+            .with_callback(self.callbacks().dct_issue_callback(&caller))
     }
 
     #[callback]
@@ -88,7 +87,7 @@ pub trait MoaxDctSwap {
 
     #[only_owner]
     #[endpoint(mintWrappedMoax)]
-    fn mint_wrapped_moax(&self, amount: BigUint) -> SCResult<AsyncCall> {
+    fn mint_wrapped_moax(&self, amount: BigUint) -> AsyncCall {
         require!(
             !self.wrapped_moax_token_id().is_empty(),
             "Wrapped MOAX was not issued yet"
@@ -98,12 +97,11 @@ pub trait MoaxDctSwap {
         let caller = self.blockchain().get_caller();
         self.mint_started_event(&caller, &amount);
 
-        Ok(self
-            .send()
+        self.send()
             .dct_system_sc_proxy()
             .mint(&wrapped_moax_token_id, &amount)
             .async_call()
-            .with_callback(self.callbacks().dct_mint_callback(&caller, &amount)))
+            .with_callback(self.callbacks().dct_mint_callback(&caller, &amount))
     }
 
     #[callback]
@@ -129,8 +127,8 @@ pub trait MoaxDctSwap {
 
     #[payable("MOAX")]
     #[endpoint(wrapMoax)]
-    fn wrap_moax(&self, #[payment] payment: BigUint) -> SCResult<()> {
-        require!(payment > 0, "Payment must be more than 0");
+    fn wrap_moax(&self, #[payment] payment: BigUint) {
+        require!(payment > 0u32, "Payment must be more than 0");
         require!(
             !self.wrapped_moax_token_id().is_empty(),
             "Wrapped MOAX was not issued yet"
@@ -143,9 +141,7 @@ pub trait MoaxDctSwap {
             );
 
             *unused_wrapped_moax -= &payment;
-
-            Ok(())
-        })?;
+        });
 
         let caller = self.blockchain().get_caller();
         self.send().direct(
@@ -157,8 +153,6 @@ pub trait MoaxDctSwap {
         );
 
         self.wrap_moax_event(&caller, &payment);
-
-        Ok(())
     }
 
     #[payable("*")]
@@ -167,7 +161,7 @@ pub trait MoaxDctSwap {
         &self,
         #[payment] wrapped_moax_payment: BigUint,
         #[payment_token] token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         require!(
             !self.wrapped_moax_token_id().is_empty(),
             "Wrapped MOAX was not issued yet"
@@ -179,7 +173,7 @@ pub trait MoaxDctSwap {
             "Wrong dct token"
         );
 
-        require!(wrapped_moax_payment > 0, "Must pay more than 0 tokens!");
+        require!(wrapped_moax_payment > 0u32, "Must pay more than 0 tokens!");
         // this should never happen, but we'll check anyway
         require!(
             wrapped_moax_payment
@@ -198,8 +192,6 @@ pub trait MoaxDctSwap {
             .direct_moax(&caller, &wrapped_moax_payment, b"unwrapping");
 
         self.unwrap_moax_event(&caller, &wrapped_moax_payment);
-
-        Ok(())
     }
 
     #[view(getLockedMoaxBalance)]

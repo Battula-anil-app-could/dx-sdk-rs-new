@@ -9,14 +9,14 @@ path = "src/lib.rs"
 
 
 [dependencies.dharitri-wasm]
-version = "0.8.6"
+version = "0.8.7"
 path = "../../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-node]
-version = "0.8.6"
+version = "0.8.7"
 optional = true
 path = "../../../../dharitri-wasm-node"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.8.6"
+version = "0.8.7"
 path = "../../../../dharitri-wasm-debug"

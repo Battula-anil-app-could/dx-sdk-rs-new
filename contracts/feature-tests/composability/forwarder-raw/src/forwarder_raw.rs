@@ -183,7 +183,7 @@ pub trait ForwarderRaw {
     #[callback_raw]
     fn callback_raw(&self, #[var_args] args: ManagedVarArgs<ManagedBuffer>) {
         let payments = self.call_value().all_dct_transfers();
-        if payments.len() == 0 {
+        if payments.is_empty() {
             let moax_value = self.call_value().moax_value();
             if moax_value > 0 {
                 let _ = self

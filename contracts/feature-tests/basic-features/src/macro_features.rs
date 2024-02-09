@@ -5,9 +5,10 @@ use dharitri_wasm::String;
 /// Various macros provided by dharitri-wasm.
 #[dharitri_wasm::module]
 pub trait Macros {
+    #[allow(deprecated)]
     #[view]
     fn only_owner_legacy(&self) -> SCResult<()> {
-        only_owner!(self, "Caller must be owner");
+        dharitri_wasm::only_owner!(self, "Caller must be owner");
         Ok(())
     }
 

@@ -1,14 +1,12 @@
-// TODO: uncomment after upgrading to VM 1.4.35
-// #[test]
-// fn claim_moax_go() {
-//     dharitri_wasm_debug::denali_go("denali/claim-moax.scen.json");
-// }
+#[test]
+fn claim_moax_go() {
+    dharitri_wasm_debug::denali_go("denali/claim-moax.scen.json");
+}
 
-// TODO: uncomment after upgrading to VM 1.4.35
-// #[test]
-// fn claim_dct_go() {
-//     dharitri_wasm_debug::denali_go("denali/claim-dct.scen.json");
-// }
+#[test]
+fn claim_dct_go() {
+    dharitri_wasm_debug::denali_go("denali/claim-dct.scen.json");
+}
 
 #[test]
 fn fund_moax_and_dct_go() {
