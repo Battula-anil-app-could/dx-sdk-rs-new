@@ -21,10 +21,10 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-wasm-node]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../../../dharitri-wasm-node"
 
 [dependencies.dharitri-wasm-output]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../../../dharitri-wasm-output"
 features = [ "wasm-output-mode",]

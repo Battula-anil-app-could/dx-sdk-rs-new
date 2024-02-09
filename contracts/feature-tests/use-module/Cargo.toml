@@ -9,25 +9,25 @@ publish = false
 path = "src/use_module.rs"
 
 [dependencies.dharitri-wasm-modules]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../../dharitri-wasm-modules"
 
 [dependencies.dharitri-wasm-module-dns]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../modules-legacy/dharitri-wasm-module-dns"
 
 [dependencies.dharitri-wasm-module-features]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../modules-legacy/dharitri-wasm-module-features"
 
 [dependencies.dharitri-wasm-module-pause]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../modules-legacy/dharitri-wasm-module-pause"
 
 [dependencies.dharitri-wasm]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.9.0"
+version = "0.9.1"
 path = "../../../dharitri-wasm-debug"
