@@ -1,9 +1,7 @@
 extern crate dharitri_codec_derive;
 use dharitri_codec_derive::*;
 
-use dharitri_codec::test_util::{
-    check_dep_encode_decode, check_top_decode, check_top_encode_decode,
-};
+use dharitri_codec::test_util::{check_dep_encode_decode, check_top_decode, check_top_encode_decode};
 
 // to test, run the following command in dharitri-codec folder:
 // cargo expand --test derive_enum_test > enum_expanded.rs

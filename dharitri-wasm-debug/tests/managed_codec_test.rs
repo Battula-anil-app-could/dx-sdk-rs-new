@@ -1,6 +1,4 @@
-use dharitri_wasm::types::{
-    BigInt, BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, ManagedVec,
-};
+use dharitri_wasm::types::{BigInt, BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, ManagedVec};
 use dharitri_wasm_debug::{check_managed_top_encode_decode, DebugApi};
 
 #[test]

@@ -9,7 +9,11 @@ const SECOND_CONTRACT_REJECT_DCT_PAYMENT: &[u8] = b"rejectDctPayment";
 #[dharitri_wasm::contract]
 pub trait FirstContract {
     #[init]
-    fn init(&self, dct_token_identifier: TokenIdentifier, second_contract_address: ManagedAddress) {
+    fn init(
+        &self,
+        dct_token_identifier: TokenIdentifier,
+        second_contract_address: ManagedAddress,
+    ) {
         self.set_contract_dct_token_identifier(&dct_token_identifier);
         self.set_second_contract_address(&second_contract_address);
     }

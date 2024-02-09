@@ -136,7 +136,7 @@ impl fmt::Display for DctData {
     fn fmt(&self, _f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut dct_buf = String::new();
         write!(
-            &mut dct_buf,
+            dct_buf,
             "{{
                 token_identifier: {},
                 instances: [{}],
@@ -161,12 +161,7 @@ impl fmt::Display for AccountDct {
 
         for key in &dct_keys {
             let value = self.0.get(key).unwrap();
-            write!(
-                &mut dct_buf,
-                "\n\t\t\t{} -> {}",
-                key_hex(key.as_slice()),
-                value
-            )?;
+            write!(dct_buf, "\n\t\t\t{} -> {}", key_hex(key.as_slice()), value)?;
         }
         Ok(())
     }

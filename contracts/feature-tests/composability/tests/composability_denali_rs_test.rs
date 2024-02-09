@@ -296,7 +296,10 @@ fn forwarder_call_sync_retrieve_moax_rs() {
 
 #[test]
 fn forwarder_call_sync_retrieve_dct_rs() {
-    dharitri_wasm_debug::denali_rs("denali/forwarder_call_sync_retrieve_dct.scen.json", world());
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_call_sync_retrieve_dct.scen.json",
+        world(),
+    );
 }
 
 #[test]
