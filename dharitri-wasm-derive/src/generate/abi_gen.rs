@@ -142,7 +142,7 @@ fn generate_abi_method_body(
                 contract_crate: dharitri_wasm::abi::ContractCrateBuildAbi {
                     name: env!("CARGO_PKG_NAME"),
                     version: env!("CARGO_PKG_VERSION"),
-                    git_version: dharitri_wasm::abi::git_version!(),
+                    git_version: "N/A",
                 },
                 framework: dharitri_wasm::abi::FrameworkBuildAbi::create(),
             },

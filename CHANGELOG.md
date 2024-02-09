@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.9.3] - 2022-03-01
+## [dharitri-wasm 0.9.4] - 2022-03-01
+- Disabled git tag/commit info in ABI due to issue in standard modules.
+
+## [dharitri-wasm 0.29.0] - 2022-03-01
 - Cleaned up allocator from modules: `DnsModule`, `DctModule`, `FeaturesModule`, `PauseModule`, `UsersModule`.
 - Crypto API managed wrapper over legacy VM endpoints.
 - Managed multi-value types refactor and rename.
@@ -170,7 +173,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [dharitri-wasm 0.19.0, dharitri-codec 0.6.0, denali 0.3.4] - 2021-09-10
+## [dharitri-wasm 0.19.0, dharitri-codec 0.6.0, denali 0.9.0] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Arwen minimum version is `v1.4.10`.
 	- Redesigned parts of the dharitri-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -310,7 +313,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Minor features
 - SingleValueMapper redesigned for easier use. It no longer keeps the storage value cached.
 
-## [dharitri-wasm 0.2.8] - 2021-02-25
+## [dharitri-wasm 0.12.0] - 2021-02-25
 - Reorganized DCT and MOAX direct send api.
 - New async call syntax
 	- redesigned contract proxies
@@ -407,7 +410,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [dharitri-wasm 0.3.4, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
@@ -425,7 +428,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -438,7 +441,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.6.0, dharitri-codec 0.2.8] - 2020-08-25
+## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -451,7 +454,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -485,11 +488,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - imports macro
 - OtherContractHandle implementation
 
-## [dharitri-wasm 0.4.4] - 2020-05-19
+## [dharitri-wasm 0.9.4] - 2020-05-19
 - Serialization fixes for small ints
 - `get_cumulated_validator_rewards` hook
 
-## [dharitri-wasm 0.9.3] - 2020-05-11
+## [dharitri-wasm 0.4.3] - 2020-05-11
 - Allow any (macro-based) serializable argument in async call
 - `#[var_args]`
 - Call data serialization refactoring
@@ -523,7 +526,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.0.2] - 2020-02-05 
+## [dharitri-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro
