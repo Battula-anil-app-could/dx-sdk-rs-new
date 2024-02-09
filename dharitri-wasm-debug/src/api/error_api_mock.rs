@@ -1,7 +1,15 @@
 use crate::{tx_mock::TxPanic, DebugApi};
-use dharitri_wasm::api::{ErrorApi, Handle, ManagedBufferApi};
+use dharitri_wasm::api::{ErrorApi, ErrorApiImpl, Handle, ManagedBufferApi};
 
 impl ErrorApi for DebugApi {
+    type ErrorApiImpl = DebugApi;
+
+    fn error_api_impl() -> Self {
+        DebugApi::new_from_static()
+    }
+}
+
+impl ErrorApiImpl for DebugApi {
     fn signal_error(&self, message: &[u8]) -> ! {
         // can sometimes help in tests
         // run `clear & cargo test -- --nocapture` to see the output

@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     basic_features
     (
-        init
         add_assign_big_int
         add_assign_big_int_ref
         add_assign_big_uint
@@ -166,10 +165,13 @@ dharitri_wasm_node::wasm_endpoints! {
         listMapperPushFront
         listMapperRemoveNode
         listMapperRemoveNodeById
+        listMapperSetValue
+        listMapperSetValueById
         load_addr
         load_big_int
         load_big_uint
         load_bool
+        load_from_address_raw
         load_i64
         load_map1
         load_map2
@@ -227,6 +229,7 @@ dharitri_wasm_node::wasm_endpoints! {
         mbuffer_load_slice
         mbuffer_new
         mbuffer_overwrite
+        mbuffer_set_random
         mbuffer_set_slice
         mul_assign_big_int
         mul_assign_big_int_ref

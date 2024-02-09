@@ -1,12 +1,10 @@
-use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
-#[allow(unused)]
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/moax-dct-swap.wasm",
-        Box::new(|context| Box::new(moax_dct_swap::contract_obj(context))),
+        moax_dct_swap::ContractBuilder,
     );
     blockchain
 }

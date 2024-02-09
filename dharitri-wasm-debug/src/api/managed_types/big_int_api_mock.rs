@@ -5,7 +5,7 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Rem, Shl, Shr, Sub},
 };
 use dharitri_wasm::{
-    api::{BigIntApi, ErrorApi, Handle},
+    api::{BigIntApi, ErrorApiImpl, Handle},
     err_msg,
     types::BoxedBytes,
 };

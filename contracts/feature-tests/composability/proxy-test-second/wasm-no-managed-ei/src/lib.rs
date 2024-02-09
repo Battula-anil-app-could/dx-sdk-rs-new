@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     proxy_test_second
     (
-        init
         messageMe
         payMe
         payMeWithResult

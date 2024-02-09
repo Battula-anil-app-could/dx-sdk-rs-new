@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     bonding_curve_contract
     (
-        init
         callBack
         buyToken
         claim

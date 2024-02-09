@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     lottery_dct
     (
-        init
         buy_ticket
         createLotteryPool
         determine_winner

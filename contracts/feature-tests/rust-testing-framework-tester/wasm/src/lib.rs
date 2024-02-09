@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     rust_testing_framework_tester
     (
-        init
         callBack
         addValue
         burn_dct
@@ -22,6 +21,8 @@ dharitri_wasm_node::wasm_endpoints! {
         get_caller_legacy
         get_moax_balance
         get_dct_balance
+        get_random_buffer_once
+        get_random_buffer_twice
         mint_dct
         receive_moax
         receive_dct

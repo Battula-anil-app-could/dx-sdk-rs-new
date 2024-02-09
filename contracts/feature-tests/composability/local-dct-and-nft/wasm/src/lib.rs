@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     local_dct_and_nft
     (
-        init
         callBack
         getCurrentNftNonce
         getFungibleDctBalance

@@ -1,13 +1,12 @@
-use dharitri_wasm::*;
 use dharitri_wasm_debug::*;
 
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/basic-features");
 
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/basic-features.wasm",
-        Box::new(|context| Box::new(basic_features::contract_obj(context))),
+        basic_features::ContractBuilder,
     );
     blockchain
 }
@@ -282,6 +281,13 @@ fn managed_buffer_slice_2_rs() {
     dharitri_wasm_debug::denali_rs("denali/managed_buffer_slice_2.scen.json", world());
 }
 
+/*
+#[test]
+fn managed_buffer_random_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_buffer_set_random.scen.json", world());
+}
+*/
+
 #[test]
 fn managed_vec_address_push_rs() {
     dharitri_wasm_debug::denali_rs("denali/managed_vec_address_push.scen.json", world());
@@ -351,6 +357,11 @@ fn storage_clear_rs() {
 #[test]
 fn storage_i64_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_i64.scen.json", world());
+}
+
+#[test]
+fn storage_load_from_address_rs() {
+    dharitri_wasm_debug::denali_rs("denali/storage_load_from_address.scen.json", world());
 }
 
 #[test]

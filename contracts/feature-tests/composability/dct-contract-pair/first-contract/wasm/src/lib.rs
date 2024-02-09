@@ -7,7 +7,6 @@
 dharitri_wasm_node::wasm_endpoints! {
     first_contract
     (
-        init
         getSecondContractAddress
         getdctTokenName
         transferToSecondContractFull
