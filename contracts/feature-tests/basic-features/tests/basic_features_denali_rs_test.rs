@@ -458,3 +458,8 @@ fn storage_usize_bad_rs() {
 fn storage_vec_u8_rs() {
     dharitri_wasm_debug::denali_rs("denali/storage_vec_u8.scen.json", world());
 }
+
+#[test]
+fn struct_eq_rs() {
+    dharitri_wasm_debug::denali_rs("denali/struct_eq.scen.json", world());
+}

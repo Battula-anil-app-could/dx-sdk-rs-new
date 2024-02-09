@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.8.7] - 2022-01-25
+## [dharitri-wasm 0.8.8] - 2022-01-27
+- Deriving `PartialEq` now works on structs that contain managed types.
+
+## [dharitri-wasm 0.27.0] - 2022-01-25
 - Fixed certain compilation error messages. The previous implementation of the macro preprocessor would have concealed the location of many issues.
 - Changed implementation of `require!`:
 	- `require!` no longer returns a `SCResult` type, when the condition is false it now stops the transaction immediately, via `signal_error`;
@@ -391,7 +394,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.2] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -417,7 +420,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.2] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -489,7 +492,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.2] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

@@ -434,3 +434,8 @@ fn storage_usize_bad_go() {
 fn storage_vec_u8_go() {
     dharitri_wasm_debug::denali_go("denali/storage_vec_u8.scen.json");
 }
+
+#[test]
+fn struct_eq_go() {
+    dharitri_wasm_debug::denali_go("denali/struct_eq.scen.json");
+}
