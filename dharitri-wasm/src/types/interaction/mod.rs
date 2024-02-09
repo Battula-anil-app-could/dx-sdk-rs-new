@@ -6,8 +6,8 @@ mod callback_closure_unmanaged_args;
 mod callback_selector_result;
 mod contract_call;
 mod contract_deploy;
-mod send_moax;
 mod send_dct;
+mod send_moax;
 mod send_token;
 
 pub use arg_buffer::ArgBuffer;
@@ -18,8 +18,8 @@ pub use callback_closure_unmanaged_args::CallbackClosureUnmanagedArgs;
 pub use callback_selector_result::CallbackSelectorResult;
 pub use contract_call::{new_contract_call, ContractCall};
 pub use contract_deploy::{new_contract_deploy, ContractDeploy};
-pub use send_moax::SendMoax;
 pub use send_dct::SendDct;
+pub use send_moax::SendMoax;
 pub use send_token::SendToken;
 
 #[cfg(feature = "cb_closure_managed_deser")]

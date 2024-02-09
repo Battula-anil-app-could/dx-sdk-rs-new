@@ -67,9 +67,7 @@ impl<'de> Visitor<'de> for CheckDctInstancesRawVisitor {
         if value == "*" {
             Ok(CheckDctInstancesRaw::Star)
         } else {
-            Err(de::Error::custom(
-                "only '*' allowed as DCT instances value",
-            ))
+            Err(de::Error::custom("only '*' allowed as DCT instances value"))
         }
     }
 

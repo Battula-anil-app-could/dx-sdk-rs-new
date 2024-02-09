@@ -50,7 +50,9 @@ mod module_1 {
     pub trait EndpointWrappers: VersionModule + dharitri_wasm::contract_base::ContractBase {
         #[inline]
         fn call_version(&self) {
-            dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            dharitri_wasm::api::CallValueApiImpl::check_not_payable(
+                &Self::Api::call_value_api_impl(),
+            );
             let result = self.version();
             dharitri_wasm::io::EndpointResult::finish::<Self::Api>(&result)
         }
@@ -90,8 +92,10 @@ mod module_1 {
     pub trait ProxyTrait: dharitri_wasm::contract_base::ProxyObjBase + Sized {
         fn version(
             self,
-        ) -> ContractCall<Self::Api, <BigInt<Self::Api> as dharitri_wasm::io::EndpointResult>::DecodeAs>
-        {
+        ) -> ContractCall<
+            Self::Api,
+            <BigInt<Self::Api> as dharitri_wasm::io::EndpointResult>::DecodeAs,
+        > {
             let ___address___ = self.into_fields();
             let mut ___contract_call___ = dharitri_wasm::types::new_contract_call(
                 ___address___,
@@ -160,7 +164,9 @@ mod sample_adder {
     {
         #[inline]
         fn call_get_sum(&self) {
-            dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            dharitri_wasm::api::CallValueApiImpl::check_not_payable(
+                &Self::Api::call_value_api_impl(),
+            );
             dharitri_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
                 &<Self::Api as dharitri_wasm::api::EndpointArgumentApi>::argument_api_impl(),
                 0i32,
@@ -170,7 +176,9 @@ mod sample_adder {
         }
         #[inline]
         fn call_init(&self) {
-            dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            dharitri_wasm::api::CallValueApiImpl::check_not_payable(
+                &Self::Api::call_value_api_impl(),
+            );
             dharitri_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
                 &<Self::Api as dharitri_wasm::api::EndpointArgumentApi>::argument_api_impl(),
                 1i32,
@@ -183,7 +191,9 @@ mod sample_adder {
         }
         #[inline]
         fn call_add(&self) {
-            dharitri_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            dharitri_wasm::api::CallValueApiImpl::check_not_payable(
+                &Self::Api::call_value_api_impl(),
+            );
             dharitri_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
                 &<Self::Api as dharitri_wasm::api::EndpointArgumentApi>::argument_api_impl(),
                 1i32,
@@ -294,7 +304,9 @@ mod sample_adder {
             EndpointWrappers::call(self, fn_name)
         }
 
-        fn clone_obj(&self) -> dharitri_wasm::Box<dyn dharitri_wasm::contract_base::CallableContract> {
+        fn clone_obj(
+            &self,
+        ) -> dharitri_wasm::Box<dyn dharitri_wasm::contract_base::CallableContract> {
             dharitri_wasm::Box::new(ContractObj::<A> {
                 _phantom: core::marker::PhantomData,
             })

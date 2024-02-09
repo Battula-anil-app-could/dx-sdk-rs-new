@@ -4,7 +4,10 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.8.8] - 2022-01-27
+## [dharitri-wasm 0.8.9, dharitri-codec 0.3.2] - 2022-01-27
+- Added missing non-specialized decode implementations for managed types.
+
+## [dharitri-wasm 0.27.1] - 2022-01-27
 - Deriving `PartialEq` now works on structs that contain managed types.
 
 ## [dharitri-wasm 0.27.0] - 2022-01-25
@@ -45,7 +48,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - New hook for DCT local roles
 - Only-owner module annotation
 
-## [dharitri-wasm 0.23.1, dharitri-codec 0.3.1] - 2021-11-25
+## [dharitri-wasm 0.23.1, dharitri-codec 0.8.3] - 2021-11-25
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 
@@ -402,7 +405,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.6.2] - 2020-09-16
 - NonZeroUsize iterator and utils
 
-## [dharitri-wasm 0.6.1, dharitri-codec 0.3.1] - 2020-09-15
+## [dharitri-wasm 0.6.1, dharitri-codec 0.1.3] - 2020-09-15
 - Integrated NonZeroUsize into the framework
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
@@ -416,7 +419,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.2.7] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -489,7 +492,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [dharitri-wasm 0.1.1] - 2020-02-27
+## [dharitri-wasm 0.2.7] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [dharitri-wasm 0.0.2] - 2020-02-05 

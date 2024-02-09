@@ -27,12 +27,16 @@ fn forw_raw_async_send_and_retrieve_multi_transfer_funds_go() {
 
 #[test]
 fn forw_raw_builtin_nft_local_mint_via_async_call_go() {
-    dharitri_wasm_debug::denali_go("denali/forw_raw_builtin_nft_local_mint_via_async_call.scen.json");
+    dharitri_wasm_debug::denali_go(
+        "denali/forw_raw_builtin_nft_local_mint_via_async_call.scen.json",
+    );
 }
 
 #[test]
 fn forw_raw_builtin_nft_local_mint_via_sync_call_go() {
-    dharitri_wasm_debug::denali_go("denali/forw_raw_builtin_nft_local_mint_via_sync_call.scen.json");
+    dharitri_wasm_debug::denali_go(
+        "denali/forw_raw_builtin_nft_local_mint_via_sync_call.scen.json",
+    );
 }
 
 #[test]
@@ -264,7 +268,9 @@ fn forwarder_call_transf_exec_accept_sft_twice_go() {
 
 #[test]
 fn forwarder_call_transf_exec_multi_transfer_dct_go() {
-    dharitri_wasm_debug::denali_go("denali/forwarder_call_transf_exec_multi_transfer_dct.scen.json");
+    dharitri_wasm_debug::denali_go(
+        "denali/forwarder_call_transf_exec_multi_transfer_dct.scen.json",
+    );
 }
 
 #[test]

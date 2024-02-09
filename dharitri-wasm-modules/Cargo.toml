@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-modules"
-version = "0.8.8"
+version = "0.8.9"
 edition = "2018"
 
 authors = ["Dharitri Network <contact@dharitri.com>"]
@@ -14,9 +14,9 @@ keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
 [dependencies.dharitri-wasm]
-version = "0.8.8"
+version = "0.8.9"
 path = "../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.8.8"
+version = "0.8.9"
 path = "../dharitri-wasm-debug"
