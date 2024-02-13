@@ -1,4 +1,6 @@
-use dharitri_wasm::{api::DCT_MULTI_TRANSFER_FUNC_NAME, dharitri_codec::TopDecode, types::Address};
+use dharitri_wasm::{
+    api::DCT_MULTI_TRANSFER_FUNC_NAME, dharitri_codec::TopDecode, types::heap::Address,
+};
 use num_bigint::BigUint;
 use num_traits::Zero;
 

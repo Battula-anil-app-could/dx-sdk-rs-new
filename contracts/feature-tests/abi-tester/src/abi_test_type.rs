@@ -1,8 +1,7 @@
 use crate::only_nested::*;
 use dharitri_wasm::{
     api::ManagedTypeApi,
-    types::{BigUint, ManagedBuffer},
-    Box,
+    types::{BigUint, Box, ManagedBuffer},
 };
 dharitri_wasm::derive_imports!();
 

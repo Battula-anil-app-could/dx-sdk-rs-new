@@ -1,9 +1,12 @@
 [package]
 name = "dharitri-wasm-debug"
-version = "0.9.5"
+version = "0.9.6"
 edition = "2018"
 
-authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
+authors = [
+    "Andrei Marinica <andrei.marinica@dharitri.com>",
+    "Dharitri Network <contact@dharitri.com>",
+]
 license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
@@ -28,13 +31,16 @@ rustc_version = "0.4"
 toml = "0.5.8"
 cargo_toml = "0.19.0"
 pathdiff = "0.2.1"
+ed25519-dalek = "1.0.1"
 
 [features]
 denali-go-tests = []
+ei-1-1 = ["dharitri-wasm/ei-1-1"]
 
 [dependencies.dharitri-wasm]
-version = "=0.9.5"
+version = "=0.9.6"
 path = "../dharitri-wasm"
+features = ["alloc"]
 
 [dependencies.denali]
 version = "0.2.8"

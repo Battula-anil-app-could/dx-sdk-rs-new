@@ -3,7 +3,7 @@ use dharitri_codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput, T
 
 use crate::{
     api::{EndpointFinishApi, ErrorApi, ErrorApiImpl, ManagedTypeApi},
-    types::{BoxedBytes, ManagedBuffer, ManagedType},
+    types::{heap::BoxedBytes, ManagedBuffer, ManagedType},
 };
 
 use super::SCError;

@@ -1,4 +1,4 @@
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 
 use crate::{
     tx_mock::{BlockchainUpdate, TxCache, TxContext, TxInput, TxResult},

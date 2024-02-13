@@ -6,8 +6,8 @@ PROXY=https://testnet-api.dharitri.com
 deploy() {
     moapy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --arguments 0 --send --outfile="deploy-testnet.interaction.json" --proxy=${PROXY} --chain=T || return
 
-    TRANSACTION=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
 
     moapy data store --key=address-testnet --value=${ADDRESS}
     moapy data store --key=deployTransaction-testnet --value=${TRANSACTION}

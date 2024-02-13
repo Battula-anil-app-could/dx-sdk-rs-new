@@ -298,8 +298,11 @@ mod sample_adder {
             EndpointWrappers::call(self, fn_name)
         }
 
-        fn clone_obj(&self) -> dharitri_wasm::Box<dyn dharitri_wasm::contract_base::CallableContract> {
-            dharitri_wasm::Box::new(ContractObj::<A> {
+        fn clone_obj(
+            &self,
+        ) -> dharitri_wasm::types::heap::Box<dyn dharitri_wasm::contract_base::CallableContract>
+        {
+            dharitri_wasm::types::heap::Box::new(ContractObj::<A> {
                 _phantom: core::marker::PhantomData,
             })
         }
@@ -310,8 +313,9 @@ mod sample_adder {
     impl dharitri_wasm::contract_base::CallableContractBuilder for ContractBuilder {
         fn new_contract_obj<A: dharitri_wasm::api::VMApi>(
             &self,
-        ) -> dharitri_wasm::Box<dyn dharitri_wasm::contract_base::CallableContract> {
-            dharitri_wasm::Box::new(ContractObj::<A> {
+        ) -> dharitri_wasm::types::heap::Box<dyn dharitri_wasm::contract_base::CallableContract>
+        {
+            dharitri_wasm::types::heap::Box::new(ContractObj::<A> {
                 _phantom: core::marker::PhantomData,
             })
         }

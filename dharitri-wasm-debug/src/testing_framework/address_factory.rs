@@ -1,4 +1,4 @@
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use sha2::{Digest, Sha256};
 
 const ADDRESS_LEN: usize = 32;

@@ -1,13 +1,10 @@
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer},
+    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::{ErrorApi, ManagedTypeApi},
     contract_base::{ExitCodecErrorHandler, ManagedSerializer},
     err_msg,
-    types::{
-        ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, ManagedVecItem, MultiResultVec,
-    },
+    types::{ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, ManagedVecItem},
 };
-use alloc::string::String;
 use core::marker::PhantomData;
 use dharitri_codec::{
     try_cast_execute_or_else, DecodeErrorHandler, EncodeErrorHandler, TopDecode, TopDecodeMulti,
@@ -172,6 +169,25 @@ where
     }
 }
 
+impl<M, T> TopEncodeMulti for &MultiValueEncoded<M, T>
+where
+    M: ManagedTypeApi + ErrorApi,
+    T: TopEncodeMulti,
+{
+    type DecodeAs = MultiValueEncoded<M, T>;
+
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
+    where
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
+    {
+        for elem in self.raw_buffers.into_iter() {
+            elem.multi_encode_or_handle_err(output, h)?;
+        }
+        Ok(())
+    }
+}
+
 impl<M, T> TopEncodeMulti for MultiValueEncoded<M, T>
 where
     M: ManagedTypeApi + ErrorApi,
@@ -184,10 +200,7 @@ where
         O: TopEncodeMultiOutput,
         H: EncodeErrorHandler,
     {
-        for elem in self.raw_buffers.into_iter() {
-            elem.multi_encode_or_handle_err(output, h)?;
-        }
-        Ok(())
+        (&self).multi_encode_or_handle_err(output, h)
     }
 }
 
@@ -217,8 +230,8 @@ where
     M: ManagedTypeApi,
     T: TypeAbi,
 {
-    fn type_name() -> String {
-        MultiResultVec::<T>::type_name()
+    fn type_name() -> TypeName {
+        crate::abi::type_name_variadic::<T>()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

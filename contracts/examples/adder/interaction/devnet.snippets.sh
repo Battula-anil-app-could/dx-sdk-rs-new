@@ -5,8 +5,8 @@ DEPLOY_TRANSACTION=$(moapy data load --key=deployTransaction-devnet)
 deploy() {
     moapy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --arguments 0 --send --outfile="deploy-devnet.interaction.json" || return
 
-    TRANSACTION=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['contractAddress']")
 
     moapy data store --key=address-devnet --value=${ADDRESS}
     moapy data store --key=deployTransaction-devnet --value=${TRANSACTION}

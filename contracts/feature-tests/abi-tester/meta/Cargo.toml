@@ -8,10 +8,7 @@ publish = false
 [dependencies.abi-tester]
 path = ".."
 
-[dependencies.dharitri-wasm]
-version = "0.9.5"
-path = "../../../../dharitri-wasm"
-
 [dependencies.dharitri-wasm-debug]
-version = "0.9.5"
+version = "0.9.6"
 path = "../../../../dharitri-wasm-debug"
+features = ["ei-1-1"]

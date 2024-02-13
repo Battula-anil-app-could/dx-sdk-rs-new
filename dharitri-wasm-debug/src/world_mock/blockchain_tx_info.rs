@@ -1,4 +1,4 @@
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use num_bigint::BigUint;
 
 use super::{AccountDct, BlockInfo, BlockchainMock};

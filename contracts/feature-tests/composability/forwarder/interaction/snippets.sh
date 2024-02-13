@@ -21,8 +21,8 @@ deploy() {
         --outfile="deploy-testnet.interaction.json" \
          || return
 
-    TRANSACTION=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(moapy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
 
     moapy data store --key=address-testnet --value=${ADDRESS}
     moapy data store --key=deployTransaction-testnet --value=${TRANSACTION}

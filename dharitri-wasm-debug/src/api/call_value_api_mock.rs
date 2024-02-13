@@ -10,7 +10,7 @@ impl DebugApi {
         if self.dct_num_transfers() > 1 {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::TOO_MANY_DCT_TRANSFERS.to_vec(),
+                message: err_msg::TOO_MANY_DCT_TRANSFERS.to_string(),
             });
         }
     }
@@ -29,13 +29,13 @@ impl CallValueApiImpl for DebugApi {
         if BigUint::<DebugApi>::from_raw_handle(self.moax_value()) > 0u32 {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::NON_PAYABLE_FUNC_MOAX.to_vec(),
+                message: err_msg::NON_PAYABLE_FUNC_MOAX.to_string(),
             });
         }
         if self.dct_num_transfers() > 0 {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::NON_PAYABLE_FUNC_DCT.to_vec(),
+                message: err_msg::NON_PAYABLE_FUNC_DCT.to_string(),
             });
         }
     }
@@ -81,7 +81,7 @@ impl CallValueApiImpl for DebugApi {
         } else {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_vec(),
+                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_string(),
             });
         }
     }
@@ -93,7 +93,7 @@ impl CallValueApiImpl for DebugApi {
         } else {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_vec(),
+                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_string(),
             });
         }
     }
@@ -105,7 +105,7 @@ impl CallValueApiImpl for DebugApi {
         } else {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_vec(),
+                message: err_msg::DCT_INVALID_TOKEN_INDEX.to_string(),
             });
         }
     }

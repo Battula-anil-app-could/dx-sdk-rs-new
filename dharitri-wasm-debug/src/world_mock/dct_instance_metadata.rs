@@ -1,4 +1,4 @@
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 
 /// Holds the data for a Dharitri standard digital token transaction
 #[derive(Clone, Default, Debug)]

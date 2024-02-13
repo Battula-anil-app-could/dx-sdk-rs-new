@@ -7,16 +7,7 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
-
 [dependencies.dharitri-wasm]
-version = "0.9.5"
+version = "0.9.6"
 path = "../../../../dharitri-wasm"
-
-[dependencies.dharitri-wasm-node]
-version = "0.9.5"
-optional = true
-path = "../../../../dharitri-wasm-node"
-
-[dev-dependencies.dharitri-wasm-debug]
-version = "0.9.5"
-path = "../../../../dharitri-wasm-debug"
+features = ["alloc"]

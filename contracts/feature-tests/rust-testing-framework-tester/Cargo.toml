@@ -6,14 +6,15 @@ edition = "2018"
 publish = false
 
 [dependencies.dharitri-wasm]
-version = "0.9.5"
+version = "0.9.6"
 path = "../../../dharitri-wasm"
+features = [ "alloc" ]
 
 [dependencies.adder]
 path = "../../examples/adder"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.9.5"
+version = "0.9.6"
 path = "../../../dharitri-wasm-debug"
 
 [dev-dependencies]

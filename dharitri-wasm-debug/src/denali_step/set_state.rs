@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::heap::Address;
 use denali::model::{Account, AddressKey, BlockInfo, NewAddress};
 use num_bigint::BigUint;
 

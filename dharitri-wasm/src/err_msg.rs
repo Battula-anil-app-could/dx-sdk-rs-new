@@ -1,9 +1,9 @@
-pub const NON_PAYABLE_FUNC_MOAX: &[u8] = b"function does not accept MOAX payment";
-pub const NON_PAYABLE_FUNC_DCT: &[u8] = b"function does not accept DCT payment";
-pub const BAD_TOKEN_PROVIDED: &[u8] = b"bad call value token provided";
-pub const SINGLE_DCT_EXPECTED: &[u8] = b"function expects single DCT payment";
-pub const TOO_MANY_DCT_TRANSFERS: &[u8] = b"too many DCT transfers";
-pub const DCT_INVALID_TOKEN_INDEX: &[u8] = b"invalid token index";
+pub const NON_PAYABLE_FUNC_MOAX: &str = "function does not accept MOAX payment";
+pub const NON_PAYABLE_FUNC_DCT: &str = "function does not accept DCT payment";
+pub const BAD_TOKEN_PROVIDED: &str = "bad call value token provided";
+pub const SINGLE_DCT_EXPECTED: &str = "function expects single DCT payment";
+pub const TOO_MANY_DCT_TRANSFERS: &str = "too many DCT transfers";
+pub const DCT_INVALID_TOKEN_INDEX: &str = "invalid token index";
 
 pub const ARG_WRONG_NUMBER: &str = "wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";
@@ -45,3 +45,6 @@ pub const CALLBACK_BAD_FUNC: &[u8] = b"no callback function with that name exist
 
 pub const STORAGE_NOT_I64: &[u8] = b"storage not i64";
 pub const STORAGE_NOT_32_BYTES: &[u8] = b"32 bytes of data expected in storage at key";
+
+/// Mirrors the error message from the VM.
+pub const ERROR_SIGNALLED_BY_SMARTCONTRACT: &str = "error signalled by smartcontract";

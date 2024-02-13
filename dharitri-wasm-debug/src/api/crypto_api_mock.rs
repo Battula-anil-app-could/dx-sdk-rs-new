@@ -1,10 +1,8 @@
 use crate::DebugApi;
+use ed25519_dalek::*;
 use dharitri_wasm::{
-    api::{
-        CryptoApi, CryptoApiImpl, Handle, ManagedBufferApi, KECCAK256_RESULT_LEN,
-        RIPEMD_RESULT_LEN, SHA256_RESULT_LEN,
-    },
-    types::{BoxedBytes, MessageHashType},
+    api::{CryptoApi, CryptoApiImpl, KECCAK256_RESULT_LEN, RIPEMD_RESULT_LEN, SHA256_RESULT_LEN},
+    types::{heap::BoxedBytes, MessageHashType},
 };
 use sha2::Sha256;
 use sha3::{Digest, Keccak256};
@@ -24,9 +22,11 @@ impl CryptoApiImpl for DebugApi {
         hasher.finalize().into()
     }
 
-    fn sha256(&self, data_handle: Handle) -> Handle {
+    #[cfg(feature = "ei-1-1")]
+    fn sha256(&self, data_handle: dharitri_wasm::api::Handle) -> dharitri_wasm::api::Handle {
         // default implementation used in debugger
         // the VM has a dedicated hook
+        use dharitri_wasm::api::ManagedBufferApi;
         let result_bytes = self.sha256_legacy(self.mb_to_boxed_bytes(data_handle).as_slice());
         self.mb_new_from_bytes(&result_bytes[..])
     }
@@ -37,9 +37,11 @@ impl CryptoApiImpl for DebugApi {
         hasher.finalize().into()
     }
 
-    fn keccak256(&self, data_handle: Handle) -> Handle {
+    #[cfg(feature = "ei-1-1")]
+    fn keccak256(&self, data_handle: dharitri_wasm::api::Handle) -> dharitri_wasm::api::Handle {
         // default implementation used in debugger
         // the VM has a dedicated hook
+        use dharitri_wasm::api::ManagedBufferApi;
         let result_bytes = self.keccak256_legacy(self.mb_to_boxed_bytes(data_handle).as_slice());
         self.mb_new_from_bytes(&result_bytes[..])
     }
@@ -52,8 +54,18 @@ impl CryptoApiImpl for DebugApi {
         panic!("verify_bls not implemented yet!")
     }
 
-    fn verify_ed25519(&self, _key: &[u8], _message: &[u8], _signature: &[u8]) -> bool {
-        panic!("verify_ed25519 not implemented yet!")
+    fn verify_ed25519(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+        let public = PublicKey::from_bytes(key);
+        if public.is_err() {
+            return false;
+        }
+
+        let sig = Signature::from_bytes(signature);
+        if sig.is_err() {
+            return false;
+        }
+
+        public.unwrap().verify(message, &sig.unwrap()).is_ok()
     }
 
     fn verify_secp256k1(&self, _key: &[u8], _message: &[u8], _signature: &[u8]) -> bool {

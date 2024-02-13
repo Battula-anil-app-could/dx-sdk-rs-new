@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use dharitri_wasm::types::H256;
+use dharitri_wasm::types::heap::H256;
 use denali::model::TxTransfer;
 
 use crate::{
