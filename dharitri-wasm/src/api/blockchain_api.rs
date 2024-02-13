@@ -119,7 +119,7 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
     ) -> DctTokenData<M>;
 
     #[deprecated(
-        since = "0.9.7",
+        since = "0.9.8",
         note = "Only used for ;imited backwards compatibility tests. Never use! Use `get_dct_token_data` instead."
     )]
     fn get_dct_token_data_unmanaged<M: ManagedTypeApi>(

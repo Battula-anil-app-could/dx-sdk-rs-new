@@ -19,12 +19,12 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-wasm-node]
-version = "0.9.7"
+version = "0.9.8"
 path = "../../../../../dharitri-wasm-node"
 features=["ei-unmanaged"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.9.7"
+version = "0.9.8"
 path = "../../../../../dharitri-wasm-output"
 features=["wasm-output-mode"]
 
