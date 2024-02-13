@@ -1,12 +1,13 @@
-use dharitri_wasm::types::{BoxedBytes, TokenIdentifier};
+use dharitri_wasm::types::{BoxedBytes, MoaxOrDctTokenIdentifier, TokenIdentifier};
 use dharitri_wasm_debug::{
-    check_managed_top_decode, check_managed_top_encode_decode, managed_token_id, DebugApi,
+    check_managed_top_encode_decode, managed_moax_token_id, managed_token_id,
+    managed_token_id_wrapped, DebugApi,
 };
 
 #[test]
 fn test_moax() {
     let _ = DebugApi::dummy();
-    assert!(TokenIdentifier::<DebugApi>::moax().is_moax());
+    assert!(MoaxOrDctTokenIdentifier::<DebugApi>::moax().is_moax());
 }
 
 #[test]
@@ -14,28 +15,18 @@ fn test_codec() {
     let api = DebugApi::dummy();
     check_managed_top_encode_decode(
         api.clone(),
-        TokenIdentifier::<DebugApi>::moax(),
-        TokenIdentifier::<DebugApi>::MOAX_REPRESENTATION,
+        MoaxOrDctTokenIdentifier::<DebugApi>::moax(),
+        MoaxOrDctTokenIdentifier::<DebugApi>::MOAX_REPRESENTATION,
     );
 
     let expected = BoxedBytes::from_concat(&[
         &[0, 0, 0, 4],
-        &TokenIdentifier::<DebugApi>::MOAX_REPRESENTATION[..],
+        &MoaxOrDctTokenIdentifier::<DebugApi>::MOAX_REPRESENTATION[..],
     ]);
     check_managed_top_encode_decode(
         api.clone(),
-        vec![TokenIdentifier::<DebugApi>::moax()],
+        vec![MoaxOrDctTokenIdentifier::<DebugApi>::moax()],
         expected.as_slice(),
-    );
-
-    // also allowed
-    assert_eq!(
-        TokenIdentifier::<DebugApi>::moax(),
-        check_managed_top_decode::<TokenIdentifier<DebugApi>>(api.clone(), &[])
-    );
-    assert_eq!(
-        vec![TokenIdentifier::<DebugApi>::moax()],
-        check_managed_top_decode::<Vec<TokenIdentifier<DebugApi>>>(api, &[0, 0, 0, 0])
     );
 }
 
@@ -79,11 +70,15 @@ fn test_is_valid_dct_identifier() {
 fn test_managed_token_id_macro() {
     let _ = DebugApi::dummy();
     assert_eq!(
-        managed_token_id!(b"MOAX"),
-        TokenIdentifier::<DebugApi>::moax()
+        managed_moax_token_id!(b"MOAX"),
+        MoaxOrDctTokenIdentifier::<DebugApi>::moax()
     );
     assert_eq!(
         managed_token_id!(b"ALC-6258d2"),
         TokenIdentifier::<DebugApi>::from_dct_bytes(&b"ALC-6258d2"[..])
     );
+    assert_eq!(
+        managed_token_id_wrapped!(b"ALC-6258d2").unwrap_dct(),
+        TokenIdentifier::<DebugApi>::from_dct_bytes(&b"ALC-6258d2"[..])
+    )
 }

@@ -17,16 +17,17 @@ panic = "abort"
 
 [dependencies.proxy-test-second]
 path = ".."
+features = ["ei-unmanaged"]
 
 [dependencies.dharitri-wasm-node]
-version = "0.9.8"
+version = "0.9.9"
 path = "../../../../../dharitri-wasm-node"
-features=["ei-unmanaged"]
+features = ["ei-unmanaged-node"]
 
 [dependencies.dharitri-wasm-output]
-version = "0.9.8"
+version = "0.9.9"
 path = "../../../../../dharitri-wasm-output"
-features=["wasm-output-mode"]
+features = ["wasm-output-mode"]
 
 [workspace]
 members = ["."]

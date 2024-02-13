@@ -49,7 +49,7 @@ pub trait KittyOwnership {
         let caller = self.blockchain().get_caller();
         let moax_balance = self
             .blockchain()
-            .get_sc_balance(&TokenIdentifier::moax(), 0);
+            .get_sc_balance(&MoaxOrDctTokenIdentifier::moax(), 0);
 
         self.send().direct_moax(&caller, &moax_balance, b"claim");
     }

@@ -27,10 +27,7 @@ pub trait CallValueApiImpl: ErrorApiImpl + ManagedTypeApiImpl + Sized {
 
     /// Returns the call value token identifier of the current call.
     /// The identifier is wrapped in a TokenIdentifier object, to hide underlying logic.
-    ///
-    /// A note on implementation: even though the underlying api returns an empty name for MOAX,
-    /// but the MOAX TokenIdentifier is serialized as `MOAX`.
-    fn token(&self) -> Handle;
+    fn token(&self) -> Option<Handle>;
 
     /// Returns the nonce of the received DCT token.
     /// Will return 0 in case of MOAX or fungible DCT transfer.

@@ -108,6 +108,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "big-float-features"
+version = "0.0.0"
+dependencies = [
+ "dct-system-sc-mock",
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
+]
+
+[[package]]
+name = "big-float-features-meta"
+version = "0.0.0"
+dependencies = [
+ "big-float-features",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -340,7 +358,7 @@ dependencies = [
 
 [[package]]
 name = "denali"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "dharitri-wasm",
  "hex",
@@ -374,7 +392,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.9.8"
+version = "0.9.9"
 dependencies = [
  "bitflags",
  "dharitri-codec",
@@ -387,7 +405,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.9.8"
+version = "0.9.9"
 dependencies = [
  "cargo_toml",
  "denali",
@@ -410,7 +428,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.9.8"
+version = "0.9.9"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -421,14 +439,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.9.8"
+version = "0.9.9"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.9.8"
+version = "0.9.9"
 dependencies = [
  "dharitri-wasm",
 ]

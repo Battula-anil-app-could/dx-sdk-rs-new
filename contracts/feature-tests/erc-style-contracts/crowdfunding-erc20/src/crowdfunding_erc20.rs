@@ -46,7 +46,7 @@ pub trait Crowdfunding {
             Status::FundingPeriod
         } else if self
             .blockchain()
-            .get_sc_balance(&TokenIdentifier::moax(), 0)
+            .get_sc_balance(&MoaxOrDctTokenIdentifier::moax(), 0)
             >= self.target().get()
         {
             Status::Successful

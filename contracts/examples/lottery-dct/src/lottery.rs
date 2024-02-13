@@ -21,13 +21,13 @@ pub trait Lottery {
     fn start(
         &self,
         lottery_name: ManagedBuffer,
-        token_identifier: TokenIdentifier,
+        token_identifier: MoaxOrDctTokenIdentifier,
         ticket_price: BigUint,
         opt_total_tickets: Option<usize>,
         opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<usize>,
-        opt_prize_distribution: Option<ManagedVec<u8>>,
-        opt_whitelist: Option<ManagedVec<ManagedAddress>>,
+        opt_prize_distribution: ManagedOption<ManagedVec<u8>>,
+        opt_whitelist: ManagedOption<ManagedVec<ManagedAddress>>,
         opt_burn_percentage: OptionalValue<BigUint>,
     ) {
         self.start_lottery(
@@ -47,13 +47,13 @@ pub trait Lottery {
     fn create_lottery_pool(
         &self,
         lottery_name: ManagedBuffer,
-        token_identifier: TokenIdentifier,
+        token_identifier: MoaxOrDctTokenIdentifier,
         ticket_price: BigUint,
         opt_total_tickets: Option<usize>,
         opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<usize>,
-        opt_prize_distribution: Option<ManagedVec<u8>>,
-        opt_whitelist: Option<ManagedVec<ManagedAddress>>,
+        opt_prize_distribution: ManagedOption<ManagedVec<u8>>,
+        opt_whitelist: ManagedOption<ManagedVec<ManagedAddress>>,
         opt_burn_percentage: OptionalValue<BigUint>,
     ) {
         self.start_lottery(
@@ -73,13 +73,13 @@ pub trait Lottery {
     fn start_lottery(
         &self,
         lottery_name: ManagedBuffer,
-        token_identifier: TokenIdentifier,
+        token_identifier: MoaxOrDctTokenIdentifier,
         ticket_price: BigUint,
         opt_total_tickets: Option<usize>,
         opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<usize>,
-        opt_prize_distribution: Option<ManagedVec<u8>>,
-        opt_whitelist: Option<ManagedVec<ManagedAddress>>,
+        opt_prize_distribution: ManagedOption<ManagedVec<u8>>,
+        opt_whitelist: ManagedOption<ManagedVec<ManagedAddress>>,
         opt_burn_percentage: OptionalValue<BigUint>,
     ) {
         require!(!lottery_name.is_empty(), "Name can't be empty!");
@@ -127,7 +127,9 @@ pub trait Lottery {
             OptionalValue::Some(burn_percentage) => {
                 require!(!token_identifier.is_moax(), "MOAX can't be burned!");
 
-                let roles = self.blockchain().get_dct_local_roles(&token_identifier);
+                let roles = self
+                    .blockchain()
+                    .get_dct_local_roles(&token_identifier.clone().unwrap_dct());
                 require!(
                     roles.has_role(&DctLocalRole::Burn),
                     "The contract can't burn the selected token!"
@@ -143,9 +145,9 @@ pub trait Lottery {
             OptionalValue::None => {},
         }
 
-        if let Some(whitelist) = opt_whitelist {
+        if let Some(whitelist) = opt_whitelist.as_option() {
             let mut mapper = self.lottery_whitelist(&lottery_name);
-            for addr in &whitelist {
+            for addr in &*whitelist {
                 mapper.insert(addr);
             }
         }
@@ -166,7 +168,7 @@ pub trait Lottery {
     #[endpoint]
     #[payable("*")]
     fn buy_ticket(&self, lottery_name: ManagedBuffer) {
-        let (payment, token_identifier) = self.call_value().payment_token_pair();
+        let (token_identifier, payment) = self.call_value().moax_or_single_fungible_dct();
 
         match self.status(&lottery_name) {
             Status::Inactive => sc_panic!("Lottery is currently inactive."),
@@ -209,10 +211,11 @@ pub trait Lottery {
     fn update_after_buy_ticket(
         &self,
         lottery_name: &ManagedBuffer,
-        token_identifier: &TokenIdentifier,
+        token_identifier: &MoaxOrDctTokenIdentifier,
         payment: &BigUint,
     ) {
-        let mut info = self.lottery_info(lottery_name).get();
+        let info_mapper = self.lottery_info(lottery_name);
+        let mut info = info_mapper.get();
         let caller = self.blockchain().get_caller();
         let whitelist = self.lottery_whitelist(lottery_name);
 
@@ -225,7 +228,8 @@ pub trait Lottery {
             "Wrong ticket fee!"
         );
 
-        let mut entries = self.number_of_entries_for_user(lottery_name, &caller).get();
+        let entries_mapper = self.number_of_entries_for_user(lottery_name, &caller);
+        let mut entries = entries_mapper.get();
         require!(
             entries < info.max_entries_per_user,
             "Ticket limit exceeded for this lottery!"
@@ -237,14 +241,14 @@ pub trait Lottery {
         info.tickets_left -= 1;
         info.prize_pool += &info.ticket_price;
 
-        self.number_of_entries_for_user(lottery_name, &caller)
-            .set(&entries);
-        self.lottery_info(lottery_name).set(&info);
+        entries_mapper.set(&entries);
+        info_mapper.set(&info);
     }
 
     fn distribute_prizes(&self, lottery_name: &ManagedBuffer) {
         let mut info = self.lottery_info(lottery_name).get();
-        let total_tickets = self.ticket_holders(lottery_name).len();
+        let ticket_holders_mapper = self.ticket_holders(lottery_name);
+        let total_tickets = ticket_holders_mapper.len();
 
         if total_tickets == 0 {
             return;
@@ -256,12 +260,10 @@ pub trait Lottery {
 
             // Prevent crashing if the role was unset while the lottery was running
             // The tokens will simply remain locked forever
-            let roles = self
-                .blockchain()
-                .get_dct_local_roles(&info.token_identifier);
+            let dct_token_id = info.token_identifier.clone().unwrap_dct();
+            let roles = self.blockchain().get_dct_local_roles(&dct_token_id);
             if roles.has_role(&DctLocalRole::Burn) {
-                self.send()
-                    .dct_local_burn(&info.token_identifier, 0, &burn_amount);
+                self.send().dct_local_burn(&dct_token_id, 0, &burn_amount);
             }
 
             info.prize_pool -= burn_amount;
@@ -283,7 +285,7 @@ pub trait Lottery {
         // 1st place will get the spare money instead.
         for i in (1..total_winning_tickets).rev() {
             let winning_ticket_id = winning_tickets[i];
-            let winner_address = self.ticket_holders(lottery_name).get(winning_ticket_id);
+            let winner_address = ticket_holders_mapper.get(winning_ticket_id);
             let prize = self.calculate_percentage_of(
                 &total_prize,
                 &BigUint::from(info.prize_distribution.get(i)),
@@ -300,7 +302,7 @@ pub trait Lottery {
         }
 
         // send leftover to first place
-        let first_place_winner = self.ticket_holders(lottery_name).get(winning_tickets[0]);
+        let first_place_winner = ticket_holders_mapper.get(winning_tickets[0]);
         self.send().direct(
             &first_place_winner,
             &info.token_identifier,
@@ -311,14 +313,15 @@ pub trait Lottery {
     }
 
     fn clear_storage(&self, lottery_name: &ManagedBuffer) {
-        let current_ticket_number = self.ticket_holders(lottery_name).len();
+        let mut ticket_holders_mapper = self.ticket_holders(lottery_name);
+        let current_ticket_number = ticket_holders_mapper.len();
 
         for i in 1..=current_ticket_number {
-            let addr = self.ticket_holders(lottery_name).get(i);
+            let addr = ticket_holders_mapper.get(i);
             self.number_of_entries_for_user(lottery_name, &addr).clear();
         }
 
-        self.ticket_holders(lottery_name).clear();
+        ticket_holders_mapper.clear();
         self.lottery_info(lottery_name).clear();
         self.lottery_whitelist(lottery_name).clear();
         self.burn_percentage_for_lottery(lottery_name).clear();
@@ -334,8 +337,6 @@ pub trait Lottery {
         sum
     }
 
-    // Normally, we recommend managed types, like ManagedVec > Vec, ManagedBuffer > BoxedBytes, etc.
-    // But in this case, ManagedVec would need too many API calls for this algorithm
     /// does not check if max - min >= amount, that is the caller's job
     fn get_distinct_random(
         &self,

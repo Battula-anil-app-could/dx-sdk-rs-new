@@ -1,7 +1,13 @@
 {
     "networkProvider": {
         "type": "ProxyNetworkProvider",
-        "url": "https://testnet-gateway.dharitri.com"
+        "url": "https://testnet-gateway.dharitri.com",
+        "timeout": 5000
+    },
+    "reporting": {
+        "explorerUrl": "https://testnet-explorer.dharitri.com",
+        "apiUrl": "https://testnet-api.dharitri.com",
+        "outputFolder": "~/reports"
     },
     "users": {
         "individuals": [

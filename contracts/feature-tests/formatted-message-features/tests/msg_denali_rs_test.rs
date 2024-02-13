@@ -13,7 +13,7 @@ fn world() -> BlockchainMock {
 }
 
 #[test]
-fn msg_rs() {
+fn managed_error_message_rs() {
     dharitri_wasm_debug::denali_rs("denali/managed_error_message.scen.json", world());
 }
 

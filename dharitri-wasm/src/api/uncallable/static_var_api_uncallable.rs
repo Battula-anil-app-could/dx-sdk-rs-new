@@ -40,4 +40,20 @@ impl StaticVarApiImpl for UncallableApi {
     fn get_num_arguments(&self) -> i32 {
         unreachable!()
     }
+
+    fn set_call_value_moax_handle(&self, _handle: Handle) {
+        unreachable!()
+    }
+
+    fn get_call_value_moax_handle(&self) -> Handle {
+        unreachable!()
+    }
+
+    fn set_call_value_multi_dct_handle(&self, _handle: Handle) {
+        unreachable!()
+    }
+
+    fn get_call_value_multi_dct_handle(&self) -> Handle {
+        unreachable!()
+    }
 }

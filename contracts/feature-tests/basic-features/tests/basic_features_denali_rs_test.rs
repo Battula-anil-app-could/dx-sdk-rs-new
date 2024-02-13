@@ -51,6 +51,11 @@ fn count_ones_rs() {
     dharitri_wasm_debug::denali_rs("denali/count_ones.scen.json", world());
 }
 
+// #[test]
+// fn crypto_elliptic_curves_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/crypto_elliptic_curves.scen.json", world());
+// }
+
 #[test]
 fn crypto_keccak256_rs() {
     dharitri_wasm_debug::denali_rs("denali/crypto_keccak256.scen.json", world());
@@ -61,6 +66,11 @@ fn crypto_keccak256_legacy_managed_rs() {
     dharitri_wasm_debug::denali_rs("denali/crypto_keccak256_legacy_managed.scen.json", world());
 }
 
+// #[test]
+// fn crypto_ripemd160_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/crypto_ripemd160.scen.json", world());
+// }
+
 #[test]
 fn crypto_sha256_rs() {
     dharitri_wasm_debug::denali_rs("denali/crypto_sha256.scen.json", world());
@@ -70,6 +80,21 @@ fn crypto_sha256_rs() {
 fn crypto_sha256_legacy_managed_rs() {
     dharitri_wasm_debug::denali_rs("denali/crypto_sha256_legacy_managed.scen.json", world());
 }
+
+// #[test]
+// fn crypto_verify_bls_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/crypto_verify_bls.scen.json", world());
+// }
+
+#[test]
+fn crypto_verify_ed25519_rs() {
+    dharitri_wasm_debug::denali_rs("denali/crypto_verify_ed25519.scen.json", world());
+}
+
+// #[test]
+// fn crypto_verify_secp256k1_rs() {
+//     dharitri_wasm_debug::denali_rs("denali/crypto_verify_secp256k1.scen.json", world());
+// }
 
 #[test]
 fn echo_array_u8_rs() {
@@ -393,4 +418,9 @@ fn storage_usize_bad_rs() {
 #[test]
 fn struct_eq_rs() {
     dharitri_wasm_debug::denali_rs("denali/struct_eq.scen.json", world());
+}
+
+#[test]
+fn storage_mapper_unique_id_rs() {
+    dharitri_wasm_debug::denali_rs("denali/storage_mapper_unique_id.scen.json", world());
 }

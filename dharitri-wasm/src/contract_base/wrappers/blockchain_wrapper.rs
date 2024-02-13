@@ -7,8 +7,8 @@ use crate::{
     },
     storage::{self},
     types::{
-        BigUint, DctLocalRoleFlags, DctTokenData, ManagedAddress, ManagedByteArray, ManagedType,
-        TokenIdentifier,
+        BigUint, MoaxOrDctTokenIdentifier, DctLocalRoleFlags, DctTokenData, ManagedAddress,
+        ManagedByteArray, ManagedType, TokenIdentifier,
     },
 };
 
@@ -119,12 +119,13 @@ where
     }
 
     #[inline]
-    pub fn get_sc_balance(&self, token: &TokenIdentifier<A>, nonce: u64) -> BigUint<A> {
-        if token.is_moax() {
-            self.get_balance(&self.get_sc_address())
-        } else {
-            self.get_dct_balance(&self.get_sc_address(), token, nonce)
-        }
+    pub fn get_sc_balance(&self, token: &MoaxOrDctTokenIdentifier<A>, nonce: u64) -> BigUint<A> {
+        token.map_ref_or_else(
+            || self.get_balance(&self.get_sc_address()),
+            |token_identifier| {
+                self.get_dct_balance(&self.get_sc_address(), token_identifier, nonce)
+            },
+        )
     }
 
     #[cfg(feature = "alloc")]
@@ -258,12 +259,36 @@ where
         token_id: &TokenIdentifier<A>,
         nonce: u64,
     ) -> DctTokenData<A> {
-        A::blockchain_api_impl().get_dct_token_data::<A>(address, token_id, nonce)
+        A::blockchain_api_impl().load_dct_token_data::<A>(address, token_id, nonce)
+    }
+
+    #[cfg(feature = "ei-1-2")]
+    pub fn is_dct_frozen(
+        &self,
+        address: &ManagedAddress<A>,
+        token_id: &TokenIdentifier<A>,
+        nonce: u64,
+    ) -> bool {
+        A::blockchain_api_impl().check_dct_frozen(
+            address.get_raw_handle(),
+            token_id.get_raw_handle(),
+            nonce,
+        )
+    }
+
+    #[cfg(feature = "ei-1-2")]
+    pub fn is_dct_paused(&self, token_id: &TokenIdentifier<A>) -> bool {
+        A::blockchain_api_impl().check_dct_paused(token_id.get_raw_handle())
+    }
+
+    #[cfg(feature = "ei-1-2")]
+    pub fn is_dct_limited_transfer(&self, token_id: &TokenIdentifier<A>) -> bool {
+        A::blockchain_api_impl().check_dct_limited_transfer(token_id.get_raw_handle())
     }
 
     #[inline]
     pub fn get_dct_local_roles(&self, token_id: &TokenIdentifier<A>) -> DctLocalRoleFlags {
-        A::blockchain_api_impl().get_dct_local_roles(token_id.get_raw_handle())
+        A::blockchain_api_impl().load_dct_local_roles(token_id.get_raw_handle())
     }
 }
 

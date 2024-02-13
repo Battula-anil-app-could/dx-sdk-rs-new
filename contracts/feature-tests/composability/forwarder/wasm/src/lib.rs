@@ -40,6 +40,9 @@ dharitri_wasm_node::wasm_endpoints! {
         get_dct_local_roles
         get_dct_token_data
         get_nft_balance
+        is_dct_frozen
+        is_dct_limited_transfer
+        is_dct_paused
         issue_fungible_token
         lastErrorMessage
         lastIssuedToken

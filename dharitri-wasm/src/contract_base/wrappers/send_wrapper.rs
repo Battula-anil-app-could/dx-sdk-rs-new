@@ -2,7 +2,7 @@ use core::marker::PhantomData;
 
 use crate::{
     api::{
-        BlockchainApi, BlockchainApiImpl, CallTypeApi, SendApiImpl, StorageReadApi,
+        BlockchainApi, BlockchainApiImpl, CallTypeApi, StorageReadApi,
         CHANGE_OWNER_BUILTIN_FUNC_NAME, DCT_LOCAL_BURN_FUNC_NAME, DCT_LOCAL_MINT_FUNC_NAME,
         DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_ADD_QUANTITY_FUNC_NAME, DCT_NFT_ADD_URI_FUNC_NAME,
         DCT_NFT_BURN_FUNC_NAME, DCT_NFT_CREATE_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME,
@@ -10,14 +10,16 @@ use crate::{
     },
     dct::DCTSystemSmartContractProxy,
     types::{
-        BigUint, ContractCall, DctTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
-        ManagedType, ManagedVec, TokenIdentifier,
+        BigUint, ContractCall, MoaxOrDctTokenIdentifier, DctTokenPayment, ManagedAddress,
+        ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
 
 use super::BlockchainWrapper;
 
 const PERCENTAGE_TOTAL: u64 = 10_000;
+
+use super::SendRawWrapper;
 
 /// API that groups methods that either send MOAX or DCT, or that call other contracts.
 // pub trait SendApi: Clone + Sized {
@@ -40,6 +42,10 @@ where
         }
     }
 
+    fn send_raw_wrapper(&self) -> SendRawWrapper<A> {
+        SendRawWrapper::new()
+    }
+
     pub fn dct_system_sc_proxy(&self) -> DCTSystemSmartContractProxy<A> {
         DCTSystemSmartContractProxy::new_proxy_obj()
     }
@@ -58,15 +64,16 @@ where
     where
         D: Into<ManagedBuffer<A>>,
     {
-        A::send_api_impl().direct_moax(to, amount, data)
+        self.send_raw_wrapper().direct_moax(to, amount, data)
     }
 
     /// Sends either MOAX, DCT or NFT to the target address,
     /// depending on the token identifier and nonce
+    #[inline]
     pub fn direct<D>(
         &self,
         to: &ManagedAddress<A>,
-        token: &TokenIdentifier<A>,
+        token: &MoaxOrDctTokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
         data: D,
@@ -77,10 +84,10 @@ where
     }
 
     #[allow(clippy::too_many_arguments)]
-    pub fn direct_with_gas_limit<D>(
+    pub fn direct_dct_with_gas_limit<D>(
         &self,
         to: &ManagedAddress<A>,
-        token: &TokenIdentifier<A>,
+        token_identifier: &TokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
         gas: u64,
@@ -89,38 +96,72 @@ where
     ) where
         D: Into<ManagedBuffer<A>>,
     {
-        let endpoint_name_managed = endpoint_name.into();
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
-        for arg in arguments {
-            arg_buffer.push_arg(arg);
-        }
-
-        if token.is_moax() {
-            let _ = A::send_api_impl().direct_moax_execute(
+        if nonce == 0 {
+            let _ = self.send_raw_wrapper().transfer_dct_execute(
                 to,
+                token_identifier,
                 amount,
                 gas,
-                &endpoint_name_managed,
-                &arg_buffer,
-            );
-        } else if nonce == 0 {
-            let _ = A::send_api_impl().direct_dct_execute(
-                to,
-                token,
-                amount,
-                gas,
-                &endpoint_name_managed,
-                &arg_buffer,
+                &endpoint_name.into(),
+                &arguments.into(),
             );
         } else {
-            let _ = A::send_api_impl().direct_dct_nft_execute(
+            let _ = self.send_raw_wrapper().transfer_dct_nft_execute(
                 to,
-                token,
+                token_identifier,
                 nonce,
                 amount,
                 gas,
-                &endpoint_name_managed,
-                &arg_buffer,
+                &endpoint_name.into(),
+                &arguments.into(),
+            );
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn direct_dct<D>(
+        &self,
+        to: &ManagedAddress<A>,
+        token_identifier: &TokenIdentifier<A>,
+        nonce: u64,
+        amount: &BigUint<A>,
+        data: D,
+    ) where
+        D: Into<ManagedBuffer<A>>,
+    {
+        self.direct_dct_with_gas_limit(to, token_identifier, nonce, amount, 0, data, &[]);
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn direct_with_gas_limit<D>(
+        &self,
+        to: &ManagedAddress<A>,
+        token: &MoaxOrDctTokenIdentifier<A>,
+        nonce: u64,
+        amount: &BigUint<A>,
+        gas: u64,
+        endpoint_name: D,
+        arguments: &[ManagedBuffer<A>],
+    ) where
+        D: Into<ManagedBuffer<A>>,
+    {
+        if let Some(dct_token_identifier) = token.as_dct_token_identifier() {
+            self.direct_dct_with_gas_limit(
+                to,
+                &dct_token_identifier,
+                nonce,
+                amount,
+                gas,
+                endpoint_name,
+                arguments,
+            );
+        } else {
+            let _ = self.send_raw_wrapper().direct_moax_execute(
+                to,
+                amount,
+                gas,
+                &endpoint_name.into(),
+                &arguments.into(),
             );
         }
     }
@@ -133,12 +174,12 @@ where
     ) where
         D: Into<ManagedBuffer<A>>,
     {
-        let _ = A::send_api_impl().direct_multi_dct_transfer_execute(
+        let _ = self.send_raw_wrapper().multi_dct_transfer_execute(
             to,
             payments,
             0,
             &data.into(),
-            &ManagedArgBuffer::new_empty(),
+            &ManagedArgBuffer::new(),
         );
     }
 
@@ -159,7 +200,7 @@ where
         D: Into<ManagedBuffer<A>>,
     {
         let data_buf: ManagedBuffer<A> = data.into();
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         arg_buffer.push_arg(token);
         if nonce == 0 {
             arg_buffer.push_arg(amount);
@@ -167,7 +208,7 @@ where
                 arg_buffer.push_arg_raw(data_buf);
             }
 
-            A::send_api_impl().async_call_raw(
+            self.send_raw_wrapper().async_call_raw(
                 to,
                 &BigUint::zero(),
                 &ManagedBuffer::new_from_bytes(DCT_TRANSFER_FUNC_NAME),
@@ -181,7 +222,7 @@ where
                 arg_buffer.push_arg_raw(data_buf);
             }
 
-            A::send_api_impl().async_call_raw(
+            self.send_raw_wrapper().async_call_raw(
                 &BlockchainWrapper::<A>::new().get_sc_address(),
                 &BigUint::zero(),
                 &ManagedBuffer::new_from_bytes(DCT_NFT_TRANSFER_FUNC_NAME),
@@ -199,7 +240,7 @@ where
     where
         D: Into<ManagedBuffer<A>>,
     {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         arg_buffer.push_arg(to);
         arg_buffer.push_arg(payments.len());
 
@@ -214,7 +255,7 @@ where
             arg_buffer.push_arg_raw(data_buf);
         }
 
-        A::send_api_impl().async_call_raw(
+        self.send_raw_wrapper().async_call_raw(
             &BlockchainWrapper::<A>::new().get_sc_address(),
             &BigUint::zero(),
             &ManagedBuffer::new_from_bytes(DCT_MULTI_TRANSFER_FUNC_NAME),
@@ -245,12 +286,8 @@ where
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
-        let results =
-            A::send_api_impl().call_local_dct_built_in_function(gas, endpoint_name, arg_buffer);
-
-        A::send_api_impl().clean_return_data();
-
-        results
+        self.send_raw_wrapper()
+            .call_local_dct_built_in_function(gas, endpoint_name, arg_buffer)
     }
 
     /// Allows synchronous minting of DCT/SFT (depending on nonce). Execution is resumed afterwards.
@@ -259,7 +296,7 @@ where
     /// For SFTs, you must use `self.send().dct_nft_create()` before adding additional quantity.
     /// This function cannot be used for NFTs.
     pub fn dct_local_mint(&self, token: &TokenIdentifier<A>, nonce: u64, amount: &BigUint<A>) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         let func_name: &[u8];
 
         arg_buffer.push_arg(token);
@@ -284,7 +321,7 @@ where
     /// Note that the SC must have the DCTLocalBurn or DCTNftBurn roles set,
     /// or this will fail with "action is not allowed"
     pub fn dct_local_burn(&self, token: &TokenIdentifier<A>, nonce: u64, amount: &BigUint<A>) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         let func_name: &[u8];
 
         arg_buffer.push_arg(token);
@@ -320,7 +357,7 @@ where
         attributes: &T,
         uris: &ManagedVec<A, ManagedBuffer<A>>,
     ) -> u64 {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(name);
@@ -397,7 +434,7 @@ where
         attributes: &T,
         uris: &ManagedVec<A, ManagedBuffer<A>>,
     ) -> u64 {
-        let mut arg_buffer = ManagedArgBuffer::<A>::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::<A>::new();
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(name);
@@ -416,13 +453,14 @@ where
             }
         }
 
-        let output = A::send_api_impl().execute_on_dest_context_by_caller_raw(
-            A::blockchain_api_impl().get_gas_left(),
-            &BlockchainWrapper::<A>::new().get_caller(),
-            &BigUint::zero(),
-            &ManagedBuffer::new_from_bytes(DCT_NFT_CREATE_FUNC_NAME),
-            &arg_buffer,
-        );
+        let output = self
+            .send_raw_wrapper()
+            .execute_on_dest_context_by_caller_raw(
+                A::blockchain_api_impl().get_gas_left(),
+                &BlockchainWrapper::<A>::new().get_caller(),
+                &ManagedBuffer::new_from_bytes(DCT_NFT_CREATE_FUNC_NAME),
+                &arg_buffer,
+            );
 
         if let Some(first_result_bytes) = output.try_get(0) {
             first_result_bytes.parse_as_u64().unwrap_or_default()
@@ -431,7 +469,7 @@ where
         }
     }
 
-    /// Sends thr NFTs to the buyer address and calculates and sends the required royalties to the NFT creator.
+    /// Sends the NFTs to the buyer address and calculates and sends the required royalties to the NFT creator.
     /// Returns the payment amount left after sending royalties.
     #[allow(clippy::too_many_arguments)]
     pub fn sell_nft(
@@ -440,18 +478,26 @@ where
         nft_nonce: u64,
         nft_amount: &BigUint<A>,
         buyer: &ManagedAddress<A>,
-        payment_token: &TokenIdentifier<A>,
+        payment_token: &MoaxOrDctTokenIdentifier<A>,
         payment_nonce: u64,
         payment_amount: &BigUint<A>,
     ) -> BigUint<A> {
-        let nft_token_data = A::blockchain_api_impl().get_dct_token_data::<A>(
+        let nft_token_data = A::blockchain_api_impl().load_dct_token_data::<A>(
             &BlockchainWrapper::<A>::new().get_sc_address(),
             nft_id,
             nft_nonce,
         );
         let royalties_amount = payment_amount.clone() * nft_token_data.royalties / PERCENTAGE_TOTAL;
 
-        self.direct(buyer, nft_id, nft_nonce, nft_amount, &[]);
+        let _ = self.send_raw_wrapper().transfer_dct_nft_execute(
+            buyer,
+            nft_id,
+            nft_nonce,
+            nft_amount,
+            0,
+            &ManagedBuffer::new(),
+            &ManagedArgBuffer::new(),
+        );
 
         if royalties_amount > 0u32 {
             self.direct(
@@ -487,7 +533,7 @@ where
             return;
         }
 
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         arg_buffer.push_arg(token_id);
         arg_buffer.push_arg(nft_nonce);
 
@@ -508,7 +554,7 @@ where
         nft_nonce: u64,
         new_attributes: &T,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
+        let mut arg_buffer = ManagedArgBuffer::new();
         arg_buffer.push_arg(token_id);
         arg_buffer.push_arg(nft_nonce);
         arg_buffer.push_arg(new_attributes);

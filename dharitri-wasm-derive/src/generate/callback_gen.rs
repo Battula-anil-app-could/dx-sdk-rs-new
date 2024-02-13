@@ -27,7 +27,7 @@ pub fn generate_callback_selector_and_main(
         let cb_main_body = quote! {
             let _ = self::EndpointWrappers::callback_selector(
                 self,
-                dharitri_wasm::types::CallbackClosureForDeser::new_empty(),
+                dharitri_wasm::types::CallbackClosureForDeser::no_callback(),
             );
         };
         (cb_selector_body, cb_main_body)

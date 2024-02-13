@@ -25,22 +25,16 @@ impl<M: ManagedTypeApi> ManagedType<M> for TokenIdentifier<M> {
         }
     }
 
-    #[doc(hidden)]
     fn get_raw_handle(&self) -> Handle {
         self.buffer.get_raw_handle()
     }
 
-    #[doc(hidden)]
     fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
         unsafe { core::mem::transmute(handle_ref) }
     }
 }
 
 impl<M: ManagedTypeApi> TokenIdentifier<M> {
-    /// This special representation is interpreted as the MOAX token.
-    #[allow(clippy::needless_borrow)] // clippy is wrog here, there is no other way
-    pub const MOAX_REPRESENTATION: &'static [u8; 4] = &b"MOAX";
-
     #[inline]
     pub fn from_dct_bytes<B: Into<ManagedBuffer<M>>>(bytes: B) -> Self {
         TokenIdentifier {
@@ -48,22 +42,11 @@ impl<M: ManagedTypeApi> TokenIdentifier<M> {
         }
     }
 
-    /// New instance of the special MOAX token representation.
     #[inline]
-    pub fn moax() -> Self {
+    pub fn empty() -> Self {
         TokenIdentifier {
             buffer: ManagedBuffer::new(),
         }
-    }
-
-    #[inline]
-    pub fn is_moax(&self) -> bool {
-        self.is_empty()
-    }
-
-    #[inline]
-    pub fn is_dct(&self) -> bool {
-        !self.is_moax()
     }
 
     #[inline]
@@ -91,44 +74,22 @@ impl<M: ManagedTypeApi> TokenIdentifier<M> {
         self.buffer.to_boxed_bytes()
     }
 
-    #[inline]
-    pub fn as_name(&self) -> BoxedBytes {
-        if self.is_moax() {
-            BoxedBytes::from(&Self::MOAX_REPRESENTATION[..])
-        } else {
-            self.buffer.to_boxed_bytes()
-        }
-    }
-
     pub fn is_valid_dct_identifier(&self) -> bool {
         M::managed_type_impl().validate_token_identifier(self.buffer.handle)
-    }
-    /// Converts `"MOAX"` to `""`.
-    /// Does nothing for the other values.
-    fn normalize(&mut self) {
-        if self.buffer == Self::MOAX_REPRESENTATION {
-            self.buffer.overwrite(&[]);
-        }
     }
 }
 
 impl<M: ManagedTypeApi> From<ManagedBuffer<M>> for TokenIdentifier<M> {
     #[inline]
     fn from(buffer: ManagedBuffer<M>) -> Self {
-        let mut token_identifier = TokenIdentifier { buffer };
-        token_identifier.normalize();
-        token_identifier
+        TokenIdentifier { buffer }
     }
 }
 
 impl<M: ManagedTypeApi> From<&[u8]> for TokenIdentifier<M> {
     fn from(bytes: &[u8]) -> Self {
-        if bytes == Self::MOAX_REPRESENTATION {
-            TokenIdentifier::moax()
-        } else {
-            TokenIdentifier {
-                buffer: ManagedBuffer::new_from_bytes(bytes),
-            }
+        TokenIdentifier {
+            buffer: ManagedBuffer::new_from_bytes(bytes),
         }
     }
 }
@@ -149,11 +110,7 @@ impl<M: ManagedTypeApi> NestedEncode for TokenIdentifier<M> {
         O: NestedEncodeOutput,
         H: EncodeErrorHandler,
     {
-        if self.is_empty() {
-            (&Self::MOAX_REPRESENTATION[..]).dep_encode_or_handle_err(dest, h)
-        } else {
-            self.buffer.dep_encode_or_handle_err(dest, h)
-        }
+        self.buffer.dep_encode_or_handle_err(dest, h)
     }
 }
 
@@ -164,11 +121,7 @@ impl<M: ManagedTypeApi> TopEncode for TokenIdentifier<M> {
         O: TopEncodeOutput,
         H: EncodeErrorHandler,
     {
-        if self.is_empty() {
-            (&Self::MOAX_REPRESENTATION[..]).top_encode_or_handle_err(output, h)
-        } else {
-            self.buffer.top_encode_or_handle_err(output, h)
-        }
+        self.buffer.top_encode_or_handle_err(output, h)
     }
 }
 
@@ -196,11 +149,11 @@ impl<M: ManagedTypeApi> TopDecode for TokenIdentifier<M> {
     }
 }
 
-impl<M: ManagedTypeApi> CodecFromSelf for TokenIdentifier<M> {}
+impl<M> CodecFromSelf for TokenIdentifier<M> where M: ManagedTypeApi {}
 
-impl<M: ManagedTypeApi> CodecFrom<&[u8]> for TokenIdentifier<M> {}
+impl<M> CodecFrom<&[u8]> for TokenIdentifier<M> where M: ManagedTypeApi {}
 
-impl<M: ManagedTypeApi> CodecFrom<Vec<u8>> for TokenIdentifier<M> {}
+impl<M> CodecFrom<Vec<u8>> for TokenIdentifier<M> where M: ManagedTypeApi {}
 
 impl<M: ManagedTypeApi> TypeAbi for TokenIdentifier<M> {
     fn type_name() -> TypeName {
@@ -210,26 +163,16 @@ impl<M: ManagedTypeApi> TypeAbi for TokenIdentifier<M> {
 
 impl<M: ManagedTypeApi> SCDisplay for TokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
-        if self.is_moax() {
-            f.append_bytes(Self::MOAX_REPRESENTATION);
-        } else {
-            f.append_managed_buffer(&ManagedBuffer::from_raw_handle(
-                self.buffer.get_raw_handle(),
-            ));
-        }
+        f.append_managed_buffer(&ManagedBuffer::from_raw_handle(
+            self.buffer.get_raw_handle(),
+        ));
     }
 }
 
-const MOAX_REPRESENTATION_HEX: &[u8] = b"4d4f4158";
-
 impl<M: ManagedTypeApi> SCLowerHex for TokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
-        if self.is_moax() {
-            f.append_bytes(MOAX_REPRESENTATION_HEX);
-        } else {
-            f.append_managed_buffer_lower_hex(&ManagedBuffer::from_raw_handle(
-                self.buffer.get_raw_handle(),
-            ));
-        }
+        f.append_managed_buffer_lower_hex(&ManagedBuffer::from_raw_handle(
+            self.buffer.get_raw_handle(),
+        ));
     }
 }

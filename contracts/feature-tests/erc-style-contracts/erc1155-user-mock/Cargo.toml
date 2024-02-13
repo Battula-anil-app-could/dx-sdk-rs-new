@@ -9,11 +9,11 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.9.8"
+version = "0.9.9"
 path = "../../../../dharitri-wasm"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.9.8"
+version = "0.9.9"
 path = "../../../../dharitri-wasm-debug"
 

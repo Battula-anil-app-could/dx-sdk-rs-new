@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.9.8"
+            "version": "0.9.9"
         }
     },
     "docs": [
@@ -41,8 +41,30 @@
             "outputs": []
         }
     ],
+    "events": [],
     "hasCallback": false,
     "types": {
+        "DctTokenPayment": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "token_type",
+                    "type": "DctTokenType"
+                },
+                {
+                    "name": "token_identifier",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "token_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ]
+        },
         "DctTokenType": {
             "type": "enum",
             "variants": [
@@ -65,6 +87,31 @@
                 {
                     "name": "Invalid",
                     "discriminant": 4
+                }
+            ]
+        },
+        "GovernanceAction": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "gas_limit",
+                    "type": "u64"
+                },
+                {
+                    "name": "dest_address",
+                    "type": "Address"
+                },
+                {
+                    "name": "payments",
+                    "type": "List<DctTokenPayment>"
+                },
+                {
+                    "name": "function_name",
+                    "type": "bytes"
+                },
+                {
+                    "name": "arguments",
+                    "type": "List<bytes>"
                 }
             ]
         },

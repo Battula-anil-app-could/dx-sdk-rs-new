@@ -1,5 +1,5 @@
 use crowdfunding_dct::*;
-use dharitri_wasm::types::Address;
+use dharitri_wasm::types::{Address, MoaxOrDctTokenIdentifier};
 use dharitri_wasm_debug::{
     managed_address, managed_biguint, managed_token_id, rust_biguint, testing_framework::*,
     DebugApi,
@@ -47,7 +47,11 @@ where
             let target = managed_biguint!(2_000);
             let token_id = managed_token_id!(CF_TOKEN_ID);
 
-            sc.init(target, CF_DEADLINE, token_id);
+            sc.init(
+                target,
+                CF_DEADLINE,
+                MoaxOrDctTokenIdentifier::dct(token_id),
+            );
         })
         .assert_ok();
 
