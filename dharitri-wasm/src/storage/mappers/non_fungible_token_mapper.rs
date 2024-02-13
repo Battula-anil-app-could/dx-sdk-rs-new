@@ -1,5 +1,5 @@
 use dharitri_codec::{
-    EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+    CodecFrom, EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 use super::{
@@ -9,7 +9,7 @@ use super::{
 };
 use crate::{
     abi::{TypeAbi, TypeName},
-    api::{BlockchainApiImpl, CallTypeApi, ErrorApiImpl, StorageMapperApi},
+    api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
     contract_base::{BlockchainWrapper, SendWrapper},
     dct::{
         DCTSystemSmartContractProxy, MetaTokenProperties, NonFungibleTokenProperties,
@@ -92,9 +92,46 @@ where
             .call_and_exit();
     }
 
+    /// Important: If you use custom callback, remember to save the token ID in the callback!
+    /// If you want to use default callbacks, import the default_issue_callbacks::DefaultIssueCallbacksModule from dharitri-wasm-modules
+    /// and pass None for the opt_callback argument
+    pub fn issue_and_set_all_roles(
+        &self,
+        token_type: DctTokenType,
+        issue_cost: BigUint<SA>,
+        token_display_name: ManagedBuffer<SA>,
+        token_ticker: ManagedBuffer<SA>,
+        num_decimals: usize,
+        opt_callback: Option<CallbackClosure<SA>>,
+    ) -> ! {
+        if !self.is_empty() {
+            SA::error_api_impl().signal_error(TOKEN_ID_ALREADY_SET_ERR_MSG);
+        }
+        if token_type == DctTokenType::Fungible || token_type == DctTokenType::Invalid {
+            SA::error_api_impl().signal_error(INVALID_TOKEN_TYPE_ERR_MSG);
+        }
+
+        let system_sc_proxy = DCTSystemSmartContractProxy::<SA>::new_proxy_obj();
+        let callback = match opt_callback {
+            Some(cb) => cb,
+            None => self.default_callback_closure_obj(),
+        };
+
+        system_sc_proxy
+            .issue_and_set_all_roles(
+                issue_cost,
+                token_display_name,
+                token_ticker,
+                token_type,
+                num_decimals,
+            )
+            .async_call()
+            .with_callback(callback)
+            .call_and_exit();
+    }
+
     fn default_callback_closure_obj(&self) -> CallbackClosure<SA> {
-        let initial_caller =
-            ManagedAddress::<SA>::from_raw_handle(SA::blockchain_api_impl().get_caller_handle());
+        let initial_caller = BlockchainWrapper::<SA>::new().get_caller();
         let cb_name = DEFAULT_ISSUE_CALLBACK_NAME;
 
         let mut cb_closure = CallbackClosure::new(cb_name.into());
@@ -165,6 +202,21 @@ where
         DctTokenPayment::new(token_id, token_nonce, amount)
     }
 
+    pub fn nft_create_named<T: TopEncode>(
+        &self,
+        amount: BigUint<SA>,
+        name: &ManagedBuffer<SA>,
+        attributes: &T,
+    ) -> DctTokenPayment<SA> {
+        let send_wrapper = SendWrapper::<SA>::new();
+        let token_id = self.get_token_id();
+
+        let token_nonce =
+            send_wrapper.dct_nft_create_compact_named(&token_id, &amount, name, attributes);
+
+        DctTokenPayment::new(token_id, token_nonce, amount)
+    }
+
     pub fn nft_create_and_send<T: TopEncode>(
         &self,
         to: &ManagedAddress<SA>,
@@ -172,6 +224,19 @@ where
         attributes: &T,
     ) -> DctTokenPayment<SA> {
         let payment = self.nft_create(amount, attributes);
+        self.send_payment(to, &payment);
+
+        payment
+    }
+
+    pub fn nft_create_and_send_named<T: TopEncode>(
+        &self,
+        to: &ManagedAddress<SA>,
+        amount: BigUint<SA>,
+        name: &ManagedBuffer<SA>,
+        attributes: &T,
+    ) -> DctTokenPayment<SA> {
+        let payment = self.nft_create_named(amount, name, attributes);
         self.send_payment(to, &payment);
 
         payment
@@ -242,8 +307,6 @@ impl<SA> TopEncodeMulti for NonFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
-    type DecodeAs = TokenIdentifier<SA>;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -255,6 +318,11 @@ where
             output.push_single_value(&self.get_token_id(), h)
         }
     }
+}
+
+impl<SA> CodecFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
+    SA: StorageMapperApi + CallTypeApi
+{
 }
 
 impl<SA> TypeAbi for NonFungibleTokenMapper<SA>

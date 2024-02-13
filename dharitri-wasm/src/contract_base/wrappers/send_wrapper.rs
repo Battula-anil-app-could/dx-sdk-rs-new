@@ -15,6 +15,8 @@ use crate::{
     },
 };
 
+use super::BlockchainWrapper;
+
 const PERCENTAGE_TOTAL: u64 = 10_000;
 
 /// API that groups methods that either send MOAX or DCT, or that call other contracts.
@@ -180,7 +182,7 @@ where
             }
 
             A::send_api_impl().async_call_raw(
-                &ManagedAddress::from_raw_handle(A::blockchain_api_impl().get_sc_address_handle()),
+                &BlockchainWrapper::<A>::new().get_sc_address(),
                 &BigUint::zero(),
                 &ManagedBuffer::new_from_bytes(DCT_NFT_TRANSFER_FUNC_NAME),
                 &arg_buffer,
@@ -213,7 +215,7 @@ where
         }
 
         A::send_api_impl().async_call_raw(
-            &ManagedAddress::from_raw_handle(A::blockchain_api_impl().get_sc_address_handle()),
+            &BlockchainWrapper::<A>::new().get_sc_address(),
             &BigUint::zero(),
             &ManagedBuffer::new_from_bytes(DCT_MULTI_TRANSFER_FUNC_NAME),
             &arg_buffer,
@@ -243,7 +245,12 @@ where
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
-        A::send_api_impl().call_local_dct_built_in_function(gas, endpoint_name, arg_buffer)
+        let results =
+            A::send_api_impl().call_local_dct_built_in_function(gas, endpoint_name, arg_buffer);
+
+        A::send_api_impl().clean_return_data();
+
+        results
     }
 
     /// Allows synchronous minting of DCT/SFT (depending on nonce). Execution is resumed afterwards.
@@ -323,7 +330,7 @@ where
 
         if uris.is_empty() {
             // at least one URI is required, so we push an empty one
-            arg_buffer.push_arg(());
+            arg_buffer.push_arg(dharitri_codec::Empty);
         } else {
             // The API function has the last argument as variadic,
             // so we top-encode each and send as separate argument
@@ -345,10 +352,21 @@ where
         }
     }
 
+    #[inline]
     pub fn dct_nft_create_compact<T: dharitri_codec::TopEncode>(
         &self,
         token: &TokenIdentifier<A>,
         amount: &BigUint<A>,
+        attributes: &T,
+    ) -> u64 {
+        self.dct_nft_create_compact_named(token, amount, &ManagedBuffer::new(), attributes)
+    }
+
+    pub fn dct_nft_create_compact_named<T: dharitri_codec::TopEncode>(
+        &self,
+        token: &TokenIdentifier<A>,
+        amount: &BigUint<A>,
+        name: &ManagedBuffer<A>,
         attributes: &T,
     ) -> u64 {
         let big_zero = BigUint::zero();
@@ -358,7 +376,7 @@ where
         self.dct_nft_create(
             token,
             amount,
-            &empty_buffer,
+            name,
             &big_zero,
             &empty_buffer,
             attributes,
@@ -389,7 +407,7 @@ where
 
         if uris.is_empty() {
             // at least one URI is required, so we push an empty one
-            arg_buffer.push_arg(&());
+            arg_buffer.push_arg(&dharitri_codec::Empty);
         } else {
             // The API function has the last argument as variadic,
             // so we top-encode each and send as separate argument
@@ -400,7 +418,7 @@ where
 
         let output = A::send_api_impl().execute_on_dest_context_by_caller_raw(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedAddress::from_raw_handle(A::blockchain_api_impl().get_caller_handle()),
+            &BlockchainWrapper::<A>::new().get_caller(),
             &BigUint::zero(),
             &ManagedBuffer::new_from_bytes(DCT_NFT_CREATE_FUNC_NAME),
             &arg_buffer,
@@ -427,7 +445,7 @@ where
         payment_amount: &BigUint<A>,
     ) -> BigUint<A> {
         let nft_token_data = A::blockchain_api_impl().get_dct_token_data::<A>(
-            &ManagedAddress::from_raw_handle(A::blockchain_api_impl().get_sc_address_handle()),
+            &BlockchainWrapper::<A>::new().get_sc_address(),
             nft_id,
             nft_nonce,
         );

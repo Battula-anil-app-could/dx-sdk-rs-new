@@ -1,6 +1,8 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
+use dharitri_wasm::dharitri_codec::Empty;
+
 dharitri_wasm::imports!();
 
 /// General test contract.
@@ -8,19 +10,16 @@ dharitri_wasm::imports!();
 #[dharitri_wasm::contract]
 pub trait Vault {
     #[init]
-    fn init(
-        &self,
-        #[var_args] opt_arg_to_echo: OptionalValue<ManagedBuffer>,
-    ) -> OptionalValue<ManagedBuffer> {
+    fn init(&self, opt_arg_to_echo: OptionalValue<ManagedBuffer>) -> OptionalValue<ManagedBuffer> {
         opt_arg_to_echo
     }
 
     #[endpoint]
     fn echo_arguments(
         &self,
-        #[var_args] args: MultiValueEncoded<ManagedBuffer>,
+        args: MultiValueEncoded<ManagedBuffer>,
     ) -> MultiValueEncoded<ManagedBuffer> {
-        self.call_counts(&ManagedBuffer::from(b"echo_arguments"))
+        self.call_counts(ManagedBuffer::from(b"echo_arguments"))
             .update(|c| *c += 1);
         args
     }
@@ -45,7 +44,7 @@ pub trait Vault {
         let dct_transfers_multi = self.dct_transfers_multi();
         self.accept_funds_event(&self.call_value().moax_value(), &dct_transfers_multi);
 
-        self.call_counts(&ManagedBuffer::from(b"accept_funds"))
+        self.call_counts(ManagedBuffer::from(b"accept_funds"))
             .update(|c| *c += 1);
     }
 
@@ -58,7 +57,7 @@ pub trait Vault {
         let dct_transfers_multi = self.dct_transfers_multi();
         self.accept_funds_event(&moax_value, &dct_transfers_multi);
 
-        self.call_counts(&ManagedBuffer::from(b"accept_funds_echo_payment"))
+        self.call_counts(ManagedBuffer::from(b"accept_funds_echo_payment"))
             .update(|c| *c += 1);
 
         (moax_value, dct_transfers_multi).into()
@@ -79,7 +78,7 @@ pub trait Vault {
         #[payment_multi] _payments: ManagedVec<DctTokenPayment<Self::Api>>,
         token: TokenIdentifier,
         amount: BigUint,
-        #[var_args] opt_receive_func: OptionalValue<ManagedBuffer>,
+        opt_receive_func: OptionalValue<ManagedBuffer>,
     ) {
         let caller = self.blockchain().get_caller();
         let func_name = opt_receive_func.into_option().unwrap_or_default();
@@ -102,7 +101,7 @@ pub trait Vault {
         token: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
-        #[var_args] return_message: OptionalValue<ManagedBuffer>,
+        return_message: OptionalValue<ManagedBuffer>,
     ) {
         self.retrieve_funds_event(&token, nonce, &amount);
 
@@ -123,7 +122,7 @@ pub trait Vault {
     #[endpoint]
     fn retrieve_multi_funds_async(
         &self,
-        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
+        token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
         let caller = self.blockchain().get_caller();
         let mut all_payments = ManagedVec::new();
@@ -167,7 +166,7 @@ pub trait Vault {
                 &ManagedBuffer::new(),
                 &BigUint::zero(),
                 &ManagedBuffer::new(),
-                &(),
+                &Empty,
                 &uris,
             );
 
@@ -218,5 +217,5 @@ pub trait Vault {
     /// this additional counter has the role of showing that storage also gets saved correctly.
     #[view]
     #[storage_mapper("call_counts")]
-    fn call_counts(&self, endpoint: &ManagedBuffer) -> SingleValueMapper<usize>;
+    fn call_counts(&self, endpoint: ManagedBuffer) -> SingleValueMapper<usize>;
 }

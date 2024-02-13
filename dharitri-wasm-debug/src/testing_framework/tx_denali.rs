@@ -1,8 +1,9 @@
-use crate::{rust_biguint, tx_mock::TxInputDCT};
+use crate::{num_bigint, tx_mock::TxInputDCT};
 use dharitri_wasm::{
     dharitri_codec::{top_encode_to_vec_u8_or_panic, TopEncode},
     types::heap::Address,
 };
+use num_traits::Zero;
 
 pub struct ScCallDenali {
     pub(crate) from: Address,
@@ -20,7 +21,7 @@ impl ScCallDenali {
         ScCallDenali {
             from: from.clone(),
             to: to.clone(),
-            moax_value: rust_biguint!(0),
+            moax_value: num_bigint::BigUint::zero(),
             dct: Vec::new(),
             function: function.to_owned(),
             arguments: Vec::new(),

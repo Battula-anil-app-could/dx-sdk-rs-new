@@ -62,12 +62,6 @@ cd dharitri-codec
 cargo publish
 cd ..
 
-cd denali
-cargo publish
-cd ..
-
-sleep 20
-
 cd dharitri-wasm-derive
 cargo publish
 cd ..
@@ -79,6 +73,10 @@ cargo publish
 cd ..
 
 sleep 20
+
+cd denali
+cargo publish
+cd ..
 
 cd dharitri-wasm-node
 cargo publish

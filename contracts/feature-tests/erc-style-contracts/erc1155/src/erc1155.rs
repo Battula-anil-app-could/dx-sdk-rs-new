@@ -21,7 +21,7 @@ pub trait Erc1155 {
         to: ManagedAddress,
         type_id: BigUint,
         value: BigUint,
-        data: &[u8],
+        data: &ManagedBuffer,
     ) {
         let caller = self.blockchain().get_caller();
 
@@ -47,7 +47,7 @@ pub trait Erc1155 {
         to: ManagedAddress,
         type_id: BigUint,
         amount: BigUint,
-        data: &[u8],
+        data: &ManagedBuffer,
     ) {
         self.try_reserve_fungible(&from, &type_id, &amount);
 
@@ -64,7 +64,7 @@ pub trait Erc1155 {
         to: ManagedAddress,
         type_id: BigUint,
         nft_id: BigUint,
-        data: &[u8],
+        data: &ManagedBuffer,
     ) {
         self.try_reserve_non_fungible(&from, &type_id, &nft_id);
 
@@ -85,7 +85,7 @@ pub trait Erc1155 {
         to: ManagedAddress,
         type_ids: &[BigUint],
         values: &[BigUint],
-        data: &[u8],
+        data: ManagedBuffer,
     ) {
         let caller = self.blockchain().get_caller();
         let is_receiver_smart_contract = self.blockchain().is_smart_contract(&to);
@@ -127,7 +127,7 @@ pub trait Erc1155 {
         }
 
         if is_receiver_smart_contract {
-            self.peform_async_call_batch_transfer(from, to, type_ids, values, data);
+            self.peform_async_call_batch_transfer(from, to, type_ids, values, &data);
         }
     }
 
@@ -252,7 +252,7 @@ pub trait Erc1155 {
     #[view(balanceOfBatch)]
     fn balance_of_batch(
         &self,
-        #[var_args] owner_type_id_pairs: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
+        owner_type_id_pairs: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
     ) -> MultiValueEncoded<BigUint> {
         let mut batch_balance = MultiValueEncoded::new();
         for multi_arg in owner_type_id_pairs.into_iter() {
@@ -346,7 +346,7 @@ pub trait Erc1155 {
         to: ManagedAddress,
         type_id: BigUint,
         value: BigUint,
-        data: &[u8],
+        data: &ManagedBuffer,
     ) {
         let caller = self.blockchain().get_caller();
 
@@ -368,7 +368,7 @@ pub trait Erc1155 {
         to: ManagedAddress,
         type_ids: &[BigUint],
         values: &[BigUint],
-        data: &[u8],
+        data: &ManagedBuffer,
     ) {
         let caller = self.blockchain().get_caller();
 

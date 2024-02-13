@@ -12,6 +12,20 @@ pub struct RgbColor {
 pub trait NonFungibleTokenMapperFeatures:
     dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
+    #[payable("MOAX")]
+    #[endpoint]
+    fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
+        let payment = self.call_value().moax_value();
+        self.non_fungible_token_mapper().issue_and_set_all_roles(
+            DctTokenType::Meta,
+            payment,
+            ManagedBuffer::new(),
+            token_ticker,
+            0,
+            None,
+        );
+    }
+
     #[endpoint]
     fn mapper_nft_set_token_id(&self, token_id: TokenIdentifier) {
         self.non_fungible_token_mapper().set_token_id(&token_id);

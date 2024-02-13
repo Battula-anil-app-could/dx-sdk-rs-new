@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! rust_biguint {
     ($value:expr) => {{
-        num_bigint::BigUint::from($value as u64)
+        dharitri_wasm_debug::num_bigint::BigUint::from($value as u64)
     }};
 }
 
@@ -29,7 +29,11 @@ macro_rules! managed_address {
 #[macro_export]
 macro_rules! managed_token_id {
     ($bytes:expr) => {{
-        dharitri_wasm::types::TokenIdentifier::from_dct_bytes($bytes)
+        if $bytes == &dharitri_wasm::types::TokenIdentifier::<dharitri_wasm_debug::DebugApi>::MOAX_REPRESENTATION[..] {
+            dharitri_wasm::types::TokenIdentifier::moax()
+        } else {
+            dharitri_wasm::types::TokenIdentifier::from_dct_bytes($bytes)
+        }
     }};
 }
 

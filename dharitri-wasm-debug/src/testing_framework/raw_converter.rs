@@ -1,12 +1,15 @@
 use std::collections::BTreeMap;
 
-use crate::world_mock::{AccountData, BlockInfo, DctData};
+use crate::{
+    num_bigint,
+    world_mock::{AccountData, BlockInfo, DctData},
+};
 use dharitri_wasm::types::heap::Address;
 use denali::serde_raw::{
     AccountRaw, BlockInfoRaw, CheckAccountRaw, CheckAccountsRaw, CheckBytesValueRaw,
     CheckDctDataRaw, CheckDctInstanceRaw, CheckDctInstancesRaw, CheckDctMapContentsRaw,
     CheckDctMapRaw, CheckDctRaw, CheckLogsRaw, CheckStorageDetailsRaw, CheckStorageRaw,
-    CheckValueListRaw, DctFullRaw, DctRaw, InstanceRaw, TxCallRaw, TxDCTRaw, TxExpectRaw,
+    CheckValueListRaw, DctFullRaw, DctInstanceRaw, DctRaw, TxCallRaw, TxDCTRaw, TxExpectRaw,
     TxQueryRaw, ValueSubTree,
 };
 use num_traits::Zero;
@@ -65,7 +68,7 @@ pub(crate) fn dct_data_as_raw(dct: &DctData) -> DctRaw {
 
     let mut instances_raw = Vec::new();
     for inst in dct.instances.get_instances().values() {
-        let inst_raw = InstanceRaw {
+        let inst_raw = DctInstanceRaw {
             attributes: Some(bytes_as_raw(&inst.metadata.attributes)),
             balance: Some(rust_biguint_as_raw(&inst.balance)),
             creator: inst.metadata.creator.as_ref().map(address_as_raw),

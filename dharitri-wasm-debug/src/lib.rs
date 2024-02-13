@@ -1,5 +1,6 @@
 #![feature(generic_associated_types)]
 #![allow(clippy::type_complexity)]
+#![feature(exhaustive_patterns)]
 
 pub mod abi_json;
 pub mod api;
@@ -24,6 +25,12 @@ pub use denali_go_runner::denali_go;
 pub use denali_rs_runner::denali_rs;
 pub use tx_mock::DebugApi;
 pub use world_mock::BlockchainMock;
+
+// Re-exporting the whole denali crate for easier use in tests.
+pub use denali;
+
+// Re-exporting for convenience. Using the crate as imported in the codec to make sure the save version is used everywhere.
+pub use dharitri_wasm::dharitri_codec::num_bigint;
 
 #[macro_use]
 extern crate alloc;

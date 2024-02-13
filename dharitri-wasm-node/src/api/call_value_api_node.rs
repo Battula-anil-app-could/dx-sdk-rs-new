@@ -1,36 +1,32 @@
 use super::VmApiImpl;
 use dharitri_wasm::{
-    api::{CallValueApi, CallValueApiImpl, Handle},
+    api::{CallValueApi, CallValueApiImpl, Handle, StaticVarApiImpl},
     types::{DctTokenType, ManagedType, TokenIdentifier},
 };
 
 const MAX_POSSIBLE_TOKEN_IDENTIFIER_LENGTH: usize = 32;
 
 extern "C" {
-    fn bigIntNew(value: i64) -> i32;
-    #[cfg(not(feature = "ei-unmanaged"))]
-    fn mBufferNew() -> i32;
-
     fn checkNoPayment();
 
     fn bigIntGetCallValue(dest: i32);
+
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn managedGetMultiDCTCallValue(resultHandle: i32);
+
+    fn getNumDCTTransfers() -> i32;
+
+    // single DCT transfer
     fn bigIntGetDCTCallValue(dest: i32);
     fn getDCTTokenName(resultOffset: *const u8) -> i32;
     fn getDCTTokenNonce() -> i64;
     fn getDCTTokenType() -> i32;
 
-    // multi-transfer API
-    fn getNumDCTTransfers() -> i32;
+    // DCT by index
     fn bigIntGetDCTCallValueByIndex(dest: i32, index: i32);
     fn getDCTTokenNameByIndex(resultOffset: *const u8, index: i32) -> i32;
     fn getDCTTokenNonceByIndex(index: i32) -> i64;
     fn getDCTTokenTypeByIndex(index: i32) -> i32;
-    #[cfg(not(feature = "ei-unmanaged"))]
-    fn managedGetMultiDCTCallValue(resultHandle: i32);
-
-    /// TODO: decide if it is worth using or not
-    #[allow(dead_code)]
-    fn getCallValueTokenName(callValueOffset: *const u8, resultOffset: *const u8) -> i32;
 }
 
 impl CallValueApi for VmApiImpl {
@@ -50,19 +46,26 @@ impl CallValueApiImpl for VmApiImpl {
         }
     }
 
-    fn moax_value(&self) -> Handle {
+    fn load_moax_value(&self, dest: Handle) {
         unsafe {
-            let value_handle = bigIntNew(0);
-            bigIntGetCallValue(value_handle);
-            value_handle
+            bigIntGetCallValue(dest);
         }
     }
 
-    fn dct_value(&self) -> Handle {
+    #[cfg(not(feature = "ei-unmanaged"))]
+    fn load_all_dct_transfers(&self, dest_handle: Handle) {
         unsafe {
-            let value_handle = bigIntNew(0);
-            bigIntGetDCTCallValue(value_handle);
-            value_handle
+            managedGetMultiDCTCallValue(dest_handle);
+        }
+    }
+
+    fn dct_num_transfers(&self) -> usize {
+        unsafe { getNumDCTTransfers() as usize }
+    }
+
+    fn load_single_dct_value(&self, dest: Handle) {
+        unsafe {
+            bigIntGetDCTCallValue(dest);
         }
     }
 
@@ -87,13 +90,9 @@ impl CallValueApiImpl for VmApiImpl {
         unsafe { (getDCTTokenType() as u8).into() }
     }
 
-    fn dct_num_transfers(&self) -> usize {
-        unsafe { getNumDCTTransfers() as usize }
-    }
-
     fn dct_value_by_index(&self, index: usize) -> Handle {
         unsafe {
-            let value_handle = bigIntNew(0);
+            let value_handle = self.next_handle();
             bigIntGetDCTCallValueByIndex(value_handle, index as i32);
             value_handle
         }
@@ -118,16 +117,5 @@ impl CallValueApiImpl for VmApiImpl {
 
     fn dct_token_type_by_index(&self, index: usize) -> DctTokenType {
         unsafe { (getDCTTokenTypeByIndex(index as i32) as u8).into() }
-    }
-
-    #[cfg(not(feature = "ei-unmanaged"))]
-    fn get_all_dct_transfers<M: dharitri_wasm::api::ManagedTypeApi>(
-        &self,
-    ) -> dharitri_wasm::types::ManagedVec<M, dharitri_wasm::types::DctTokenPayment<M>> {
-        unsafe {
-            let result_handle = mBufferNew();
-            managedGetMultiDCTCallValue(result_handle);
-            dharitri_wasm::types::ManagedVec::from_raw_handle(result_handle)
-        }
     }
 }

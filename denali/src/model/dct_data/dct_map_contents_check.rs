@@ -1,5 +1,5 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     model::BytesKey,
     serde_raw::CheckDctMapContentsRaw,
 };
@@ -35,6 +35,19 @@ impl InterpretableFrom<CheckDctMapContentsRaw> for CheckDctMapContents {
                 })
                 .collect(),
             other_dcts_allowed: from.other_dcts_allowed,
+        }
+    }
+}
+
+impl IntoRaw<CheckDctMapContentsRaw> for CheckDctMapContents {
+    fn into_raw(self) -> CheckDctMapContentsRaw {
+        CheckDctMapContentsRaw {
+            contents: self
+                .contents
+                .into_iter()
+                .map(|(k, v)| (k.into_raw(), v.into_raw()))
+                .collect(),
+            other_dcts_allowed: self.other_dcts_allowed,
         }
     }
 }

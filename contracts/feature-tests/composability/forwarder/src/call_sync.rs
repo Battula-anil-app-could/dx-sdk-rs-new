@@ -9,40 +9,15 @@ pub trait ForwarderSyncCallModule {
 
     #[endpoint]
     #[payable("*")]
-    fn echo_arguments_sync(
-        &self,
-        to: ManagedAddress,
-        #[var_args] args: MultiValueEncoded<ManagedBuffer>,
-    ) {
+    fn echo_arguments_sync(&self, to: ManagedAddress, args: MultiValueEncoded<ManagedBuffer>) {
         let half_gas = self.blockchain().get_gas_left() / 2;
 
-        let result = self
+        let result: MultiValueEncoded<ManagedBuffer> = self
             .vault_proxy()
             .contract(to)
             .echo_arguments(args)
             .with_gas_limit(half_gas)
             .execute_on_dest_context();
-
-        self.execute_on_dest_context_result_event(&result.into_vec_of_buffers());
-    }
-
-    #[endpoint]
-    #[payable("*")]
-    fn echo_arguments_sync_range(
-        &self,
-        to: ManagedAddress,
-        start: usize,
-        end: usize,
-        #[var_args] args: MultiValueEncoded<ManagedBuffer>,
-    ) {
-        let half_gas = self.blockchain().get_gas_left() / 2;
-
-        let result = self
-            .vault_proxy()
-            .contract(to)
-            .echo_arguments(args)
-            .with_gas_limit(half_gas)
-            .execute_on_dest_context_custom_range(|_, _| (start, end));
 
         self.execute_on_dest_context_result_event(&result.into_vec_of_buffers());
     }
@@ -52,23 +27,23 @@ pub trait ForwarderSyncCallModule {
     fn echo_arguments_sync_twice(
         &self,
         to: ManagedAddress,
-        #[var_args] args: MultiValueEncoded<ManagedBuffer>,
+        args: MultiValueEncoded<ManagedBuffer>,
     ) {
         let one_third_gas = self.blockchain().get_gas_left() / 3;
 
-        let result = self
+        let result: MultiValueEncoded<ManagedBuffer> = self
             .vault_proxy()
             .contract(to.clone())
-            .echo_arguments(args.clone())
+            .echo_arguments(&args)
             .with_gas_limit(one_third_gas)
             .execute_on_dest_context();
 
         self.execute_on_dest_context_result_event(&result.into_vec_of_buffers());
 
-        let result = self
+        let result: MultiValueEncoded<ManagedBuffer> = self
             .vault_proxy()
             .contract(to)
-            .echo_arguments(args)
+            .echo_arguments(&args)
             .with_gas_limit(one_third_gas)
             .execute_on_dest_context();
 
@@ -89,7 +64,7 @@ pub trait ForwarderSyncCallModule {
     ) {
         let half_gas = self.blockchain().get_gas_left() / 2;
 
-        let result = self
+        let result: MultiValue2<BigUint, MultiValueEncoded<DctTokenPaymentMultiValue>> = self
             .vault_proxy()
             .contract(to)
             .accept_funds_echo_payment()
@@ -113,7 +88,8 @@ pub trait ForwarderSyncCallModule {
         let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment - fees;
 
-        self.vault_proxy()
+        let () = self
+            .vault_proxy()
             .contract(to)
             .accept_funds()
             .add_token_transfer(token_id, 0, amount_to_send)
@@ -136,7 +112,7 @@ pub trait ForwarderSyncCallModule {
         #[payment_amount] payment: BigUint,
         #[payment_nonce] token_nonce: u64,
     ) -> usize {
-        let _ = self
+        let () = self
             .vault_proxy()
             .contract(to.clone())
             .accept_funds()
@@ -145,8 +121,9 @@ pub trait ForwarderSyncCallModule {
 
         self.vault_proxy()
             .contract(to)
-            .call_counts(&ManagedBuffer::from(b"accept_funds"))
-            .execute_on_dest_context()
+            .call_counts(b"accept_funds")
+            .execute_on_dest_context::<SingleValue<usize>>()
+            .into()
     }
 
     #[endpoint]
@@ -159,7 +136,12 @@ pub trait ForwarderSyncCallModule {
     ) {
         self.vault_proxy()
             .contract(to)
-            .retrieve_funds(token, token_nonce, amount, OptionalValue::None)
+            .retrieve_funds(
+                token,
+                token_nonce,
+                amount,
+                OptionalValue::<ManagedBuffer>::None,
+            )
             .execute_on_dest_context()
     }
 
@@ -178,9 +160,9 @@ pub trait ForwarderSyncCallModule {
                 payments,
                 token,
                 amount,
-                OptionalValue::Some(b"accept_funds_func".into()),
+                OptionalValue::<ManagedBuffer>::Some(b"accept_funds_func".into()),
             )
-            .execute_on_dest_context();
+            .execute_on_dest_context::<()>();
     }
 
     #[payable("*")]
@@ -191,7 +173,7 @@ pub trait ForwarderSyncCallModule {
     fn forward_sync_accept_funds_multi_transfer(
         &self,
         to: ManagedAddress,
-        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
+        token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
         let mut all_token_payments = ManagedVec::new();
 
@@ -201,7 +183,8 @@ pub trait ForwarderSyncCallModule {
             all_token_payments.push(payment);
         }
 
-        self.vault_proxy()
+        let () = self
+            .vault_proxy()
             .contract(to)
             .accept_funds()
             .with_multi_token_transfer(all_token_payments)

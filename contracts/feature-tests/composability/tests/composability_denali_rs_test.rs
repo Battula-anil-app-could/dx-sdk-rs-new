@@ -13,6 +13,10 @@ fn world() -> BlockchainMock {
         forwarder_raw::ContractBuilder,
     );
     blockchain.register_contract_builder(
+        "file:promises-features/output/promises-features.wasm",
+        promises_features::ContractBuilder,
+    );
+    blockchain.register_contract_builder(
         "file:proxy-test-first/output/proxy-test-first.wasm",
         proxy_test_first::ContractBuilder,
     );
@@ -397,6 +401,11 @@ fn forwarder_get_dct_local_roles_rs() {
 }
 
 #[test]
+fn forwarder_get_dct_token_data_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forwarder_get_dct_token_data.scen.json", world());
+}
+
+#[test]
 fn forwarder_nft_add_uri_rs() {
     dharitri_wasm_debug::denali_rs("denali/forwarder_nft_add_uri.scen.json", world());
 }
@@ -476,11 +485,6 @@ fn forwarder_sync_echo_rs() {
 }
 
 #[test]
-fn forwarder_sync_echo_range_rs() {
-    dharitri_wasm_debug::denali_rs("denali/forwarder_sync_echo_range.scen.json", world());
-}
-
-#[test]
 fn forwarder_tranfer_dct_with_fees_rs() {
     dharitri_wasm_debug::denali_rs("denali/forwarder_tranfer_dct_with_fees.scen.json", world());
 }
@@ -492,6 +496,16 @@ fn forwarder_validate_token_identifier_rs() {
         world(),
     );
 }
+
+#[test]
+fn promises_multi_transfer_rs() {
+    dharitri_wasm_debug::denali_rs("denali-promises/promises_multi_transfer.scen.json", world());
+}
+
+// #[test]
+// fn promises_single_transfer_rs() {
+//     dharitri_wasm_debug::denali_rs("denali-promises/promises_single_transfer.scen.json", world());
+// }
 
 #[test]
 fn proxy_test_init_rs() {

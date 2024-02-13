@@ -2,8 +2,9 @@ use adder::*;
 use forwarder::call_sync::*;
 use num_traits::ToPrimitive;
 
-use dharitri_wasm::types::{
-    Address, BigUint, DctLocalRole, DctTokenPayment, DctTokenType, ManagedVec,
+use dharitri_wasm::{
+    dharitri_codec::Empty,
+    types::{Address, BigUint, DctLocalRole, DctTokenPayment, DctTokenType, ManagedVec},
 };
 use dharitri_wasm_debug::{
     assert_values_eq, managed_address, managed_biguint, managed_buffer, managed_token_id,
@@ -602,7 +603,13 @@ fn test_dct_multi_transfer() {
     let nft_nonce = 5;
 
     wrapper.set_dct_balance(&caller_addr, token_id_1, &rust_biguint!(100));
-    wrapper.set_nft_balance(&caller_addr, token_id_2, nft_nonce, &rust_biguint!(1), &());
+    wrapper.set_nft_balance(
+        &caller_addr,
+        token_id_2,
+        nft_nonce,
+        &rust_biguint!(1),
+        &Empty,
+    );
 
     let transfers = vec![
         TxInputDCT {
@@ -655,7 +662,7 @@ fn test_dct_multi_transfer() {
         .assert_ok();
 
     wrapper.check_dct_balance(sc_wrapper.address_ref(), token_id_1, &rust_biguint!(100));
-    wrapper.check_nft_balance::<()>(
+    wrapper.check_nft_balance::<Empty>(
         sc_wrapper.address_ref(),
         token_id_2,
         nft_nonce,

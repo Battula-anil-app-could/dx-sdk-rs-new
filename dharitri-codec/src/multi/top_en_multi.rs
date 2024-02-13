@@ -1,14 +1,8 @@
 use crate::{
-    DefaultErrorHandler, EncodeError, EncodeErrorHandler, TopEncode, TopEncodeMultiOutput, TypeInfo,
+    DefaultErrorHandler, EncodeError, EncodeErrorHandler, TopEncode, TopEncodeMultiOutput,
 };
 
 pub trait TopEncodeMulti: Sized {
-    /// Indicates how the encoding result should be interpreted when deserializing back.
-    /// `Self` for most types.
-    ///
-    /// This mechanism will hopefully be replaced by something more general at some point in the future.
-    type DecodeAs;
-
     /// Attempt to serialize the value to ouput.
     fn multi_encode<O>(&self, output: &mut O) -> Result<(), EncodeError>
     where
@@ -37,18 +31,11 @@ impl<T> TopEncodeMulti for T
 where
     T: TopEncode,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
         H: EncodeErrorHandler,
     {
-        if Self::TYPE_INFO == TypeInfo::Unit {
-            // unit specialization: nothing gets encoded
-            return Ok(());
-        }
-
         output.push_single_value(self, h)
     }
 }

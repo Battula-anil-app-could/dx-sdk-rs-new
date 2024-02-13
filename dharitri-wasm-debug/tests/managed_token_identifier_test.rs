@@ -1,5 +1,7 @@
 use dharitri_wasm::types::{BoxedBytes, TokenIdentifier};
-use dharitri_wasm_debug::{check_managed_top_decode, check_managed_top_encode_decode, DebugApi};
+use dharitri_wasm_debug::{
+    check_managed_top_decode, check_managed_top_encode_decode, managed_token_id, DebugApi,
+};
 
 #[test]
 fn test_moax() {
@@ -71,4 +73,17 @@ fn test_is_valid_dct_identifier() {
 
     // ticker too long
     assert!(!TokenIdentifier::<DebugApi>::from_dct_bytes(&b"ALCCCCCCCCC-6258d2"[..]).is_valid_dct_identifier());
+}
+
+#[test]
+fn test_managed_token_id_macro() {
+    let _ = DebugApi::dummy();
+    assert_eq!(
+        managed_token_id!(b"MOAX"),
+        TokenIdentifier::<DebugApi>::moax()
+    );
+    assert_eq!(
+        managed_token_id!(b"ALC-6258d2"),
+        TokenIdentifier::<DebugApi>::from_dct_bytes(&b"ALC-6258d2"[..])
+    );
 }

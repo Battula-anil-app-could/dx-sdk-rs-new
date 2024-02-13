@@ -70,20 +70,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "96d30a06541fbafbc7f82ed10c06164cfbd2c401138f6addd8404629c4b16711"
 
 [[package]]
-name = "async"
-version = "0.0.0"
-dependencies = [
- "dharitri-wasm",
- "dharitri-wasm-debug",
- "forwarder",
- "forwarder-raw",
- "proxy-test-first",
- "proxy-test-second",
- "recursive-caller",
- "vault",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -206,6 +192,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "composability-tests"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "forwarder",
+ "forwarder-raw",
+ "promises-features",
+ "proxy-test-first",
+ "proxy-test-second",
+ "recursive-caller",
+ "vault",
+]
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -322,10 +323,28 @@ dependencies = [
 ]
 
 [[package]]
-name = "denali"
-version = "0.2.8"
+name = "dct-transfer-with-fee"
+version = "0.0.0"
 dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "dct-transfer-with-fee-meta"
+version = "0.0.0"
+dependencies = [
+ "dct-transfer-with-fee",
+ "dharitri-wasm-debug",
+]
+
+[[package]]
+name = "denali"
+version = "0.2.9"
+dependencies = [
+ "dharitri-wasm",
  "hex",
+ "itertools",
  "num-bigint",
  "num-traits",
  "serde",
@@ -335,16 +354,17 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec"
-version = "0.3.5"
+version = "0.3.6"
 dependencies = [
  "arrayvec",
  "dharitri-codec-derive",
+ "num-bigint",
  "wee_alloc",
 ]
 
 [[package]]
 name = "dharitri-codec-derive"
-version = "0.3.5"
+version = "0.3.6"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -354,11 +374,12 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.9.6"
+version = "0.9.7"
 dependencies = [
  "bitflags",
  "dharitri-codec",
  "dharitri-wasm-derive",
+ "git-version",
  "hashbrown 0.11.2",
  "hex-literal",
  "wee_alloc",
@@ -366,14 +387,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.9.6"
+version = "0.9.7"
 dependencies = [
  "cargo_toml",
  "denali",
  "dharitri-wasm",
  "ed25519-dalek",
  "hex",
- "num-bigint",
+ "itertools",
  "num-traits",
  "pathdiff",
  "rand 0.8.5",
@@ -389,7 +410,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.9.6"
+version = "0.9.7"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -400,14 +421,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.9.6"
+version = "0.9.7"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.9.6"
+version = "0.9.7"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -459,6 +480,12 @@ dependencies = [
  "sha2",
  "zeroize",
 ]
+
+[[package]]
+name = "either"
+version = "1.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11157ac094ffbdde99aa67b23417ebdd801842852b500e395a45a9c0aac03e4a"
 
 [[package]]
 name = "empty"
@@ -695,6 +722,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "git-version"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1ad568aa3db0fcbc81f2f116137f263d7304f512a1209b35b85150d3ef88ad19"
+dependencies = [
+ "git-version-macro",
+]
+
+[[package]]
+name = "git-version-macro"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "53010ccb100b96a67bc32c0175f0ed1426b31b655d562898e57325f81c023ac0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.48",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -729,6 +776,15 @@ checksum = "233cf39063f058ea2caae4091bf4a3ef70a653afbc026f5c4a4135d114e3c177"
 dependencies = [
  "equivalent",
  "hashbrown 0.14.3",
+]
+
+[[package]]
+name = "itertools"
+version = "0.10.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
+dependencies = [
+ "either",
 ]
 
 [[package]]
@@ -1181,6 +1237,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2422ad645d89c99f8f3e6b88a9fdeca7fabeac836b1002371c4367c8f984aae"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "promises-features"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-node",
+ "vault",
+]
+
+[[package]]
+name = "promises-features-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm-debug",
+ "promises-features",
 ]
 
 [[package]]

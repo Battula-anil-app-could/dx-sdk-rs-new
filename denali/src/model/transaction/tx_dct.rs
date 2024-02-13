@@ -1,5 +1,5 @@
 use crate::{
-    interpret_trait::{InterpretableFrom, InterpreterContext},
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     model::{BigUintValue, BytesValue, U64Value},
     serde_raw::{TxDCTRaw, ValueSubTree},
 };
@@ -17,6 +17,16 @@ impl InterpretableFrom<TxDCTRaw> for TxDCT {
             dct_token_identifier: interpret_dct_token_identifier(from.token_identifier, context),
             nonce: interpret_opt_u64(from.nonce, context),
             dct_value: BigUintValue::interpret_from(from.value, context),
+        }
+    }
+}
+
+impl IntoRaw<TxDCTRaw> for TxDCT {
+    fn into_raw(self) -> TxDCTRaw {
+        TxDCTRaw {
+            token_identifier: Some(self.dct_token_identifier.into_raw()),
+            nonce: self.nonce.into_raw_opt(),
+            value: self.dct_value.into_raw(),
         }
     }
 }

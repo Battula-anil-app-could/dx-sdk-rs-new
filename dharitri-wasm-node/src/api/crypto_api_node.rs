@@ -1,22 +1,16 @@
 use super::VmApiImpl;
 use dharitri_wasm::{
-    api::{CryptoApi, CryptoApiImpl},
+    api::{CryptoApi, CryptoApiImpl, Handle},
     types::{heap::BoxedBytes, MessageHashType},
 };
 
 extern "C" {
-    // managed buffer API
-    #[cfg(feature = "ei-1-1")]
-    fn mBufferNew() -> i32;
-
     fn sha256(dataOffset: *const u8, length: i32, resultOffset: *mut u8) -> i32;
 
-    #[cfg(feature = "ei-1-1")]
     fn managedSha256(inputHandle: i32, outputHandle: i32) -> i32;
 
     fn keccak256(dataOffset: *const u8, length: i32, resultOffset: *mut u8) -> i32;
 
-    #[cfg(feature = "ei-1-1")]
     fn managedKeccak256(inputHandle: i32, outputHandle: i32) -> i32;
 
     fn ripemd160(dataOffset: *const u8, length: i32, resultOffset: *mut u8) -> i32;
@@ -81,12 +75,9 @@ impl CryptoApiImpl for VmApiImpl {
         }
     }
 
-    #[cfg(feature = "ei-1-1")]
-    fn sha256(&self, data_handle: dharitri_wasm::api::Handle) -> dharitri_wasm::api::Handle {
+    fn sha256_managed(&self, result_handle: Handle, data_handle: Handle) {
         unsafe {
-            let result_handle = mBufferNew();
             managedSha256(data_handle, result_handle);
-            result_handle
         }
     }
 
@@ -99,12 +90,9 @@ impl CryptoApiImpl for VmApiImpl {
         }
     }
 
-    #[cfg(feature = "ei-1-1")]
-    fn keccak256(&self, data_handle: dharitri_wasm::api::Handle) -> dharitri_wasm::api::Handle {
+    fn keccak256_managed(&self, result_handle: Handle, data_handle: Handle) {
         unsafe {
-            let result_handle = mBufferNew();
             managedKeccak256(data_handle, result_handle);
-            result_handle
         }
     }
 

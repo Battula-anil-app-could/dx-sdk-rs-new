@@ -1,13 +1,13 @@
 use crate::{
+    num_bigint,
     tx_execution::{deploy_contract, execute_builtin_function_or_default},
-    tx_mock::{AsyncCallTxData, BlockchainUpdate, TxCache, TxInput, TxPanic, TxResult},
+    tx_mock::{AsyncCallTxData, BlockchainUpdate, Promise, TxCache, TxInput, TxPanic, TxResult},
     DebugApi,
 };
 use dharitri_wasm::{
     api::{
-        BlockchainApiImpl, ManagedTypeApi, SendApi, SendApiImpl, StorageReadApiImpl,
-        StorageWriteApiImpl, DCT_MULTI_TRANSFER_FUNC_NAME, DCT_NFT_TRANSFER_FUNC_NAME,
-        DCT_TRANSFER_FUNC_NAME, UPGRADE_CONTRACT_FUNC_NAME,
+        BlockchainApiImpl, ManagedTypeApi, SendApi, SendApiImpl, DCT_MULTI_TRANSFER_FUNC_NAME,
+        DCT_NFT_TRANSFER_FUNC_NAME, DCT_TRANSFER_FUNC_NAME, UPGRADE_CONTRACT_FUNC_NAME,
     },
     dharitri_codec::top_encode_to_vec_u8,
     err_msg,
@@ -136,7 +136,7 @@ impl DebugApi {
 
         let tx_cache = TxCache::new(self.blockchain_cache_rc());
         tx_cache.increase_acount_nonce(contract_address);
-        let (tx_result, blockchain_updates, new_address) =
+        let (tx_result, new_address, blockchain_updates) =
             deploy_contract(tx_input, contract_code, tx_cache);
 
         if tx_result.result_status == 0 {
@@ -379,6 +379,41 @@ impl SendApiImpl for DebugApi {
         self.perform_async_call(call)
     }
 
+    fn create_async_call_raw<M: ManagedTypeApi>(
+        &self,
+        to: &ManagedAddress<M>,
+        amount: &BigUint<M>,
+        endpoint_name: &ManagedBuffer<M>,
+        success_callback: &'static [u8],
+        error_callback: &'static [u8],
+        _gas: u64,
+        _extra_gas_for_callback: u64,
+        arg_buffer: &ManagedArgBuffer<M>,
+    ) {
+        let amount_value = self.big_uint_handle_to_value(amount.get_raw_handle());
+        let contract_address = self.input_ref().to.clone();
+        let recipient = to.to_address();
+        let tx_hash = self.get_tx_hash_legacy();
+
+        let call = AsyncCallTxData {
+            from: contract_address,
+            to: recipient,
+            call_value: amount_value,
+            endpoint_name: endpoint_name.to_boxed_bytes().into_vec(),
+            arguments: arg_buffer.to_raw_args_vec(),
+            tx_hash,
+        };
+
+        let promise = Promise {
+            endpoint: call,
+            success_callback,
+            error_callback,
+        };
+
+        let mut tx_result = self.result_borrow_mut();
+        tx_result.result_calls.promises.push(promise);
+    }
+
     fn deploy_contract<M: ManagedTypeApi>(
         &self,
         _gas: u64,
@@ -461,40 +496,6 @@ impl SendApiImpl for DebugApi {
         ManagedVec::from(result)
     }
 
-    fn execute_on_dest_context_raw_custom_result_range<M, F>(
-        &self,
-        _gas: u64,
-        to: &ManagedAddress<M>,
-        value: &BigUint<M>,
-        endpoint_name: &ManagedBuffer<M>,
-        arg_buffer: &ManagedArgBuffer<M>,
-        range_closure: F,
-    ) -> ManagedVec<M, ManagedBuffer<M>>
-    where
-        M: ManagedTypeApi,
-        F: FnOnce(usize, usize) -> (usize, usize),
-    {
-        let moax_value = self.big_uint_handle_to_value(value.get_raw_handle());
-        let recipient = to.to_address();
-
-        let num_return_data_before = self.result_borrow_mut().result_values.len();
-
-        let result = self.perform_execute_on_dest_context(
-            recipient,
-            moax_value,
-            endpoint_name.to_boxed_bytes().into_vec(),
-            arg_buffer.to_raw_args_vec(),
-        );
-
-        let num_return_data_after = result.len();
-        let (result_start_index, result_end_index) = range_closure(
-            num_return_data_before as usize,
-            num_return_data_after as usize,
-        );
-
-        ManagedVec::from(result[result_start_index..result_end_index].to_vec())
-    }
-
     fn execute_on_dest_context_by_caller_raw<M: ManagedTypeApi>(
         &self,
         _gas: u64,
@@ -527,17 +528,6 @@ impl SendApiImpl for DebugApi {
         panic!("execute_on_dest_context_readonly_raw not implemented yet!");
     }
 
-    fn storage_store_tx_hash_key<M: ManagedTypeApi>(&self, data: &ManagedBuffer<M>) {
-        let tx_hash = self.get_tx_hash_legacy();
-        self.storage_store_slice_u8(tx_hash.as_bytes(), data.to_boxed_bytes().as_slice());
-    }
-
-    fn storage_load_tx_hash_key<M: ManagedTypeApi>(&self) -> ManagedBuffer<M> {
-        let tx_hash = self.get_tx_hash_legacy();
-        let bytes = self.storage_load_to_heap(tx_hash.as_bytes());
-        ManagedBuffer::new_from_bytes(&*bytes)
-    }
-
     fn call_local_dct_built_in_function<M: ManagedTypeApi>(
         &self,
         _gas: u64,
@@ -553,6 +543,22 @@ impl SendApiImpl for DebugApi {
             arg_buffer.to_raw_args_vec(),
         );
 
+        self.clean_return_data();
+
         ManagedVec::from(result)
+    }
+
+    fn clean_return_data(&self) {
+        let mut tx_result = self.result_borrow_mut();
+        tx_result.result_values.clear();
+    }
+
+    fn delete_from_return_data(&self, index: usize) {
+        let mut tx_result = self.result_borrow_mut();
+        if index > tx_result.result_values.len() {
+            return;
+        }
+
+        let _ = tx_result.result_values.remove(index);
     }
 }

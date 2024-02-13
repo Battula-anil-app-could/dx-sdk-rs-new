@@ -1,6 +1,6 @@
 use dharitri_codec::{
     multi_types::MultiValue3, DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti,
-    TopDecodeMultiInput, TopEncodeMulti, TopEncodeMultiOutput,
+    TopDecodeMultiInput, TopDecodeMultiLength, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 use crate::{
@@ -63,8 +63,6 @@ impl<M> TopEncodeMulti for DctTokenPaymentMultiValue<M>
 where
     M: ManagedTypeApi,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -91,6 +89,13 @@ where
         let amount = BigUint::multi_decode_or_handle_err(input, h)?;
         Ok(DctTokenPayment::new(token_identifier, token_nonce, amount).into())
     }
+}
+
+impl<M> TopDecodeMultiLength for DctTokenPaymentMultiValue<M>
+where
+    M: ManagedTypeApi,
+{
+    const LEN: usize = 3;
 }
 
 impl<M> TypeAbi for DctTokenPaymentMultiValue<M>

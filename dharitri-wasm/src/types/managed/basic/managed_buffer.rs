@@ -2,13 +2,18 @@ use core::marker::PhantomData;
 
 use crate::{
     abi::TypeName,
-    api::{ErrorApiImpl, Handle, InvalidSliceError, ManagedBufferApi, ManagedTypeApi},
-    hex_util::encode_bytes_as_hex,
+    api::{
+        ErrorApiImpl, Handle, InvalidSliceError, ManagedBufferApi, ManagedTypeApi, StaticVarApiImpl,
+    },
+    formatter::{
+        hex_util::encode_bytes_as_hex, FormatByteReceiver, SCBinary, SCDisplay, SCLowerHex,
+    },
     types::{heap::BoxedBytes, ManagedType},
 };
 use dharitri_codec::{
-    DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode,
-    NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput, TryStaticCast,
+    CodecFrom, CodecFromSelf, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
+    NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
+    TopEncodeOutput, TryStaticCast,
 };
 
 /// A byte buffer managed by an external API.
@@ -40,20 +45,24 @@ impl<M: ManagedTypeApi> ManagedType<M> for ManagedBuffer<M> {
 impl<M: ManagedTypeApi> ManagedBuffer<M> {
     #[inline]
     pub fn new() -> Self {
-        ManagedBuffer::from_raw_handle(M::managed_type_impl().mb_new_empty())
+        let new_handle = M::static_var_api_impl().next_handle();
+        // TODO: remove after VM no longer crashes with "unknown handle":
+        M::managed_type_impl().mb_overwrite(new_handle, &[]);
+        ManagedBuffer::from_raw_handle(new_handle)
     }
 
     #[inline]
     pub fn new_from_bytes(bytes: &[u8]) -> Self {
-        ManagedBuffer::from_raw_handle(M::managed_type_impl().mb_new_from_bytes(bytes))
+        let new_handle = M::static_var_api_impl().next_handle();
+        M::managed_type_impl().mb_overwrite(new_handle, bytes);
+        ManagedBuffer::from_raw_handle(new_handle)
     }
 
     #[inline]
     pub fn new_random(nr_bytes: usize) -> Self {
-        let handle = M::managed_type_impl().mb_new_empty();
-        M::managed_type_impl().mb_set_random(handle, nr_bytes);
-
-        ManagedBuffer::from_raw_handle(handle)
+        let new_handle = M::static_var_api_impl().next_handle();
+        M::managed_type_impl().mb_set_random(new_handle, nr_bytes);
+        ManagedBuffer::from_raw_handle(new_handle)
     }
 }
 
@@ -157,12 +166,26 @@ impl<M: ManagedTypeApi> ManagedBuffer<M> {
         byte_slice
     }
 
+    /// Loads all bytes of the managed buffer in batches, then applies given closure on each batch.
+    pub fn for_each_batch<const BATCH_SIZE: usize, F: FnMut(&[u8])>(&self, mut f: F) {
+        let mut buffer = [0u8; BATCH_SIZE];
+        let arg_len = self.len();
+        let mut current_arg_index = 0;
+        while current_arg_index < arg_len {
+            let bytes_remaining = arg_len - current_arg_index;
+            let bytes_to_load = core::cmp::min(bytes_remaining, BATCH_SIZE);
+            let loaded_slice = &mut buffer[0..bytes_to_load];
+            let _ = self.load_slice(current_arg_index, loaded_slice);
+            f(loaded_slice);
+            current_arg_index += BATCH_SIZE;
+        }
+    }
+
     #[inline]
     pub fn overwrite(&mut self, value: &[u8]) {
         M::managed_type_impl().mb_overwrite(self.handle, value);
     }
 
-    #[cfg(feature = "ei-1-1")]
     pub fn set_slice(
         &mut self,
         starting_position: usize,
@@ -175,56 +198,6 @@ impl<M: ManagedTypeApi> ManagedBuffer<M> {
         } else {
             Err(InvalidSliceError)
         }
-    }
-
-    /// Alternate implementation that uses copies and appends to achieve the slice replacement.
-    /// Should be used until EI version 1.1 is shipped to mainnet.
-    #[cfg(not(feature = "ei-1-1"))]
-    pub fn set_slice(
-        &mut self,
-        starting_position: usize,
-        source_slice: &[u8],
-    ) -> Result<(), InvalidSliceError> {
-        let api = M::managed_type_impl();
-        let self_len = self.len();
-        let slice_len = source_slice.len();
-        if starting_position + slice_len > self_len {
-            return Err(InvalidSliceError);
-        }
-
-        // copy part after update -> temporary managed buffer
-        let part_after_handle = api.mb_new_empty();
-        let part_after_start = starting_position + slice_len;
-        let part_after_len = self_len - part_after_start;
-        if part_after_len > 0 {
-            if api
-                .mb_copy_slice(
-                    self.handle,
-                    part_after_start,
-                    part_after_len,
-                    part_after_handle,
-                )
-                .is_err()
-            {
-                return Err(InvalidSliceError);
-            }
-        }
-
-        // trim self to length of part before update
-        if api
-            .mb_copy_slice(self.handle, 0, starting_position, self.handle)
-            .is_err()
-        {
-            return Err(InvalidSliceError);
-        }
-
-        // append updated slice
-        api.mb_append_bytes(self.handle, source_slice);
-
-        // copy temporary managed buffer -> part after update (using append)
-        api.mb_append(self.handle, part_after_handle);
-
-        Ok(())
     }
 
     pub fn set_random(&mut self, nr_bytes: usize) {
@@ -307,6 +280,22 @@ impl<M: ManagedTypeApi> PartialEq<[u8]> for ManagedBuffer<M> {
 
 impl<M: ManagedTypeApi> TryStaticCast for ManagedBuffer<M> {}
 
+impl<M: ManagedTypeApi> NestedEncode for ManagedBuffer<M> {
+    fn dep_encode_or_handle_err<O, H>(&self, dest: &mut O, h: H) -> Result<(), H::HandledErr>
+    where
+        O: NestedEncodeOutput,
+        H: EncodeErrorHandler,
+    {
+        if O::supports_specialized_type::<Self>() {
+            let len_bytes = (self.len() as u32).to_be_bytes();
+            dest.write(&len_bytes[..]);
+            dest.push_specialized((), self, h)
+        } else {
+            self.to_boxed_bytes().dep_encode_or_handle_err(dest, h)
+        }
+    }
+}
+
 impl<M: ManagedTypeApi> TopEncode for ManagedBuffer<M> {
     #[inline]
     fn top_encode_or_handle_err<O, H>(&self, output: O, h: H) -> Result<(), H::HandledErr>
@@ -323,18 +312,35 @@ impl<M: ManagedTypeApi> TopEncode for ManagedBuffer<M> {
     }
 }
 
-impl<M: ManagedTypeApi> NestedEncode for ManagedBuffer<M> {
-    fn dep_encode_or_handle_err<O, H>(&self, dest: &mut O, h: H) -> Result<(), H::HandledErr>
+impl<M> CodecFromSelf for ManagedBuffer<M> where M: ManagedTypeApi {}
+
+impl<M: ManagedTypeApi> CodecFrom<&[u8]> for ManagedBuffer<M> {}
+impl<M: ManagedTypeApi, const N: usize> CodecFrom<&[u8; N]> for ManagedBuffer<M> {}
+
+macro_rules! managed_buffer_codec_from_impl_bi_di {
+    ($other_ty:ty) => {
+        impl<M: ManagedTypeApi> CodecFrom<$other_ty> for ManagedBuffer<M> {}
+        impl<M: ManagedTypeApi> CodecFrom<&$other_ty> for ManagedBuffer<M> {}
+        impl<M: ManagedTypeApi> CodecFrom<ManagedBuffer<M>> for $other_ty {}
+        impl<M: ManagedTypeApi> CodecFrom<&ManagedBuffer<M>> for $other_ty {}
+    };
+}
+
+managed_buffer_codec_from_impl_bi_di! {crate::types::heap::Vec<u8>}
+managed_buffer_codec_from_impl_bi_di! {crate::types::heap::BoxedBytes}
+managed_buffer_codec_from_impl_bi_di! {crate::types::heap::String}
+
+impl<M: ManagedTypeApi> NestedDecode for ManagedBuffer<M> {
+    fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
     where
-        O: NestedEncodeOutput,
-        H: EncodeErrorHandler,
+        I: NestedDecodeInput,
+        H: DecodeErrorHandler,
     {
-        if O::supports_specialized_type::<Self>() {
-            let len_bytes = (self.len() as u32).to_be_bytes();
-            dest.write(&len_bytes[..]);
-            dest.push_specialized((), self, h)
+        if I::supports_specialized_type::<Self>() {
+            input.read_specialized((), h)
         } else {
-            self.to_boxed_bytes().dep_encode_or_handle_err(dest, h)
+            let boxed_bytes = BoxedBytes::dep_decode_or_handle_err(input, h)?;
+            Ok(Self::new_from_bytes(boxed_bytes.as_slice()))
         }
     }
 }
@@ -353,24 +359,29 @@ impl<M: ManagedTypeApi> TopDecode for ManagedBuffer<M> {
     }
 }
 
-impl<M: ManagedTypeApi> NestedDecode for ManagedBuffer<M> {
-    fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
-    where
-        I: NestedDecodeInput,
-        H: DecodeErrorHandler,
-    {
-        if I::supports_specialized_type::<Self>() {
-            input.read_specialized((), h)
-        } else {
-            let boxed_bytes = BoxedBytes::dep_decode_or_handle_err(input, h)?;
-            Ok(Self::new_from_bytes(boxed_bytes.as_slice()))
-        }
-    }
-}
-
 impl<M: ManagedTypeApi> crate::abi::TypeAbi for ManagedBuffer<M> {
     fn type_name() -> TypeName {
         "bytes".into()
+    }
+}
+
+impl<M: ManagedTypeApi> SCDisplay for ManagedBuffer<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        f.append_managed_buffer(&ManagedBuffer::from_raw_handle(self.get_raw_handle()));
+    }
+}
+
+impl<M: ManagedTypeApi> SCLowerHex for ManagedBuffer<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        // TODO: in Rust thr `0x` prefix appears only when writing "{:#x}", not "{:x}"
+        f.append_managed_buffer_lower_hex(&ManagedBuffer::from_raw_handle(self.get_raw_handle()));
+    }
+}
+
+impl<M: ManagedTypeApi> SCBinary for ManagedBuffer<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        // TODO: in Rust thr `0b` prefix appears only when writing "{:#x}", not "{:x}"
+        f.append_managed_buffer_binary(&ManagedBuffer::from_raw_handle(self.get_raw_handle()));
     }
 }
 

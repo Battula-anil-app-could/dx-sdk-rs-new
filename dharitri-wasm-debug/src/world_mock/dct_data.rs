@@ -1,4 +1,4 @@
-use num_bigint::BigUint;
+use crate::num_bigint::BigUint;
 use num_traits::Zero;
 
 use crate::key_hex;
@@ -11,7 +11,6 @@ use super::{DctInstanceMetadata, DctInstances, DctRoles};
 
 #[derive(Clone, Default, Debug)]
 pub struct DctData {
-    pub token_identifier: Vec<u8>,
     pub instances: DctInstances,
     pub last_nonce: u64,
     pub roles: DctRoles,
@@ -49,16 +48,12 @@ impl AccountDct {
     }
 
     pub fn set_roles(&mut self, token_identifier: Vec<u8>, roles: Vec<Vec<u8>>) {
-        let dct_data = self
-            .0
-            .entry(token_identifier.clone())
-            .or_insert_with(|| DctData {
-                token_identifier,
-                instances: DctInstances::new(),
-                last_nonce: 0,
-                roles: DctRoles::default(),
-                frozen: false,
-            });
+        let dct_data = self.0.entry(token_identifier).or_insert_with(|| DctData {
+            instances: DctInstances::new(),
+            last_nonce: 0,
+            roles: DctRoles::default(),
+            frozen: false,
+        });
         dct_data.roles = DctRoles::new(roles);
     }
 
@@ -86,16 +81,12 @@ impl AccountDct {
         value: &BigUint,
         metadata: DctInstanceMetadata,
     ) {
-        let dct_data = self
-            .0
-            .entry(token_identifier.clone())
-            .or_insert_with(|| DctData {
-                token_identifier,
-                instances: DctInstances::new(),
-                last_nonce: nonce,
-                roles: DctRoles::default(),
-                frozen: false,
-            });
+        let dct_data = self.0.entry(token_identifier).or_insert_with(|| DctData {
+            instances: DctInstances::new(),
+            last_nonce: nonce,
+            roles: DctRoles::default(),
+            frozen: false,
+        });
         dct_data.instances.increase_balance(nonce, value, metadata);
     }
 
@@ -106,16 +97,12 @@ impl AccountDct {
         value: &BigUint,
         metadata: DctInstanceMetadata,
     ) {
-        let dct_data = self
-            .0
-            .entry(token_identifier.clone())
-            .or_insert_with(|| DctData {
-                token_identifier,
-                instances: DctInstances::new(),
-                last_nonce: nonce,
-                roles: DctRoles::default(),
-                frozen: false,
-            });
+        let dct_data = self.0.entry(token_identifier).or_insert_with(|| DctData {
+            instances: DctInstances::new(),
+            last_nonce: nonce,
+            roles: DctRoles::default(),
+            frozen: false,
+        });
         dct_data.instances.set_balance(nonce, value, metadata);
     }
 
@@ -170,17 +157,12 @@ impl fmt::Display for DctData {
         write!(
             dct_buf,
             "{{
-                token_identifier: {},
                 instances: [{}],
                 last_nonce: {},
                 roles: [{}],
                 frozen: {},
             }}",
-            key_hex(self.token_identifier.as_slice()),
-            self.instances,
-            self.last_nonce,
-            self.roles,
-            self.frozen
+            self.instances, self.last_nonce, self.roles, self.frozen
         )?;
         Ok(())
     }

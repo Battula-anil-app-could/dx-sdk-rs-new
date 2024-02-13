@@ -7,8 +7,9 @@
         "compile": "tsc -p tsconfig.json"
     },
     "dependencies": {
-        "@dharitrinetwork/moajs": "^9.2.0",
-        "@dharitrinetwork/moajs-snippets": "^1.0.0",
+        "@dharitrinetwork/moajs": "10.0.2",
+        "@dharitrinetwork/moajs-snippets": "2.0.2",
+        "@dharitrinetwork/moajs-network-providers": "0.1.4",
         "bignumber.js": "9.0.2"
     },
     "devDependencies": {
@@ -22,7 +23,9 @@
         "ts-node": "9.1.1"
     },
     "mocha": {
-        "extension": ["ts"],
+        "extension": [
+            "ts"
+        ],
         "require": "ts-node/register",
         "spec": "**/*.spec.ts"
     }

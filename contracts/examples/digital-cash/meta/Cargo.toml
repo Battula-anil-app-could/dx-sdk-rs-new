@@ -8,5 +8,5 @@ publish = false
 path = ".."
 
 [dependencies.dharitri-wasm-debug]
-version = "0.9.6"
+version = "0.9.7"
 path = "../../../../dharitri-wasm-debug"
