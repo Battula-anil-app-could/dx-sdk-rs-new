@@ -294,6 +294,11 @@ fn managed_buffer_slice_2_rs() {
 }
 
 #[test]
+fn managed_buffer_slice_3_rs() {
+    dharitri_wasm_debug::denali_rs("denali/managed_buffer_slice_3.scen.json", world());
+}
+
+#[test]
 fn managed_vec_address_push_rs() {
     dharitri_wasm_debug::denali_rs("denali/managed_vec_address_push.scen.json", world());
 }
