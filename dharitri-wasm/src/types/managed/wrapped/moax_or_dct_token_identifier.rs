@@ -114,7 +114,7 @@ impl<M: ManagedTypeApi> MoaxOrDctTokenIdentifier<M> {
     }
 
     /// Representation of the object as an `Option`.
-    /// 
+    ///
     /// Because it does not consume `self` only a reference to the DCT token identifier can be returned.
     pub fn as_dct_option(&self) -> Option<ManagedRef<'_, M, TokenIdentifier<M>>> {
         self.data.as_option()
@@ -224,7 +224,7 @@ impl<M: ManagedTypeApi> SCDisplay for MoaxOrDctTokenIdentifier<M> {
     }
 }
 
-const MOAX_REPRESENTATION_HEX: &[u8] = b"4d4f4158";
+const MOAX_REPRESENTATION_HEX: &[u8] = b"45474C44";
 
 impl<M: ManagedTypeApi> SCLowerHex for MoaxOrDctTokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
