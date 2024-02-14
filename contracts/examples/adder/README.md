@@ -11,7 +11,7 @@ python3 ./interaction/playground.py --pem=./testnet/wallets/users/alice.pem --pr
 Interact with existing contract:
 
 ```
-python3 ./interaction/playground.py --pem=./testnet/wallets/users/alice.pem --proxy=http://localhost:7950 --contract=moa1...
+python3 ./interaction/playground.py --pem=./testnet/wallets/users/alice.pem --proxy=http://localhost:7950 --contract=moa1s...
 ```
 
 ## On testnet

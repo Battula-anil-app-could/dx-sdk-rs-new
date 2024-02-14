@@ -4,11 +4,11 @@ use crate::{
     types::{
         heap::{ArgBuffer, BoxedBytes},
         ManagedBuffer, ManagedBufferNestedDecodeInput, ManagedType, ManagedVecItem, ManagedVecRef,
-        ManagedVecRefIterator,
+        ManagedVecRefIterator, MultiValueManagedVec,
     },
 };
 use alloc::vec::Vec;
-use core::{borrow::Borrow, marker::PhantomData};
+use core::{borrow::Borrow, iter::FromIterator, marker::PhantomData};
 use dharitri_codec::{
     DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode,
     NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeMultiOutput,
@@ -282,6 +282,11 @@ where
     pub fn iter(&self) -> ManagedVecRefIterator<M, T> {
         ManagedVecRefIterator::new(self)
     }
+
+    /// Creates a reference to and identical object, but one which behaves like a multi-value-vec.
+    pub fn as_multi(&self) -> &MultiValueManagedVec<M, T> {
+        MultiValueManagedVec::transmute_from_handle_ref(&self.buffer.handle)
+    }
 }
 
 impl<M, T> Clone for ManagedVec<M, T>
@@ -513,5 +518,17 @@ where
         arg.top_encode_or_handle_err(&mut result, h)?;
         self.push(result);
         Ok(())
+    }
+}
+
+impl<M, V> FromIterator<V> for ManagedVec<M, V>
+where
+    M: ManagedTypeApi,
+    V: ManagedVecItem,
+{
+    fn from_iter<T: IntoIterator<Item = V>>(iter: T) -> Self {
+        let mut result: ManagedVec<M, V> = ManagedVec::new();
+        iter.into_iter().for_each(|f| result.push(f));
+        result
     }
 }

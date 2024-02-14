@@ -28,7 +28,7 @@
         },
         {
             "step": "scCall",
-            "txId": "call-value-moax",
+            "id": "call-value-moax",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
@@ -51,7 +51,7 @@
         },
         {
             "step": "scCall",
-            "txId": "call-value-single-dct",
+            "id": "call-value-single-dct",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
@@ -81,7 +81,7 @@
         },
         {
             "step": "scCall",
-            "txId": "call-value-multi-dct",
+            "id": "call-value-multi-dct",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",

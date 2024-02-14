@@ -2,11 +2,13 @@
 #![feature(generic_associated_types)]
 
 pub mod bonding_curve;
+pub mod claim_developer_rewards;
 pub mod default_issue_callbacks;
 pub mod dns;
 pub mod dct;
 pub mod features;
 pub mod governance;
+pub mod ongoing_operation;
 pub mod only_admin;
 pub mod pause;
 pub mod staking;

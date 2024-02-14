@@ -51,7 +51,7 @@
         },
         {
             "step": "scDeploy",
-            "txId": "1",
+            "id": "1",
             "tx": {
                 "from": "address:owner",
                 "contractCode": "file:../output/dct-transfer-with-fee.wasm",

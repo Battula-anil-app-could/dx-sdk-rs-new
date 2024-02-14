@@ -5,6 +5,7 @@ mod internal_mod_b;
 mod internal_mod_c;
 mod internal_mod_d;
 mod internal_mod_init;
+mod ongoing_operation_mod_example;
 mod only_admin_derived_mod;
 mod only_admin_mod;
 mod only_owner_derived_mod;
@@ -29,6 +30,8 @@ pub trait UseModule:
     + only_owner_derived_mod::OnlyOwnerDerivedTestModule
     + only_admin_mod::OnlyAdminTestModule
     + only_admin_derived_mod::OnlyAdminDerivedTestModule
+    + ongoing_operation_mod_example::OngoingOperationModExample
+    + dharitri_wasm_modules::claim_developer_rewards::ClaimDeveloperRewardsModule
     + dharitri_wasm_modules::dns::DnsModule
     + dharitri_wasm_modules::dct::DctModule
     + dharitri_wasm_modules::features::FeaturesModule
@@ -40,6 +43,7 @@ pub trait UseModule:
     + dharitri_wasm_modules::token_merge::TokenMergeModule
     + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
     + dharitri_wasm_modules::only_admin::OnlyAdminModule
+    + dharitri_wasm_modules::ongoing_operation::OngoingOperationModule
 {
     /// Validates that the "featureName" feature is on.
     /// Uses the `feature_guard!` macro.

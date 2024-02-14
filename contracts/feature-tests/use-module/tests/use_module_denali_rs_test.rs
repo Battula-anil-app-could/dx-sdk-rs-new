@@ -45,6 +45,14 @@ fn world() -> BlockchainMock {
 }
 
 #[test]
+fn use_module_claim_developer_rewards_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/use_module_claim_developer_rewards.scen.json",
+        world(),
+    );
+}
+
+#[test]
 fn use_module_dns_register_rs() {
     dharitri_wasm_debug::denali_rs("denali/use_module_dns_register.scen.json", world());
 }
@@ -78,3 +86,12 @@ fn use_module_no_endpoint_rs() {
 fn use_module_pause_rs() {
     dharitri_wasm_debug::denali_rs("denali/use_module_pause.scen.json", world());
 }
+
+// Will not work in denali-rs, since there is no gas usage
+// #[test]
+// fn use_module_ongoing_operation_rs() {
+//     dharitri_wasm_debug::denali_rs(
+//         "denali/use_module_ongoing_operation_example.scen.json",
+//         world(),
+//     );
+// }

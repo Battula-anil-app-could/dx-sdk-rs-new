@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.10.3"
+            "version": "0.10.4"
         }
     },
     "docs": [
@@ -98,6 +98,27 @@
             "name": "call_derived_not_admin_only",
             "mutability": "readonly",
             "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "countTo100",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "OperationCompletionStatus"
+                }
+            ]
+        },
+        {
+            "name": "claimDeveloperRewards",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "child_sc_address",
+                    "type": "Address"
+                }
+            ],
             "outputs": []
         },
         {
@@ -513,16 +534,6 @@
             ]
         },
         {
-            "name": "isPaused",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "pause",
             "onlyOwner": true,
             "mutability": "mutable",
@@ -535,6 +546,16 @@
             "mutability": "mutable",
             "inputs": [],
             "outputs": []
+        },
+        {
+            "name": "isPaused",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "name": "stake",

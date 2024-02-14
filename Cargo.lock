@@ -456,9 +456,9 @@ dependencies = [
 
 [[package]]
 name = "crypto-mac"
-version = "0.11.0"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25fab6889090c8133f3deb8f73ba3c65a7f456f66436fc012a1b1e272b1e103e"
+checksum = "b1d1a86f49236c215f271d40892d5fc950490551400b02ef360692c29815c714"
 dependencies = [
  "generic-array",
  "subtle",
@@ -521,7 +521,7 @@ dependencies = [
 
 [[package]]
 name = "denali"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "bech32 0.9.1",
  "hex",
@@ -534,7 +534,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec"
-version = "0.3.7"
+version = "0.3.8"
 dependencies = [
  "arrayvec",
  "dharitri-codec-derive",
@@ -544,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec-derive"
-version = "0.3.7"
+version = "0.3.8"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -567,7 +567,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-price-aggregator"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "arrayvec",
  "dharitri-wasm",
@@ -586,7 +586,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-wmoax-swap"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
@@ -631,7 +631,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "bitflags 1.3.2",
  "dharitri-codec",
@@ -645,7 +645,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "bech32 0.9.1",
  "cargo_toml",
@@ -670,7 +670,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -681,14 +681,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -2727,9 +2727,9 @@ dependencies = [
 
 [[package]]
 name = "subtle"
-version = "2.5.0"
+version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81cdd64d312baedb58e21336b31bc043b77e01cc99033ce76ef539f78e965ebc"
+checksum = "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
 
 [[package]]
 name = "syn"
@@ -2824,9 +2824,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.35.1"
+version = "1.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c89b4efa943be685f629b149f53829423f8f5531ea21249408e8e2f8671ec104"
+checksum = "61285f6515fa018fb2d1e46eb21223fff441ee8db5d0f1435e8ab4f5cdb80931"
 dependencies = [
  "backtrace",
  "bytes",
@@ -3342,9 +3342,9 @@ checksum = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
 
 [[package]]
 name = "winnow"
-version = "0.5.36"
+version = "0.5.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "818ce546a11a9986bc24f93d0cdf38a8a1a400f1473ea8c82e59f6e0ffab9249"
+checksum = "a7cad8365489051ae9f054164e459304af2e7e9bb407c958076c8bf4aef52da5"
 dependencies = [
  "memchr",
 ]

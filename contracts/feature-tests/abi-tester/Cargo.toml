@@ -9,10 +9,10 @@ publish = false
 path = "src/abi_tester.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.10.3"
+version = "0.10.4"
 path = "../../../dharitri-wasm"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.3"
+version = "0.10.4"
 path = "../../../dharitri-wasm-debug"

@@ -29,7 +29,7 @@ impl Interactor {
                 .map(|arg| hex::encode(&arg.to_boxed_bytes().as_slice()))
                 .collect(),
             caller: sc_address,
-            value: String::from("0"),
+            value: "0".to_string(),
         };
         let result = self
             .proxy

@@ -13,8 +13,12 @@ dharitri_wasm_node::wasm_endpoints! {
         add_assign_big_uint
         add_assign_big_uint_ref
         add_big_int
+        add_big_int_big_uint
+        add_big_int_big_uint_ref
         add_big_int_ref
         add_big_uint
+        add_big_uint_big_int
+        add_big_uint_big_int_ref
         add_big_uint_ref
         add_to_whitelist
         big_int_from_biguint
@@ -185,6 +189,7 @@ dharitri_wasm_node::wasm_endpoints! {
         maddress_from_managed_buffer
         managed_address_eq
         managed_address_zero
+        managed_ref_explicit
         managed_struct_eq
         managed_vec_address_push
         managed_vec_array_push

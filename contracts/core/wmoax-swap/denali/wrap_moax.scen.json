@@ -7,15 +7,19 @@
             "accounts": {
                 "address:user": {
                     "nonce": "0",
-                    "balance": "1000",
-                    "storage": {}
+                    "balance": "1000"
                 },
                 "sc:moax_dct_swap": {
                     "nonce": "0",
                     "balance": "0",
                     "dct": {
                         "str:MOAX-abcdef": {
-                            "balance": "1",
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
                             "roles": [
                                 "DCTRoleLocalMint",
                                 "DCTRoleLocalBurn"
@@ -31,22 +35,22 @@
         },
         {
             "step": "scCall",
-            "txId": "wrap-moax",
+            "id": "wrap-moax",
             "tx": {
                 "from": "address:user",
                 "to": "sc:moax_dct_swap",
-                "value": "500",
+                "moaxValue": "500",
                 "function": "wrapMoax",
                 "arguments": [],
                 "gasLimit": "5,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "status": "0",
-                "message": "",
                 "out": [
                     "nested:str:MOAX-abcdef|u64:0|biguint:500"
                 ],
+                "status": "0",
+                "message": "",
                 "gas": "*",
                 "refund": "*"
             }
@@ -67,7 +71,12 @@
                     "balance": "500",
                     "dct": {
                         "str:MOAX-abcdef": {
-                            "balance": "1",
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
                             "roles": [
                                 "DCTRoleLocalMint",
                                 "DCTRoleLocalBurn"

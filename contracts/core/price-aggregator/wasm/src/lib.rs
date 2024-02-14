@@ -8,14 +8,15 @@ dharitri_wasm_node::wasm_endpoints! {
     dharitri_sc_price_aggregator
     (
         addOracles
-        decimals
         getOracles
+        getPairDecimals
         isPaused
         latestPriceFeed
         latestPriceFeedOptional
         latestRoundData
         pause
         removeOracles
+        setPairDecimals
         setSubmissionCount
         slashMember
         stake
