@@ -1,6 +1,6 @@
 use super::VmApiImpl;
 use dharitri_wasm::{
-    api::{CallValueApi, CallValueApiImpl, Handle, StaticVarApiImpl},
+    api::{CallValueApi, CallValueApiImpl, StaticVarApiImpl},
     types::{DctTokenType, ManagedType, TokenIdentifier},
 };
 
@@ -46,14 +46,14 @@ impl CallValueApiImpl for VmApiImpl {
         }
     }
 
-    fn load_moax_value(&self, dest: Handle) {
+    fn load_moax_value(&self, dest: Self::BigIntHandle) {
         unsafe {
             bigIntGetCallValue(dest);
         }
     }
 
     #[cfg(not(feature = "ei-unmanaged-node"))]
-    fn load_all_dct_transfers(&self, dest_handle: Handle) {
+    fn load_all_dct_transfers(&self, dest_handle: Self::ManagedBufferHandle) {
         unsafe {
             managedGetMultiDCTCallValue(dest_handle);
         }
@@ -63,13 +63,13 @@ impl CallValueApiImpl for VmApiImpl {
         unsafe { getNumDCTTransfers() as usize }
     }
 
-    fn load_single_dct_value(&self, dest: Handle) {
+    fn load_single_dct_value(&self, dest: Self::BigIntHandle) {
         unsafe {
             bigIntGetDCTCallValue(dest);
         }
     }
 
-    fn token(&self) -> Option<Handle> {
+    fn token(&self) -> Option<Self::ManagedBufferHandle> {
         unsafe {
             let mut name_buffer = [0u8; MAX_POSSIBLE_TOKEN_IDENTIFIER_LENGTH];
             let name_len = getDCTTokenName(name_buffer.as_mut_ptr());
@@ -92,7 +92,7 @@ impl CallValueApiImpl for VmApiImpl {
         unsafe { (getDCTTokenType() as u8).into() }
     }
 
-    fn dct_value_by_index(&self, index: usize) -> Handle {
+    fn dct_value_by_index(&self, index: usize) -> Self::BigIntHandle {
         unsafe {
             let value_handle = self.next_handle();
             bigIntGetDCTCallValueByIndex(value_handle, index as i32);
@@ -100,7 +100,7 @@ impl CallValueApiImpl for VmApiImpl {
         }
     }
 
-    fn token_by_index(&self, index: usize) -> Handle {
+    fn token_by_index(&self, index: usize) -> Self::ManagedBufferHandle {
         unsafe {
             let mut name_buffer = [0u8; MAX_POSSIBLE_TOKEN_IDENTIFIER_LENGTH];
             let name_len = getDCTTokenNameByIndex(name_buffer.as_mut_ptr(), index as i32);

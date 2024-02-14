@@ -1,4 +1,4 @@
-use dharitri_wasm_debug::{denali::model::*, *};
+use dharitri_wasm_debug::{denali_system::model::*, *};
 
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();

@@ -72,8 +72,6 @@ cd dharitri-wasm
 cargo publish || return 1
 cd ..
 
-sleep 20
-
 cd denali
 cargo publish || return 1
 cd ..
@@ -91,5 +89,9 @@ cargo publish || return 1
 cd ..
 
 cd dharitri-wasm-modules
+cargo publish || return 1
+cd ..
+
+cd dharitri-interact-snippets
 cargo publish || return 1
 cd ..

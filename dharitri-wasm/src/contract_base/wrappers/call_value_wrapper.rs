@@ -2,8 +2,8 @@ use core::marker::PhantomData;
 
 use crate::{
     api::{
-        const_handles, CallValueApi, CallValueApiImpl, ErrorApi, ErrorApiImpl, ManagedTypeApi,
-        StaticVarApiImpl,
+        const_handles, use_raw_handle, CallValueApi, CallValueApiImpl, ErrorApi, ErrorApiImpl,
+        ManagedTypeApi, StaticVarApiImpl,
     },
     err_msg,
     types::{
@@ -35,11 +35,11 @@ where
     pub fn moax_value(&self) -> BigUint<A> {
         let mut call_value_handle = A::static_var_api_impl().get_call_value_moax_handle();
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
-            call_value_handle = const_handles::CALL_VALUE_MOAX;
-            A::static_var_api_impl().set_call_value_moax_handle(call_value_handle);
-            A::call_value_api_impl().load_moax_value(call_value_handle);
+            call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MOAX);
+            A::static_var_api_impl().set_call_value_moax_handle(call_value_handle.clone());
+            A::call_value_api_impl().load_moax_value(call_value_handle.clone());
         }
-        BigUint::from_raw_handle(call_value_handle) // unsafe, TODO: replace with ManagedRef<...>
+        BigUint::from_handle(call_value_handle) // unsafe, TODO: replace with ManagedRef<...>
     }
 
     /// Returns all DCT transfers that accompany this SC call.
@@ -48,11 +48,11 @@ where
     pub fn all_dct_transfers(&self) -> ManagedVec<A, DctTokenPayment<A>> {
         let mut call_value_handle = A::static_var_api_impl().get_call_value_multi_dct_handle();
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
-            call_value_handle = const_handles::CALL_VALUE_MULTI_DCT;
-            A::static_var_api_impl().set_call_value_multi_dct_handle(call_value_handle);
-            A::call_value_api_impl().load_all_dct_transfers(call_value_handle);
+            call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MULTI_DCT);
+            A::static_var_api_impl().set_call_value_multi_dct_handle(call_value_handle.clone());
+            A::call_value_api_impl().load_all_dct_transfers(call_value_handle.clone());
         }
-        ManagedVec::from_raw_handle(call_value_handle) // unsafe, TODO: replace with ManagedRef<...>
+        ManagedVec::from_handle(call_value_handle) // unsafe, TODO: replace with ManagedRef<...>
     }
 
     /// Verify and casts the received multi DCT transfer in to an array.
@@ -94,8 +94,10 @@ where
     /// Retrieves the DCT call value from the VM.
     /// Will return 0 in case of an MOAX transfer (cannot have both MOAX and DCT transfer simultaneously).
     pub fn dct_value(&self) -> BigUint<A> {
-        A::call_value_api_impl().load_single_dct_value(const_handles::CALL_VALUE_SINGLE_DCT);
-        BigUint::from_raw_handle(const_handles::CALL_VALUE_SINGLE_DCT)
+        let call_value_single_dct: A::BigIntHandle =
+            use_raw_handle(const_handles::CALL_VALUE_SINGLE_DCT);
+        A::call_value_api_impl().load_single_dct_value(call_value_single_dct.clone());
+        BigUint::from_handle(call_value_single_dct)
     }
 
     /// Accepts and returns either an MOAX payment, or a single DCT token.

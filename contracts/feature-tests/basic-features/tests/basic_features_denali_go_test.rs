@@ -224,8 +224,18 @@ fn managed_vec_biguint_push_go() {
 }
 
 #[test]
+fn managed_vec_array_push_go() {
+    dharitri_wasm_debug::denali_go("denali/managed_vec_array_push.scen.json");
+}
+
+#[test]
 fn only_owner_go() {
     dharitri_wasm_debug::denali_go("denali/only_owner.scen.json");
+}
+
+#[test]
+fn only_user_account_go() {
+    dharitri_wasm_debug::denali_go("denali/only_user_account.scen.json");
 }
 
 #[test]
@@ -246,6 +256,11 @@ fn return_codes_go() {
 #[test]
 fn sc_properties_go() {
     dharitri_wasm_debug::denali_go("denali/sc_properties.scen.json");
+}
+
+#[test]
+fn storage_raw_api_features_go() {
+    dharitri_wasm_debug::denali_go("denali/storage_raw_api_features.scen.json");
 }
 
 #[test]

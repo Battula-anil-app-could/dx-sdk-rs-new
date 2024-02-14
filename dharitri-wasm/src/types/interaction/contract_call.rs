@@ -189,7 +189,7 @@ where
 
     /// If this is an DCT call, it converts it to a regular call to DCTTransfer.
     /// Async calls require this step, but not `transfer_dct_execute`.
-    fn convert_to_dct_transfer_call(self) -> Self {
+    pub fn convert_to_dct_transfer_call(self) -> Self {
         match self.payments.len() {
             0 => self,
             1 => self.convert_to_single_transfer_dct_call(),

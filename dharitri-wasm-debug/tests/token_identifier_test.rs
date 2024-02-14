@@ -131,31 +131,31 @@ fn test_payment_eq() {
     );
     assert_eq!(
         MoaxOrDctTokenPayment::<DebugApi>::new(
-            MoaxOrDctTokenIdentifier::dct("DCTPAY-00000".into()),
+            MoaxOrDctTokenIdentifier::dct("DCTPAY-00000"),
             0,
             1000u32.into()
         ),
         MoaxOrDctTokenPayment::<DebugApi>::new(
-            MoaxOrDctTokenIdentifier::dct("DCTPAY-00000".into()),
-            0,
-            1000u32.into()
-        ),
-    );
-    assert_ne!(
-        MoaxOrDctTokenPayment::<DebugApi>::new(
-            MoaxOrDctTokenIdentifier::dct("DCTPAY-00001".into()),
-            0,
-            1000u32.into()
-        ),
-        MoaxOrDctTokenPayment::<DebugApi>::new(
-            MoaxOrDctTokenIdentifier::dct("DCTPAY-00002".into()),
+            MoaxOrDctTokenIdentifier::dct("DCTPAY-00000"),
             0,
             1000u32.into()
         ),
     );
     assert_ne!(
         MoaxOrDctTokenPayment::<DebugApi>::new(
-            MoaxOrDctTokenIdentifier::dct("DCTPAY-00001".into()),
+            MoaxOrDctTokenIdentifier::dct("DCTPAY-00001"),
+            0,
+            1000u32.into()
+        ),
+        MoaxOrDctTokenPayment::<DebugApi>::new(
+            MoaxOrDctTokenIdentifier::dct("DCTPAY-00002"),
+            0,
+            1000u32.into()
+        ),
+    );
+    assert_ne!(
+        MoaxOrDctTokenPayment::<DebugApi>::new(
+            MoaxOrDctTokenIdentifier::dct("DCTPAY-00001"),
             0,
             1000u32.into()
         ),
