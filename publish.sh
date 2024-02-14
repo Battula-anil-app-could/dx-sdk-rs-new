@@ -95,3 +95,11 @@ cd ..
 cd dharitri-interact-snippets
 cargo publish || return 1
 cd ..
+
+cd contracts/core/price-aggregator
+cargo publish || return 1
+cd ../../..
+
+cd contracts/core/wmoax-swap
+cargo publish || return 1
+cd ../../..

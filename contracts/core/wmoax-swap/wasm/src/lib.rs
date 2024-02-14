@@ -5,17 +5,16 @@
 #![no_std]
 
 dharitri_wasm_node::wasm_endpoints! {
-    moax_dct_swap
+    dharitri_sc_wmoax_swap
     (
-        callBack
         getLockedMoaxBalance
-        getWrappedMoaxTokenIdentifier
+        getWrappedMoaxTokenId
         isPaused
-        issueWrappedMoax
         pause
-        setLocalRoles
         unpause
         unwrapMoax
         wrapMoax
     )
 }
+
+dharitri_wasm_node::wasm_empty_callback! {}

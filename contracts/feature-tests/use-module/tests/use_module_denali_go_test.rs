@@ -19,6 +19,11 @@ fn use_module_only_owner_go() {
 }
 
 #[test]
+fn use_module_only_admin_go() {
+    dharitri_wasm_debug::denali_go("denali/use_module_only_admin.scen.json");
+}
+
+#[test]
 fn use_module_no_endpoint_go() {
     dharitri_wasm_debug::denali_go("denali/use_module_no_endpoint.scen.json");
 }
