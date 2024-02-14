@@ -33,7 +33,7 @@ pub trait NftMinter: nft_module::NftModule {
             OptionalValue::None => MoaxOrDctTokenIdentifier::moax(),
         };
         require!(
-            token_used_as_payment.is_valid_dct_identifier(),
+            token_used_as_payment.is_valid(),
             "Invalid token_used_as_payment arg, not a valid token ID"
         );
 

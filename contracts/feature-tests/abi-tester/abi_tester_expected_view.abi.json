@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.9.9"
+            "version": "0.10.0"
         }
     },
     "docs": [
@@ -267,10 +267,6 @@
         "DctTokenPayment": {
             "type": "struct",
             "fields": [
-                {
-                    "name": "token_type",
-                    "type": "DctTokenType"
-                },
                 {
                     "name": "token_identifier",
                     "type": "TokenIdentifier"

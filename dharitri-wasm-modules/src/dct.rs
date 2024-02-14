@@ -67,8 +67,7 @@ pub trait DctModule {
                 let initial_caller = self.blockchain().get_owner_address();
                 let moax_returned = self.call_value().moax_value();
                 if moax_returned > 0u32 {
-                    self.send()
-                        .direct_moax(&initial_caller, &moax_returned, &[]);
+                    self.send().direct_moax(&initial_caller, &moax_returned);
                 }
             },
         }

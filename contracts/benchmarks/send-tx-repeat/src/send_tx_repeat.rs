@@ -9,19 +9,9 @@ pub trait SendTxRepeat {
 
     #[payable("MOAX")]
     #[endpoint]
-    fn repeat(
-        &self,
-        to: ManagedAddress,
-        amount: BigUint,
-        times: usize,
-        opt_data: OptionalValue<BoxedBytes>,
-    ) {
-        let data = match opt_data {
-            OptionalValue::Some(d) => d,
-            OptionalValue::None => BoxedBytes::empty(),
-        };
+    fn repeat(&self, to: ManagedAddress, amount: BigUint, times: usize) {
         for _ in 0..times {
-            self.send().direct_moax(&to, &amount, data.as_slice());
+            self.send().direct_moax(&to, &amount);
         }
     }
 }

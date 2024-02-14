@@ -43,7 +43,7 @@ macro_rules! managed_token_id_wrapped {
 
 #[macro_export]
 macro_rules! managed_moax_token_id {
-    ($bytes:expr) => {{
+    () => {{
         dharitri_wasm::types::MoaxOrDctTokenIdentifier::moax()
     }};
 }

@@ -11,7 +11,7 @@ pub struct Color {
     b: u8,
 }
 
-#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Clone)]
+#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone)]
 pub struct ComplexAttributes<M: ManagedTypeApi> {
     pub biguint: BigUint<M>,
     pub vec_u8: ManagedBuffer<M>,
@@ -89,7 +89,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
                 let (token_identifier, returned_tokens) =
                     self.call_value().moax_or_single_fungible_dct();
                 if token_identifier.is_moax() && returned_tokens > 0 {
-                    self.send().direct_moax(caller, &returned_tokens, &[]);
+                    self.send().direct_moax(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -129,31 +129,6 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
     fn nft_create_compact(&self, token_identifier: TokenIdentifier, amount: BigUint, color: Color) {
         self.send()
             .dct_nft_create_compact(&token_identifier, &amount, &color);
-    }
-
-    #[endpoint]
-    fn nft_create_on_caller_behalf(
-        &self,
-        token_identifier: TokenIdentifier,
-        amount: BigUint,
-        name: ManagedBuffer,
-        royalties: BigUint,
-        hash: ManagedBuffer,
-        color: Color,
-        uri: ManagedBuffer,
-    ) -> u64 {
-        let mut uris = ManagedVec::new();
-        uris.push(uri);
-
-        self.send().dct_nft_create_as_caller::<Color>(
-            &token_identifier,
-            &amount,
-            &name,
-            &royalties,
-            &hash,
-            &color,
-            &uris,
-        )
     }
 
     #[endpoint]
@@ -247,10 +222,9 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         token_identifier: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
-        data: ManagedBuffer,
     ) {
         self.send()
-            .transfer_dct_via_async_call(&to, &token_identifier, nonce, &amount, data);
+            .transfer_dct_via_async_call(to, token_identifier, nonce, amount);
     }
 
     #[endpoint]
@@ -296,13 +270,8 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
             uri,
         );
 
-        self.send().direct_dct(
-            &to,
-            &token_identifier,
-            token_nonce,
-            &amount,
-            b"NFT transfer",
-        );
+        self.send()
+            .direct_dct(&to, &token_identifier, token_nonce, &amount);
 
         self.send_event(&to, &token_identifier, token_nonce, &amount);
     }

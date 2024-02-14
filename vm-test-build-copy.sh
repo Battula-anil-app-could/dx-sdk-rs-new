@@ -75,6 +75,7 @@ cp -R contracts/feature-tests/composability/vault/output/vault.wasm \
 # cp -R contracts/feature-tests/composability/promises-features/output/promises-features.wasm \
 #    $VM_REPO_PATH/test/features/composability/promises-features/output/promises-features.wasm
 
+rm -f $VM_REPO_PATH/test/features/composability/denali/*
 cp -R contracts/feature-tests/composability/denali \
    $VM_REPO_PATH/test/features/composability
 rm -f $VM_REPO_PATH/test/features/composability/denali-legacy/*

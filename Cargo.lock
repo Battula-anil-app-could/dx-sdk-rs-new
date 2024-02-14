@@ -358,7 +358,7 @@ dependencies = [
 
 [[package]]
 name = "denali"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "dharitri-wasm",
  "hex",
@@ -392,7 +392,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.9.9"
+version = "0.10.0"
 dependencies = [
  "bitflags",
  "dharitri-codec",
@@ -405,7 +405,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-debug"
-version = "0.9.9"
+version = "0.10.0"
 dependencies = [
  "cargo_toml",
  "denali",
@@ -428,7 +428,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.9.9"
+version = "0.10.0"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -439,14 +439,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.9.9"
+version = "0.10.0"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.9.9"
+version = "0.10.0"
 dependencies = [
  "dharitri-wasm",
 ]
@@ -1003,6 +1003,7 @@ version = "0.0.0"
 dependencies = [
  "dharitri-wasm",
  "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
 ]
 
 [[package]]
@@ -1763,6 +1764,24 @@ dependencies = [
  "serde_spanned",
  "toml_datetime",
  "winnow",
+]
+
+[[package]]
+name = "transfer-role-features"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm",
+ "dharitri-wasm-debug",
+ "dharitri-wasm-modules",
+ "vault",
+]
+
+[[package]]
+name = "transfer-role-features-meta"
+version = "0.0.0"
+dependencies = [
+ "dharitri-wasm-debug",
+ "transfer-role-features",
 ]
 
 [[package]]

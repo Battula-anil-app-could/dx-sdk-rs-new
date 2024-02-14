@@ -13,7 +13,9 @@ use crate::derive::TypeAbi;
 
 use super::DctTokenPayment;
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
+#[derive(
+    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug,
+)]
 pub struct MoaxOrDctTokenPayment<M: ManagedTypeApi> {
     pub token_identifier: MoaxOrDctTokenIdentifier<M>,
     pub token_nonce: u64,

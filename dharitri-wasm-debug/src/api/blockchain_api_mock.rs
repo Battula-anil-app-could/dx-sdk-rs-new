@@ -125,7 +125,7 @@ impl BlockchainApiImpl for DebugApi {
                 .dct
                 .get_by_identifier_or_default(
                     TokenIdentifier::<DebugApi>::from_raw_handle(token_id_handle)
-                        .to_dct_identifier()
+                        .to_boxed_bytes()
                         .as_slice(),
                 )
                 .last_nonce
@@ -148,7 +148,7 @@ impl BlockchainApiImpl for DebugApi {
         let dct_balance = self.with_contract_account(|account| {
             account.dct.get_dct_balance(
                 TokenIdentifier::<DebugApi>::from_raw_handle(token_id_handle)
-                    .to_dct_identifier()
+                    .to_boxed_bytes()
                     .as_slice(),
                 nonce,
             )
@@ -164,18 +164,13 @@ impl BlockchainApiImpl for DebugApi {
     ) -> DctTokenData<M> {
         self.blockchain_cache()
             .with_account(&address.to_address(), |account| {
-                let token_identifier_value = token.to_dct_identifier();
+                let token_identifier_value = token.to_boxed_bytes();
                 if let Some(dct_data) = account
                     .dct
                     .get_by_identifier(token_identifier_value.as_slice())
                 {
                     if let Some(instance) = dct_data.instances.get_by_nonce(nonce) {
-                        self.dct_token_data_from_instance(
-                            token_identifier_value.into_vec(),
-                            dct_data,
-                            nonce,
-                            instance,
-                        )
+                        self.dct_token_data_from_instance(dct_data, nonce, instance)
                     } else {
                         // missing nonce
                         DctTokenData {
@@ -237,7 +232,7 @@ impl BlockchainApiImpl for DebugApi {
                 let mut result = DctLocalRoleFlags::NONE;
                 if let Some(dct_data) = account.dct.get_by_identifier(
                     TokenIdentifier::<DebugApi>::from_raw_handle(token_id_handle)
-                        .to_dct_identifier()
+                        .to_boxed_bytes()
                         .as_slice(),
                 ) {
                     for role_name in dct_data.roles.get() {
@@ -253,7 +248,6 @@ impl BlockchainApiImpl for DebugApi {
 impl DebugApi {
     fn dct_token_data_from_instance<M: ManagedTypeApi>(
         &self,
-        token_identifier_value: Vec<u8>,
         dct_data: &DctData,
         nonce: u64,
         instance: &DctInstance,
@@ -277,7 +271,7 @@ impl DebugApi {
                 self.insert_new_managed_buffer(instance.metadata.hash.clone().unwrap_or_default()),
             ),
             name: ManagedBuffer::from_raw_handle(
-                self.insert_new_managed_buffer(token_identifier_value),
+                self.insert_new_managed_buffer(instance.metadata.name.clone()),
             ),
             attributes: ManagedBuffer::from_raw_handle(
                 self.insert_new_managed_buffer(instance.metadata.attributes.clone()),

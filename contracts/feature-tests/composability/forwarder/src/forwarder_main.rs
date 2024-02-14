@@ -35,16 +35,7 @@ pub trait Forwarder:
     fn init(&self) {}
 
     #[endpoint]
-    fn send_moax(
-        &self,
-        to: &ManagedAddress,
-        amount: &BigUint,
-        opt_data: OptionalValue<ManagedBuffer>,
-    ) {
-        let data = match opt_data {
-            OptionalValue::Some(data) => data,
-            OptionalValue::None => ManagedBuffer::new(),
-        };
-        self.send().direct_moax(to, amount, data);
+    fn send_moax(&self, to: &ManagedAddress, amount: &BigUint) {
+        self.send().direct_moax(to, amount);
     }
 }
