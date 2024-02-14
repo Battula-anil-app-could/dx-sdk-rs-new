@@ -9,14 +9,14 @@ publish = false
 path = "src/bonding_curve_contract.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.10.4"
+version = "0.10.5"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-modules]
-version = "0.10.4"
+version = "0.10.5"
 path = "../../../dharitri-wasm-modules"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.4"
+version = "0.10.5"
 path = "../../../dharitri-wasm-debug"
 

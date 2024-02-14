@@ -4,7 +4,12 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.10.4, dharitri-codec 0.13.0, denali 0.3.5] - 2022-09-20
+## [dharitri-wasm 0.10.5, dharitri-codec 0.3.9] - 2022-10-13
+- `DctTokenPayment` legacy decode: objects encoded by older versions of the framework can now also be decoded, if flag `dct-token-payment-legacy-decode` is active.
+- Codec `NestedDecodeInput` new  `peek_into` method.
+- `FungibleTokenMapper` caches the token identifier.
+
+## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.3.5] - 2022-09-20
 - Rust interactor snippet generator.
 - Added some missing substitution rules in the contract preprocessor.
 - Allow single zero byte when top-decoding Option::None.
@@ -42,7 +47,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Testing and debugging environment aligned with VM version 1.4.53.
 - Call value and token data infrastructure additional cleanup.
 
-## [dharitri-wasm 0.32.0, denali 0.14.0] - 2022-06-03
+## [dharitri-wasm 0.32.0, denali 0.3.9] - 2022-06-03
 - VM new functionality added as part of the environment interface 1.2:
 	- Fully managed functionality for elliptic curves (no allocator);
 	- Fully managed cryptographic functions (no allocator);
@@ -319,7 +324,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.17.1] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Arwen
 
-## [dharitri-wasm 0.17.0] - 2021-05-28
+## [dharitri-wasm 0.3.5] - 2021-05-28
 - Integration tests can now call Arwen-Denali (denali-go)
 - Send API refactoring and cleanup
 	- DCT builtin function calls no longer require explicit gas
@@ -369,7 +374,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
+## [dharitri-wasm 0.3.9, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -502,7 +507,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.3.8] - 2020-11-02
+## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -515,7 +520,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.3] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -537,11 +542,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.10.4, dharitri-codec 0.1.1] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.3] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -613,7 +618,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.3] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

@@ -1,5 +1,3 @@
-#![feature(generic_associated_types)]
-
 use dharitri_wasm::dharitri_codec::test_util::{check_dep_encode_decode, check_top_encode_decode};
 use dharitri_wasm_debug::DebugApi;
 

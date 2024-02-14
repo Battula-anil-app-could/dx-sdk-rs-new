@@ -1,5 +1,3 @@
-#![feature(generic_associated_types)]
-
 use dharitri_wasm::{
     api::{HandleConstraints, ManagedTypeApi},
     derive::ManagedVecItem,

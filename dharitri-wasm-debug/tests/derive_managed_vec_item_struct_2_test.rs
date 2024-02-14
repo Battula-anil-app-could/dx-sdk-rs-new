@@ -1,5 +1,3 @@
-#![feature(generic_associated_types)]
-
 use dharitri_wasm_debug::DebugApi;
 
 dharitri_wasm::derive_imports!();

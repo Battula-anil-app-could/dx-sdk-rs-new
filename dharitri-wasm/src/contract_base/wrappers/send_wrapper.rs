@@ -278,7 +278,7 @@ where
             func_name = DCT_LOCAL_BURN_FUNC_NAME;
         } else {
             func_name = DCT_NFT_BURN_FUNC_NAME;
-            arg_buffer.push_arg(&nonce);
+            arg_buffer.push_arg(nonce);
         }
 
         arg_buffer.push_arg(amount);

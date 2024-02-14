@@ -1,5 +1,3 @@
-#![feature(generic_associated_types)]
-
 use dharitri_wasm::{
     derive::ManagedVecItem,
     dharitri_codec,

@@ -171,7 +171,7 @@ impl fmt::Display for DctData {
 impl fmt::Display for AccountDct {
     fn fmt(&self, _f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut dct_buf = String::new();
-        let dct_keys: Vec<Vec<u8>> = self.clone().0.iter().map(|(k, _)| k.clone()).collect();
+        let dct_keys: Vec<Vec<u8>> = self.0.keys().cloned().collect();
 
         for key in &dct_keys {
             let value = self.0.get(key).unwrap();

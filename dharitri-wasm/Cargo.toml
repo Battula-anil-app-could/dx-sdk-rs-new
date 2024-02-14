@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm"
-version = "0.10.4"
+version = "0.10.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -20,6 +20,7 @@ ei-unmanaged = ["alloc"]
 promises = []
 big-float = []
 ei-1-2 = []
+dct-token-payment-legacy-decode = []
 
 [dependencies]
 wee_alloc = "0.4"
@@ -33,10 +34,10 @@ version = "0.2"
 default-features = false
 
 [dependencies.dharitri-wasm-derive]
-version = "=0.10.4"
+version = "=0.10.5"
 path = "../dharitri-wasm-derive"
 
 [dependencies.dharitri-codec]
-version = "=0.3.8"
+version = "=0.3.9"
 path = "../dharitri-codec"
 features = ["derive"]

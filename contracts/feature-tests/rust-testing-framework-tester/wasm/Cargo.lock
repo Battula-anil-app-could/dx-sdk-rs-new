@@ -60,7 +60,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "dharitri-codec"
-version = "0.2.0"
+version = "0.13.0"
 dependencies = [
  "arrayvec",
  "dharitri-codec-derive",
@@ -69,7 +69,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-codec-derive"
-version = "0.2.0"
+version = "0.13.0"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -79,7 +79,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm"
-version = "0.5.4"
+version = "0.35.0"
 dependencies = [
  "bitflags",
  "dharitri-codec",
@@ -93,7 +93,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-derive"
-version = "0.5.4"
+version = "0.35.0"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -104,21 +104,21 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wasm-modules"
-version = "0.5.4"
+version = "0.35.0"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-node"
-version = "0.5.4"
+version = "0.35.0"
 dependencies = [
  "dharitri-wasm",
 ]
 
 [[package]]
 name = "dharitri-wasm-output"
-version = "0.5.4"
+version = "0.35.0"
 dependencies = [
  "dharitri-wasm-node",
  "wee_alloc",

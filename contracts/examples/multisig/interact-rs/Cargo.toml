@@ -13,7 +13,7 @@ path = "src/multisig_interact.rs"
 path = ".."
 
 [dependencies.dharitri-wasm-modules]
-version = "0.10.4"
+version = "0.10.5"
 path = "../../../../dharitri-wasm-modules"
 
 [dependencies.dharitri-interact-snippets]
