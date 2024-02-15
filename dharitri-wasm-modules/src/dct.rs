@@ -1,5 +1,3 @@
-use dharitri_wasm::dharitri_codec::TopEncode;
-
 dharitri_wasm::imports!();
 
 /// Standard smart contract module for managing a single DCT.

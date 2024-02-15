@@ -47,6 +47,11 @@ mod module_1 {
         fn callback(&self) {}
     }
 
+    impl<A> AutoImpl for dharitri_wasm::contract_base::UniversalContractObj<A> where
+        A: dharitri_wasm::api::VMApi
+    {
+    }
+
     pub trait EndpointWrappers: VersionModule + dharitri_wasm::contract_base::ContractBase {
         #[inline]
         fn call_version(&self) {
@@ -56,8 +61,8 @@ mod module_1 {
         }
 
         fn call_some_async(&self) {
-            let result = self.some_async();
-            dharitri_wasm::io::finish_multi::<Self::Api, _>(&result)
+            self.some_async();
+            dharitri_wasm::io::finish_multi::<Self::Api, _>(&())
         }
 
         fn call(&self, fn_name: &[u8]) -> bool {
@@ -77,6 +82,12 @@ mod module_1 {
             false
         }
     }
+
+    impl<A> EndpointWrappers for dharitri_wasm::contract_base::UniversalContractObj<A> where
+        A: dharitri_wasm::api::VMApi
+    {
+    }
+
     pub struct AbiProvider {}
 
     impl dharitri_wasm::contract_base::ContractAbiProvider for AbiProvider {
@@ -90,12 +101,11 @@ mod module_1 {
     pub trait ProxyTrait: dharitri_wasm::contract_base::ProxyObjBase + Sized {
         fn version(&mut self) -> ContractCall<Self::Api, BigInt<Self::Api>> {
             let ___address___ = self.extract_address();
-            let mut ___contract_call___ = dharitri_wasm::types::new_contract_call(
+            dharitri_wasm::types::new_contract_call(
                 ___address___,
                 &b"version"[..],
                 ManagedVec::<Self::Api, DctTokenPayment<Self::Api>>::new(),
-            );
-            ___contract_call___
+            )
         }
     }
 }
@@ -150,6 +160,11 @@ mod sample_adder {
         fn callbacks(&self) -> self::CallbackProxyObj<Self::Api> {
             <self::CallbackProxyObj::<Self::Api> as dharitri_wasm::contract_base::CallbackProxyObjBase>::new_cb_proxy_obj()
         }
+    }
+
+    impl<A> AutoImpl for dharitri_wasm::contract_base::UniversalContractObj<A> where
+        A: dharitri_wasm::api::VMApi
+    {
     }
 
     pub trait EndpointWrappers:
@@ -214,17 +229,21 @@ mod sample_adder {
         }
     }
 
+    impl<A> EndpointWrappers for dharitri_wasm::contract_base::UniversalContractObj<A> where
+        A: dharitri_wasm::api::VMApi
+    {
+    }
+
     pub trait ProxyTrait:
         dharitri_wasm::contract_base::ProxyObjBase + super::module_1::ProxyTrait
     {
         fn get_sum(&mut self) -> dharitri_wasm::types::ContractCall<Self::Api, BigInt<Self::Api>> {
             let ___address___ = self.extract_address();
-            let mut ___contract_call___ = dharitri_wasm::types::new_contract_call(
+            dharitri_wasm::types::new_contract_call(
                 ___address___,
                 &b"get_sum"[..],
                 ManagedVec::<Self::Api, DctTokenPayment<Self::Api>>::new(),
-            );
-            ___contract_call___
+            )
         }
         fn add(&mut self, amount: &BigInt<Self::Api>) -> ContractCall<Self::Api, ()> {
             let ___address___ = self.extract_address();
@@ -271,16 +290,10 @@ mod sample_adder {
         A: dharitri_wasm::api::VMApi,
     {
         fn call(&self, fn_name: &[u8]) -> bool {
-            EndpointWrappers::call(self, fn_name)
-        }
-
-        fn clone_obj(
-            &self,
-        ) -> dharitri_wasm::types::heap::Box<dyn dharitri_wasm::contract_base::CallableContract>
-        {
-            dharitri_wasm::types::heap::Box::new(ContractObj::<A> {
-                _phantom: core::marker::PhantomData,
-            })
+            EndpointWrappers::call(
+                &dharitri_wasm::contract_base::UniversalContractObj::<A>::new(),
+                fn_name,
+            )
         }
     }
 
@@ -427,7 +440,7 @@ fn test_add() {
 
 fn world() -> dharitri_wasm_debug::BlockchainMock {
     let mut blockchain = dharitri_wasm_debug::BlockchainMock::new();
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:../contracts/examples/adder/output/adder.wasm",
         sample_adder::ContractBuilder,
     );

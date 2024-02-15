@@ -10,11 +10,11 @@
         "contractCrate": {
             "name": "abi-tester",
             "version": "0.0.0",
-            "git_version": "<git version here>"
+            "gitVersion": "<git version here>"
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.10.6"
+            "version": "0.10.7"
         }
     },
     "docs": [

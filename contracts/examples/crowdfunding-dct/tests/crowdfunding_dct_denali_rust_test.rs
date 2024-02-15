@@ -6,7 +6,7 @@ fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/crowdfunding-dct");
 
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:output/crowdfunding-dct.wasm",
         crowdfunding_dct::ContractBuilder,
     );

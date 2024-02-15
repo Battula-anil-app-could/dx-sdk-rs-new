@@ -44,14 +44,17 @@ where
         }
     }
 
+    #[inline]
     fn send_raw_wrapper(&self) -> SendRawWrapper<A> {
         SendRawWrapper::new()
     }
 
+    #[inline]
     pub fn dct_system_sc_proxy(&self) -> DCTSystemSmartContractProxy<A> {
         DCTSystemSmartContractProxy::new_proxy_obj()
     }
 
+    #[inline]
     pub fn contract_call<R>(
         &self,
         to: ManagedAddress<A>,
@@ -62,8 +65,17 @@ where
 
     /// Sends MOAX to a given address, directly.
     /// Used especially for sending MOAX to regular accounts.
+    #[inline]
     pub fn direct_moax(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
         self.send_raw_wrapper().direct_moax(to, amount, Empty)
+    }
+
+    pub fn direct_non_zero_moax(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
+        if amount == &0 {
+            return;
+        }
+
+        self.direct_moax(to, amount)
     }
 
     /// Sends either MOAX, DCT or NFT to the target address,
@@ -114,6 +126,7 @@ where
         }
     }
 
+    #[inline]
     #[allow(clippy::too_many_arguments)]
     pub fn direct_dct(
         &self,
@@ -123,6 +136,23 @@ where
         amount: &BigUint<A>,
     ) {
         self.direct_dct_with_gas_limit(to, token_identifier, nonce, amount, 0, Empty, &[]);
+    }
+
+    pub fn direct_non_zero_dct_payment(
+        &self,
+        to: &ManagedAddress<A>,
+        payment: &DctTokenPayment<A>,
+    ) {
+        if payment.amount == 0 {
+            return;
+        }
+
+        self.direct_dct(
+            to,
+            &payment.token_identifier,
+            payment.token_nonce,
+            &payment.amount,
+        );
     }
 
     #[allow(clippy::too_many_arguments)]

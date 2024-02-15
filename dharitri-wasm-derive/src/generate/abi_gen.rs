@@ -1,7 +1,6 @@
 use super::util::*;
 use crate::model::{
-    AutoImpl, ContractTrait, EndpointLocationMetadata, EndpointMutabilityMetadata, Method,
-    MethodImpl, PublicRole,
+    AutoImpl, ContractTrait, EndpointMutabilityMetadata, Method, MethodImpl, PublicRole,
 };
 
 fn generate_endpoint_snippet(
@@ -10,7 +9,6 @@ fn generate_endpoint_snippet(
     only_owner: bool,
     only_admin: bool,
     mutability: EndpointMutabilityMetadata,
-    location: EndpointLocationMetadata,
 ) -> proc_macro2::TokenStream {
     let endpoint_docs = &m.docs;
     let rust_method_name = m.name.to_string();
@@ -47,8 +45,9 @@ fn generate_endpoint_snippet(
             }
         },
     };
+
+    let label_names = &m.label_names;
     let mutability_tokens = mutability.to_tokens();
-    let location_tokens = location.to_tokens();
 
     quote! {
         let mut endpoint_abi = dharitri_wasm::abi::EndpointAbi{
@@ -58,10 +57,10 @@ fn generate_endpoint_snippet(
             only_owner: #only_owner,
             only_admin: #only_admin,
             mutability: #mutability_tokens,
-            location: #location_tokens,
             payable_in_tokens: &[ #(#payable_in_tokens),* ],
             inputs: dharitri_wasm::types::heap::Vec::new(),
             outputs: dharitri_wasm::types::heap::Vec::new(),
+            labels: &[ #(#label_names),* ],
         };
         #(#input_snippets)*
         #output_snippet
@@ -80,7 +79,6 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     false,
                     false,
                     EndpointMutabilityMetadata::Mutable,
-                    EndpointLocationMetadata::MainContract,
                 );
                 Some(quote! {
                     #endpoint_def
@@ -88,18 +86,29 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                 })
             },
             PublicRole::Endpoint(endpoint_metadata) => {
-                let endpoint_name_str = endpoint_metadata.public_name.to_string();
                 let endpoint_def = generate_endpoint_snippet(
                     m,
-                    &endpoint_name_str,
+                    &endpoint_metadata.public_name.to_string(),
                     endpoint_metadata.only_owner,
                     endpoint_metadata.only_admin,
                     endpoint_metadata.mutability.clone(),
-                    endpoint_metadata.location.clone(),
                 );
                 Some(quote! {
                     #endpoint_def
                     contract_abi.endpoints.push(endpoint_abi);
+                })
+            },
+            PublicRole::CallbackPromise(callback_metadata) => {
+                let endpoint_def = generate_endpoint_snippet(
+                    m,
+                    &callback_metadata.callback_name.to_string(),
+                    false,
+                    false,
+                    EndpointMutabilityMetadata::Mutable,
+                );
+                Some(quote! {
+                    #endpoint_def
+                    contract_abi.promise_callbacks.push(endpoint_abi);
                 })
             },
             _ => None,
@@ -196,7 +205,7 @@ fn generate_abi_method_body(
                 contract_crate: dharitri_wasm::abi::ContractCrateBuildAbi {
                     name: env!("CARGO_PKG_NAME"),
                     version: env!("CARGO_PKG_VERSION"),
-                    git_version: dharitri_wasm::abi::git_version!(fallback = ""),
+                    git_version: "",
                 },
                 framework: dharitri_wasm::abi::FrameworkBuildAbi::create(),
             },
@@ -204,6 +213,7 @@ fn generate_abi_method_body(
             name: #contract_name,
             constructors: dharitri_wasm::types::heap::Vec::new(),
             endpoints: dharitri_wasm::types::heap::Vec::new(),
+            promise_callbacks: dharitri_wasm::types::heap::Vec::new(),
             events: dharitri_wasm::types::heap::Vec::new(),
             has_callback: #has_callbacks,
             type_descriptions: <dharitri_wasm::abi::TypeDescriptionContainerImpl as dharitri_wasm::abi::TypeDescriptionContainer>::new(),

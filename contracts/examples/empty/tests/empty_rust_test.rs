@@ -2,7 +2,7 @@ use dharitri_wasm::types::Address;
 use dharitri_wasm_debug::{rust_biguint, testing_framework::*, DebugApi};
 use empty::*;
 
-const WASM_PATH: &'static str = "output/empty.wasm";
+const WASM_PATH: &str = "output/empty.wasm";
 
 struct ContractSetup<ContractObjBuilder>
 where

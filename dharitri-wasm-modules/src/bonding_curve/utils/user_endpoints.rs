@@ -7,7 +7,6 @@ use crate::bonding_curve::{
     curves::curve_function::CurveFunction,
     utils::{events, storage, structs::BondingCurve},
 };
-use dharitri_wasm::{abi::TypeAbi, dharitri_codec::TopEncode};
 
 #[dharitri_wasm::module]
 pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {

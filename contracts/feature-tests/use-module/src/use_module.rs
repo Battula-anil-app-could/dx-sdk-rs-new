@@ -10,6 +10,7 @@ mod only_admin_derived_mod;
 mod only_admin_mod;
 mod only_owner_derived_mod;
 mod only_owner_mod;
+pub mod token_merge_mod_impl;
 
 dharitri_wasm::imports!();
 
@@ -31,6 +32,7 @@ pub trait UseModule:
     + only_admin_mod::OnlyAdminTestModule
     + only_admin_derived_mod::OnlyAdminDerivedTestModule
     + ongoing_operation_mod_example::OngoingOperationModExample
+    + token_merge_mod_impl::TokenMergeModImpl
     + dharitri_wasm_modules::claim_developer_rewards::ClaimDeveloperRewardsModule
     + dharitri_wasm_modules::dns::DnsModule
     + dharitri_wasm_modules::dct::DctModule
@@ -41,6 +43,7 @@ pub trait UseModule:
     + dharitri_wasm_modules::pause::PauseModule
     + dharitri_wasm_modules::staking::StakingModule
     + dharitri_wasm_modules::token_merge::TokenMergeModule
+    + dharitri_wasm_modules::token_merge::merged_token_setup::MergedTokenSetupModule
     + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
     + dharitri_wasm_modules::only_admin::OnlyAdminModule
     + dharitri_wasm_modules::ongoing_operation::OngoingOperationModule

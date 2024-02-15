@@ -1,12 +1,10 @@
-use crate::{
-    denali_system::model::Scenario, num_bigint::BigUint, tx_mock::BlockchainUpdate, ContractMap,
-};
+use crate::{denali_system::model::Scenario, num_bigint::BigUint, tx_mock::BlockchainUpdate};
 use dharitri_wasm::types::heap::Address;
 use denali::{interpret_trait::InterpreterContext, value_interpreter::interpret_string};
 use num_traits::Zero;
 use std::{collections::HashMap, path::PathBuf};
 
-use super::{AccountData, BlockInfo};
+use super::{AccountData, BlockInfo, ContractMap};
 
 const DHARITRI_REWARD_KEY: &[u8] = b"DHARITRIreward";
 

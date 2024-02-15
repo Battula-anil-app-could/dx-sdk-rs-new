@@ -38,12 +38,7 @@ pub trait Vault {
     }
 
     fn dct_transfers_multi(&self) -> MultiValueEncoded<DctTokenPaymentMultiValue> {
-        let dct_transfers = self.call_value().all_dct_transfers();
-        let mut dct_transfers_multi = MultiValueEncoded::new();
-        for dct_transfer in dct_transfers.into_iter() {
-            dct_transfers_multi.push(dct_transfer.into_multi_value());
-        }
-        dct_transfers_multi
+        self.call_value().all_dct_transfers().into_multi_value()
     }
 
     #[payable("*")]

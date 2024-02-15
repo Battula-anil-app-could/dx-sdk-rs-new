@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm-node"
-version = "0.10.6"
+version = "0.10.7"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -19,5 +19,5 @@ vm-dct-local-roles = []
 ei-unmanaged-node = []
 
 [dependencies.dharitri-wasm]
-version = "=0.10.6"
+version = "=0.10.7"
 path = "../dharitri-wasm"

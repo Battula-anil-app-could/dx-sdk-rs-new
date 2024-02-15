@@ -12,7 +12,6 @@ use crate::bonding_curve::{
 };
 
 use super::structs::CurveArguments;
-use dharitri_wasm::{abi::TypeAbi, dharitri_codec::TopEncode};
 
 #[dharitri_wasm::module]
 pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {

@@ -81,6 +81,7 @@ pub trait LocalDctAndDctNft {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
+                    can_transfer_create_role: true,
                     can_change_owner: true,
                     can_upgrade: true,
                     can_add_special_roles: true,
@@ -185,6 +186,7 @@ pub trait LocalDctAndDctNft {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
+                    can_transfer_create_role: true,
                     can_change_owner: true,
                     can_upgrade: true,
                     can_add_special_roles: true,
@@ -225,6 +227,21 @@ pub trait LocalDctAndDctNft {
             .async_call()
             .with_callback(self.callbacks().change_roles_callback())
             .call_and_exit()
+    }
+
+    #[endpoint(controlChanges)]
+    fn control_changes(&self, token: TokenIdentifier) {
+        let property_arguments = TokenPropertyArguments {
+            can_freeze: Some(true),
+            can_burn: Some(true),
+            ..Default::default()
+        };
+
+        self.send()
+            .dct_system_sc_proxy()
+            .control_changes(&token, &property_arguments)
+            .async_call()
+            .call_and_exit();
     }
 
     // views

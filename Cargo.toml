@@ -5,6 +5,7 @@ members = [
   "dharitri-wasm",
   "dharitri-wasm-debug",
   "dharitri-wasm-derive",
+  "dharitri-wasm-node",
   "dharitri-wasm-modules",
   "denali",
   "dharitri-codec",
@@ -73,11 +74,12 @@ members = [
   "contracts/examples/proxy-pause/meta",
   "contracts/examples/ping-pong-moax",
   "contracts/examples/ping-pong-moax/meta",
+  "contracts/examples/rewards-distribution",
+  "contracts/examples/rewards-distribution/meta",
+  "contracts/examples/seed-nft-minter",
+  "contracts/examples/seed-nft-minter/meta",
   "contracts/examples/token-release",
   "contracts/examples/token-release/meta",
-
-  "contracts/experimental/multisig-external-view",
-  "contracts/experimental/multisig-external-view/meta",
 
   "contracts/feature-tests/abi-tester",
   "contracts/feature-tests/abi-tester/meta",
@@ -151,6 +153,5 @@ members = [
 ]
 
 exclude = [
-  "dharitri-wasm-node",
   "dharitri-wasm-output",
 ]

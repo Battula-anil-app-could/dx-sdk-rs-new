@@ -1,5 +1,4 @@
 use crate::bonding_curve::curves::curve_function::CurveFunction;
-use dharitri_wasm::{abi::TypeAbi, dharitri_codec::TopEncode};
 
 dharitri_wasm::imports!();
 dharitri_wasm::derive_imports!();

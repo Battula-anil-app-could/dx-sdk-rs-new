@@ -87,6 +87,22 @@
                 "gas": "*",
                 "refund": "*"
             }
+        },
+        {
+            "step": "scQuery",
+            "id": "getAllBoardMembers",
+            "tx": {
+                "to": "sc:multisig-view",
+                "function": "getAllBoardMembers",
+                "arguments": []
+            },
+            "expect": {
+                "out": [
+                    "address:bob",
+                    "address:charlie",
+                    "address:dan"
+                ]
+            }
         }
     ]
 }

@@ -69,12 +69,6 @@ pub fn impl_callable_contract() -> proc_macro2::TokenStream {
             fn call(&self, fn_name: &[u8]) -> bool {
                 EndpointWrappers::call(self, fn_name)
             }
-
-            fn clone_obj(&self) -> dharitri_wasm::types::heap::Box<dyn dharitri_wasm::contract_base::CallableContract> {
-                dharitri_wasm::types::heap::Box::new(ContractObj::<A> {
-                    _phantom: core::marker::PhantomData,
-                })
-            }
         }
     }
 }

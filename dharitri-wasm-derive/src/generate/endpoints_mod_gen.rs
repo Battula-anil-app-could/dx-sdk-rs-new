@@ -36,7 +36,9 @@ pub fn generate_endpoints_mod(
             where
                 A: dharitri_wasm::api::VMApi ,
             {
-                super::contract_obj::<A>().callback();
+                super::EndpointWrappers::callback(
+                    &dharitri_wasm::contract_base::UniversalContractObj::<A>::new(),
+                );
             }
         }
     } else {
@@ -69,6 +71,10 @@ fn generate_wasm_endpoints(contract_trait: &ContractTrait) -> Vec<proc_macro2::T
                 let endpoint_ident = &endpoint_metadata.public_name;
                 Some(generate_wasm_endpoint(m, &quote! { #endpoint_ident }))
             },
+            PublicRole::CallbackPromise(callback_metadata) => {
+                let callback_name = &callback_metadata.callback_name;
+                Some(generate_wasm_endpoint(m, &quote! { #callback_name }))
+            },
             _ => None,
         })
         .collect()
@@ -85,7 +91,9 @@ fn generate_wasm_endpoint(
         where
             A: dharitri_wasm::api::VMApi,
         {
-            super::contract_obj::<A>().#call_method_ident();
+            super::EndpointWrappers::#call_method_ident(
+                &dharitri_wasm::contract_base::UniversalContractObj::<A>::new(),
+            );
         }
     }
 }

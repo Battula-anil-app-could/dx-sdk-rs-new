@@ -1,7 +1,5 @@
 dharitri_wasm::imports!();
 
-use dharitri_wasm::dharitri_codec::TopEncode;
-
 pub const DEFAULT_MIN_GAS_TO_SAVE_PROGRESS: u64 = 1_000_000;
 
 pub type LoopOp = bool;

@@ -27,7 +27,7 @@ fn test_codec() {
         &MoaxOrDctTokenIdentifier::<DebugApi>::MOAX_REPRESENTATION[..],
     ]);
     check_managed_top_encode_decode(
-        api.clone(),
+        api,
         vec![MoaxOrDctTokenIdentifier::<DebugApi>::moax()],
         expected.as_slice(),
     );

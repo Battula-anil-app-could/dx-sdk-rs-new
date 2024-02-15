@@ -4,14 +4,34 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## Unreleased
-#### (Next release must be minor and include dharitri-codec)
-- dharitri-codec refactor: removed `TopEncodeNoErr`, `NestedEncodeNoErr` and `TypeInfo`
+## [dharitri-wasm 0.10.7, dharitri-codec 0.4.0] - 2022-12-09
+- Multi-contract build system:
+	- build system refactor;
+	- `multicontract.toml` config system with labels,
+	- eliminated monomorphization issue that was bloating some contracts;
+	- build post-processing: `wasm2wat`, imports via `wasm-objdump`.
+- Support for the new async call system (promises):
+	- new APIs;
+	- a new flavor of callbacks (`#[promises-callback]`);
+	- callback optimizations.
+- `dharitri-codec` refactor: removed `TopEncodeNoErr`, `NestedEncodeNoErr` and `TypeInfo`
+- System SC proxy: added support for `controlChanges` endpoint and transfer create role (from community).
+- Storage mappers can read from another contract.
+- Module updates:
+	- `MergedTokenInstances` module;
+	- Governance module improvements;
+	- `set_if_empty` for FungibleTokenMapper and NonFungibleTokenMapper.
+- `IntoMultiValue` trait.
+- Storage mapper improvements:
+	- `BiDiMapper` improvements;
+	- Fixed missing substitution rules for `FungibleTokenMapper`, `NonFungibleTokenMapper`, `UniqueIdMapper`, `BiDiMapper`, `WhitelistMapper`, `RandomnessSource`;
+	- Added `take` and `replace` methods for `SingleValueMapper`;
+	- Implemented `Extend` trait for `UnorderedSetMapper`.
 
-## [dharitri-wasm 0.10.6] - 2022-11-01
+## [dharitri-wasm 0.36.1] - 2022-11-01
 - Deprecated `ContractCall` `execute_on_dest_context_ignore_result` method, since it is currently redundant.
 
-## [dharitri-wasm 0.36.0, dharitri-codec 0.3.9] - 2022-10-13
+## [dharitri-wasm 0.36.0, dharitri-codec 0.14.0] - 2022-10-13
 - `DctTokenPayment` legacy decode: objects encoded by older versions of the framework can now also be decoded, if flag `dct-token-payment-legacy-decode` is active.
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
