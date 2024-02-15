@@ -43,8 +43,27 @@ impl<M: ManagedTypeApi> MoaxOrDctTokenPayment<M> {
         }
     }
 
+    /// Will convert to just DCT or terminate execution if the token is MOAX.
+    pub fn unwrap_dct(self) -> DctTokenPayment<M> {
+        DctTokenPayment::new(
+            self.token_identifier.unwrap_dct(),
+            self.token_nonce,
+            self.amount,
+        )
+    }
+
     pub fn into_tuple(self) -> (MoaxOrDctTokenIdentifier<M>, u64, BigUint<M>) {
         (self.token_identifier, self.token_nonce, self.amount)
+    }
+}
+
+impl<M: ManagedTypeApi> From<(MoaxOrDctTokenIdentifier<M>, u64, BigUint<M>)>
+    for MoaxOrDctTokenPayment<M>
+{
+    #[inline]
+    fn from(value: (MoaxOrDctTokenIdentifier<M>, u64, BigUint<M>)) -> Self {
+        let (token_identifier, token_nonce, amount) = value;
+        Self::new(token_identifier, token_nonce, amount)
     }
 }
 

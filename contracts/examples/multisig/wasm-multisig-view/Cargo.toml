@@ -2,7 +2,7 @@
 name = "multisig-view-wasm"
 version = "0.0.0"
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
@@ -17,11 +17,11 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-wasm-node]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../../dharitri-wasm-node"
 
 [dependencies.dharitri-wasm-output]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../../dharitri-wasm-output"
 features = ["wasm-output-mode"]
 

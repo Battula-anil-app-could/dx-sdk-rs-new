@@ -2,7 +2,7 @@
 name = "recursive-caller"
 version = "0.0.0"
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
@@ -15,14 +15,14 @@ ei-unmanaged = ["dharitri-wasm/ei-unmanaged"]
 path = "../vault"
 
 [dependencies.dharitri-wasm]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-node]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../../dharitri-wasm-node"
 optional = true
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../../dharitri-wasm-debug"

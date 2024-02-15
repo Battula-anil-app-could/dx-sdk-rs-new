@@ -4,7 +4,17 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [dharitri-wasm 0.10.7, dharitri-codec 0.4.0] - 2022-12-09
+## [dharitri-wasm 0.10.8, dharitri-codec 0.4.1, denali 0.3.6] - 2022-12-15
+- `ContractCall` refactor. Building a contract call comes with harder compile-time constraints. This also reduces compiled code size.
+- `ContractBase` supertrait can be now stated explicitly for contract and module traits.
+- Debugger:
+	- Callback payment is now set correctly.
+	- Function names are represented internally as strings instead of bytes, which aids debugging.
+- Removed the `ei-1-2` feature, which was guarding the newer VM functions. These functions are in the mainnet, so this feature is no longer needed.
+- New utility functions: `self.send().dct_local_burn_multi(...`, `self.blockchain().get_token_attributes(...)`.
+- Updated all crates to Rust 2021.
+
+## [dharitri-wasm 0.37.0, dharitri-codec 0.15.0] - 2022-12-09
 - Multi-contract build system:
 	- build system refactor;
 	- `multicontract.toml` config system with labels,
@@ -16,13 +26,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 	- callback optimizations.
 - `dharitri-codec` refactor: removed `TopEncodeNoErr`, `NestedEncodeNoErr` and `TypeInfo`
 - System SC proxy: added support for `controlChanges` endpoint and transfer create role (from community).
-- Storage mappers can read from another contract.
 - Module updates:
 	- `MergedTokenInstances` module;
 	- Governance module improvements;
 	- `set_if_empty` for FungibleTokenMapper and NonFungibleTokenMapper.
 - `IntoMultiValue` trait.
 - Storage mapper improvements:
+	- Storage mappers can read from another contract.
 	- `BiDiMapper` improvements;
 	- Fixed missing substitution rules for `FungibleTokenMapper`, `NonFungibleTokenMapper`, `UniqueIdMapper`, `BiDiMapper`, `WhitelistMapper`, `RandomnessSource`;
 	- Added `take` and `replace` methods for `SingleValueMapper`;
@@ -36,7 +46,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
 
-## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.3.5] - 2022-09-20
+## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.17.0] - 2022-09-20
 - Rust interactor snippet generator.
 - Added some missing substitution rules in the contract preprocessor.
 - Allow single zero byte when top-decoding Option::None.
@@ -50,7 +60,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Safer BigUint/BigInt conversions
 - Added and published `price-aggregator` and `wmoax-swap` core contracts.
 
-## [dharitri-wasm 0.34.0, dharitri-codec 0.12.0, denali 0.16.0, dharitri-interact-snippets 0.1.0] - 2022-07-08
+## [dharitri-wasm 0.34.0, dharitri-codec 0.12.0, denali 0.4.1, dharitri-interact-snippets 0.0.3] - 2022-07-08
 - Major refactor of the denali-rs infrastructure.
 	- High-level Denali objects moved to dharitri-wasm-debug;
 	- The `denali` crate no longer depends on `dharitri-wasm-debug` (as originally intended and implemented);
@@ -326,7 +336,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
+## [dharitri-wasm 0.3.6, denali 0.8.0] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -367,7 +377,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
+## [dharitri-wasm 0.4.1, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -547,7 +557,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.0.3] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -573,7 +583,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.0.3] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -645,7 +655,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.1.0] - 2020-02-05 
+## [dharitri-wasm 0.0.3] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

@@ -175,7 +175,7 @@ impl fmt::Display for AccountDct {
 
         for key in &dct_keys {
             let value = self.0.get(key).unwrap();
-            write!(dct_buf, "\n\t\t\t{} -> {}", key_hex(key.as_slice()), value)?;
+            write!(dct_buf, "\n\t\t\t{} -> {value}", key_hex(key.as_slice()))?;
         }
         Ok(())
     }

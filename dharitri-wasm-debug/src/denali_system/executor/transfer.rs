@@ -1,5 +1,7 @@
-use crate::denali_system::model::{Step, TransferStep, TxTransfer, ValidatorRewardStep};
-use dharitri_wasm::types::heap::H256;
+use crate::{
+    denali_system::model::{Step, TransferStep, TxTransfer, ValidatorRewardStep},
+    tx_mock::TxFunctionName,
+};
 
 use crate::{
     sc_call::tx_dct_transfers_from_denali, tx_execution::execute_sc_call, tx_mock::TxInput,
@@ -34,12 +36,11 @@ fn execute(mut state: BlockchainMock, tx_transfer: &TxTransfer) -> BlockchainMoc
         to: tx_transfer.to.value.clone(),
         moax_value: tx_transfer.moax_value.value.clone(),
         dct_values: tx_dct_transfers_from_denali(tx_transfer.dct_value.as_slice()),
-        func_name: Vec::new(),
+        func_name: TxFunctionName::EMPTY,
         args: Vec::new(),
         gas_limit: tx_transfer.gas_limit.value,
         gas_price: tx_transfer.gas_price.value,
-        tx_hash: H256::zero(),
-        promise_callback_closure_data: Vec::new(),
+        ..Default::default()
     };
 
     // nonce gets increased irrespective of whether the tx fails or not

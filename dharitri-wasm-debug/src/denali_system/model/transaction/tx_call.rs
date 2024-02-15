@@ -2,7 +2,7 @@ use crate::{
     denali_system::model::{AddressValue, BigUintValue, BytesValue, U64Value},
     DebugApi,
 };
-use dharitri_wasm::types::{ContractCall, DctTokenPayment};
+use dharitri_wasm::types::{ContractCall, ContractCallWithMoax, DctTokenPayment};
 use denali::{
     interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
     serde_raw::TxCallRaw,
@@ -70,21 +70,27 @@ impl IntoRaw<TxCallRaw> for TxCall {
 }
 
 impl TxCall {
-    pub fn to_contract_call(&self) -> ContractCall<DebugApi, ()> {
-        let mut contract_call =
-            ContractCall::new((&self.to.value).into(), self.function.as_bytes().into());
-        contract_call.moax_payment = (&self.moax_value.value).into();
-        for dct in &self.dct_value {
-            contract_call.payments.push(DctTokenPayment::new(
-                dct.dct_token_identifier.value.as_slice().into(),
-                dct.nonce.value,
-                (&dct.dct_value.value).into(),
-            ))
-        }
+    pub fn to_contract_call(&self) -> ContractCallWithMoax<DebugApi, ()> {
+        let mut contract_call = ContractCallWithMoax::new(
+            (&self.to.value).into(),
+            self.function.as_bytes(),
+            (&self.moax_value.value).into(),
+        )
+        .convert_to_dct_transfer_call(
+            self.dct_value
+                .iter()
+                .map(|dct| {
+                    DctTokenPayment::new(
+                        dct.dct_token_identifier.value.as_slice().into(),
+                        dct.nonce.value,
+                        (&dct.dct_value.value).into(),
+                    )
+                })
+                .collect(),
+        );
+
         for argument in &self.arguments {
-            contract_call
-                .arg_buffer
-                .push_arg_raw(argument.value.as_slice().into());
+            contract_call.push_raw_argument(argument.value.as_slice());
         }
         contract_call
     }

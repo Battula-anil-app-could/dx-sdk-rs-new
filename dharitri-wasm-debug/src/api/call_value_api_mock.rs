@@ -43,13 +43,13 @@ impl CallValueApiImpl for DebugApi {
 
     #[inline]
     fn load_moax_value(&self, dest: Self::BigIntHandle) {
-        self.set_big_uint(dest, self.input_ref().moax_value.clone())
+        self.set_big_uint(dest, self.input_ref().received_moax().clone())
     }
 
     #[inline]
     fn load_single_dct_value(&self, dest: Self::BigIntHandle) {
         self.fail_if_more_than_one_dct_transfer();
-        if let Some(dct_value) = self.input_ref().dct_values.get(0) {
+        if let Some(dct_value) = self.input_ref().received_dct().get(0) {
             self.set_big_uint(dest, dct_value.value.clone());
         } else {
             std::panic::panic_any(TxPanic {
@@ -84,12 +84,12 @@ impl CallValueApiImpl for DebugApi {
 
     #[inline]
     fn dct_num_transfers(&self) -> usize {
-        self.input_ref().dct_values.len()
+        self.input_ref().received_dct().len()
     }
 
     #[inline]
     fn dct_value_by_index(&self, index: usize) -> Self::BigIntHandle {
-        if let Some(dct_value) = self.input_ref().dct_values.get(index) {
+        if let Some(dct_value) = self.input_ref().received_dct().get(index) {
             self.insert_new_big_uint(dct_value.value.clone())
         } else {
             std::panic::panic_any(TxPanic {
@@ -101,7 +101,7 @@ impl CallValueApiImpl for DebugApi {
 
     #[inline]
     fn token_by_index(&self, index: usize) -> Self::ManagedBufferHandle {
-        if let Some(dct_value) = self.input_ref().dct_values.get(index) {
+        if let Some(dct_value) = self.input_ref().received_dct().get(index) {
             self.insert_new_managed_buffer(dct_value.token_identifier.clone())
         } else {
             std::panic::panic_any(TxPanic {
@@ -113,7 +113,7 @@ impl CallValueApiImpl for DebugApi {
 
     #[inline]
     fn dct_token_nonce_by_index(&self, index: usize) -> u64 {
-        if let Some(dct_value) = self.input_ref().dct_values.get(index) {
+        if let Some(dct_value) = self.input_ref().received_dct().get(index) {
             dct_value.nonce
         } else {
             std::panic::panic_any(TxPanic {

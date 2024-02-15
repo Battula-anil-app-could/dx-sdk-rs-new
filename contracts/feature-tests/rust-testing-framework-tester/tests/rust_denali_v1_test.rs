@@ -9,7 +9,7 @@ use dharitri_wasm::{
 };
 use dharitri_wasm_debug::{
     assert_values_eq, managed_address, managed_biguint, managed_buffer, managed_token_id,
-    rust_biguint, testing_framework::*, tx_mock::TxInputDCT, DebugApi,
+    rust_biguint, testing_framework::*, tx_mock::TxTokenTransfer, DebugApi,
 };
 use rust_testing_framework_tester::{dummy_module::DummyModule, *};
 
@@ -639,12 +639,12 @@ fn test_dct_multi_transfer() {
     );
 
     let transfers = vec![
-        TxInputDCT {
+        TxTokenTransfer {
             token_identifier: token_id_1.to_vec(),
             nonce: 0,
             value: rust_biguint!(100),
         },
-        TxInputDCT {
+        TxTokenTransfer {
             token_identifier: token_id_2.to_vec(),
             nonce: nft_nonce,
             value: rust_biguint!(1),
@@ -1402,12 +1402,12 @@ fn test_back_and_forth_transfers() {
     );
 
     let transfers = vec![
-        TxInputDCT {
+        TxTokenTransfer {
             token_identifier: first_token_id.to_vec(),
             nonce: 0,
             value: first_token_amount.clone(),
         },
-        TxInputDCT {
+        TxTokenTransfer {
             token_identifier: second_token_id.to_vec(),
             nonce: 0,
             value: second_token_amount.clone(),

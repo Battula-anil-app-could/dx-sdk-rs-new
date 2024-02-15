@@ -35,11 +35,7 @@ pub trait DistributionModule {
             }
             self.send()
                 .contract_call::<IgnoreValue>(distribution.address, distribution.endpoint)
-                .with_moax_or_single_dct_token_transfer(
-                    token_id.clone(),
-                    token_nonce,
-                    payment_amount,
-                )
+                .with_moax_or_single_dct_transfer((token_id.clone(), token_nonce, payment_amount))
                 .with_gas_limit(distribution.gas_limit)
                 .transfer_execute();
         }

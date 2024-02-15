@@ -3,7 +3,7 @@ use dharitri_wasm::dharitri_codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti
 
 use crate::{
     tx_execution::sc_call_with_async_and_callback,
-    tx_mock::{generate_tx_hash_dummy, TxInput, TxInputDCT, TxResult},
+    tx_mock::{generate_tx_hash_dummy, TxInput, TxResult, TxTokenTransfer},
     world_mock::BlockchainMock,
 };
 
@@ -62,7 +62,7 @@ pub(crate) fn execute(
         to: tx.to.to_address(),
         moax_value: tx.moax_value.value.clone(),
         dct_values: tx_dct_transfers_from_denali(tx.dct_value.as_slice()),
-        func_name: tx.function.as_bytes().to_vec(),
+        func_name: tx.function.clone().into(),
         args: tx
             .arguments
             .iter()
@@ -71,7 +71,7 @@ pub(crate) fn execute(
         gas_limit: tx.gas_limit.value,
         gas_price: tx.gas_price.value,
         tx_hash: generate_tx_hash_dummy(&sc_call_step.id),
-        promise_callback_closure_data: Vec::new(),
+        ..Default::default()
     };
 
     // nonce gets increased irrespective of whether the tx fails or not
@@ -91,15 +91,15 @@ fn execute_and_check(
     (tx_result, state)
 }
 
-pub fn tx_dct_transfers_from_denali(denali_transf_dct: &[TxDCT]) -> Vec<TxInputDCT> {
+pub fn tx_dct_transfers_from_denali(denali_transf_dct: &[TxDCT]) -> Vec<TxTokenTransfer> {
     denali_transf_dct
         .iter()
         .map(tx_dct_transfer_from_denali)
         .collect()
 }
 
-pub fn tx_dct_transfer_from_denali(denali_transf_dct: &TxDCT) -> TxInputDCT {
-    TxInputDCT {
+pub fn tx_dct_transfer_from_denali(denali_transf_dct: &TxDCT) -> TxTokenTransfer {
+    TxTokenTransfer {
         token_identifier: denali_transf_dct.dct_token_identifier.value.clone(),
         nonce: denali_transf_dct.nonce.value,
         value: denali_transf_dct.dct_value.value.clone(),

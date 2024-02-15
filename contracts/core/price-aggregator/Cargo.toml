@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-price-aggregator"
-version = "0.10.7"
+version = "0.10.8"
 authors = [
     "Claudiu-Marcel Bruda <claudiu.bruda@dharitri.com>",
     "Dharitri Network <contact@dharitri.com>",
@@ -13,21 +13,21 @@ documentation = "https://docs.dharitri.com/"
 description = "Dharitri Price aggregator Smart Contract"
 keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 path = "src/lib.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-modules]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../dharitri-wasm-modules"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../dharitri-wasm-debug"
 
 [dependencies]

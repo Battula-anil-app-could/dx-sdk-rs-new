@@ -1,5 +1,7 @@
 use core::marker::PhantomData;
 
+use dharitri_codec::TopDecode;
+
 use crate::{
     api::{
         const_handles, use_raw_handle, BlockchainApi, BlockchainApiImpl, ErrorApi, ErrorApiImpl,
@@ -271,7 +273,18 @@ where
         A::blockchain_api_impl().load_dct_token_data::<A>(address, token_id, nonce)
     }
 
-    #[cfg(feature = "ei-1-2")]
+    /// Retrieves and deserializes token attributes from the SC account, with given token identifier and nonce.
+    pub fn get_token_attributes<T: TopDecode>(
+        &self,
+        token_id: &TokenIdentifier<A>,
+        token_nonce: u64,
+    ) -> T {
+        let own_sc_address = self.get_sc_address();
+        let token_data = self.get_dct_token_data(&own_sc_address, token_id, token_nonce);
+        token_data.decode_attributes()
+    }
+
+    #[inline]
     pub fn is_dct_frozen(
         &self,
         address: &ManagedAddress<A>,
@@ -285,12 +298,12 @@ where
         )
     }
 
-    #[cfg(feature = "ei-1-2")]
+    #[inline]
     pub fn is_dct_paused(&self, token_id: &TokenIdentifier<A>) -> bool {
         A::blockchain_api_impl().check_dct_paused(token_id.get_handle())
     }
 
-    #[cfg(feature = "ei-1-2")]
+    #[inline]
     pub fn is_dct_limited_transfer(&self, token_id: &TokenIdentifier<A>) -> bool {
         A::blockchain_api_impl().check_dct_limited_transfer(token_id.get_handle())
     }

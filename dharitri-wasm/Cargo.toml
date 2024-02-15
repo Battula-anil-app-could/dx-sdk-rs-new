@@ -1,7 +1,7 @@
 [package]
 name = "dharitri-wasm"
-version = "0.10.7"
-edition = "2018"
+version = "0.10.8"
+edition = "2021"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
 license = "GPL-3.0-only"
@@ -19,7 +19,6 @@ alloc = ["dharitri-codec/alloc"]
 ei-unmanaged = ["alloc"]
 promises = []
 big-float = []
-ei-1-2 = []
 dct-token-payment-legacy-decode = []
 
 [dependencies]
@@ -33,10 +32,10 @@ version = "0.2"
 default-features = false
 
 [dependencies.dharitri-wasm-derive]
-version = "=0.10.7"
+version = "=0.10.8"
 path = "../dharitri-wasm-derive"
 
 [dependencies.dharitri-codec]
-version = "=0.4.0"
+version = "=0.4.1"
 path = "../dharitri-codec"
 features = ["derive"]

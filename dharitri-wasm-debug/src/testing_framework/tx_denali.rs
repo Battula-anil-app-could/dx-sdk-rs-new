@@ -1,4 +1,4 @@
-use crate::{num_bigint, tx_mock::TxInputDCT};
+use crate::{num_bigint, tx_mock::TxTokenTransfer};
 use dharitri_wasm::{
     dharitri_codec::{top_encode_to_vec_u8_or_panic, TopEncode},
     types::heap::Address,
@@ -9,7 +9,7 @@ pub struct ScCallDenali {
     pub(crate) from: Address,
     pub(crate) to: Address,
     pub(crate) moax_value: num_bigint::BigUint,
-    pub(crate) dct: Vec<TxInputDCT>,
+    pub(crate) dct: Vec<TxTokenTransfer>,
     pub(crate) function: String,
     pub(crate) arguments: Vec<Vec<u8>>,
     pub(crate) gas_limit: u64,
@@ -40,7 +40,7 @@ impl ScCallDenali {
         nonce: u64,
         dct_value: &num_bigint::BigUint,
     ) {
-        self.dct.push(TxInputDCT {
+        self.dct.push(TxTokenTransfer {
             token_identifier: token_id.to_vec(),
             nonce,
             value: dct_value.clone(),

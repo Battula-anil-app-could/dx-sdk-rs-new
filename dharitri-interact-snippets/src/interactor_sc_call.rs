@@ -3,17 +3,23 @@ use dharitri_sdk_moars::data::transaction::Transaction;
 use dharitri_wasm_debug::{
     dharitri_wasm::{
         dharitri_codec::{multi_types::IgnoreValue, CodecFrom, TopEncodeMulti},
-        types::ContractCall,
+        types::ContractCallWithMoax,
     },
     denali_system::model::{ScCallStep, TransferStep, TxCall, TypedScCall},
     DebugApi,
 };
 use log::info;
 
-fn contract_call_to_tx_data(contract_call: &ContractCall<DebugApi, ()>) -> String {
-    let mut result =
-        String::from_utf8(contract_call.endpoint_name.to_boxed_bytes().into_vec()).unwrap();
-    for argument in contract_call.arg_buffer.raw_arg_iter() {
+fn contract_call_to_tx_data(contract_call: &ContractCallWithMoax<DebugApi, ()>) -> String {
+    let mut result = String::from_utf8(
+        contract_call
+            .basic
+            .endpoint_name
+            .to_boxed_bytes()
+            .into_vec(),
+    )
+    .unwrap();
+    for argument in contract_call.basic.arg_buffer.raw_arg_iter() {
         result.push('@');
         result.push_str(hex::encode(argument.to_boxed_bytes().as_slice()).as_str());
     }
@@ -22,7 +28,7 @@ fn contract_call_to_tx_data(contract_call: &ContractCall<DebugApi, ()>) -> Strin
 
 impl Interactor {
     fn tx_call_to_blockchain_tx(&self, tx_call: &TxCall) -> Transaction {
-        let contract_call = tx_call.to_contract_call().convert_to_dct_transfer_call();
+        let contract_call = tx_call.to_contract_call();
         let contract_call_tx_data = contract_call_to_tx_data(&contract_call);
         let data = if contract_call_tx_data.is_empty() {
             None
@@ -34,7 +40,7 @@ impl Interactor {
             nonce: 0,
             value: contract_call.moax_payment.to_alloc().to_string(),
             sender: denali_to_moars_address(&tx_call.from),
-            receiver: address_h256_to_moars(&contract_call.to.to_address()),
+            receiver: address_h256_to_moars(&contract_call.basic.to.to_address()),
             gas_price: self.network_config.min_gas_price,
             gas_limit: tx_call.gas_limit.value,
             data,
@@ -55,7 +61,7 @@ impl Interactor {
         self.set_nonce_and_sign_tx(sender_address, &mut transaction)
             .await;
         let tx_hash = self.proxy.send_transaction(&transaction).await.unwrap();
-        println!("sc call tx hash: {}", tx_hash);
+        println!("sc call tx hash: {tx_hash}");
         info!("sc call tx hash: {}", tx_hash);
         tx_hash
     }
@@ -102,7 +108,7 @@ impl Interactor {
         self.set_nonce_and_sign_tx(sender_address, &mut transaction)
             .await;
         let tx_hash = self.proxy.send_transaction(&transaction).await.unwrap();
-        println!("transfer tx hash: {}", tx_hash);
+        println!("transfer tx hash: {tx_hash}");
         info!("transfer tx hash: {}", tx_hash);
         tx_hash
     }

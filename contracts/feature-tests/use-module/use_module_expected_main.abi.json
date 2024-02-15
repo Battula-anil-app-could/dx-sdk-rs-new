@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-wasm",
-            "version": "0.10.7"
+            "version": "0.10.8"
         }
     },
     "docs": [
@@ -55,6 +55,18 @@
                     "type": "bool"
                 }
             ]
+        },
+        {
+            "name": "call_contract_base_full_path_endpoint",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "call_contract_base_endpoint",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
         },
         {
             "name": "call_mod_a",

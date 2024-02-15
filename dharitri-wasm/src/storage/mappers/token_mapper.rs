@@ -5,8 +5,8 @@ use crate::{
     storage::StorageKey,
     storage_get, storage_get_len, storage_set,
     types::{
-        CallbackClosure, DctLocalRole, DctTokenPayment, ManagedAddress, ManagedRef, ManagedVec,
-        TokenIdentifier,
+        CallbackClosure, ContractCall, DctLocalRole, DctTokenPayment, ManagedAddress, ManagedRef,
+        ManagedVec, TokenIdentifier,
     },
 };
 
@@ -34,6 +34,12 @@ where
     fn set_if_empty(&mut self, token_id: TokenIdentifier<SA>) {
         if self.is_empty() {
             self.set_token_id(token_id);
+        }
+    }
+
+    fn require_issued_or_set(&self) {
+        if self.is_empty() {
+            SA::error_api_impl().signal_error(MUST_SET_TOKEN_ID_ERR_MSG);
         }
     }
 
@@ -68,9 +74,7 @@ where
         roles: &[DctLocalRole],
         opt_callback: Option<CallbackClosure<SA>>,
     ) -> ! {
-        if self.is_empty() {
-            SA::error_api_impl().signal_error(MUST_SET_TOKEN_ID_ERR_MSG);
-        }
+        self.require_issued_or_set();
 
         let system_sc_proxy = DCTSystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id_ref();
@@ -82,7 +86,7 @@ where
             async_call = async_call.with_callback(cb);
         }
 
-        async_call.call_and_exit();
+        async_call.call_and_exit()
     }
 
     fn get_sc_address() -> ManagedAddress<SA> {

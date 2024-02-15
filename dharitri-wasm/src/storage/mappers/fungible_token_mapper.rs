@@ -13,14 +13,14 @@ use crate::{
     dct::{DCTSystemSmartContractProxy, FungibleTokenProperties},
     storage::StorageKey,
     types::{
-        BigUint, CallbackClosure, DctTokenPayment, DctTokenType, ManagedAddress, ManagedBuffer,
-        ManagedRef, ManagedType, TokenIdentifier,
+        BigUint, CallbackClosure, ContractCall, DctTokenPayment, DctTokenType, ManagedAddress,
+        ManagedBuffer, ManagedRef, ManagedType, TokenIdentifier,
     },
 };
 
-pub(crate) const DEFAULT_ISSUE_CALLBACK_NAME: &[u8] = b"default_issue_cb";
-pub(crate) const DEFAULT_ISSUE_WITH_INIT_SUPPLY_CALLBACK_NAME: &[u8] =
-    b"default_issue_init_supply_cb";
+pub(crate) const DEFAULT_ISSUE_CALLBACK_NAME: &str = "default_issue_cb";
+pub(crate) const DEFAULT_ISSUE_WITH_INIT_SUPPLY_CALLBACK_NAME: &str =
+    "default_issue_init_supply_cb";
 
 pub struct FungibleTokenMapper<SA>
 where

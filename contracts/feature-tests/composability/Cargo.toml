@@ -2,7 +2,7 @@
 name = "composability-tests"
 version = "0.0.0"
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.forwarder]
@@ -27,9 +27,9 @@ path = "recursive-caller"
 path = "vault"
 
 [dependencies.dharitri-wasm]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../dharitri-wasm"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../dharitri-wasm-debug"

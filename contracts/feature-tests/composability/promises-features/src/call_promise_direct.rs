@@ -19,12 +19,8 @@ pub trait CallPromisesDirectModule {
         let payment = self.call_value().moax_or_single_dct();
         self.send()
             .contract_call::<()>(to, endpoint_name)
-            .with_moax_or_single_dct_token_transfer(
-                payment.token_identifier,
-                payment.token_nonce,
-                payment.amount,
-            )
-            .with_arguments_raw(args.to_arg_buffer())
+            .with_moax_or_single_dct_transfer(payment)
+            .with_raw_arguments(args.to_arg_buffer())
             .with_gas_limit(gas_limit)
             .async_call_promise()
             .with_extra_gas_for_callback(extra_gas_for_callback)

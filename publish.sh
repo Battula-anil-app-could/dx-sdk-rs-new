@@ -55,8 +55,6 @@ cd dharitri-codec-derive
 cargo publish || return 1
 cd ..
 
-sleep 20
-
 cd dharitri-codec
 cargo publish || return 1
 cd ..
@@ -64,8 +62,6 @@ cd ..
 cd dharitri-wasm-derive
 cargo publish || return 1
 cd ..
-
-sleep 20
 
 cd dharitri-wasm
 cargo publish || return 1

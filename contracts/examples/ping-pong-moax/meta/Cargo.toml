@@ -2,12 +2,12 @@
 name = "ping-pong-moax-meta"
 version = "0.0.0"
 authors = [ "Bruda Claudiu-Marcel <claudiu725@yahoo.com>",]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.ping-pong-moax]
 path = ".."
 
 [dependencies.dharitri-wasm-debug]
-version = "0.10.7"
+version = "0.10.8"
 path = "../../../../dharitri-wasm-debug"

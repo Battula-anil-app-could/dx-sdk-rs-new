@@ -47,13 +47,13 @@ fn forw_raw_async_echo_rs() {
     dharitri_wasm_debug::denali_rs("denali/forw_raw_async_echo.scen.json", world());
 }
 
-// #[test]
-// fn forw_raw_async_send_and_retrieve_multi_transfer_funds_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forw_raw_async_send_and_retrieve_multi_transfer_funds.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forw_raw_async_send_and_retrieve_multi_transfer_funds_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forw_raw_async_send_and_retrieve_multi_transfer_funds.scen.json",
+        world(),
+    );
+}
 
 #[test]
 fn forw_raw_builtin_nft_local_mint_via_async_call_rs() {
@@ -71,13 +71,13 @@ fn forw_raw_builtin_nft_local_mint_via_sync_call_rs() {
     );
 }
 
-// #[test]
-// fn forw_raw_call_async_retrieve_multi_transfer_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forw_raw_call_async_retrieve_multi_transfer.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forw_raw_call_async_retrieve_multi_transfer_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forw_raw_call_async_retrieve_multi_transfer.scen.json",
+        world(),
+    );
+}
 
 #[test]
 fn forw_raw_contract_deploy_rs() {
@@ -114,10 +114,10 @@ fn forw_raw_sync_echo_rs() {
     dharitri_wasm_debug::denali_rs("denali/forw_raw_sync_echo.scen.json", world());
 }
 
-// #[test]
-// fn forw_raw_sync_echo_caller_rs() {
-//     dharitri_wasm_debug::denali_rs("denali/forw_raw_sync_echo_caller.scen.json", world());
-// }
+#[test]
+fn forw_raw_sync_echo_caller_rs() {
+    dharitri_wasm_debug::denali_rs("denali/forw_raw_sync_echo_caller.scen.json", world());
+}
 
 #[test]
 fn forw_raw_sync_moax_rs() {
@@ -200,29 +200,29 @@ fn forwarder_call_async_multi_transfer_rs() {
     );
 }
 
-// #[test]
-// fn forwarder_call_async_retrieve_moax_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forwarder_call_async_retrieve_moax.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forwarder_call_async_retrieve_moax_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_call_async_retrieve_moax.scen.json",
+        world(),
+    );
+}
 
-// #[test]
-// fn forwarder_call_async_retrieve_dct_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forwarder_call_async_retrieve_dct.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forwarder_call_async_retrieve_dct_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_call_async_retrieve_dct.scen.json",
+        world(),
+    );
+}
 
-// #[test]
-// fn forwarder_call_async_retrieve_nft_rs() {
-//     dharitri_wasm_debug::denali_rs(
-//         "denali/forwarder_call_async_retrieve_nft.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forwarder_call_async_retrieve_nft_rs() {
+    dharitri_wasm_debug::denali_rs(
+        "denali/forwarder_call_async_retrieve_nft.scen.json",
+        world(),
+    );
+}
 
 #[test]
 fn forwarder_call_sync_accept_moax_rs() {
