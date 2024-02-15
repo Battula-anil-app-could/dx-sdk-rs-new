@@ -18,14 +18,9 @@ panic = "abort"
 [dependencies.child]
 path = ".."
 
-[dependencies.dharitri-wasm-node]
-version = "0.10.8"
-path = "../../../../../../dharitri-wasm-node"
-
-[dependencies.dharitri-wasm-output]
-version = "0.10.8"
-path = "../../../../../../dharitri-wasm-output"
-features = ["wasm-output-mode"]
+[dependencies.dharitri-sc-wasm-adapter]
+version = "0.10.9"
+path = "../../../../../../framework/wasm-adapter"
 
 [workspace]
 members = ["."]

@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::{denali_system::model::*, *};
+use dharitri_sc_scenario::{scenario_model::*, *};
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/adder");
 
     blockchain.register_contract("file:output/adder.wasm", adder::ContractBuilder);
@@ -13,12 +13,12 @@ fn adder_denali_constructed_raw() {
     let mut world = world();
     let ic = world.interpreter_context();
     world
-        .denali_set_state(
+        .set_state_step(
             SetStateStep::new()
                 .put_account("address:owner", Account::new().nonce(1))
                 .new_address("address:owner", 1, "sc:adder"),
         )
-        .denali_sc_deploy(
+        .sc_deploy_step(
             ScDeployStep::new()
                 .from("address:owner")
                 .contract_code("file:output/adder.wasm", &ic)
@@ -26,13 +26,13 @@ fn adder_denali_constructed_raw() {
                 .gas_limit("5,000,000")
                 .expect(TxExpect::ok().no_result()),
         )
-        .denali_sc_query(
+        .sc_query_step(
             ScQueryStep::new()
                 .to("sc:adder")
                 .function("getSum")
                 .expect(TxExpect::ok().result("5")),
         )
-        .denali_sc_call(
+        .sc_call_step(
             ScCallStep::new()
                 .from("address:owner")
                 .to("sc:adder")
@@ -40,7 +40,7 @@ fn adder_denali_constructed_raw() {
                 .argument("3")
                 .expect(TxExpect::ok().no_result()),
         )
-        .denali_check_state(
+        .check_state_step(
             CheckStateStep::new()
                 .put_account("address:owner", CheckAccount::new())
                 .put_account(

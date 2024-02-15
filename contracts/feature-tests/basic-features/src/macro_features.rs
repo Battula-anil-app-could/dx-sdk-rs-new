@@ -1,7 +1,7 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-/// Various macros provided by dharitri-wasm.
-#[dharitri_wasm::module]
+/// Various macros provided by dharitri-sc.
+#[dharitri_sc::module]
 pub trait Macros {
     #[only_owner]
     #[endpoint]

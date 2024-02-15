@@ -1,7 +1,7 @@
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
-use dharitri_wasm::contract_base::ManagedSerializer;
+use dharitri_sc::contract_base::ManagedSerializer;
 
 #[derive(TopEncode, TopDecode)]
 pub struct FractionalUriInfo<M: ManagedTypeApi> {

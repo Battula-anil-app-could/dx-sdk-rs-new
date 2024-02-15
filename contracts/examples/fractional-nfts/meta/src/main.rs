@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<fractional_nfts::AbiProvider>();
+    dharitri_sc_meta::cli_main::<fractional_nfts::AbiProvider>();
 }

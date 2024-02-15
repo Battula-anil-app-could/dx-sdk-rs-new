@@ -1,5 +1,5 @@
 [package]
-name = "dharitri-sc-wmoax-swap-wasm"
+name = "dharitri-wmoax-swap-sc-wasm"
 version = "0.0.0"
 authors = [ "Dorin Iancu <dorin.iancu@dharitri.com>",]
 edition = "2021"
@@ -20,14 +20,9 @@ lto = true
 debug = false
 panic = "abort"
 
-[dependencies.dharitri-sc-wmoax-swap]
+[dependencies.dharitri-wmoax-swap-sc]
 path = ".."
 
-[dependencies.dharitri-wasm-node]
-version = "0.10.8"
-path = "../../../../dharitri-wasm-node"
-
-[dependencies.dharitri-wasm-output]
-version = "0.10.8"
-path = "../../../../dharitri-wasm-output"
-features = ["wasm-output-mode"]
+[dependencies.dharitri-sc-wasm-adapter]
+version = "0.10.9"
+path = "../../../../framework/wasm-adapter"

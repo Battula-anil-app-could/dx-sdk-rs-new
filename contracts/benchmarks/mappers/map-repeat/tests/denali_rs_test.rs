@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/map-repeat");
 
     blockchain.register_contract("file:output/map-repeat.wasm", map_repeat::ContractBuilder);
@@ -10,10 +10,10 @@ fn world() -> BlockchainMock {
 
 #[test]
 fn map_repeat_struct_rs() {
-    dharitri_wasm_debug::denali_rs("denali/map_repeat_struct.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/map_repeat_struct.scen.json", world());
 }
 
 #[test]
 fn map_repeat_rs() {
-    dharitri_wasm_debug::denali_rs("denali/map_repeat.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/map_repeat.scen.json", world());
 }

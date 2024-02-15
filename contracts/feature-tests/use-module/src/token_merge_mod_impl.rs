@@ -1,9 +1,9 @@
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 use core::marker::PhantomData;
 
-use dharitri_wasm_modules::token_merge::{
+use dharitri_sc_modules::token_merge::{
     custom_merged_token_attributes::{
         AllMergeScTraits, DefaultMergedAttributesWrapper, MergedTokenAttributesCreator,
     },
@@ -16,12 +16,12 @@ pub struct CustomAttributes {
     pub second: u64,
 }
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait TokenMergeModImpl:
-    dharitri_wasm_modules::pause::PauseModule
-    + dharitri_wasm_modules::token_merge::TokenMergeModule
-    + dharitri_wasm_modules::token_merge::merged_token_setup::MergedTokenSetupModule
-    + dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    dharitri_sc_modules::pause::PauseModule
+    + dharitri_sc_modules::token_merge::TokenMergeModule
+    + dharitri_sc_modules::token_merge::merged_token_setup::MergedTokenSetupModule
+    + dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("*")]
     #[endpoint(mergeTokens)]

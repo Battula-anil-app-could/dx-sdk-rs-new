@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 mod lottery_info;
 mod status;
@@ -12,7 +12,7 @@ const PERCENTAGE_TOTAL: u32 = 100;
 const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
 const MAX_TICKETS: usize = 800;
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Lottery {
     #[init]
     fn init(&self) {}

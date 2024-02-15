@@ -1,6 +1,6 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait MockSeedNftMinter {
     #[init]
     fn init(&self, nft_token_id: TokenIdentifier) {

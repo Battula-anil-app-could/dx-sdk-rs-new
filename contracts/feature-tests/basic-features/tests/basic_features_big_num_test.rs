@@ -1,5 +1,5 @@
-use dharitri_wasm::types::{BigInt, BigUint, ManagedBuffer};
-use dharitri_wasm_debug::*;
+use dharitri_sc::types::{BigInt, BigUint, ManagedBuffer};
+use dharitri_sc_scenario::*;
 
 use basic_features::big_num_methods::BigIntMethods;
 

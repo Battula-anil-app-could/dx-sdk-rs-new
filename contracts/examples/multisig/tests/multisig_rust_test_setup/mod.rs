@@ -1,15 +1,13 @@
-use dharitri_wasm::{
-    api::ManagedTypeApi,
-    dharitri_codec::multi_types::OptionalValue,
-    types::{Address, BigUint, BoxedBytes, CodeMetadata, ManagedBuffer, ManagedVec},
-};
-use dharitri_wasm_debug::{
-    managed_address, rust_biguint, testing_framework::*, tx_mock::TxResult, DebugApi,
-};
 use multisig::{
     multisig_perform::MultisigPerformModule, multisig_propose::MultisigProposeModule,
     user_role::UserRole, Multisig,
 };
+use dharitri_sc::{
+    api::ManagedTypeApi,
+    codec::multi_types::OptionalValue,
+    types::{Address, BigUint, BoxedBytes, CodeMetadata, ManagedBuffer, ManagedVec},
+};
+use dharitri_sc_scenario::{managed_address, rust_biguint, testing_framework::*, DebugApi};
 
 const MULTISIG_WASM_PATH: &str = "multisig/output/multisig.wasm";
 const QUORUM_SIZE: usize = 1;

@@ -1,12 +1,12 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 const ZERO_ASCII: u8 = b'0';
 const DASH: u8 = b'-';
 const RAND_CHARS_LEN: usize = 6;
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait PayableFeatures {
     #[init]
     fn init(&self) {}

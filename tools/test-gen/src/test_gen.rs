@@ -1,8 +1,8 @@
 use std::{env, fs, fs::File, io::Write};
 
 /// Examples how to run:
-/// `cargo run ../../contracts/examples/multisig/denali`
-/// `cargo run ../../contracts/feature-tests/basic-features/denali`
+/// `cargo run ../../contracts/examples/multisig/scenario`
+/// `cargo run ../../contracts/feature-tests/basic-features/scenario`
 fn main() {
     let args: Vec<String> = env::args().collect();
     let files_path = &args[1];
@@ -53,7 +53,7 @@ fn print_denali_rs(file: &mut File, names: &[String]) {
             file,
             "#[test]
 fn {}_rs() {{
-    dharitri_wasm_debug::denali_rs(\"denali/{}.scen.json\", world());
+    dharitri_sc_scenario::run_rs(\"scenarios/{}.scen.json\", world());
 }}
 ",
             name.replace('-', "_").to_lowercase(),
@@ -69,7 +69,7 @@ fn print_denali_go(file: &mut File, names: &[String]) {
             file,
             "#[test]
 fn {}_go() {{
-    dharitri_wasm_debug::denali_go(\"denali/{}.scen.json\");
+    dharitri_chain_vm::run_go(\"scenarios/{}.scen.json\");
 }}
 ",
             name.replace('-', "_").to_lowercase(),

@@ -1,13 +1,12 @@
-use dharitri_wasm::types::{Address, ManagedVec, MultiValueEncoded};
-use dharitri_wasm_debug::{
-    managed_address, managed_biguint, managed_buffer, managed_token_id, rust_biguint,
-    testing_framework::{BlockchainStateWrapper, ContractObjWrapper},
-    tx_mock::TxResult,
-    DebugApi,
-};
-use dharitri_wasm_modules::governance::{
+use dharitri_sc::types::{Address, ManagedVec, MultiValueEncoded};
+use dharitri_sc_modules::governance::{
     governance_configurable::GovernanceConfigurablePropertiesModule, governance_proposal::VoteType,
     GovernanceModule,
+};
+use dharitri_sc_scenario::{
+    managed_address, managed_biguint, managed_buffer, managed_token_id, rust_biguint,
+    testing_framework::{BlockchainStateWrapper, ContractObjWrapper, TxResult},
+    DebugApi,
 };
 
 static GOV_TOKEN_ID: &[u8] = b"GOV-123456";

@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<local_dct_and_nft::AbiProvider>();
+    dharitri_sc_meta::cli_main::<local_dct_and_nft::AbiProvider>();
 }

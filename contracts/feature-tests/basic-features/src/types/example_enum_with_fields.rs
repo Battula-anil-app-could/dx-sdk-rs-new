@@ -1,6 +1,6 @@
-dharitri_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
-/// Copied from dharitri-wasm serialization tests.
+/// Copied from dharitri-sc serialization tests.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub enum ExampleEnumWithFields {
     Unit,

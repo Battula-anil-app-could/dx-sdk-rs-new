@@ -1,9 +1,9 @@
 use std::borrow::Borrow;
 
-use dharitri_wasm::types::{BoxedBytes, CodeMetadata, ManagedAddress};
-use dharitri_wasm_debug::{managed_address, managed_biguint, rust_biguint, DebugApi};
 use multisig::user_role::UserRole;
 use multisig_rust_test_setup::{CallActionDataRaw, MultisigSetup};
+use dharitri_sc::types::{BoxedBytes, CodeMetadata, ManagedAddress};
+use dharitri_sc_scenario::{managed_address, managed_biguint, rust_biguint, DebugApi};
 
 mod multisig_rust_test_setup;
 use adder::Adder;

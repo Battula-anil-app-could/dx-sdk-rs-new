@@ -1,10 +1,10 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 const MOAX_DECIMALS: usize = 18;
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Child {
     #[init]
     fn init(&self) {}

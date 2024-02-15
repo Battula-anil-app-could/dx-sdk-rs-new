@@ -1,7 +1,7 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 mod contract_data;
 
@@ -9,7 +9,7 @@ use contract_data::{Schedule, UnlockType};
 
 const PERCENTAGE_TOTAL: u64 = 100;
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait TokenRelease {
     // The SC initializes with the setup period started. After the initial setup, the SC offers a function that ends the setup period.
     // There is no function to start the setup period back on, so once the setup period is ended, it cannot be changed.

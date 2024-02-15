@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract(
         "file:first-contract/output/first-contract.wasm",
         first_contract::ContractBuilder,
@@ -16,26 +16,30 @@ fn world() -> BlockchainMock {
 
 #[test]
 fn init_rs() {
-    dharitri_wasm_debug::denali_rs("denali/init.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/init.scen.json", world());
 }
 
 #[test]
 fn simple_transfer_full_rs() {
-    dharitri_wasm_debug::denali_rs("denali/simple_transfer_full.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/simple_transfer_full.scen.json", world());
 }
 
 #[test]
 fn simple_transfer_half_rs() {
-    dharitri_wasm_debug::denali_rs("denali/simple_transfer_half.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/simple_transfer_half.scen.json", world());
 }
 
 #[test]
 fn simple_transfer_full_wrong_token_rs() {
-    dharitri_wasm_debug::denali_rs("denali/simple_transfer_full_wrong_token.scen.json", world());
+    dharitri_sc_scenario::run_rs(
+        "scenarios/simple_transfer_full_wrong_token.scen.json",
+        world(),
+    );
 }
 
 // TODO: implement DCTTransfer + async call
-// #[test]
-// fn rejected_transfer_rs() {
-// 	dharitri_wasm_debug::denali_rs("denali/reject_transfer.scen.json", world());
-// }
+#[ignore]
+#[test]
+fn rejected_transfer_rs() {
+    dharitri_sc_scenario::run_rs("scenarios/reject_transfer.scen.json", world());
+}

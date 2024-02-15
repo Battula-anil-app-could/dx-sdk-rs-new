@@ -1,20 +1,20 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 mod distribution_module;
 mod nft_module;
 
 use distribution_module::Distribution;
-use dharitri_wasm_modules::default_issue_callbacks;
+use dharitri_sc_modules::default_issue_callbacks;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct ExampleAttributes {
     pub creation_timestamp: u64,
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait SeedNftMinter:
     distribution_module::DistributionModule
     + nft_module::NftModule
@@ -122,9 +122,9 @@ pub trait SeedNftMinter:
 }
 
 mod nft_marketplace_proxy {
-    dharitri_wasm::imports!();
+    dharitri_sc::imports!();
 
-    #[dharitri_wasm::proxy]
+    #[dharitri_sc::proxy]
     pub trait NftMarketplace {
         #[endpoint(claimTokens)]
         fn claim_tokens(

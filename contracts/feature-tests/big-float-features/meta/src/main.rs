@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<big_float_features::AbiProvider>();
+    dharitri_sc_meta::cli_main::<big_float_features::AbiProvider>();
 }

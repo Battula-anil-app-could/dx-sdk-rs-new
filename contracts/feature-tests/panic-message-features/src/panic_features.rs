@@ -1,11 +1,11 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Explores panic messaging.
 /// Sending panic messages to the VM is possible, as shown in this contract,
 /// but it greatly inflates the bytecode size.
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait PanicMessageFeatures {
     #[init]
     fn init(&self) {}

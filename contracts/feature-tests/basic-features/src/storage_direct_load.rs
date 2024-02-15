@@ -1,11 +1,11 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-use dharitri_wasm::api::HandleTypeInfo;
+use dharitri_sc::api::HandleTypeInfo;
 
 use crate::types::*;
 
 /// Storage tests: direct load.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait StorageLoadFeatures {
     #[endpoint]
     #[storage_get("big_uint")]
@@ -74,7 +74,7 @@ pub trait StorageLoadFeatures {
     #[endpoint]
     fn load_from_address_raw(&self, address: ManagedAddress, key: ManagedBuffer) -> ManagedBuffer {
         // TODO: maybe wrap this kind of functionality in a StorageRawWrapper
-        use dharitri_wasm::api::{
+        use dharitri_sc::api::{
             StaticVarApi, StaticVarApiImpl, StorageReadApi, StorageReadApiImpl,
         };
         let value_handle: <<Self as ContractBase>::Api as HandleTypeInfo>::ManagedBufferHandle =

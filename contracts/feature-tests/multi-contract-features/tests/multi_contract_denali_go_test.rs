@@ -1,9 +1,9 @@
 #[test]
 fn external_pure_go() {
-    dharitri_wasm_debug::denali_go("denali/external-pure.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/external-pure.scen.json");
 }
 
 #[test]
 fn external_get_go() {
-    dharitri_wasm_debug::denali_go("denali/external-get.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/external-get.scen.json");
 }

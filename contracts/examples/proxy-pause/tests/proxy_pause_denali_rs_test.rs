@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/proxy-pause");
 
     blockchain.register_contract("file:output/proxy-pause.wasm", proxy_pause::ContractBuilder);
@@ -15,5 +15,5 @@ fn world() -> BlockchainMock {
 
 #[test]
 fn pause_rs() {
-    dharitri_wasm_debug::denali_rs("denali/pause-and-unpause.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/pause-and-unpause.scen.json", world());
 }

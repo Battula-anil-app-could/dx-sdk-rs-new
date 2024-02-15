@@ -1,16 +1,16 @@
 #![no_std]
 #![allow(unused_attributes)]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 mod deposit_info;
 use deposit_info::DepositInfo;
 
 pub const SECONDS_PER_ROUND: u64 = 6;
-pub use dharitri_wasm::api::{ED25519_KEY_BYTE_LEN, ED25519_SIGNATURE_BYTE_LEN};
+pub use dharitri_sc::api::{ED25519_KEY_BYTE_LEN, ED25519_SIGNATURE_BYTE_LEN};
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait DigitalCash {
     #[init]
     fn init(&self) {}

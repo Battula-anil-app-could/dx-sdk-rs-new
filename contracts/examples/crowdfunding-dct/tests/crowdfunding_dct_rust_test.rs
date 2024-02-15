@@ -1,6 +1,6 @@
 use crowdfunding_dct::*;
-use dharitri_wasm::types::{Address, MoaxOrDctTokenIdentifier};
-use dharitri_wasm_debug::{
+use dharitri_sc::types::{Address, MoaxOrDctTokenIdentifier};
+use dharitri_sc_scenario::{
     managed_address, managed_biguint, managed_token_id, rust_biguint, testing_framework::*,
     DebugApi,
 };

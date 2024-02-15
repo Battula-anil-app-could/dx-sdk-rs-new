@@ -1,5 +1,5 @@
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 use crate::common::{FEE_PENALTY_INCREASE_EPOCHS, FEE_PENALTY_INCREASE_PERCENT};
 
@@ -10,7 +10,7 @@ use super::common::{
     PERCENT_BASE_POINTS,
 };
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait OrdersModule:
     events::EventsModule + common::CommonModule + validation::ValidationModule
 {

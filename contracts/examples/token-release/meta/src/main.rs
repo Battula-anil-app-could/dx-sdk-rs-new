@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<token_release::AbiProvider>();
+    dharitri_sc_meta::cli_main::<token_release::AbiProvider>();
 }

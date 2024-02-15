@@ -1,5 +1,5 @@
-use dharitri_wasm::types::Box;
-dharitri_wasm::derive_imports!();
+use dharitri_sc::types::Box;
+dharitri_sc::derive_imports!();
 
 const ARRAY_SIZE: usize = 512;
 

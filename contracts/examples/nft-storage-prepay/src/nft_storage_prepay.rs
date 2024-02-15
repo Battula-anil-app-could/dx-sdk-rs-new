@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait NftStoragePrepay {
     #[init]
     fn init(&self, cost_per_byte: BigUint) {

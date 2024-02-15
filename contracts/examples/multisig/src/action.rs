@@ -1,9 +1,9 @@
-use dharitri_wasm::{
+use dharitri_sc::{
     api::ManagedTypeApi,
     types::{BigUint, CodeMetadata, ManagedAddress, ManagedBuffer, ManagedVec},
 };
 
-dharitri_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TypeAbi, Clone)]
 pub struct CallActionData<M: ManagedTypeApi> {
@@ -56,7 +56,7 @@ pub struct ActionFullInfo<M: ManagedTypeApi> {
 
 #[cfg(test)]
 mod test {
-    use dharitri_wasm_debug::DebugApi;
+    use dharitri_sc_scenario::DebugApi;
 
     use super::Action;
 

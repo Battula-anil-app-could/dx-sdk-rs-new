@@ -1,5 +1,5 @@
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct RgbColor {
@@ -8,9 +8,9 @@ pub struct RgbColor {
     b: u8,
 }
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait NonFungibleTokenMapperFeatures:
-    dharitri_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("MOAX")]
     #[endpoint]

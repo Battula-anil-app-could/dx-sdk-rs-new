@@ -1,9 +1,9 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-#[dharitri_wasm::contract]
-pub trait MoaxDctSwap: dharitri_wasm_modules::pause::PauseModule {
+#[dharitri_sc::contract]
+pub trait MoaxDctSwap: dharitri_sc_modules::pause::PauseModule {
     #[init]
     fn init(&self, wrapped_moax_token_id: TokenIdentifier) {
         self.wrapped_moax_token_id().set(&wrapped_moax_token_id);

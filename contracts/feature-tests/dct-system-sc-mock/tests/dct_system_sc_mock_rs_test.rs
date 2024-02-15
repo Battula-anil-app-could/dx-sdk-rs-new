@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/dct-system-sc-mock");
     blockchain.register_contract(
         "file:output/dct-system-sc-mock.wasm",
@@ -12,5 +12,5 @@ fn world() -> BlockchainMock {
 
 #[test]
 fn issue_rs() {
-    dharitri_wasm_debug::denali_rs("denali/dct_system_sc.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/dct_system_sc.scen.json", world());
 }

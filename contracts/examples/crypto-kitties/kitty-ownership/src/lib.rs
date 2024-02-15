@@ -1,14 +1,14 @@
 #![no_std]
 #![allow(clippy::suspicious_operation_groupings)]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 use core::cmp::max;
 
 use kitty::{kitty_genes::*, Kitty};
 use random::*;
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait KittyOwnership {
     #[init]
     fn init(

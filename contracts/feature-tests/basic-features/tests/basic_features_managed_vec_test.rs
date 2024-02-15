@@ -1,5 +1,5 @@
-use dharitri_wasm::types::{BigUint, ManagedVec};
-use dharitri_wasm_debug::*;
+use dharitri_sc::types::{BigUint, ManagedVec};
+use dharitri_sc_scenario::*;
 
 use basic_features::managed_vec_features::ManagedVecFeatures;
 

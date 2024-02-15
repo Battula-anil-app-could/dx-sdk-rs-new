@@ -1,4 +1,4 @@
-dharitri_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
 /// Tests that the ABI generator also fetches types that only appear as fields.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]

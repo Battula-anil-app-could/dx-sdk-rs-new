@@ -1,6 +1,6 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait UniqueIdMapperFeatures {
     #[endpoint]
     fn init_unique_id_mapper(&self, len: usize) {

@@ -1,7 +1,7 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 const PERCENTAGE_TOTAL: u8 = 100;
 
@@ -24,7 +24,7 @@ pub struct AuctionArgument<M: ManagedTypeApi> {
     pub deadline: u64,
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Erc1155Marketplace {
     /// `bid_cut_percentage` is the cut that the contract takes from any sucessful bid
     #[init]

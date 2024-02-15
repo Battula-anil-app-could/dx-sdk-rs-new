@@ -1,10 +1,10 @@
 [package]
-name = "dharitri-sc-wmoax-swap"
-version = "0.10.8"
+name = "dharitri-wmoax-swap-sc"
+version = "0.10.9"
 
 authors = [
     "Dorin Iancu <dorin.iancu@dharitri.com>",
-    "Dharitri Network <contact@dharitri.com>",
+    "Dharitri <contact@dharitri.com>",
 ]
 license = "GPL-3.0-only"
 readme = "README.md"
@@ -19,14 +19,14 @@ edition = "2021"
 [lib]
 path = "src/wmoax.rs"
 
-[dependencies.dharitri-wasm]
-version = "0.10.8"
-path = "../../../dharitri-wasm"
+[dependencies.dharitri-sc]
+version = "0.10.9"
+path = "../../../framework/base"
 
-[dependencies.dharitri-wasm-modules]
-version = "0.10.8"
-path = "../../../dharitri-wasm-modules"
+[dependencies.dharitri-sc-modules]
+version = "0.10.9"
+path = "../../../contracts/modules"
 
-[dev-dependencies.dharitri-wasm-debug]
-version = "0.10.8"
-path = "../../../dharitri-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "0.10.9"
+path = "../../../framework/scenario"

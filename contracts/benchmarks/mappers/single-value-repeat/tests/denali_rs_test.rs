@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/single-value-repeat");
 
     blockchain.register_contract(
@@ -13,10 +13,10 @@ fn world() -> BlockchainMock {
 
 #[test]
 fn single_value_repeat_struct_rs() {
-    dharitri_wasm_debug::denali_rs("denali/single_value_repeat_struct.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/single_value_repeat_struct.scen.json", world());
 }
 
 #[test]
 fn single_value_repeat_rs() {
-    dharitri_wasm_debug::denali_rs("denali/single_value_repeat.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/single_value_repeat.scen.json", world());
 }

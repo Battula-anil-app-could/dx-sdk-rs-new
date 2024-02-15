@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<nft_storage_prepay::AbiProvider>();
+    dharitri_sc_meta::cli_main::<nft_storage_prepay::AbiProvider>();
 }

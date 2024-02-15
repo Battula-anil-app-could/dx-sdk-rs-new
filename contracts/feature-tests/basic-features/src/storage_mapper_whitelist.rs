@@ -1,6 +1,6 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait StorageMapperWhitelistFeatures {
     #[endpoint]
     fn add_to_whitelist(&self, item: ManagedBuffer) {

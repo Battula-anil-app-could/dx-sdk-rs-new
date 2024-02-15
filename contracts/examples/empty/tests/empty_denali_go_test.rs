@@ -1,4 +1,4 @@
 #[test]
 fn empty_go() {
-    dharitri_wasm_debug::denali_go("denali/empty.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/empty.scen.json");
 }

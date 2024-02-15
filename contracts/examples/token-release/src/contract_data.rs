@@ -1,6 +1,6 @@
-use dharitri_wasm::{api::ManagedTypeApi, types::BigUint};
+use dharitri_sc::{api::ManagedTypeApi, types::BigUint};
 
-dharitri_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, TypeAbi, Clone)]
 pub enum UnlockType<M: ManagedTypeApi> {

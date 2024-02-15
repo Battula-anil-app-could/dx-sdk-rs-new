@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<recursive_caller::AbiProvider>();
+    dharitri_sc_meta::cli_main::<recursive_caller::AbiProvider>();
 }

@@ -1,5 +1,5 @@
-use dharitri_wasm::types::{ManagedAddress, ManagedBuffer};
-use dharitri_wasm_debug::*;
+use dharitri_sc::types::{ManagedAddress, ManagedBuffer};
+use dharitri_sc_scenario::*;
 
 use basic_features::managed_buffer_features::ManagedBufferFeatures;
 

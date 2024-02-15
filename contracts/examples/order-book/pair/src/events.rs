@@ -1,9 +1,9 @@
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 use super::common::{Order, OrderType};
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait EventsModule {
     fn emit_order_event(&self, order: Order<Self::Api>) {
         let caller = self.blockchain().get_caller();

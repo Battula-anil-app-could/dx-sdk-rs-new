@@ -1,7 +1,7 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 mod nft_module;
 
@@ -10,7 +10,7 @@ pub struct ExampleAttributes {
     pub creation_timestamp: u64,
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait NftMinter: nft_module::NftModule {
     #[init]
     fn init(&self) {}
@@ -86,9 +86,9 @@ pub trait NftMinter: nft_module::NftModule {
 }
 
 mod nft_marketplace_proxy {
-    dharitri_wasm::imports!();
+    dharitri_sc::imports!();
 
-    #[dharitri_wasm::proxy]
+    #[dharitri_sc::proxy]
     pub trait NftMarketplace {
         #[endpoint(claimTokens)]
         fn claim_tokens(

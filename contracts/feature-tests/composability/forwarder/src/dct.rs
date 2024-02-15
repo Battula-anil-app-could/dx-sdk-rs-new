@@ -1,4 +1,4 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 use super::storage;
 
@@ -16,7 +16,7 @@ pub type DctTokenDataMultiValue<M> = MultiValue9<
     ManagedVec<M, ManagedBuffer<M>>,
 >;
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait ForwarderDctModule: storage::ForwarderStorageModule {
     #[view(getFungibleDctBalance)]
     fn get_fungible_dct_balance(&self, token_identifier: &TokenIdentifier) -> BigUint {

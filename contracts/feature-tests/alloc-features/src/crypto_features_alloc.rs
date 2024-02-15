@@ -1,8 +1,8 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Crypto functions that use the allocator.
 /// Move to basic-features when they get upgraded.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait CryptoFeaturesAlloc {
     #[endpoint]
     fn compute_sha256_legacy_alloc(&self, input: Vec<u8>) -> H256 {

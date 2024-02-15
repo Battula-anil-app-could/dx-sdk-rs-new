@@ -1,5 +1,5 @@
-use dharitri_wasm::contract_base::CallableContract;
-use dharitri_wasm_debug::*;
+use dharitri_sc::contract_base::CallableContract;
+use dharitri_sc_scenario::*;
 
 #[test]
 fn test_function_selector() {

@@ -1,5 +1,5 @@
-use dharitri_wasm::types::{BoxedBytes, Vec};
-dharitri_wasm::derive_imports!();
+use dharitri_sc::types::{BoxedBytes, Vec};
+dharitri_sc::derive_imports!();
 
 /// Example serialization for a structure that uses the heap allocator.
 /// Also checking nested serialization of basic types.

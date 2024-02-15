@@ -1,11 +1,11 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Contract that only tests the call value features,
 /// i.e. the framework/Arwen functionality for accepting MOAX and DCT payments.
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait PayableFeatures {
     #[init]
     fn init(&self) {}

@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract(
         "file:output/send-tx-repeat.wasm",
         send_tx_repeat::ContractBuilder,
@@ -10,6 +10,6 @@ fn world() -> BlockchainMock {
 }
 
 #[test]
-fn send_tx_repeat_denali_rs() {
-    dharitri_wasm_debug::denali_rs("denali/send_tx_repeat.scen.json", world());
+fn send_tx_repeat_rs() {
+    dharitri_sc_scenario::run_rs("scenarios/send_tx_repeat.scen.json", world());
 }

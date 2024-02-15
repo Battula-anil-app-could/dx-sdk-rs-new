@@ -1,29 +1,29 @@
 #[test]
 fn approve_siring_go() {
-    dharitri_wasm_debug::denali_go("denali/approve_siring.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/approve_siring.scen.json");
 }
 
 #[test]
 fn breed_ok_go() {
-    dharitri_wasm_debug::denali_go("denali/breed_ok.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/breed_ok.scen.json");
 }
 
 #[test]
 fn give_birth_go() {
-    dharitri_wasm_debug::denali_go("denali/give_birth.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/give_birth.scen.json");
 }
 
 #[test]
 fn init_go() {
-    dharitri_wasm_debug::denali_go("denali/init.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/init.scen.json");
 }
 
 #[test]
 fn query_go() {
-    dharitri_wasm_debug::denali_go("denali/query.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/query.scen.json");
 }
 
 #[test]
 fn setup_accounts_go() {
-    dharitri_wasm_debug::denali_go("denali/setup_accounts.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/setup_accounts.scen.json");
 }

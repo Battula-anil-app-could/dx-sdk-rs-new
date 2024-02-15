@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<dct_system_sc_mock::AbiProvider>();
+    dharitri_sc_meta::cli_main::<dct_system_sc_mock::AbiProvider>();
 }

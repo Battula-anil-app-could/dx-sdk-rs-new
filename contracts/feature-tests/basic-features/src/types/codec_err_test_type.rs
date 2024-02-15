@@ -1,10 +1,10 @@
-use dharitri_wasm::{
-    derive::TypeAbi,
-    dharitri_codec::{
+use dharitri_sc::{
+    codec::{
         DecodeError, DecodeErrorHandler, EncodeError, EncodeErrorHandler, NestedDecode,
         NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
         TopEncodeOutput,
     },
+    derive::TypeAbi,
 };
 
 /// Helper type to explore encode/decode errors.

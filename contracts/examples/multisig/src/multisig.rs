@@ -10,18 +10,18 @@ pub mod user_role;
 use action::ActionFullInfo;
 use user_role::UserRole;
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Multi-signature smart contract implementation.
 /// Acts like a wallet that needs multiple signers for any action performed.
 /// See the readme file for more detailed documentation.
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Multisig:
     multisig_state::MultisigStateModule
     + multisig_propose::MultisigProposeModule
     + multisig_perform::MultisigPerformModule
     + multisig_events::MultisigEventsModule
-    + dharitri_wasm_modules::dns::DnsModule
+    + dharitri_sc_modules::dns::DnsModule
 {
     #[init]
     fn init(&self, quorum: usize, board: MultiValueEncoded<ManagedAddress>) {

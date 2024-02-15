@@ -1,9 +1,9 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Legacy event logs.
 ///
 /// They are the only ones that still use the old write logs VM endpoint.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait EventFeaturesLegacy {
     #[endpoint(logLegacyEventA)]
     fn log_legacy_event_a(&self, data: &BigUint) {

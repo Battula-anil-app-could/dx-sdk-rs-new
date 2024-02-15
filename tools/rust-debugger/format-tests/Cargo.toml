@@ -8,13 +8,13 @@ edition = "2021"
 name = "format-tests"
 path = "src/format_tests.rs"
 
-[dependencies.dharitri-wasm]
-version = "0.10.8"
-path = "../../../dharitri-wasm"
+[dependencies.dharitri-sc]
+version = "0.10.9"
+path = "../../../framework/base"
 
-[dependencies.dharitri-wasm-debug]
-version = "0.10.8"
-path = "../../../dharitri-wasm-debug"
+[dependencies.dharitri-chain-vm]
+version = "0.4.2"
+path = "../../../vm"
 
 [dev-dependencies]
 glob = "0.3.0"

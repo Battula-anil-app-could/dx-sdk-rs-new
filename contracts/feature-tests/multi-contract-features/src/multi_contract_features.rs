@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait MultiContractFeatures {
     #[init]
     fn init(&self, sample_value: BigUint) {

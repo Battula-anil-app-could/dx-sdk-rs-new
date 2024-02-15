@@ -7,4 +7,4 @@
 output
 
 # Denali test trace
-denali/trace*.scen.json
+scenarios/trace*.scen.json

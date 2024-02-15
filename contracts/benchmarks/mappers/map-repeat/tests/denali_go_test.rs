@@ -1,9 +1,9 @@
 #[test]
 fn map_repeat_struct_go() {
-    dharitri_wasm_debug::denali_go("denali/map_repeat_struct.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/map_repeat_struct.scen.json");
 }
 
 #[test]
 fn map_repeat_go() {
-    dharitri_wasm_debug::denali_go("denali/map_repeat.scen.json");
+    dharitri_sc_scenario::run_go("scenarios/map_repeat.scen.json");
 }

@@ -1,8 +1,8 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 use super::storage;
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait ForwarderSftModule: storage::ForwarderStorageModule {
     #[payable("MOAX")]
     #[endpoint]

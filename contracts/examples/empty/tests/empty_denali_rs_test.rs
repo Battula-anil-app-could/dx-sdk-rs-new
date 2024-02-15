@@ -1,7 +1,7 @@
-use dharitri_wasm_debug::*;
+use dharitri_sc_scenario::*;
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
 
     blockchain.register_contract("file:output/empty.wasm", empty::ContractBuilder);
     blockchain
@@ -9,5 +9,5 @@ fn world() -> BlockchainMock {
 
 #[test]
 fn empty_rs() {
-    dharitri_wasm_debug::denali_rs("denali/empty.scen.json", world());
+    dharitri_sc_scenario::run_rs("scenarios/empty.scen.json", world());
 }

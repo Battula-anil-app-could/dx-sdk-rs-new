@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 use hex_literal::hex;
 
@@ -8,9 +8,9 @@ static HARDCODED_ADDRESS: [u8; 32] =
     hex!("fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe");
 
 mod pay_me_proxy {
-    dharitri_wasm::imports!();
+    dharitri_sc::imports!();
 
-    #[dharitri_wasm::proxy]
+    #[dharitri_sc::proxy]
     pub trait PayMe {
         #[payable("MOAX")]
         #[endpoint(payMe)]
@@ -23,9 +23,9 @@ mod pay_me_proxy {
 }
 
 mod message_me_proxy {
-    dharitri_wasm::imports!();
+    dharitri_sc::imports!();
 
-    #[dharitri_wasm::proxy]
+    #[dharitri_sc::proxy]
     pub trait MessageMe {
         #[init]
         #[payable("MOAX")]
@@ -36,7 +36,7 @@ mod message_me_proxy {
     }
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait ProxyTestFirst {
     #[proxy]
     fn pay_me_proxy(&self) -> pay_me_proxy::Proxy<Self::Api>;

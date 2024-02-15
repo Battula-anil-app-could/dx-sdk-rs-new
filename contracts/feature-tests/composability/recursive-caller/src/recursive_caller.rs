@@ -1,9 +1,9 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Test contract for investigating async calls.
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait RecursiveCaller {
     #[proxy]
     fn vault_proxy(&self) -> vault::Proxy<Self::Api>;

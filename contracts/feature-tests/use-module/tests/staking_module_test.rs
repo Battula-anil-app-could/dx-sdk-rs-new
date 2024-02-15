@@ -1,9 +1,9 @@
-use dharitri_wasm::types::{MoaxOrDctTokenIdentifier, ManagedVec};
-use dharitri_wasm_debug::{
+use dharitri_sc::types::{MoaxOrDctTokenIdentifier, ManagedVec};
+use dharitri_sc_modules::staking::StakingModule;
+use dharitri_sc_scenario::{
     managed_address, managed_biguint, managed_token_id, rust_biguint,
     testing_framework::BlockchainStateWrapper,
 };
-use dharitri_wasm_modules::staking::StakingModule;
 
 static STAKING_TOKEN_ID: &[u8] = b"STAKE-123456";
 const INITIAL_BALANCE: u64 = 2_000_000;

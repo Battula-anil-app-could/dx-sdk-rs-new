@@ -1,7 +1,7 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Storage mapper test.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait MapStorageMapperFeatures {
     #[storage_mapper("map_storage_mapper")]
     fn map_storage_mapper(&self) -> MapStorageMapper<u32, MapMapper<u32, u32>>;

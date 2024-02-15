@@ -1,5 +1,5 @@
-use dharitri_wasm::types::ManagedVec;
-use dharitri_wasm_debug::DebugApi;
+use dharitri_sc::types::ManagedVec;
+use dharitri_sc_scenario::DebugApi;
 use rewards_distribution::Bracket;
 
 pub fn to_brackets(brackets_vec: &[(u64, u64)]) -> ManagedVec<DebugApi, Bracket> {

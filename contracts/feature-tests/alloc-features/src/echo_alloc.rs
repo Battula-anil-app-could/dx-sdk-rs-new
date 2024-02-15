@@ -1,12 +1,12 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 use crate::types::*;
 
 // String is not part of the standard imports because we want to discourage its use
-use dharitri_wasm::types::String;
+use dharitri_sc::types::String;
 
 /// Test serialization for heap-allocated types.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait EchoAllocTypes {
     #[endpoint]
     fn echo_h256(&self, h: H256) -> H256 {

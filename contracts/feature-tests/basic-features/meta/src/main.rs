@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<basic_features::AbiProvider>();
+    dharitri_sc_meta::cli_main::<basic_features::AbiProvider>();
 }

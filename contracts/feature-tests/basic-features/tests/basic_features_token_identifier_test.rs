@@ -1,5 +1,5 @@
-use dharitri_wasm::types::{MoaxOrDctTokenIdentifier, ManagedBuffer, TokenIdentifier};
-use dharitri_wasm_debug::*;
+use dharitri_sc::types::{MoaxOrDctTokenIdentifier, ManagedBuffer, TokenIdentifier};
+use dharitri_sc_scenario::*;
 
 use basic_features::token_identifier_features::TokenIdentifierFeatures;
 
@@ -12,7 +12,7 @@ fn test_token_identifier_moax() {
 }
 
 /// This just tests the contract syntax.
-/// For a complete suite of test cases, see `dharitri-wasm-debug/tests/managed_token_identifier_test.rs`.
+/// For a complete suite of test cases, see `dharitri-sc-scenario/tests/managed_token_identifier_test.rs`.
 #[test]
 fn test_token_identifier_is_valid() {
     let _ = DebugApi::dummy();

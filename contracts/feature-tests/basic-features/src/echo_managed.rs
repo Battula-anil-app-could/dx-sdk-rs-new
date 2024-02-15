@@ -1,7 +1,7 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Test endpoint argument and result serialization.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait EchoManagedTypes {
     #[endpoint]
     fn echo_big_uint(&self, bi: BigUint) -> BigUint {

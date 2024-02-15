@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<kitty_ownership::AbiProvider>();
+    dharitri_sc_meta::cli_main::<kitty_ownership::AbiProvider>();
 }

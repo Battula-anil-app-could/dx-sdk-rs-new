@@ -2,15 +2,19 @@
 resolver = "2"
 
 members = [
-  "dharitri-wasm",
-  "dharitri-wasm-debug",
-  "dharitri-wasm-derive",
-  "dharitri-wasm-node",
-  "dharitri-wasm-modules",
-  "denali",
-  "dharitri-codec",
-  "dharitri-codec-derive",
-  "dharitri-interact-snippets",
+  "framework/base",
+  "framework/codec",
+  "framework/codec-derive",
+  "framework/derive",
+  "framework/meta",
+  "framework/scenario",
+  "framework/snippets",
+  "framework/wasm-adapter",
+
+  "sdk/core",
+  "sdk/scenario-format",
+
+  "vm",
 
   "contracts/benchmarks/mappers/benchmark-common",
   "contracts/benchmarks/mappers/linked-list-repeat",
@@ -150,10 +154,9 @@ members = [
   "contracts/feature-tests/use-module",
   "contracts/feature-tests/use-module/meta",
 
+  "contracts/modules",
+
   "tools/test-gen",
   "tools/moapy-snippet-generator",
 ]
 
-exclude = [
-  "dharitri-wasm-output",
-]

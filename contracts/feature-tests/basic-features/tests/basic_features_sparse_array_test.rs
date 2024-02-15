@@ -1,5 +1,5 @@
-use dharitri_wasm::types::SparseArray;
-use dharitri_wasm_debug::DebugApi;
+use dharitri_sc::types::SparseArray;
+use dharitri_sc_scenario::DebugApi;
 
 #[test]
 fn sparse_array_test() {

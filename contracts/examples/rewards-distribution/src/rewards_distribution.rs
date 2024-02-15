@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
-use dharitri_wasm_modules::ongoing_operation::{
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
+use dharitri_sc_modules::ongoing_operation::{
     CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
 
@@ -32,9 +32,9 @@ pub struct RaffleProgress<M: ManagedTypeApi> {
     pub computed_brackets: ManagedVec<M, ComputedBracket<M>>,
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait RewardsDistribution:
-    dharitri_wasm_modules::ongoing_operation::OngoingOperationModule
+    dharitri_sc_modules::ongoing_operation::OngoingOperationModule
 {
     #[init]
     fn init(&self, seed_nft_minter_address: ManagedAddress, brackets: ManagedVec<Bracket>) {
@@ -440,9 +440,9 @@ fn ticket_from_storage(position: u64, ticket_id: u64) -> u64 {
 }
 
 mod seed_nft_minter {
-    dharitri_wasm::imports!();
+    dharitri_sc::imports!();
 
-    #[dharitri_wasm::proxy]
+    #[dharitri_sc::proxy]
     pub trait SeedNftMinter {
         #[endpoint(getNftCount)]
         fn get_nft_count(&self) -> u64;

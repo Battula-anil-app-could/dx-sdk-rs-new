@@ -1,10 +1,11 @@
-use dharitri_wasm::{
-    dharitri_codec::multi_types::MultiValue2,
+use dharitri_sc::{
+    codec::multi_types::MultiValue2,
     types::{BigUint, MoaxOrDctTokenIdentifier, MultiValueEncoded, OperationCompletionStatus},
 };
-use dharitri_wasm_debug::{
-    managed_token_id, rust_biguint, testing_framework::BlockchainStateWrapper,
-    tx_mock::TxTokenTransfer, DebugApi,
+use dharitri_sc_scenario::{
+    managed_token_id, rust_biguint,
+    testing_framework::{BlockchainStateWrapper, TxTokenTransfer},
+    DebugApi,
 };
 use rewards_distribution::RewardsDistribution as _;
 mod mock_seed_nft_minter;

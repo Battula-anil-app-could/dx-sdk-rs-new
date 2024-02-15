@@ -1,8 +1,8 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// All elliptic curve functions provided by Arwen exposed here.
 /// TODO: remove heap allocation and move to basic features.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait EllipticCurveFeatures {
     #[endpoint]
     fn compute_get_values(&self, curve_bitsize: u32) -> EllipticCurveComponents<Self::Api> {

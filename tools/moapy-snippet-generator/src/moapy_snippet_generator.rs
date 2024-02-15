@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use dharitri_wasm::dharitri_codec::{top_encode_to_vec_u8_or_panic, TopEncode};
+use dharitri_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
 use num_traits::Zero;
 
 mod cmd_builder;

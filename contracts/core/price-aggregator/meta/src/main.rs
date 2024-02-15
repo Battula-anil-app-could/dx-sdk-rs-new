@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<dharitri_sc_price_aggregator::AbiProvider>();
+    dharitri_sc_meta::cli_main::<dharitri_price_aggregator_sc::AbiProvider>();
 }

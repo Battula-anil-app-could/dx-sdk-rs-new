@@ -1,6 +1,6 @@
 use adder::*;
-use dharitri_wasm::types::BigUint;
-use dharitri_wasm_debug::DebugApi;
+use dharitri_sc::types::BigUint;
+use dharitri_sc_scenario::DebugApi;
 
 #[test]
 fn test_add() {

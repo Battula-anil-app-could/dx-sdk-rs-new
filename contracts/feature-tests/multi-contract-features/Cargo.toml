@@ -8,10 +8,10 @@ publish = false
 [lib]
 path = "src/multi_contract_features.rs"
 
-[dependencies.dharitri-wasm]
-version = "0.10.8"
-path = "../../../dharitri-wasm"
+[dependencies.dharitri-sc]
+version = "0.10.9"
+path = "../../../framework/base"
 
-[dev-dependencies.dharitri-wasm-debug]
-version = "0.10.8"
-path = "../../../dharitri-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "0.10.9"
+path = "../../../framework/scenario"

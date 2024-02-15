@@ -1,11 +1,11 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 use crate::types::CodecErrorTestType;
 
 mod encode_err_proxy {
-    dharitri_wasm::imports!();
+    dharitri_sc::imports!();
     use crate::types::CodecErrorTestType;
 
-    #[dharitri_wasm::proxy]
+    #[dharitri_sc::proxy]
     pub trait EncodeErrorProxy {
         #[init]
         fn init(&self, error_arg: CodecErrorTestType);
@@ -16,7 +16,7 @@ mod encode_err_proxy {
 }
 
 /// Test various serialization errors.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait CodecErrorTest {
     #[endpoint]
     fn codec_err_finish(&self) -> CodecErrorTestType {

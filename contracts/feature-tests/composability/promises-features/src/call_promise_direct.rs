@@ -1,7 +1,7 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Test contract for investigating the new async call framework.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait CallPromisesDirectModule {
     #[proxy]
     fn vault_proxy(&self) -> vault::Proxy<Self::Api>;

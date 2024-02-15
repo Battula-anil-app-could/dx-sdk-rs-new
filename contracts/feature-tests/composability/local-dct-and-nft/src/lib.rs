@@ -1,7 +1,7 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 // used as mock attributes for NFTs
 #[derive(TopEncode, TopDecode, TypeAbi)]
@@ -11,7 +11,7 @@ pub struct Color {
     b: u8,
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait LocalDctAndDctNft {
     #[init]
     fn init(&self) {}

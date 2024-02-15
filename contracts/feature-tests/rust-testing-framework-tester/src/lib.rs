@@ -1,7 +1,7 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 pub mod dummy_module;
 
@@ -16,7 +16,7 @@ pub struct StructWithManagedTypes<M: ManagedTypeApi> {
     pub buffer: ManagedBuffer<M>,
 }
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[init]
     fn init(&self) -> ManagedBuffer {

@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<digital_cash::AbiProvider>();
+    dharitri_sc_meta::cli_main::<digital_cash::AbiProvider>();
 }

@@ -1,7 +1,7 @@
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// All crypto functions provided by Arwen exposed here.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait CryptoFeatures {
     #[endpoint]
     #[allow(deprecated)]

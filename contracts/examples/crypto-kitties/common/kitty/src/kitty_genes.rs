@@ -1,4 +1,4 @@
-dharitri_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
 use super::color::*;
 use random::*;

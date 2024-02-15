@@ -1,9 +1,9 @@
 use crate::distribution_module;
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
-use dharitri_wasm_modules::default_issue_callbacks;
+use dharitri_sc_modules::default_issue_callbacks;
 
 const NFT_AMOUNT: u32 = 1;
 const ROYALTIES_MAX: u32 = 10_000; // 100%
@@ -15,7 +15,7 @@ pub struct PriceTag<M: ManagedTypeApi> {
     pub amount: BigUint<M>,
 }
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait NftModule:
     distribution_module::DistributionModule + default_issue_callbacks::DefaultIssueCallbacksModule
 {

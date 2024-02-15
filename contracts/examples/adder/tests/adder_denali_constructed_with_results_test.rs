@@ -1,9 +1,9 @@
 use adder::*;
-use dharitri_wasm::storage::mappers::SingleValue;
-use dharitri_wasm_debug::{denali_system::model::*, num_bigint::BigUint, *}; // TODO: clean up imports
+use dharitri_sc::storage::mappers::SingleValue;
+use dharitri_sc_scenario::{num_bigint::BigUint, scenario_model::*, *}; // TODO: clean up imports
 
-fn world() -> BlockchainMock {
-    let mut blockchain = BlockchainMock::new();
+fn world() -> ScenarioWorld {
+    let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/adder");
 
     blockchain.register_contract("file:output/adder.wasm", adder::ContractBuilder);
@@ -19,7 +19,7 @@ fn adder_denali_constructed() {
     let owner_address = "address:owner";
     let mut adder_contract = ContractInfo::<adder::Proxy<DebugApi>>::new("sc:adder");
 
-    world.denali_set_state(
+    world.set_state_step(
         SetStateStep::new()
             .put_account(owner_address, Account::new().nonce(1))
             .new_address(owner_address, 1, &adder_contract),
@@ -36,7 +36,7 @@ fn adder_denali_constructed() {
         .execute(&mut world);
     assert_eq!(new_address, adder_contract.to_address());
 
-    // denali query, gets saved in the trace
+    // query, gets saved in the trace
     let result: SingleValue<BigUint> = adder_contract.sum().into_vm_query().execute(&mut world);
     assert_eq!(result.into(), BigUint::from(5u32));
 
@@ -48,7 +48,7 @@ fn adder_denali_constructed() {
         .expect(TxExpect::ok().no_result())
         .execute(&mut world);
 
-    world.denali_check_state(
+    world.check_state_step(
         CheckStateStep::new()
             .put_account(owner_address, CheckAccount::new())
             .put_account(
@@ -57,5 +57,5 @@ fn adder_denali_constructed() {
             ),
     );
 
-    world.write_denali_trace("trace2.scen.json");
+    world.write_scenario_trace("trace2.scen.json");
 }

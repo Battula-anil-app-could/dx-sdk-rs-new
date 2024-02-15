@@ -1,4 +1,4 @@
-use dharitri_wasm::dharitri_codec::{top_encode_to_vec_u8_or_panic, TopEncode};
+use dharitri_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
 
 const FLAG_PREFIX: &str = "--";
 const HEX_PREFIX: &str = "0x";

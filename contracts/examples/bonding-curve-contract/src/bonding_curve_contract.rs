@@ -1,16 +1,16 @@
 #![no_std]
 
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
-use dharitri_wasm_modules::{
+use function_selector::FunctionSelector;
+use dharitri_sc_modules::{
     bonding_curve,
     bonding_curve::utils::{events, owner_endpoints, storage, user_endpoints},
 };
-use function_selector::FunctionSelector;
 pub mod function_selector;
 
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Contract:
     bonding_curve::BondingCurveModule
     + storage::StorageModule

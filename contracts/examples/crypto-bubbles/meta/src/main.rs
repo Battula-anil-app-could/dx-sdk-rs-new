@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<crypto_bubbles::AbiProvider>();
+    dharitri_sc_meta::cli_main::<crypto_bubbles::AbiProvider>();
 }

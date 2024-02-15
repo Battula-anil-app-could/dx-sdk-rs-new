@@ -1,9 +1,9 @@
 use crate::action::{Action, CallActionData};
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Contains all events that can be emitted by the contract.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
     fn propose_action(&self, action: Action<Self::Api>) -> usize {
         let (caller_id, caller_role) = self.get_caller_id_and_role();

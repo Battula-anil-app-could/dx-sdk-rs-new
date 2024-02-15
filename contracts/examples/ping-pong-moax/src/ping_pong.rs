@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 mod user_status;
 
@@ -22,7 +22,7 @@ const PONG_ALL_LOW_GAS_LIMIT: u64 = 3_000_000;
 /// - `pong` can only be called after the contract expired (a certain duration has passed since activation).
 /// - `pongAll` can be used to send to all users to `ping`-ed. If it runs low on gas, it will interrupt itself.
 /// It can be continued anytime.
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait PingPong {
     /// Necessary configuration when deploying:
     /// `ping_amount` - the exact MOAX amounf that needs to be sent when `ping`-ing.

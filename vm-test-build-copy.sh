@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# copies wasm & denali files to the Arwen test folder
+# copies wasm & scenarios files to the Arwen test folder
 # expects 1 argument: the path to the Arwen repo root
 
 VM_REPO_PATH=${1:?"Missing VM repo path!"}
@@ -10,13 +10,12 @@ build_and_copy() {
    contract_name=${contract_path##*/}
    vm_contract_path=$2
 
-   moapy --verbose contract build --skip-eei-checks $contract_path || return 1
+   # moapy --verbose contract build --skip-eei-checks $contract_path || return 1
    mkdir -p $vm_contract_path/output
-   cp $contract_path/output/$contract_name.wasm \
-      $vm_contract_path/output/$contract_name.wasm
-   cp $contract_path/output/$contract_name-view.wasm \
-      $vm_contract_path/output/$contract_name-view.wasm
-   cp -R $contract_path/denali \
+   rm -rf $vm_contract_path/denali
+   cp $contract_path/output/*.wasm \
+      $vm_contract_path/output
+   cp -R $contract_path/scenarios \
       $vm_contract_path
 }
 
@@ -24,13 +23,13 @@ build_and_copy() {
 # if you still want to build all:
 # ./build-wasm.sh
 
+build_and_copy ./contracts/core/wmoax-swap $VM_REPO_PATH/test/wmoax-swap
 build_and_copy ./contracts/examples/adder $VM_REPO_PATH/test/adder
 build_and_copy ./contracts/examples/crowdfunding-dct $VM_REPO_PATH/test/crowdfunding-dct
 build_and_copy ./contracts/examples/digital-cash $VM_REPO_PATH/test/digital-cash
 build_and_copy ./contracts/examples/factorial $VM_REPO_PATH/test/factorial
 build_and_copy ./contracts/examples/ping-pong-moax $VM_REPO_PATH/test/ping-pong-moax
-build_and_copy ./contracts/experimental/multisig-external-view $VM_REPO_PATH/test/multisig
-build_and_copy ./contracts/examples/moax-dct-swap $VM_REPO_PATH/test/moax-dct-swap
+build_and_copy ./contracts/examples/multisig $VM_REPO_PATH/test/multisig
 build_and_copy ./contracts/feature-tests/alloc-features $VM_REPO_PATH/test/features/alloc-features
 build_and_copy ./contracts/feature-tests/basic-features $VM_REPO_PATH/test/features/basic-features
 build_and_copy ./contracts/feature-tests/big-float-features $VM_REPO_PATH/test/features/big-float-features
@@ -74,19 +73,21 @@ cp -R contracts/feature-tests/composability/vault/output/vault.wasm \
    $VM_REPO_PATH/test/features/composability/vault/output/vault.wasm
 
 rm -f $VM_REPO_PATH/test/features/composability/denali/*
-cp -R contracts/feature-tests/composability/denali \
+rm -f $VM_REPO_PATH/test/features/composability/scenarios/*
+cp -R contracts/feature-tests/composability/scenarios \
    $VM_REPO_PATH/test/features/composability
-cp -R contracts/feature-tests/composability/denali-promises \
+cp -R contracts/feature-tests/composability/scenarios-promises \
    $VM_REPO_PATH/test/features/composability
 
-mkdir -p $VM_REPO_PATH/test/features/composability/denali-legacy
+mkdir -p $VM_REPO_PATH/test/features/composability/scenarios-legacy
 rm -f $VM_REPO_PATH/test/features/composability/denali-legacy/*
-mmv -c 'contracts/feature-tests/composability/denali/*.scen.json' \
-   $VM_REPO_PATH/test/features/composability/denali-legacy/l_'#1.scen.json'
+rm -f $VM_REPO_PATH/test/features/composability/scenarios-legacy/*
+mmv -c 'contracts/feature-tests/composability/scenarios/*.scen.json' \
+   $VM_REPO_PATH/test/features/composability/scenarios-legacy/l_'#1.scen.json'
 
-sed -i 's/forwarder.wasm/forwarder-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/denali-legacy/*
-sed -i 's/forwarder-raw.wasm/forwarder-raw-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/denali-legacy/*
-sed -i 's/proxy-test-first.wasm/proxy-test-first-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/denali-legacy/*
-sed -i 's/proxy-test-second.wasm/proxy-test-second-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/denali-legacy/*
-sed -i 's/recursive-caller.wasm/recursive-caller-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/denali-legacy/*
-sed -i 's/proxy_test_init.scen.json/l_proxy_test_init.scen.json/g' $VM_REPO_PATH/test/features/composability/denali-legacy/*
+sed -i 's/forwarder.wasm/forwarder-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/scenarios-legacy/*
+sed -i 's/forwarder-raw.wasm/forwarder-raw-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/scenarios-legacy/*
+sed -i 's/proxy-test-first.wasm/proxy-test-first-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/scenarios-legacy/*
+sed -i 's/proxy-test-second.wasm/proxy-test-second-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/scenarios-legacy/*
+sed -i 's/recursive-caller.wasm/recursive-caller-unmanaged.wasm/g' $VM_REPO_PATH/test/features/composability/scenarios-legacy/*
+sed -i 's/proxy_test_init.scen.json/l_proxy_test_init.scen.json/g' $VM_REPO_PATH/test/features/composability/scenarios-legacy/*

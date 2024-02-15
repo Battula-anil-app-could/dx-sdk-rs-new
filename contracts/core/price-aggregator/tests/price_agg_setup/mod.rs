@@ -1,12 +1,11 @@
-use dharitri_sc_price_aggregator::{staking::StakingModule, PriceAggregator};
-use dharitri_wasm::types::{Address, MoaxOrDctTokenIdentifier, MultiValueEncoded};
-use dharitri_wasm_debug::{
+use dharitri_price_aggregator_sc::{staking::StakingModule, PriceAggregator};
+use dharitri_sc::types::{Address, MoaxOrDctTokenIdentifier, MultiValueEncoded};
+use dharitri_sc_modules::pause::PauseModule;
+use dharitri_sc_scenario::{
     managed_address, managed_biguint, managed_buffer, rust_biguint,
-    testing_framework::{BlockchainStateWrapper, ContractObjWrapper},
-    tx_mock::TxResult,
+    testing_framework::{BlockchainStateWrapper, ContractObjWrapper, TxResult},
     DebugApi,
 };
-use dharitri_wasm_modules::pause::PauseModule;
 
 pub const NR_ORACLES: usize = 4;
 pub const SUBMISSION_COUNT: usize = 3;
@@ -20,18 +19,22 @@ pub const SLASH_QUORUM: usize = 2;
 
 pub struct PriceAggSetup<PriceAggObjBuilder>
 where
-    PriceAggObjBuilder: 'static + Copy + Fn() -> dharitri_sc_price_aggregator::ContractObj<DebugApi>,
+    PriceAggObjBuilder:
+        'static + Copy + Fn() -> dharitri_price_aggregator_sc::ContractObj<DebugApi>,
 {
     pub b_mock: BlockchainStateWrapper,
     pub owner: Address,
     pub oracles: Vec<Address>,
-    pub price_agg:
-        ContractObjWrapper<dharitri_sc_price_aggregator::ContractObj<DebugApi>, PriceAggObjBuilder>,
+    pub price_agg: ContractObjWrapper<
+        dharitri_price_aggregator_sc::ContractObj<DebugApi>,
+        PriceAggObjBuilder,
+    >,
 }
 
 impl<PriceAggObjBuilder> PriceAggSetup<PriceAggObjBuilder>
 where
-    PriceAggObjBuilder: 'static + Copy + Fn() -> dharitri_sc_price_aggregator::ContractObj<DebugApi>,
+    PriceAggObjBuilder:
+        'static + Copy + Fn() -> dharitri_price_aggregator_sc::ContractObj<DebugApi>,
 {
     pub fn new(builder: PriceAggObjBuilder) -> Self {
         let rust_zero = rust_biguint!(0);

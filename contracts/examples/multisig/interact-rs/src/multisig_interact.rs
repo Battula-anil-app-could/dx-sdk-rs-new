@@ -1,30 +1,29 @@
 mod multisig_interact_nfts;
-use dharitri_interact_snippets::{
-    dns_address_for_name,
-    dharitri_wasm::{
-        dharitri_codec::multi_types::MultiValueVec,
-        storage::mappers::SingleValue,
-        types::{Address, CodeMetadata},
-    },
-    dharitri_wasm_debug::{
-        bech32, denali::interpret_trait::InterpreterContext, denali_system::model::*, ContractInfo,
-        DebugApi,
-    },
-    env_logger,
-    moars::interactors::wallet::Wallet,
-    tokio, Interactor,
-};
-use dharitri_wasm_modules::dns::ProxyTrait as _;
 use multisig::{
     multisig_perform::ProxyTrait as _, multisig_propose::ProxyTrait as _,
     multisig_state::ProxyTrait as _, ProxyTrait as _,
+};
+use dharitri_sc_modules::dns::ProxyTrait as _;
+use dharitri_sc_snippets::{
+    dns_address_for_name, env_logger,
+    moars::wallet::Wallet,
+    dharitri_sc::{
+        codec::multi_types::MultiValueVec,
+        storage::mappers::SingleValue,
+        types::{Address, CodeMetadata},
+    },
+    dharitri_sc_scenario::{
+        bech32, scenario_format::interpret_trait::InterpreterContext, scenario_model::*,
+        ContractInfo, DebugApi,
+    },
+    tokio, Interactor,
 };
 use std::{
     env::Args,
     io::{Read, Write},
 };
 
-const GATEWAY: &str = dharitri_interact_snippets::moars::blockchain::rpc::TESTNET_GATEWAY;
+const GATEWAY: &str = dharitri_sc_snippets::moars::blockchain::TESTNET_GATEWAY;
 const PEM: &str = "alice.pem";
 const DEFAULT_MULTISIG_ADDRESS_EXPR: &str =
     "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -82,7 +81,7 @@ impl State {
     }
 
     async fn deploy(&mut self) {
-        let deploy_result: dharitri_interact_snippets::InteractorResult<()> = self
+        let deploy_result: dharitri_sc_snippets::InteractorResult<()> = self
             .interactor
             .sc_deploy(
                 self.multisig

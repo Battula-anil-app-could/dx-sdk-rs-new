@@ -8,6 +8,6 @@ publish = false
 [dependencies.crowdfunding-dct]
 path = ".."
 
-[dependencies.dharitri-wasm-debug]
-version = "0.10.8"
-path = "../../../../dharitri-wasm-debug"
+[dependencies.dharitri-sc-meta]
+version = "0.10.9"
+path = "../../../../framework/meta"

@@ -14,9 +14,7 @@ done
 # not wasm, but worth cleaning from time to time
 
 cargo clean
-cd dharitri-wasm-node
-cargo clean
 cd ..
-cd dharitri-wasm-output
+cd framework/wasm-output
 cargo clean
-cd ..
+cd ../..

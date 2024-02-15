@@ -1,6 +1,6 @@
-use dharitri_wasm::types::Address;
-use dharitri_wasm_debug::{rust_biguint, testing_framework::*, DebugApi};
 use empty::*;
+use dharitri_sc::types::Address;
+use dharitri_sc_scenario::{rust_biguint, testing_framework::*, DebugApi};
 
 const WASM_PATH: &str = "output/empty.wasm";
 

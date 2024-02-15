@@ -15,10 +15,10 @@ pub mod roles;
 pub mod sft;
 pub mod storage;
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Test contract for investigating contract calls.
-#[dharitri_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Forwarder:
     call_sync::ForwarderSyncCallModule
     + call_async::ForwarderAsyncCallModule

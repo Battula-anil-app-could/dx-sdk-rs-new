@@ -1,5 +1,5 @@
-dharitri_wasm::imports!();
-dharitri_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 pub const MAX_ORDERS_PER_USER: usize = 100;
 pub const PERCENT_BASE_POINTS: u64 = 100_000;
@@ -75,7 +75,7 @@ impl DealConfig {
     }
 }
 
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait CommonModule {
     fn new_order(
         &self,

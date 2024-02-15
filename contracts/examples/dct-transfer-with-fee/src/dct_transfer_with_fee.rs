@@ -3,8 +3,8 @@
 mod fee;
 use fee::*;
 
-dharitri_wasm::imports!();
-#[dharitri_wasm::contract]
+dharitri_sc::imports!();
+#[dharitri_sc::contract]
 pub trait DctTransferWithFee {
     #[init]
     fn init(&self) {}

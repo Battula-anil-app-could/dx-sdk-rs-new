@@ -1,9 +1,9 @@
 use crate::{action::ActionFullInfo, user_role::UserRole};
 
-dharitri_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Contains all events that can be emitted by the contract.
-#[dharitri_wasm::module]
+#[dharitri_sc::module]
 pub trait MultisigEventsModule {
     #[event("startPerformAction")]
     fn start_perform_action_event(&self, data: &ActionFullInfo<Self::Api>);

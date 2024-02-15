@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_wasm_debug::meta::perform::<lottery_erc20::AbiProvider>();
+    dharitri_sc_meta::cli_main::<lottery_erc20::AbiProvider>();
 }
