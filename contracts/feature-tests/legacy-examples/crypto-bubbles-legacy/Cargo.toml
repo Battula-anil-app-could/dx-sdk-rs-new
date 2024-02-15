@@ -9,10 +9,10 @@ publish = false
 path = "src/crypto_bubbles_legacy.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../../dharitri-wasm"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../../dharitri-wasm-debug"

@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-price-aggregator"
-version = "0.10.5"
+version = "0.10.6"
 authors = [
     "Claudiu-Marcel Bruda <claudiu.bruda@dharitri.com>",
     "Dharitri Network <contact@dharitri.com>",
@@ -19,15 +19,15 @@ edition = "2018"
 path = "src/lib.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../dharitri-wasm"
 
 [dependencies.dharitri-wasm-modules]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../dharitri-wasm-modules"
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../dharitri-wasm-debug"
 
 [dependencies]

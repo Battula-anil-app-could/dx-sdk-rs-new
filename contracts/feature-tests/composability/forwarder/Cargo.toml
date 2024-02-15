@@ -15,11 +15,11 @@ ei-unmanaged = ["dharitri-wasm/ei-unmanaged"]
 path = "../vault"
 
 [dependencies.dharitri-wasm]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../../dharitri-wasm"
 features = ["ei-1-2"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../../dharitri-wasm-debug"
 

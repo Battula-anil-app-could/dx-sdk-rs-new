@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wasm"
-version = "0.10.5"
+version = "0.10.6"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri Network <contact@dharitri.com>"]
@@ -34,7 +34,7 @@ version = "0.2"
 default-features = false
 
 [dependencies.dharitri-wasm-derive]
-version = "=0.10.5"
+version = "=0.10.6"
 path = "../dharitri-wasm-derive"
 
 [dependencies.dharitri-codec]

@@ -9,16 +9,16 @@ publish = false
 path = "src/basic_features_main.rs"
 
 [dependencies.dharitri-wasm]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../dharitri-wasm"
 features = ["ei-1-2"]
 
 [dev-dependencies.dharitri-wasm-debug]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../dharitri-wasm-debug"
 
 [dependencies.dharitri-wasm-modules]
-version = "0.10.5"
+version = "0.10.6"
 path = "../../../dharitri-wasm-modules"
 
 [dev-dependencies.dct-system-sc-mock]
