@@ -27,7 +27,13 @@ They are:
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
 
-## [sc 0.11.4, vm 0.4.7] - 2023-02-06
+## [sc 0.11.5, vm 0.4.8] - 2023-03-16
+- `dharitri-sc-meta` improvements:
+	- Bugfix: custom names in the main contract no longer crash the multi-contract build.
+	- Bugfix: the `--mir` flag works correctly in `sc-meta all build`;
+	- Multi-contract configs can now specify separate cargo features for individual contracts, for conditional compilation.
+
+## [sc 0.39.5, vm 0.1.5] - 2023-02-06
 - `dharitri-sc-meta` improvements:
 	- Rust snippet generator fixes. The generator creates compilable code with appropriate argument types.
 	- `local-deps` command: generates a report on the local depedencies of contract crates. Will explore indirect depdencies too.
@@ -64,7 +70,6 @@ They are:
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
 - A `ScenarioWorld` facade, for contract tests.
-- The multi-contract build system.
 - The meta crate supports `twiggy` post-processing, this is a tool to analyze contract size and investigate bloat in the binaries.
 - Dropped crate: `dharitri-wasm-output`. There is no equivalent crate, its job was passed to the individual `wasm` crates.
 - `ManagedVec` supports sorting and deduplication.

@@ -4,7 +4,7 @@
 */target/
 
 # The mxpy output
-output*
+/output*/
 
 # Denali test trace
 trace*.scen.json

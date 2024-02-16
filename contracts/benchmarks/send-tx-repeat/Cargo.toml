@@ -9,10 +9,10 @@ publish = false
 path = "src/send_tx_repeat.rs"
 
 [dependencies.dharitri-sc]
-version = "0.11.4"
+version = "0.11.5"
 path = "../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.4"
+version = "0.11.5"
 path = "../../../framework/scenario"
