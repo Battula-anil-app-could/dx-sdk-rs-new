@@ -1,5 +1,7 @@
 # Smart contract standard codec
 
+[![crates.io](https://img.shields.io/crates/v/dharitri-sc-codec.svg)](https://crates.io/crates/dharitri-sc-codec) 
+
 Lightweight binary serializer/deserializer, written especially for Dharitri smart contracts.
 
 Designed to:

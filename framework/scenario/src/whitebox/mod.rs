@@ -11,4 +11,4 @@ pub use helper_macros::*;
 use denali_generator::*;
 pub use tx_denali::*;
 
-pub use dharitri_chain_vm::tx_mock::TxResult;
+pub use dharitri_chain_vm::tx_mock::{TxContextStack, TxResult, TxTokenTransfer};

@@ -25,13 +25,13 @@ pub use scenario_go_runner::run_go;
 pub use scenario_rs_runner::run_rs;
 
 #[deprecated(
-    since = "0.10.9",
+    since = "0.39.0",
     note = "Alias provided for backwards compatibility. Do replace `BlockchainMock` with `ScenarioWorld` after upgrading, though."
 )]
 pub type BlockchainMock = ScenarioWorld;
 
 #[deprecated(
-    since = "0.10.9",
+    since = "0.39.0",
     note = "The old scenario testing method. Rename to `run_go`."
 )]
 pub fn denali_go<P: AsRef<Path>>(relative_path: P) {
@@ -39,7 +39,7 @@ pub fn denali_go<P: AsRef<Path>>(relative_path: P) {
 }
 
 #[deprecated(
-    since = "0.10.9",
+    since = "0.39.0",
     note = "The old scenario testing method. Rename to `run_rs`."
 )]
 pub fn denali_rs<P: AsRef<Path>>(relative_path: P, world: ScenarioWorld) {

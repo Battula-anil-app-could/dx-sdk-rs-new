@@ -25,7 +25,7 @@
 # 4. Run `cargo test`, to make sure nothing was broken and all dependencies still work fine.
 #
 # 5. Commit changes. The name of the commit should be the released crates and versions, same as the changelog title,
-# e.g. `sc 0.10.9, codec 0.4.2, chain-vm 0.4.2, chain-scenario-format 0.19.0, sdk 0.4.2`.
+# e.g. `sc 0.39.0, codec 0.17.0, chain-vm 0.1.0, chain-scenario-format 0.19.0, sdk 0.1.0`.
 # The branch doesn't need to be published for the following steps to work.
 # 
 # 5. Run this script, `./publish.sh`.

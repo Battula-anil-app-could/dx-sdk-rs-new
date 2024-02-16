@@ -67,7 +67,7 @@ path = "src/lib.rs"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "0.10.9"
+version = "0.39.0"
 
 [workspace]
 

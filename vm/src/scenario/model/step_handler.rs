@@ -32,45 +32,45 @@ pub trait StepHandler: TypedScCallExecutor + TypedScDeployExecutor + TypedScQuer
     /// Adds a dump state step, then executes it.
     fn dump_state_step(&mut self) -> &mut Self;
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `set_state_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `set_state_step` instead.")]
     fn denali_set_state(&mut self, step: SetStateStep) -> &mut Self {
         self.set_state_step(step)
     }
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `sc_call_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `sc_call_step` instead.")]
     fn denali_sc_call(&mut self, step: ScCallStep) -> &mut Self {
         self.sc_call_step(step)
     }
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `sc_query_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `sc_query_step` instead.")]
     fn denali_sc_query(&mut self, step: ScQueryStep) -> &mut Self {
         self.sc_query_step(step)
     }
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `sc_deploy_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `sc_deploy_step` instead.")]
     fn denali_sc_deploy(&mut self, step: ScDeployStep) -> &mut Self {
         self.sc_deploy_step(step)
     }
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `transfer_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `transfer_step` instead.")]
     fn denali_transfer(&mut self, step: TransferStep) -> &mut Self {
         self.transfer_step(step)
     }
 
     #[deprecated(
-        since = "0.10.9",
+        since = "0.39.0",
         note = "Renamed, use `validator_reward_step` instead."
     )]
     fn denali_validator_reward(&mut self, step: ValidatorRewardStep) -> &mut Self {
         self.validator_reward_step(step)
     }
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `check_state_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `check_state_step` instead.")]
     fn denali_check_state(&mut self, step: CheckStateStep) -> &mut Self {
         self.check_state_step(step)
     }
 
-    #[deprecated(since = "0.10.9", note = "Renamed, use `dump_state_step` instead.")]
+    #[deprecated(since = "0.39.0", note = "Renamed, use `dump_state_step` instead.")]
     fn denali_dump_state(&mut self) -> &mut Self {
         self.dump_state_step()
     }

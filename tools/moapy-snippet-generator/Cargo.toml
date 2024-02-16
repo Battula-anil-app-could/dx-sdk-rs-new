@@ -3,21 +3,22 @@ name = "moapy-snippet-generator"
 version = "0.0.0"
 authors = ["Dorin Marian Iancu <dorin.iancu@dharitri.com>"]
 edition = "2021"
+publish = false
 
 [[bin]]
 name = "moapy-snippet-generator"
 path = "src/moapy_snippet_generator.rs"
 
 [dependencies.dharitri-sc]
-version = "0.10.9"
+version = "0.11.0"
 path = "../../framework/base"
 
 [dependencies.dharitri-chain-vm]
-version = "0.4.2"
+version = "0.4.3"
 path = "../../vm"
 
 [dependencies]
-bech32 = "0.8.1"
+bech32 = "0.9"
 num-bigint = "0.4.2"
 num-traits = "0.2"
 hex = "0.4"

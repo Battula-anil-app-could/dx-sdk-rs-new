@@ -26,7 +26,12 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.10.9, codec 0.4.2, vm 0.4.2, scenario-format 0.19.0, sdk 0.4.2] - 2023-01-12
+## [sc 0.11.0, codec 0.4.3, vm 0.4.3, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
+- `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
+- Many depedencies updates across the repo.
+- Updated readme files.
+
+## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
 - All crates were renamed, in line with the Dharitri brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
@@ -79,7 +84,7 @@ They are:
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
 
-## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.4.2] - 2022-09-20
+## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.17.0] - 2022-09-20
 - Rust interactor snippet generator.
 - Added some missing substitution rules in the contract preprocessor.
 - Allow single zero byte when top-decoding Option::None.
@@ -93,7 +98,7 @@ They are:
 - Safer BigUint/BigInt conversions
 - Added and published `price-aggregator` and `wmoax-swap` core contracts.
 
-## [dharitri-wasm 0.34.0, dharitri-codec 0.12.0, denali 0.16.0, dharitri-interact-snippets 0.4.2] - 2022-07-08
+## [dharitri-wasm 0.34.0, dharitri-codec 0.12.0, denali 0.16.0, dharitri-interact-snippets 0.1.0] - 2022-07-08
 - Major refactor of the denali-rs infrastructure.
 	- High-level Denali objects moved to dharitri-wasm-debug;
 	- The `denali` crate no longer depends on `dharitri-wasm-debug` (as originally intended and implemented);
@@ -332,7 +337,7 @@ They are:
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [dharitri-wasm 0.19.1] - 2021-09-17
+## [dharitri-wasm 0.11.0] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [dharitri-wasm 0.19.0, dharitri-codec 0.6.0, denali 0.9.0] - 2021-09-10
@@ -391,10 +396,10 @@ They are:
 ## [dharitri-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
-## [dharitri-wasm 0.17.1] - 2021-06-04
+## [dharitri-wasm 0.4.3] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Arwen
 
-## [dharitri-wasm 0.4.2] - 2021-05-28
+## [dharitri-wasm 0.17.0] - 2021-05-28
 - Integration tests can now call Arwen-Denali (denali-go)
 - Send API refactoring and cleanup
 	- DCT builtin function calls no longer require explicit gas
@@ -590,7 +595,7 @@ They are:
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [dharitri-wasm 0.7.0, denali 0.4.2] - 2020-10-06
+## [dharitri-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -612,11 +617,11 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.4.3] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [dharitri-wasm 0.5.3, dharitri-codec 0.4.2] - 2020-07-10
+## [dharitri-wasm 0.5.3, dharitri-codec 0.1.0] - 2020-07-10
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -688,7 +693,7 @@ They are:
 ## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [dharitri-wasm 0.4.2] - 2020-02-05 
+## [dharitri-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

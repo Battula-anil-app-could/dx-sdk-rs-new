@@ -9,9 +9,9 @@ publish = false
 path = "src/adder.rs"
 
 [dependencies.dharitri-sc]
-version = "0.10.9"
+version = "0.11.0"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.10.9"
+version = "0.11.0"
 path = "../../../framework/scenario"
