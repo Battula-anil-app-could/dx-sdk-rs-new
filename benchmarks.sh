@@ -1,5 +1,5 @@
 cd contracts/benchmarks/mappers
-denali-test . > ../../../tools/extract-benchmarks/bench.log
+run-scenarios . > ../../../tools/extract-benchmarks/bench.log
 cd ../../..
 cd tools/extract-benchmarks
 ./extract.py

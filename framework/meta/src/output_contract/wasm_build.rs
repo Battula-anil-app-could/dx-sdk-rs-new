@@ -7,17 +7,7 @@ use crate::{
 
 impl OutputContract {
     pub fn build_contract(&self, build_args: &BuildArgs, output_path: &str) {
-        let mut command = Command::new("cargo");
-        command
-            .args(["build", "--target=wasm32-unknown-unknown", "--release"])
-            .current_dir(self.wasm_crate_path());
-        if let Some(target_dir) = &build_args.target_dir {
-            command.args(["--target-dir", target_dir]);
-        }
-        let rustflags = compose_rustflags(build_args);
-        if !rustflags.is_empty() {
-            command.env("RUSTFLAGS", rustflags);
-        }
+        let mut command = self.compose_build_command(build_args);
 
         print_build_command(self.wasm_output_name(build_args), &command);
 
@@ -30,6 +20,24 @@ impl OutputContract {
         assert!(exit_status.success(), "contract build process failed");
 
         self.finalize_build(build_args, output_path);
+    }
+
+    fn compose_build_command(&self, build_args: &BuildArgs) -> Command {
+        let mut command = Command::new("cargo");
+        command
+            .args(["build", "--target=wasm32-unknown-unknown", "--release"])
+            .current_dir(self.wasm_crate_path());
+        if build_args.locked {
+            command.arg("--locked");
+        }
+        if let Some(target_dir) = &build_args.target_dir {
+            command.args(["--target-dir", target_dir]);
+        }
+        let rustflags = compose_rustflags(build_args);
+        if !rustflags.is_empty() {
+            command.env("RUSTFLAGS", rustflags);
+        }
+        command
     }
 }
 
@@ -110,34 +118,35 @@ impl OutputContract {
             let output_wasm_path = format!("{output_path}/{}", self.wasm_output_name(build_args));
 
             if build_args.twiggy_top {
-                let output_wat_path = format!("{output_path}/{}", self.twiggy_top_name(build_args));
+                let output_twiggy_top_path =
+                    format!("{output_path}/{}", self.twiggy_top_name(build_args));
                 meta_wasm_tools::run_twiggy_top(
                     output_wasm_path.as_str(),
-                    output_wat_path.as_str(),
+                    output_twiggy_top_path.as_str(),
                 );
             }
             if build_args.twiggy_paths {
-                let output_wat_path =
+                let output_twiggy_paths_path =
                     format!("{output_path}/{}", self.twiggy_paths_name(build_args));
                 meta_wasm_tools::run_twiggy_paths(
                     output_wasm_path.as_str(),
-                    output_wat_path.as_str(),
+                    output_twiggy_paths_path.as_str(),
                 );
             }
             if build_args.twiggy_monos {
-                let output_wat_path =
+                let output_twiggy_monos_path =
                     format!("{output_path}/{}", self.twiggy_monos_name(build_args));
                 meta_wasm_tools::run_twiggy_monos(
                     output_wasm_path.as_str(),
-                    output_wat_path.as_str(),
+                    output_twiggy_monos_path.as_str(),
                 );
             }
             if build_args.twiggy_dominators {
-                let output_wat_path =
+                let output_twiggy_dominators_path =
                     format!("{output_path}/{}", self.twiggy_dominators_name(build_args));
                 meta_wasm_tools::run_twiggy_dominators(
                     output_wasm_path.as_str(),
-                    output_wat_path.as_str(),
+                    output_twiggy_dominators_path.as_str(),
                 );
             }
         }

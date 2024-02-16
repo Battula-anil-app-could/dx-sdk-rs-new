@@ -26,7 +26,12 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.11.2, vm 0.4.5] - 2023-01-26
+## [sc 0.11.3, vm 0.4.6] - 2023-01-26
+- `dharitri-sc-meta` improvements:
+	- `--locked` flag get passed to the build command, preserves dependencies in Cargo.lock.
+	- `update` command updates Cargo.lock files without building the contracts.
+- Backwards compatibility for running scenarios using the VM Go infrastructure.
+## [sc 0.39.3, vm 0.1.3] - 2023-01-26
 - `dharitri-sc-meta` improvements:
 	- `upgrade` can handle crates as early as `0.28.0`;
 	- `--ignore` flag for the `all` command: will ignore folders with given names, by default set to `target`;
@@ -41,7 +46,7 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.4.3, vm 0.0.8, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
+## [sc 0.39.1, codec 0.4.3, vm 0.1.1, scenario-format 0.11.0, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -618,7 +623,7 @@ They are:
 ## [dharitri-wasm 0.6.2] - 2020-09-16
 - NonZeroUsize iterator and utils
 
-## [dharitri-wasm 0.6.1, dharitri-codec 0.4.5] - 2020-09-15
+## [dharitri-wasm 0.6.1, dharitri-codec 0.1.3] - 2020-09-15
 - Integrated NonZeroUsize into the framework
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
@@ -632,7 +637,7 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.0.8] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -705,7 +710,7 @@ They are:
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [dharitri-wasm 0.0.8] - 2020-02-27
+## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [dharitri-wasm 0.1.0] - 2020-02-05 
