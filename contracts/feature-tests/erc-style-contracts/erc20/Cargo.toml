@@ -9,9 +9,9 @@ publish = false
 path = "src/erc20.rs"
 
 [dependencies.dharitri-sc]
-version = "0.11.1"
+version = "0.11.2"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.1"
+version = "0.11.2"
 path = "../../../../framework/scenario"

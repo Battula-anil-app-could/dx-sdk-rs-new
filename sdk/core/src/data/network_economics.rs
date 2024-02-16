@@ -3,19 +3,19 @@ use serde::{Deserialize, Serialize};
 // NetworkEconomics holds the network economics details
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NetworkEconomics {
-    #[serde(rename = "erd_dev_rewards")]
+    #[serde(rename = "moa_dev_rewards")]
     pub dev_rewards: String,
-    #[serde(rename = "erd_epoch_for_economics_data")]
+    #[serde(rename = "moa_epoch_for_economics_data")]
     pub epoch_for_economics_data: u32,
-    #[serde(rename = "erd_inflation")]
+    #[serde(rename = "moa_inflation")]
     pub inflation: String,
-    #[serde(rename = "erd_total_fees")]
+    #[serde(rename = "moa_total_fees")]
     pub total_fees: String,
-    #[serde(rename = "erd_total_base_staked_value")]
+    #[serde(rename = "moa_total_base_staked_value")]
     pub total_base_staked_value: String,
-    #[serde(rename = "erd_total_supply")]
+    #[serde(rename = "moa_total_supply")]
     pub total_supply: String,
-    #[serde(rename = "erd_total_top_up_value")]
+    #[serde(rename = "moa_total_top_up_value")]
     pub total_top_up_value: String,
 }
 

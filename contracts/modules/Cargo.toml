@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-modules"
-version = "0.11.1"
+version = "0.11.2"
 edition = "2021"
 
 authors = ["Dharitri <contact@dharitri.com>"]
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 alloc = ["dharitri-sc/alloc"]
 
 [dependencies.dharitri-sc]
-version = "0.11.1"
+version = "0.11.2"
 path = "../../framework/base"

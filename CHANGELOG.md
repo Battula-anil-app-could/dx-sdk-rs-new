@@ -26,7 +26,16 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.11.1, vm 0.4.4] - 2023-01-19
+## [sc 0.11.2, vm 0.4.5] - 2023-01-26
+- `dharitri-sc-meta` improvements:
+	- `upgrade` can handle crates as early as `0.28.0`;
+	- `--ignore` flag for the `all` command: will ignore folders with given names, by default set to `target`;
+	- `info` command, shows contracts and contract library crates with their respective framework versions;
+	- `--mir` flag when building, also emits MIR files;
+	- printing to console the build command.
+- `BigUint` from `u128` conversion.
+
+## [sc 0.39.2, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
@@ -609,12 +618,12 @@ They are:
 ## [dharitri-wasm 0.6.2] - 2020-09-16
 - NonZeroUsize iterator and utils
 
-## [dharitri-wasm 0.6.1, dharitri-codec 0.1.3] - 2020-09-15
+## [dharitri-wasm 0.6.1, dharitri-codec 0.4.5] - 2020-09-15
 - Integrated NonZeroUsize into the framework
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.6.0, dharitri-codec 0.4.4] - 2020-08-25
+## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
