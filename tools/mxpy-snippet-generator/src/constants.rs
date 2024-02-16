@@ -1,4 +1,4 @@
-pub const MOAPY_PROGRAM_NAME: &str = "moapy";
+pub const MXPY_PROGRAM_NAME: &str = "mxpy";
 pub const CONTRACT_COMMAND_NAME: &str = "contract";
 pub const MAX_GAS_LIMIT: u64 = 500_000_000;
 

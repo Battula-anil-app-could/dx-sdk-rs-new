@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# alternative to moapy
+# alternative to mxpy
 
 export RUSTFLAGS=${RUSTFLAGS-'-C link-arg=-s'}
 

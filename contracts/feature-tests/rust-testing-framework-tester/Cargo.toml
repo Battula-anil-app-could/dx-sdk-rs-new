@@ -6,18 +6,18 @@ edition = "2021"
 publish = false
 
 [dependencies.dharitri-sc]
-version = "0.11.0"
+version = "0.11.1"
 path = "../../../framework/base"
 features = [ "alloc" ]
 
-[dependencies.adder]
+[dev-dependencies.adder]
 path = "../../examples/adder"
 
-[dependencies.basic-features]
+[dev-dependencies.basic-features]
 path = "../../feature-tests/basic-features"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.0"
+version = "0.11.1"
 path = "../../../framework/scenario"
 
 [dev-dependencies]

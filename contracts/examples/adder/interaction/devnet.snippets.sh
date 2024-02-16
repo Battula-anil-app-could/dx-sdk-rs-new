@@ -1,15 +1,15 @@
 ALICE="${USERS}/alice.pem"
-ADDRESS=$(moapy data load --key=address-devnet)
-DEPLOY_TRANSACTION=$(moapy data load --key=deployTransaction-devnet)
+ADDRESS=$(mxpy data load --key=address-devnet)
+DEPLOY_TRANSACTION=$(mxpy data load --key=deployTransaction-devnet)
 
 deploy() {
-    moapy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --arguments 0 --send --outfile="deploy-devnet.interaction.json" || return
+    mxpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --arguments 0 --send --outfile="deploy-devnet.interaction.json" || return
 
-    TRANSACTION=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['emittedTransactionHash']")
-    ADDRESS=$(moapy data parse --file="deploy-devnet.interaction.json" --expression="data['contractAddress']")
+    TRANSACTION=$(mxpy data parse --file="deploy-devnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(mxpy data parse --file="deploy-devnet.interaction.json" --expression="data['contractAddress']")
 
-    moapy data store --key=address-devnet --value=${ADDRESS}
-    moapy data store --key=deployTransaction-devnet --value=${TRANSACTION}
+    mxpy data store --key=address-devnet --value=${ADDRESS}
+    mxpy data store --key=deployTransaction-devnet --value=${TRANSACTION}
 
     echo ""
     echo "Smart contract address: ${ADDRESS}"
@@ -17,9 +17,9 @@ deploy() {
 
 add() {
     read -p "Enter number: " NUMBER
-    moapy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --function="add" --arguments ${NUMBER} --send
+    mxpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --function="add" --arguments ${NUMBER} --send
 }
 
 getSum() {
-    moapy --verbose contract query ${ADDRESS} --function="getSum"
+    mxpy --verbose contract query ${ADDRESS} --function="getSum"
 }

@@ -12,9 +12,9 @@ path = "src/erc1155.rs"
 path="../erc1155-user-mock"
 
 [dependencies.dharitri-sc]
-version = "0.11.0"
+version = "0.11.1"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.0"
+version = "0.11.1"
 path = "../../../../framework/scenario"

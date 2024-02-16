@@ -30,8 +30,8 @@ The framework is designed to be easiest to use with the Dharitri IDE VSCode exte
 
 # Building contracts
 
-A comprehensive build guide can be found here: https://docs.dharitri.com/developers/developer-reference/smart-contract-build-reference/
+A comprehensive build guide can be found here: https://docs.dharitri.com/developers/developer-reference/sc-build-reference/
 
 # Debugging contracts
 
-The debugger guide: https://docs.dharitri.com/developers/developer-reference/rust-smart-contract-debugging/
+The debugger guide: https://docs.dharitri.com/developers/developer-reference/sc-debugging/
