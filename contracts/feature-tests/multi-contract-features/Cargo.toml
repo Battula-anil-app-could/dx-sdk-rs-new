@@ -9,9 +9,9 @@ publish = false
 path = "src/multi_contract_features.rs"
 
 [dependencies.dharitri-sc]
-version = "0.11.3"
+version = "0.11.4"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.3"
+version = "0.11.4"
 path = "../../../framework/scenario"

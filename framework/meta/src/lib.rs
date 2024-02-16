@@ -3,6 +3,7 @@ mod cargo_toml_contents;
 pub mod cli_args;
 mod folder_structure;
 mod generate_snippets;
+mod local_deps;
 mod meta_abi;
 mod meta_all;
 mod meta_cli;
@@ -15,3 +16,6 @@ mod sc_upgrade;
 
 pub use cargo_toml_contents::CargoTomlContents;
 pub use meta_cli::{cli_main, cli_main_standalone, multi_contract_config};
+
+#[macro_use]
+extern crate lazy_static;

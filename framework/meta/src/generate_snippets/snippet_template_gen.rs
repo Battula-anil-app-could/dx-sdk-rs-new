@@ -7,26 +7,24 @@ use super::snippet_gen_common::write_newline;
 pub(crate) fn write_snippet_imports(file: &mut File, contract_crate_name: &str) {
     writeln!(
         file,
-        "#[allow(non_snake_case)]
+        "#![allow(non_snake_case)]
 
 use {contract_crate_name}::ProxyTrait as _;
+use {contract_crate_name}::*;
 use dharitri_sc_snippets::{{
     dharitri_sc::{{
         codec::multi_types::*,
-        types::{{Address, CodeMetadata}},
-    }},
-    dharitri_chain_vm::{{
-        bech32, scenario_format::interpret_trait::InterpreterContext, scenario_model::*, ContractInfo,
-        DebugApi,
+        types::*,
     }},
     env_logger,
     moars::wallet::Wallet,
     tokio, Interactor,
 }};
-use std::{{
-    env::Args,
-    io::{{Read, Write}},
-}};"
+use dharitri_sc_scenario::scenario_model::*;
+use dharitri_chain_vm::{{
+    bech32, scenario_format::interpret_trait::InterpreterContext, ContractInfo, DebugApi,
+}};
+"
     )
     .unwrap();
 
@@ -34,7 +32,7 @@ use std::{{
 }
 
 pub(crate) fn write_snippet_constants(file: &mut File) {
-    writeln!(file, "const GATEWAY: &str = dharitri_sc_snippets::moars::blockchain::rpc::DEVNET_GATEWAY;
+    writeln!(file, "const GATEWAY: &str = dharitri_sdk::blockchain::DEVNET_GATEWAY;
 const PEM: &str = \"alice.pem\";
 const SC_ADDRESS: &str = \"\";
 
