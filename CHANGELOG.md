@@ -32,7 +32,7 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.4.3, vm 0.0.8, scenario-format 0.19.1, sdk 0.0.8] - 2023-01-18
+## [sc 0.39.1, codec 0.4.3, vm 0.0.8, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -343,7 +343,7 @@ They are:
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [dharitri-wasm 0.19.1] - 2021-09-17
+## [dharitri-wasm 0.11.0] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [dharitri-wasm 0.19.0, dharitri-codec 0.6.0, denali 0.9.0] - 2021-09-10

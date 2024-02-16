@@ -672,7 +672,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-chain-scenario-format"
-version = "0.19.1"
+version = "0.11.0"
 dependencies = [
  "bech32",
  "hex",
