@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-wmoax-swap-sc"
-version = "0.11.6"
+version = "0.11.7"
 
 authors = [
     "Dorin Iancu <dorin.iancu@dharitri.com>",
@@ -20,13 +20,13 @@ edition = "2021"
 path = "src/wmoax.rs"
 
 [dependencies.dharitri-sc]
-version = "0.11.6"
+version = "0.11.7"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "0.11.6"
+version = "0.11.7"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.6"
+version = "0.11.7"
 path = "../../../framework/scenario"

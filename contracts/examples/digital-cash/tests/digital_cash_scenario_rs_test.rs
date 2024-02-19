@@ -11,14 +11,14 @@ fn world() -> ScenarioWorld {
     blockchain
 }
 
-#[ignore] // verify_ed25519 not implemented
 #[test]
+#[ignore] // verify_ed25519 not implemented
 fn claim_moax_rs() {
     dharitri_sc_scenario::run_rs("scenarios/claim-moax.scen.json", world());
 }
 
-#[ignore] // verify_ed25519 not implemented
 #[test]
+#[ignore] // verify_ed25519 not implemented
 fn claim_dct_rs() {
     dharitri_sc_scenario::run_rs("scenarios/claim-dct.scen.json", world());
 }
@@ -41,4 +41,9 @@ fn withdraw_moax_rs() {
 #[test]
 fn withdraw_dct_rs() {
     dharitri_sc_scenario::run_rs("scenarios/withdraw-dct.scen.json", world());
+}
+
+#[test]
+fn forward_rs() {
+    dharitri_sc_scenario::run_rs("scenarios/forward.scen.json", world());
 }

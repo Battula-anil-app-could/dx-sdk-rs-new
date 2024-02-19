@@ -26,8 +26,11 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+## [sc 0.11.7, vm 0.5.0] - 2023-03-29
+- `dharitri-sc-meta` `test-gen` command: generates Rust integration tests based on scenarios present in the `scenarios` folder.
+ - `UnorderedSetMapper` `swap_indexes` method.
 
-## [sc 0.11.6, vm 0.4.9] - 2023-03-18
+## [sc 0.39.7, vm 0.1.7] - 2023-03-18
  - `TokenIdentifier` `ticker` method.
  - `ManagedBuffer` `concat` method.
 
@@ -64,7 +67,7 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.4.3, vm 0.1.1, scenario-format 0.11.0, sdk 0.1.1] - 2023-01-18
+## [sc 0.39.1, codec 0.4.3, vm 0.0.8, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -654,7 +657,7 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.0.8] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -727,7 +730,7 @@ They are:
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [dharitri-wasm 0.1.1] - 2020-02-27
+## [dharitri-wasm 0.0.8] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [dharitri-wasm 0.1.0] - 2020-02-05 

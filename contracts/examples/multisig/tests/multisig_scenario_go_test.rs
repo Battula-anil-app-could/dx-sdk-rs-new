@@ -8,44 +8,38 @@ fn call_other_shard_2_go() {
     dharitri_sc_scenario::run_go("scenarios/call_other_shard-2.scen.json");
 }
 
-#[ignore]
 #[test]
-fn call_other_shard_insufficient_gas_go() {
-    dharitri_sc_scenario::run_go("scenarios/call_other_shard-insufficient-gas.scen.json");
-}
-
-#[test]
-fn changeboard_go() {
+fn change_board_go() {
     dharitri_sc_scenario::run_go("scenarios/changeBoard.scen.json");
 }
 
 #[test]
-fn changequorum_go() {
+fn change_quorum_go() {
     dharitri_sc_scenario::run_go("scenarios/changeQuorum.scen.json");
 }
 
 #[test]
-fn changequorum_toobig_go() {
+fn change_quorum_too_big_go() {
     dharitri_sc_scenario::run_go("scenarios/changeQuorum_tooBig.scen.json");
 }
 
 #[test]
-fn deployadder_err_go() {
+fn deploy_adder_err_go() {
     dharitri_sc_scenario::run_go("scenarios/deployAdder_err.scen.json");
 }
 
 #[test]
-fn deployadder_then_call_go() {
+fn deploy_adder_then_call_go() {
     dharitri_sc_scenario::run_go("scenarios/deployAdder_then_call.scen.json");
 }
 
 #[test]
-fn deployfactorial_go() {
+fn deploy_factorial_go() {
     dharitri_sc_scenario::run_go("scenarios/deployFactorial.scen.json");
 }
 
 #[test]
-fn deployothermultisig_go() {
+fn deploy_other_multisig_go() {
     dharitri_sc_scenario::run_go("scenarios/deployOtherMultisig.scen.json");
 }
 
@@ -60,9 +54,9 @@ fn remove_everyone_go() {
 }
 
 // TODO: investigate gas issue
-#[ignore]
 #[test]
-fn senddct_go() {
+#[ignore]
+fn send_dct_go() {
     dharitri_sc_scenario::run_go("scenarios/sendDct.scen.json");
 }
 

@@ -14,6 +14,11 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-fn pause_rs() {
+fn init_rs() {
+    dharitri_sc_scenario::run_rs("scenarios/init.scen.json", world());
+}
+
+#[test]
+fn pause_and_unpause_rs() {
     dharitri_sc_scenario::run_rs("scenarios/pause-and-unpause.scen.json", world());
 }

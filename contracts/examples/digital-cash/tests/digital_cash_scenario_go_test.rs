@@ -27,3 +27,8 @@ fn withdraw_moax_go() {
 fn withdraw_dct_go() {
     dharitri_sc_scenario::run_go("scenarios/withdraw-dct.scen.json");
 }
+
+#[test]
+fn forward_go() {
+    dharitri_sc_scenario::run_go("scenarios/forward.scen.json");
+}

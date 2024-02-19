@@ -1,6 +1,6 @@
 use dharitri_sc::types::{
-    BoxedBytes, MoaxOrDctTokenIdentifier, MoaxOrDctTokenPayment, DctTokenPayment,
-    TokenIdentifier, ManagedBuffer,
+    BoxedBytes, MoaxOrDctTokenIdentifier, MoaxOrDctTokenPayment, DctTokenPayment, ManagedBuffer,
+    TokenIdentifier,
 };
 use dharitri_sc_scenario::{
     managed_moax_token_id, managed_token_id, managed_token_id_wrapped,

@@ -41,6 +41,14 @@ fn ping_pong_call_ping_before_activation_rs() {
 }
 
 #[test]
+fn ping_pong_call_ping_before_beginning_rs() {
+    dharitri_sc_scenario::run_rs(
+        "scenarios/ping-pong-call-ping-before-beginning.scen.json",
+        world(),
+    );
+}
+
+#[test]
 fn ping_pong_call_ping_second_user_rs() {
     dharitri_sc_scenario::run_rs(
         "scenarios/ping-pong-call-ping-second-user.scen.json",
@@ -75,6 +83,24 @@ fn ping_pong_call_pong_all_rs() {
 fn ping_pong_call_pong_all_after_pong_rs() {
     dharitri_sc_scenario::run_rs(
         "scenarios/ping-pong-call-pong-all-after-pong.scen.json",
+        world(),
+    );
+}
+
+#[test]
+#[ignore = "unsupported, relies on gas"]
+fn ping_pong_call_pong_all_interrupted_1_rs() {
+    dharitri_sc_scenario::run_rs(
+        "scenarios/ping-pong-call-pong-all-interrupted-1.scen.json",
+        world(),
+    );
+}
+
+#[test]
+#[ignore = "unsupported, relies on gas"]
+fn ping_pong_call_pong_all_interrupted_2_rs() {
+    dharitri_sc_scenario::run_rs(
+        "scenarios/ping-pong-call-pong-all-interrupted-2.scen.json",
         world(),
     );
 }
