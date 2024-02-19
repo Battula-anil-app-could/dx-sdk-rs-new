@@ -3,6 +3,7 @@ pub const PANIC_OCCURRED: &str = "panic occurred";
 pub const NON_PAYABLE_FUNC_MOAX: &str = "function does not accept MOAX payment";
 pub const NON_PAYABLE_FUNC_DCT: &str = "function does not accept DCT payment";
 pub const BAD_TOKEN_PROVIDED: &str = "bad call value token provided";
+pub const BAD_TOKEN_TICKER_FORMAT: &[u8] = b"bad token ticker format";
 pub const SINGLE_DCT_EXPECTED: &str = "function expects single DCT payment";
 pub const TOO_MANY_DCT_TRANSFERS: &str = "too many DCT transfers";
 pub const DCT_INVALID_TOKEN_INDEX: &str = "invalid token index";

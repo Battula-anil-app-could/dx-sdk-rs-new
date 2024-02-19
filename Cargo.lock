@@ -100,9 +100,9 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.11"
+version = "0.6.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e2e1ebcb11de5c03c67de28a7df593d32191b44939c482e97702baaaa6ab6a5"
+checksum = "96b09b5178381e0874812a9b157f7fe84982617e48f71f4e3235482775e5b540"
 dependencies = [
  "anstyle",
  "anstyle-parse",
@@ -148,9 +148,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.79"
+version = "1.0.80"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "080e9890a082662b09c1ad45f567faeeb47f22b5fb23895fbe1e651e718e25ca"
+checksum = "5ad32ce52e4161730f7098c077cd2ed6229b5804ccf99e5366be1ab72a98b4e1"
 
 [[package]]
 name = "arrayvec"
@@ -400,9 +400,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.5.0"
+version = "4.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80c21025abd42669a92efc996ef13cfb2c5c627858421ea58d5c3b331a6c134f"
+checksum = "c918d541ef2913577a0f9566e9ce27cb35b6df072075769e0b26cb5a554520da"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -410,9 +410,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.5.0"
+version = "4.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "458bf1f341769dfcf849846f65dffdf9146daa56bcd2a47cb4e1de9915567c99"
+checksum = "9f3e7391dad68afb0c2ede1bf619f579a3dc9c2ec67f089baa397123a2f3d1eb"
 dependencies = [
  "anstream",
  "anstyle",
@@ -707,7 +707,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-chain-vm"
-version = "0.4.8"
+version = "0.4.9"
 dependencies = [
  "bech32",
  "dharitri-chain-scenario-format",
@@ -728,7 +728,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-price-aggregator-sc"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "arrayvec",
  "dharitri-sc",
@@ -747,7 +747,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "bitflags 1.3.2",
  "dharitri-sc-codec",
@@ -778,7 +778,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -789,7 +789,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-meta"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "clap",
  "colored",
@@ -806,14 +806,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-modules"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "dharitri-sc",
 ]
 
 [[package]]
 name = "dharitri-sc-scenario"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "colored",
  "dharitri-chain-vm",
@@ -828,7 +828,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-snippets"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "base64 0.13.1",
  "dharitri-sc-scenario",
@@ -841,7 +841,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-wasm-adapter"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "dharitri-sc",
  "wee_alloc",
@@ -874,7 +874,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wmoax-swap-sc"
-version = "0.11.5"
+version = "0.11.6"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-modules",
@@ -2731,9 +2731,9 @@ dependencies = [
 
 [[package]]
 name = "ryu"
-version = "1.0.16"
+version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
+checksum = "e86697c916019a8588c99b5fac3cead74ec0b4b819707a682fd4d23fa0ce1ba1"
 
 [[package]]
 name = "same-file"
@@ -2818,9 +2818,9 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.21"
+version = "1.0.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b97ed7a9823b74f99c7742f5336af7be5ecd3eeafcb1507d1fa93347b1d589b0"
+checksum = "92d43fe69e652f3df9bdc2b85b2854a0825b86e4fb76bc44d945137d053639ca"
 
 [[package]]
 name = "send-tx-repeat"

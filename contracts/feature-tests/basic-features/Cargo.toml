@@ -9,15 +9,15 @@ publish = false
 path = "src/basic_features_main.rs"
 
 [dependencies.dharitri-sc]
-version = "0.11.5"
+version = "0.11.6"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.5"
+version = "0.11.6"
 path = "../../../framework/scenario"
 
 [dependencies.dharitri-sc-modules]
-version = "0.11.5"
+version = "0.11.6"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dct-system-sc-mock]
