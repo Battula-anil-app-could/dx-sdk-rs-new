@@ -5,7 +5,9 @@ use crate::{
     },
     contract_base::CallValueWrapper,
     err_msg,
-    types::{BigUint, MoaxOrDctTokenIdentifier, DctTokenPayment, ManagedType, ManagedVec},
+    types::{
+        BigUint, MoaxOrDctTokenIdentifier, DctTokenPayment, ManagedRef, ManagedType, ManagedVec,
+    },
 };
 
 /// Called initially in the generated code whenever no payable annotation is provided.
@@ -88,7 +90,7 @@ where
 }
 
 /// Initializes an argument annotated with `#[payment_multi]`.
-pub fn arg_payment_multi<A>() -> ManagedVec<A, DctTokenPayment<A>>
+pub fn arg_payment_multi<A>() -> ManagedRef<'static, A, ManagedVec<A, DctTokenPayment<A>>>
 where
     A: CallValueApi + ManagedTypeApi,
 {

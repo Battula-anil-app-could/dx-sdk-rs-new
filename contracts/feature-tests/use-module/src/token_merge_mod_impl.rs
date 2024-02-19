@@ -28,7 +28,7 @@ pub trait TokenMergeModImpl:
     fn merge_tokens_endpoint(&self) -> DctTokenPayment {
         let payments = self.call_value().all_dct_transfers();
         let attributes_creator = DefaultMergedAttributesWrapper::new();
-        self.merge_tokens(payments, &attributes_creator)
+        self.merge_tokens(&*payments, &attributes_creator)
     }
 
     #[payable("*")]
@@ -36,14 +36,14 @@ pub trait TokenMergeModImpl:
     fn merge_tokens_custom_attributes_endpoint(&self) -> DctTokenPayment {
         let payments = self.call_value().all_dct_transfers();
         let attributes_creator = CustomMergedAttributesWrapper::new();
-        self.merge_tokens(payments, &attributes_creator)
+        self.merge_tokens(&*payments, &attributes_creator)
     }
 
     #[payable("*")]
     #[endpoint(splitTokens)]
     fn split_tokens_endpoint(&self) -> ManagedVec<DctTokenPayment> {
         let payments = self.call_value().all_dct_transfers();
-        self.split_tokens(payments)
+        self.split_tokens(&*payments)
     }
 
     #[payable("*")]

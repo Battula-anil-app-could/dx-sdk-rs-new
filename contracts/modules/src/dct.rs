@@ -34,7 +34,7 @@ pub trait DctModule {
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
-        let issue_cost = self.call_value().moax_value();
+        let issue_cost = self.call_value().moax_value().clone_value();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,
@@ -64,7 +64,7 @@ pub trait DctModule {
                 // return payment to initial caller
                 let initial_caller = self.blockchain().get_owner_address();
                 let moax_returned = self.call_value().moax_value();
-                if moax_returned > 0u32 {
+                if *moax_returned > 0u32 {
                     self.send().direct_moax(&initial_caller, &moax_returned);
                 }
             },

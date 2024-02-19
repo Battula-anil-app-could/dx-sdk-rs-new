@@ -96,7 +96,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "0.39.0",
+        since = "0.10.9",
         note = "Renamed, use `write_scenario_trace` instead."
     )]
     pub fn write_denali_trace<P: AsRef<Path>>(&mut self, file_path: P) {

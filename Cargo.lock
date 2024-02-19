@@ -716,7 +716,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-chain-vm"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "bech32",
  "dharitri-chain-scenario-format",
@@ -737,7 +737,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-price-aggregator-sc"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "arrayvec",
  "dharitri-sc",
@@ -756,7 +756,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "bitflags 1.3.2",
  "dharitri-sc-codec",
@@ -787,7 +787,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -798,7 +798,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-meta"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "clap",
  "colored",
@@ -816,14 +816,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-modules"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "dharitri-sc",
 ]
 
 [[package]]
 name = "dharitri-sc-scenario"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "colored",
  "dharitri-chain-vm",
@@ -838,7 +838,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-snippets"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "base64 0.13.1",
  "dharitri-sc-scenario",
@@ -851,7 +851,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-wasm-adapter"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "dharitri-sc",
  "wee_alloc",
@@ -884,7 +884,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wmoax-swap-sc"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-modules",

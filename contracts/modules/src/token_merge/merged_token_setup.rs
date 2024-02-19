@@ -17,7 +17,7 @@ pub trait MergedTokenSetupModule {
         let payment_amount = self.call_value().moax_value();
         self.merged_token().issue_and_set_all_roles(
             DctTokenType::NonFungible,
-            payment_amount,
+            payment_amount.clone_value(),
             token_display_name,
             token_ticker,
             0,

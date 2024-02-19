@@ -55,14 +55,14 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[payable("MOAX")]
     #[endpoint]
     fn receive_moax(&self) -> BigUint {
-        self.call_value().moax_value()
+        self.call_value().moax_value().clone_value()
     }
 
     #[payable("MOAX")]
     #[endpoint]
     fn recieve_moax_half(&self) {
         let caller = self.blockchain().get_caller();
-        let payment_amount = self.call_value().moax_value() / 2u32;
+        let payment_amount = &*self.call_value().moax_value() / 2u32;
         self.send().direct(
             &caller,
             &MoaxOrDctTokenIdentifier::moax(),
@@ -98,7 +98,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[payable("*")]
     #[endpoint]
     fn receive_multi_dct(&self) -> ManagedVec<DctTokenPayment<Self::Api>> {
-        self.call_value().all_dct_transfers()
+        self.call_value().all_dct_transfers().clone_value()
     }
 
     #[payable("*")]

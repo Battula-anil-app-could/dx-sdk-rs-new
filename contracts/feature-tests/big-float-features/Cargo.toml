@@ -9,12 +9,12 @@ publish = false
 path = "src/big_float_main.rs"
 
 [dependencies.dharitri-sc]
-version = "0.11.7"
+version = "0.11.8"
 path = "../../../framework/base"
 features = ["big-float"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.7"
+version = "0.11.8"
 path = "../../../framework/scenario"
 
 [dev-dependencies.dct-system-sc-mock]

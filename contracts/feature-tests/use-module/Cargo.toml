@@ -9,18 +9,18 @@ publish = false
 path = "src/use_module.rs"
 
 [dependencies.dharitri-sc-modules]
-version = "0.11.7"
+version = "0.11.8"
 path = "../../../contracts/modules"
 
 [dependencies.dharitri-sc]
-version = "0.11.7"
+version = "0.11.8"
 path = "../../../framework/base"
 features = [ "alloc" ]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.7"
+version = "0.11.8"
 path = "../../../framework/scenario"
 
 [dev-dependencies.dharitri-sc-meta]
-version = "0.11.7"
+version = "0.11.8"
 path = "../../../framework/meta"

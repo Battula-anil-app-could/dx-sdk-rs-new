@@ -13,11 +13,11 @@ dharitri_sc::derive_imports!();
 
 // Additionally, we also have to update the interact-rs snippets manually to add relative paths:
 // [dependencies.dharitri-sc-snippets]
-// version = "0.39.2"
+// version = "0.11.1"
 // path = "../../../../framework/snippets"
 
 // [dependencies.dharitri-sc-scenario]
-// version = "0.39.2"
+// version = "0.11.1"
 // path = "../../../../framework/scenario"
 
 // [dependencies.dharitri-chain-vm]

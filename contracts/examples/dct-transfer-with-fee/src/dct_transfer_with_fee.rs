@@ -48,7 +48,7 @@ pub trait DctTransferWithFee {
     #[endpoint]
     fn transfer(&self, address: ManagedAddress) {
         require!(
-            self.call_value().moax_value() == 0,
+            *self.call_value().moax_value() == 0,
             "MOAX transfers not allowed"
         );
         let payments = self.call_value().all_dct_transfers();

@@ -26,7 +26,10 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.11.7, vm 0.5.0] - 2023-03-29
+## [sc 0.11.8, vm 0.5.1] - 2023-04-20
+- Call value `moax_value` and `all_dct_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
+
+## [sc 0.11.7, vm 0.1.8] - 2023-03-29
 - `dharitri-sc-meta` `test-gen` command: generates Rust integration tests based on scenarios present in the `scenarios` folder.
  - `UnorderedSetMapper` `swap_indexes` method.
 
@@ -46,7 +49,7 @@ They are:
 	- `local-deps` command: generates a report on the local depedencies of contract crates. Will explore indirect depdencies too.
 	- Upgrade tool minor fix.
 
-## [sc 0.11.3, vm 0.1.4] - 2023-01-26
+## [sc 0.39.4, vm 0.1.4] - 2023-01-26
 - `dharitri-sc-meta` improvements:
 	- `--locked` flag get passed to the build command, preserves dependencies in Cargo.lock.
 	- `update` command updates Cargo.lock files without building the contracts.
@@ -61,7 +64,7 @@ They are:
 	- printing to console the build command.
 - `BigUint` from `u128` conversion.
 
-## [sc 0.39.2, vm 0.1.2] - 2023-01-19
+## [sc 0.11.1, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
@@ -72,7 +75,7 @@ They are:
 - Many depedencies updates across the repo.
 - Updated readme files.
 
-## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
+## [sc 0.10.9, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
 - All crates were renamed, in line with the Dharitri brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
@@ -617,12 +620,12 @@ They are:
 ## [dharitri-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.5.1] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.8.0, dharitri-codec 0.5.1] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -726,7 +729,7 @@ They are:
 - Multi args
 - Multi args in async calls
 
-## [dharitri-wasm 0.2.0] - 2020-03-18
+## [dharitri-wasm 0.5.1] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 

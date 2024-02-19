@@ -19,7 +19,7 @@ pub const SCENARIO_FILE_PATTERNS: &[(&str, &str)] = &[
     ("denali_rs", "scenario_rs"),
 ];
 
-/// Migrate `0.38.0` to `0.39.0`, including the version bump.
+/// Migrate `0.38.0` to `0.10.9`, including the version bump.
 pub fn upgrade_to_39_0(dir: &RelevantDirectory) {
     if dir.dir_type == DirectoryType::Contract {
         v_0_39_prepare_meta(&dir.path);
@@ -59,7 +59,7 @@ fn v_0_39_prepare_meta(sc_crate_path: &Path) {
 
     print_cargo_dep_add(cargo_toml_path.as_path(), "dharitri-sc-meta");
     let mut meta_dep = Table::new();
-    meta_dep.insert("version".to_string(), Value::String("0.39.0".to_string()));
+    meta_dep.insert("version".to_string(), Value::String("0.10.9".to_string()));
     deps.insert("dharitri-sc-meta".to_string(), Value::Table(meta_dep));
 
     meta_cargo_toml.save_to_file(&cargo_toml_path);
