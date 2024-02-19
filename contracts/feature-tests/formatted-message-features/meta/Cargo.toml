@@ -11,5 +11,5 @@ authors = [ "you",]
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "0.11.8"
+version = "0.11.9"
 path = "../../../../framework/meta"

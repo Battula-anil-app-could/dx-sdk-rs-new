@@ -13,11 +13,11 @@ path = "src/lib.rs"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "0.11.8"
+version = "0.11.9"
 path = "../../../../framework/snippets"
 
 [dependencies.dharitri-sc-scenario]
-version = "0.11.8"
+version = "0.11.9"
 path = "../../../../framework/scenario"
 
 [dependencies.dharitri-chain-vm]
