@@ -2,22 +2,31 @@
 macro_rules! allocator {
     () => {
         #[global_allocator]
-        static ALLOC: dharitri_sc_wasm_adapter::wasm_deps::WeeAlloc =
-            dharitri_sc_wasm_adapter::wasm_deps::WeeAlloc::INIT;
+        static ALLOC: dharitri_sc_wasm_adapter::wasm_alloc::FailAllocator =
+            dharitri_sc_wasm_adapter::wasm_alloc::FailAllocator;
+    };
+    (leaking) => {
+        #[global_allocator]
+        static ALLOC: dharitri_sc_wasm_adapter::wasm_alloc::LeakingAllocator =
+            dharitri_sc_wasm_adapter::wasm_alloc::LeakingAllocator::new();
+    };
+    (static64k) => {
+        #[global_allocator]
+        static ALLOC: dharitri_sc_wasm_adapter::wasm_alloc::StaticAllocator64K =
+            dharitri_sc_wasm_adapter::wasm_alloc::StaticAllocator64K::new();
+    };
+    (wee_alloc) => {
+        #[global_allocator]
+        static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
     };
 }
 
 #[macro_export]
 macro_rules! panic_handler {
     () => {
-        #[alloc_error_handler]
-        fn alloc_error_handler(layout: dharitri_sc_wasm_adapter::wasm_deps::Layout) -> ! {
-            dharitri_sc_wasm_adapter::wasm_deps::alloc_error_handler(layout)
-        }
-
         #[panic_handler]
-        fn panic_fmt(panic_info: &dharitri_sc_wasm_adapter::wasm_deps::PanicInfo) -> ! {
-            dharitri_sc_wasm_adapter::wasm_deps::panic_fmt(panic_info)
+        fn panic_fmt(panic_info: &dharitri_sc_wasm_adapter::panic::PanicInfo) -> ! {
+            dharitri_sc_wasm_adapter::panic::panic_fmt(panic_info)
         }
 
         #[lang = "eh_personality"]
@@ -28,14 +37,9 @@ macro_rules! panic_handler {
 #[macro_export]
 macro_rules! panic_handler_with_message {
     () => {
-        #[alloc_error_handler]
-        fn alloc_error_handler(layout: dharitri_sc_wasm_adapter::wasm_deps::Layout) -> ! {
-            dharitri_sc_wasm_adapter::wasm_deps::alloc_error_handler(layout)
-        }
-
         #[panic_handler]
-        fn panic_fmt(panic_info: &dharitri_sc_wasm_adapter::wasm_deps::PanicInfo) -> ! {
-            dharitri_sc_wasm_adapter::wasm_deps::panic_fmt_with_message(panic_info)
+        fn panic_fmt(panic_info: &dharitri_sc_wasm_adapter::panic::PanicInfo) -> ! {
+            dharitri_sc_wasm_adapter::panic::panic_fmt_with_message(panic_info)
         }
 
         #[lang = "eh_personality"]

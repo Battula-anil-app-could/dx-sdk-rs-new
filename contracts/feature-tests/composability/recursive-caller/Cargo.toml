@@ -15,14 +15,14 @@ ei-unmanaged = ["dharitri-sc/ei-unmanaged"]
 path = "../vault"
 
 [dependencies.dharitri-sc]
-version = "0.11.9"
+version = "0.12.0"
 path = "../../../../framework/base"
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "0.11.9"
+version = "0.12.0"
 path = "../../../../framework/wasm-adapter"
 optional = true
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.11.9"
+version = "0.12.0"
 path = "../../../../framework/scenario"

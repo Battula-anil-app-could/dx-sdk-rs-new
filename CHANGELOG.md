@@ -26,7 +26,20 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.11.9, vm 0.5.2] - 2023-04-24
+## [sc 0.12.0, vm 0.5.3] - 2023-05-05
+- Fixed compatibility with rustc v1.71.0.
+- Allocator system:
+	- Contracts can now choose their own allocator. This works in multi-contract contexts.
+	- New allocators: `fail` (default), `static64k`, `leaking`.
+	- Removed dependency to `wee_alloc`, but using it is still possible if the contract references it directly.
+	- Contract call stack size is now configurable in `multicontract.toml`.
+	- The 'panic with message' system now relies on managed buffers instead of on an allocator.
+- Fixed BigUint bitwise operations in the debugger.
+- When building contracts, an additional `.mxsc.json` file is created, which packs both the contract binary, the ABI, and some additional metadata.
+- Refactor: reorganized the meta crate.
+- Deprecated some legacy methods in the API wrappers.
+
+## [sc 0.40.1, vm 0.2.1] - 2023-04-24
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
@@ -599,7 +612,7 @@ They are:
 ## [dharitri-wasm 0.9.8, dharitri-codec 0.3.2, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
-## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.3.0] - 2020-11-11
+## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.5.3] - 2020-11-11
 - Monomorphization via codec trait instead of TypeInfo for arguments and storage
 - Reorganized all contracts in the `contracts` folder
 
@@ -624,7 +637,7 @@ They are:
 ## [dharitri-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [dharitri-wasm 0.9.0, dharitri-codec 0.5.3, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
@@ -727,7 +740,7 @@ They are:
 ## [dharitri-wasm 0.3.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
-## [dharitri-wasm 0.3.0] - 2020-04-03
+## [dharitri-wasm 0.5.3] - 2020-04-03
 - Raw callback support
 - `storage_load_len` hook
 - Multi args

@@ -10,9 +10,9 @@
 // Total number of exported functions:   9
 
 #![no_std]
-#![feature(alloc_error_handler, lang_items)]
+#![feature(lang_items)]
 
-dharitri_sc_wasm_adapter::allocator!();
+dharitri_sc_wasm_adapter::allocator!(static64k);
 dharitri_sc_wasm_adapter::panic_handler!();
 
 dharitri_sc_wasm_adapter::endpoints! {

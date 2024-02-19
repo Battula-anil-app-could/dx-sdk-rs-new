@@ -1,4 +1,5 @@
 pub const PANIC_OCCURRED: &str = "panic occurred";
+pub const MEM_ALLOC_ERROR: &str = "memory allocation error";
 
 pub const NON_PAYABLE_FUNC_MOAX: &str = "function does not accept MOAX payment";
 pub const NON_PAYABLE_FUNC_DCT: &str = "function does not accept DCT payment";

@@ -18,7 +18,7 @@ path = ".."
 features = ["example_feature"]
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "0.11.9"
+version = "0.12.0"
 path = "../../../../framework/wasm-adapter"
 
 [workspace]
