@@ -9,13 +9,13 @@ publish = false
 path = "src/seed_nft_minter.rs"
 
 [dependencies.dharitri-sc]
-version = "0.12.4"
+version = "0.12.5"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "0.12.4"
+version = "0.12.5"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.12.4"
+version = "0.12.5"
 path = "../../../framework/scenario"

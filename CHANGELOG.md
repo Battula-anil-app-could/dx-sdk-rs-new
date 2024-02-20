@@ -26,7 +26,21 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.12.4, codec 0.4.5, vm 0.5.7, scenario-format 0.11.1, sdk 0.0.9] - 2023-07-15
+## [sc 0.12.5, codec 0.4.6, vm 0.5.0] - 2023-08-16
+- Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
+	- pre-rustc-1.71;
+	- between rustc-1.71 and rustc-1.73;
+	- latest, after rustc-1.73. Also upgraded some dependencies, notably proc-macro2 "1.0.66" and ed25519-dalek "2.0.0".
+- Initial version of the contract template tool in dharitri-sc-meta:
+	- Ability to download and adapt template contracts, to kickstart contract development;
+	- A template mechanism that is customizable on the framework side;
+	- Available templates: adder, empty, crypto-zombies.
+- The Rust debugger is now thread safe.
+- Removed the `big-float` feature of dharitri-sc, because the functionality is already available on mainnet.
+- Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
+- Fixed an issue with contract calls and DCT transfers in the `StaticApi` environment.
+
+## [sc 0.12.4, codec 0.18.0, vm 0.4.0, scenario-format 0.11.1, sdk 0.0.9] - 2023-07-15
 - Multi-endpoints in multi-contracts:
 	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
 	- We can also have multiple versions of the constructor.
@@ -61,11 +75,11 @@ They are:
 	- Updated all contract interactors and blackbox tests with the new syntax;
 	- Upgraded the snippets generator to produce new syntax.
 
-## [sc 0.12.3, vm 0.3.3] - 2023-06-19
+## [sc 0.41.3, vm 0.3.3] - 2023-06-19
 - Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
 - Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
 
-## [sc 0.41.2, codec 0.4.4, vm 0.3.2] - 2023-06-09
+## [sc 0.41.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
 ## [sc 0.41.1, vm 0.3.1] - 2023-05-15
@@ -137,7 +151,7 @@ They are:
 - Many depedencies updates across the repo.
 - Updated readme files.
 
-## [sc 0.10.9, codec 0.4.2, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
+## [sc 0.10.9, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
 - All crates were renamed, in line with the Dharitri brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
@@ -147,7 +161,7 @@ They are:
 - `ManagedVec` supports sorting and deduplication.
 - `migrateUserName` builtin function mock.
 
-## [dharitri-wasm 0.38.0, dharitri-codec 0.16.0, denali 0.4.5] - 2022-12-15
+## [dharitri-wasm 0.38.0, dharitri-codec 0.16.0, denali 0.18.0] - 2022-12-15
 - `ContractCall` refactor. Building a contract call comes with harder compile-time constraints. This also reduces compiled code size.
 - `ContractBase` supertrait can be now stated explicitly for contract and module traits.
 - Debugger:
@@ -189,7 +203,7 @@ They are:
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
 
-## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.4.2] - 2022-09-20
+## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.17.0] - 2022-09-20
 - Rust interactor snippet generator.
 - Added some missing substitution rules in the contract preprocessor.
 - Allow single zero byte when top-decoding Option::None.
@@ -476,10 +490,10 @@ They are:
 ## [dharitri-wasm 0.18.2] - 2021-08-20
 - Crypto API: `ripemd160` function, custom secp256k1 signature verification (`verify_custom_secp256k1`) and signature generation (`encode_secp256k1_der_signature`).
 
-## [dharitri-wasm 0.18.1] - 2021-08-05
+## [dharitri-wasm 0.4.6] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.4.5, denali 0.8.0] - 2021-07-28
+## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -498,13 +512,13 @@ They are:
 ## [dharitri-wasm 0.17.3] - 2021-06-11
 - `SingleValueMapper` `set_if_empty` method
 
-## [dharitri-wasm 0.4.4] - 2021-06-04
+## [dharitri-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
 ## [dharitri-wasm 0.17.1] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Arwen
 
-## [dharitri-wasm 0.4.2] - 2021-05-28
+## [dharitri-wasm 0.17.0] - 2021-05-28
 - Integration tests can now call Arwen-Denali (denali-go)
 - Send API refactoring and cleanup
 	- DCT builtin function calls no longer require explicit gas
@@ -649,7 +663,7 @@ They are:
 ## [dharitri-wasm 0.10.1, dharitri-codec 0.4.1, denali 0.4.1] - 2020-12-23
 - Minor fixes, support for strings
 
-## [dharitri-wasm 0.10.0, dharitri-codec 0.5.7] - 2020-12-21
+## [dharitri-wasm 0.10.0, dharitri-codec 0.4.0] - 2020-12-21
 - Codec derive
 - ABI generation framework
 - New example contracts
@@ -776,7 +790,7 @@ They are:
 - Direct storage conversion for simple types
 - Block info hooks
 
-## [dharitri-wasm 0.5.7] - 2020-05-06
+## [dharitri-wasm 0.4.0] - 2020-05-06
 - Serde-based serializer (later abandoned)
 - Major storage improvements:
 	- Generate storage getters & setters

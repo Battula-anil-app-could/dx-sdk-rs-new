@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc"
-version = "0.12.4"
+version = "0.12.5"
 edition = "2021"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri <contact@dharitri.com>"]
@@ -13,11 +13,13 @@ description = "Dharitri smart contract API"
 keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
+[package.metadata.docs.rs]
+all-features = true
+
 [features]
 num-bigint = ["dharitri-sc-codec/num-bigint"]
 alloc = ["dharitri-sc-codec/alloc"]
 promises = []
-big-float = []
 managed-map = []
 dct-token-payment-legacy-decode = []
 
@@ -31,10 +33,10 @@ version = "0.2"
 default-features = false
 
 [dependencies.dharitri-sc-derive]
-version = "=0.12.4"
+version = "=0.12.5"
 path = "../derive"
 
 [dependencies.dharitri-sc-codec]
-version = "=0.4.5"
+version = "=0.4.6"
 path = "../../data/codec"
 features = ["derive"]

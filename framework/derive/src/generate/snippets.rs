@@ -34,7 +34,7 @@ pub fn new_contract_object_fn() -> proc_macro2::TokenStream {
         pub struct ContractBuilder;
 
         impl dharitri_sc::contract_base::CallableContractBuilder for self::ContractBuilder {
-            fn new_contract_obj<A: dharitri_sc::api::VMApi>(
+            fn new_contract_obj<A: dharitri_sc::api::VMApi + Send + Sync>(
                 &self,
             ) -> dharitri_sc::types::heap::Box<dyn dharitri_sc::contract_base::CallableContract> {
                 dharitri_sc::types::heap::Box::new(ContractObj::<A> {
@@ -64,7 +64,7 @@ pub fn impl_callable_contract() -> proc_macro2::TokenStream {
     quote! {
         impl<A> dharitri_sc::contract_base::CallableContract for ContractObj<A>
         where
-            A: dharitri_sc::api::VMApi,
+            A: dharitri_sc::api::VMApi + Send + Sync,
         {
             fn call(&self, fn_name: &str) -> bool {
                 EndpointWrappers::call(self, fn_name)

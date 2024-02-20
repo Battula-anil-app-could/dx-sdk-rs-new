@@ -53,12 +53,19 @@ impl DctInstances {
     }
 
     pub fn set_balance(&mut self, nonce: u64, value: &BigUint, metadata: DctInstanceMetadata) {
-        let instance = self.0.entry(nonce).or_insert_with(|| DctInstance {
-            nonce,
-            balance: BigUint::zero(),
-            metadata,
-        });
-        instance.balance = value.clone();
+        let _ = self
+            .0
+            .entry(nonce)
+            .and_modify(|instance| {
+                instance.balance = value.clone();
+                instance.nonce = nonce;
+                instance.metadata = metadata.clone();
+            })
+            .or_insert_with(|| DctInstance {
+                nonce,
+                balance: value.clone(),
+                metadata,
+            });
     }
 
     pub fn get_by_nonce(&self, nonce: u64) -> Option<&DctInstance> {

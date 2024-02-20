@@ -10,13 +10,14 @@
 // Total number of exported functions:  19
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
 
 dharitri_sc_wasm_adapter::endpoints! {
-    cryptozombies
+    crypto_zombies
     (
         init => init
         set_crypto_kitties_sc_address => set_crypto_kitties_sc_address
@@ -39,4 +40,4 @@ dharitri_sc_wasm_adapter::endpoints! {
     )
 }
 
-dharitri_sc_wasm_adapter::async_callback! { cryptozombies }
+dharitri_sc_wasm_adapter::async_callback! { crypto_zombies }

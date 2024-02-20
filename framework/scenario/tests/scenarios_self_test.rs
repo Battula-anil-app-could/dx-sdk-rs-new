@@ -69,7 +69,7 @@ fn set_check_code() {
 #[test]
 #[should_panic]
 fn set_check_dct_err_rs() {
-    world().run("tests/scenarios-self/set-check/set-check-dct.err.json");
+    world().run("tests/scenarios-self/set-check/set-check-dct.err1.json");
 }
 
 #[test]

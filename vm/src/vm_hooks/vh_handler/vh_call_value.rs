@@ -15,12 +15,12 @@ pub trait VMHooksCallValue: VMHooksHandlerSource + VMHooksManagedTypes {
 
     fn load_moax_value(&self, dest: RawHandle) {
         let value = self.input_ref().received_moax().clone();
-        self.m_types_borrow_mut().bi_overwrite(dest, value.into());
+        self.m_types_lock().bi_overwrite(dest, value.into());
     }
 
     fn load_all_dct_transfers(&self, dest_handle: RawHandle) {
         let transfers = self.input_ref().received_dct();
-        self.m_types_borrow_mut()
+        self.m_types_lock()
             .mb_set_vec_of_dct_payments(dest_handle, transfers);
     }
 
