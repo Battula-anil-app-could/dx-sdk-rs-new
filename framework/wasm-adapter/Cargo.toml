@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-wasm-adapter"
-version = "0.12.3"
+version = "0.12.4"
 edition = "2021"
 
 authors = [
@@ -9,7 +9,7 @@ authors = [
 ]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/dharitri/mx-sdk-rs"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri WebAssembly VM API wrapper"
@@ -21,11 +21,6 @@ categories = [
     "development-tools::ffi",
 ]
 
-[features]
-vm-validate-token-identifier = []
-vm-dct-local-roles = []
-ei-unmanaged-node = []
-
 [dependencies.dharitri-sc]
-version = "=0.12.3"
+version = "=0.12.4"
 path = "../base"

@@ -18,7 +18,9 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     transfer_role_features
     (
-        forwardPayments
-        callBack
+        init => init
+        forwardPayments => forward_payments
     )
 }
+
+dharitri_sc_wasm_adapter::async_callback! { transfer_role_features }

@@ -26,8 +26,42 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+## [sc 0.12.4, codec 0.4.5, vm 0.5.7, scenario-format 0.11.1, sdk 0.0.9] - 2023-07-15
+- Multi-endpoints in multi-contracts:
+	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
+	- We can also have multiple versions of the constructor.
+- Major architectural redesign of the debugger:
+	- The VM executor interface inserted between the smart contract API objects and the Rust VM. A new `VMHooksApi` is used to connect on the smart contract side. A `VMHooksDispatcher` object and `VMHooksHandler` interface provide the connection on the VM side.
+	- The `VMHooksApi` comes in several flavors (backends):
+		- The old `DebugApi` is now only used at runtime, on the VM context stack;
+		- A new `StaticApi` provides support for managed types in a regular context, without needing to be initialized;
+		- An additional `SingleTxApi` is useful for unit tests. Aside managed types, it also allows some basic context for tx inputs, results, storage and block info.
+	- Removed almost all of the legacy functionality from the smart contract APIs.
+- System SC mock.
+	- It is now possible to issue tokens (fungible, SFT, NFT) in integration tests.
+	- Setting roles is modelled.
+	- It is, however, not fully mocked.
+- Integration of blackbox and whitebox testing into one unified framework.
+	- Whitebox testing was the modus operandi of the old testing framework.
+	- Integration of whitebox functionality into the new testing framework allows easier migration in some specific cases.
+	- Tested the new whitebox framework with the old tests by injecting it into the implementation of the old one.
+- Interactors can now export a trace of their execution, thus producing integration tests.
+	- Integrated tool for retrieving the initial states of the involved accounts from the blockchain.
+	- Tight integration with the scenario testing infrastructure makes generating the trace straightforward;
+	- The same format for the trace is used, as in the case of the integration tests.
+- Interactors can now execute several steps (calls, deploys) in parallel.
+- Redesigned the wrappers around the Rust and Go JSON scenario executors;
+	- Also improved the  `sc-meta test-gen` tool for auto-generating these wrappers.
+	- Using the `ScenarioRunner` interface to abstract away the various backends used to run tests.
+- Redesigned syntax of both the testing and the interactor (snippets) frameworks.
+	- While the codebases are separate (the latter is async Rust), the names and arguments of the methods are the same, and both use the scenario infrastructure.
+	- Methods that allow chaining scenario steps, while also processing results;
+	- Added several defaults in the syntax, for more concise code;
+	- Deprecated the old testing framework;
+	- Updated all contract interactors and blackbox tests with the new syntax;
+	- Upgraded the snippets generator to produce new syntax.
 
-## [sc 0.12.3, vm 0.5.6] - 2023-06-19
+## [sc 0.12.3, vm 0.3.3] - 2023-06-19
 - Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
 - Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
 
@@ -54,7 +88,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.40.0, vm 0.2.0] - 2023-04-20
+## [sc 0.40.0, vm 0.0.9] - 2023-04-20
 - Call value `moax_value` and `all_dct_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -92,18 +126,18 @@ They are:
 	- printing to console the build command.
 - `BigUint` from `u128` conversion.
 
-## [sc 0.11.1, vm 0.1.2] - 2023-01-19
+## [sc 0.39.2, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
 	- `upgrade` also re-generates wasm crates after reaching 0.11.0.
 - Cleaned up dependencies.
 
-## [sc 0.11.0, codec 0.17.1, vm 0.0.8, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
+## [sc 0.11.0, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
 
-## [sc 0.10.9, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
+## [sc 0.10.9, codec 0.4.2, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
 - All crates were renamed, in line with the Dharitri brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
@@ -113,7 +147,7 @@ They are:
 - `ManagedVec` supports sorting and deduplication.
 - `migrateUserName` builtin function mock.
 
-## [dharitri-wasm 0.38.0, dharitri-codec 0.16.0, denali 0.18.0] - 2022-12-15
+## [dharitri-wasm 0.38.0, dharitri-codec 0.16.0, denali 0.4.5] - 2022-12-15
 - `ContractCall` refactor. Building a contract call comes with harder compile-time constraints. This also reduces compiled code size.
 - `ContractBase` supertrait can be now stated explicitly for contract and module traits.
 - Debugger:
@@ -155,7 +189,7 @@ They are:
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
 
-## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.17.0] - 2022-09-20
+## [dharitri-wasm 0.35.0, dharitri-codec 0.13.0, denali 0.4.2] - 2022-09-20
 - Rust interactor snippet generator.
 - Added some missing substitution rules in the contract preprocessor.
 - Allow single zero byte when top-decoding Option::None.
@@ -369,7 +403,7 @@ They are:
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
@@ -400,7 +434,7 @@ They are:
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [dharitri-wasm 0.20.0, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [dharitri-wasm 0.11.1, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -408,7 +442,7 @@ They are:
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [dharitri-wasm 0.11.0] - 2021-09-17
+## [dharitri-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [dharitri-wasm 0.19.0, dharitri-codec 0.6.0, denali 0.9.0] - 2021-09-10
@@ -445,7 +479,7 @@ They are:
 ## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
+## [dharitri-wasm 0.4.5, denali 0.8.0] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -470,7 +504,7 @@ They are:
 ## [dharitri-wasm 0.17.1] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Arwen
 
-## [dharitri-wasm 0.17.0] - 2021-05-28
+## [dharitri-wasm 0.4.2] - 2021-05-28
 - Integration tests can now call Arwen-Denali (denali-go)
 - Send API refactoring and cleanup
 	- DCT builtin function calls no longer require explicit gas
@@ -615,7 +649,7 @@ They are:
 ## [dharitri-wasm 0.10.1, dharitri-codec 0.4.1, denali 0.4.1] - 2020-12-23
 - Minor fixes, support for strings
 
-## [dharitri-wasm 0.10.0, dharitri-codec 0.4.0] - 2020-12-21
+## [dharitri-wasm 0.10.0, dharitri-codec 0.5.7] - 2020-12-21
 - Codec derive
 - ABI generation framework
 - New example contracts
@@ -648,12 +682,12 @@ They are:
 ## [dharitri-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.0.9] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.8.0, dharitri-codec 0.0.9] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -688,7 +722,7 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [dharitri-wasm 0.5.4, dharitri-codec 0.0.8] - 2020-07-18
+## [dharitri-wasm 0.5.4, dharitri-codec 0.1.1] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -742,7 +776,7 @@ They are:
 - Direct storage conversion for simple types
 - Block info hooks
 
-## [dharitri-wasm 0.4.0] - 2020-05-06
+## [dharitri-wasm 0.5.7] - 2020-05-06
 - Serde-based serializer (later abandoned)
 - Major storage improvements:
 	- Generate storage getters & setters
@@ -757,11 +791,11 @@ They are:
 - Multi args
 - Multi args in async calls
 
-## [dharitri-wasm 0.2.0] - 2020-03-18
+## [dharitri-wasm 0.0.9] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [dharitri-wasm 0.0.8] - 2020-02-27
+## [dharitri-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [dharitri-wasm 0.1.0] - 2020-02-05 

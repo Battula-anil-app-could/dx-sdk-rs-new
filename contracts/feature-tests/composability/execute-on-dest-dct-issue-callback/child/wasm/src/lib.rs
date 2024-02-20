@@ -18,8 +18,10 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     child
     (
-        issueWrappedMoax
-        getWrappedMoaxTokenIdentifier
-        callBack
+        init => init
+        issueWrappedMoax => issue_wrapped_moax
+        getWrappedMoaxTokenIdentifier => wrapped_moax_token_identifier
     )
 }
+
+dharitri_sc_wasm_adapter::async_callback! { child }

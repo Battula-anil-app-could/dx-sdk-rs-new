@@ -1,5 +1,6 @@
 mod moax_or_dct_token_identifier;
 mod moax_or_dct_token_payment;
+mod moax_or_multi_dct_payment;
 mod encoded_managed_vec_item;
 mod dct_token_data;
 mod dct_token_payment;
@@ -19,6 +20,7 @@ mod token_identifier;
 
 pub use moax_or_dct_token_identifier::MoaxOrDctTokenIdentifier;
 pub use moax_or_dct_token_payment::MoaxOrDctTokenPayment;
+pub use moax_or_multi_dct_payment::MoaxOrMultiDctPayment;
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use dct_token_data::DctTokenData;
 pub use dct_token_payment::DctTokenPayment;

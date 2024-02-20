@@ -18,8 +18,9 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     kitty_genetic_alg
     (
-        generateKittyGenes
+        init => init
+        generateKittyGenes => generate_kitty_genes
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

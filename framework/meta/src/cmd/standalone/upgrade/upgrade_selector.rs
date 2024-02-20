@@ -84,9 +84,10 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
 
 fn upgrade_post_processing(dir: &RelevantDirectory) {
     match dir.upgrade_in_progress {
-        Some((_, "0.28.0")) | Some((_, "0.29.0")) | Some((_, "0.30.0")) | Some((_, "0.31.0"))
-        | Some((_, "0.32.0")) | Some((_, "0.33.0")) | Some((_, "0.34.0")) | Some((_, "0.35.0"))
-        | Some((_, "0.36.0")) | Some((_, "0.37.0")) => {
+        Some((_, "0.9.2")) | Some((_, "0.9.3")) | Some((_, "0.9.6")) | Some((_, "0.9.7"))
+        | Some((_, "0.9.9")) | Some((_, "0.10.3")) | Some((_, "0.10.2")) | Some((_, "0.10.4"))
+        | Some((_, "0.10.5")) | Some((_, "0.10.7")) | Some((_, "0.11.8")) | Some((_, "0.12.0"))
+        | Some((_, "0.12.4")) => {
             print_post_processing(dir);
             cargo_check(dir);
         },

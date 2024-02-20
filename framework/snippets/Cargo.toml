@@ -1,14 +1,12 @@
 [package]
 name = "dharitri-sc-snippets"
-version = "0.12.3"
+version = "0.12.4"
 edition = "2021"
 
-authors = [
-    "Dharitri <contact@dharitri.com>",
-]
+authors = ["Dharitri <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/dharitri/mx-sdk-rs"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri framework for building smart contract interaction snippets"
@@ -21,12 +19,12 @@ hex = "0.4"
 base64 = "0.13.0"
 log = "0.4.17"
 env_logger = "0.8.4"
+futures = "0.3"
 
 [dependencies.dharitri-sc-scenario]
-version = "=0.12.3"
+version = "=0.12.4"
 path = "../scenario"
 
 [dependencies.dharitri-sdk]
-version = "=0.0.8"
+version = "=0.0.9"
 path = "../../sdk/core"
-

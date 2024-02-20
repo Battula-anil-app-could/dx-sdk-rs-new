@@ -13,40 +13,50 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn claim_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/claim-moax.scen.json", world());
+    world().run("scenarios/claim-moax.scen.json");
 }
 
 #[test]
 fn claim_dct_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/claim-dct.scen.json", world());
+    world().run("scenarios/claim-dct.scen.json");
 }
 
 #[test]
 fn claim_fees_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/claim-fees.scen.json", world());
+    world().run("scenarios/claim-fees.scen.json");
 }
 
 #[test]
-fn fund_moax_and_dct_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/fund-moax-and-dct.scen.json", world());
-}
-
-#[test]
-fn set_accounts_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/set-accounts.scen.json", world());
-}
-
-#[test]
-fn withdraw_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/withdraw-moax.scen.json", world());
-}
-
-#[test]
-fn withdraw_dct_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/withdraw-dct.scen.json", world());
+fn claim_multi_dct_rs() {
+    world().run("scenarios/claim-multi-dct.scen.json");
 }
 
 #[test]
 fn forward_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/forward.scen.json", world());
+    world().run("scenarios/forward.scen.json");
+}
+
+#[test]
+fn fund_moax_and_dct_rs() {
+    world().run("scenarios/fund-moax-and-dct.scen.json");
+}
+
+#[test]
+fn set_accounts_rs() {
+    world().run("scenarios/set-accounts.scen.json");
+}
+
+#[test]
+fn withdraw_moax_rs() {
+    world().run("scenarios/withdraw-moax.scen.json");
+}
+
+#[test]
+fn withdraw_dct_rs() {
+    world().run("scenarios/withdraw-dct.scen.json");
+}
+
+#[test]
+fn withdraw_multi_dct_rs() {
+    world().run("scenarios/withdraw-multi-dct.scen.json");
 }

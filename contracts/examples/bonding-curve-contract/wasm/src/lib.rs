@@ -18,17 +18,18 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     bonding_curve_contract
     (
-        sellToken
-        buyToken
-        deposit
-        setBondingCurve
-        claim
-        view_buy_price
-        view_sell_price
-        getTokenAvailability
-        setLocalRoles
-        unsetLocalRoles
+        init => init
+        sellToken => sell_token_endpoint
+        buyToken => buy_token_endpoint
+        deposit => deposit_endpoint
+        setBondingCurve => set_bonding_curve_endpoint
+        claim => claim_endpoint
+        view_buy_price => view_buy_price
+        view_sell_price => view_sell_price
+        getTokenAvailability => get_token_availability
+        setLocalRoles => set_local_roles
+        unsetLocalRoles => unset_local_roles
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

@@ -16,30 +16,30 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn auction_batch_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/auction_batch.scen.json", world());
+    world().run("scenarios/auction_batch.scen.json");
 }
 
 #[test]
 fn auction_single_token_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/auction_single_token_moax.scen.json", world());
+    world().run("scenarios/auction_single_token_moax.scen.json");
 }
 
 #[test]
 fn bid_first_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/bid_first_moax.scen.json", world());
+    world().run("scenarios/bid_first_moax.scen.json");
 }
 
 #[test]
 fn bid_second_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/bid_second_moax.scen.json", world());
+    world().run("scenarios/bid_second_moax.scen.json");
 }
 
 #[test]
 fn bid_third_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/bid_third_moax.scen.json", world());
+    world().run("scenarios/bid_third_moax.scen.json");
 }
 
 #[test]
 fn end_auction_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/end_auction.scen.json", world());
+    world().run("scenarios/end_auction.scen.json");
 }

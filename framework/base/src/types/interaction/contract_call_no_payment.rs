@@ -5,15 +5,15 @@ use crate::codec::TopEncodeMulti;
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, MoaxOrDctTokenIdentifier, MoaxOrDctTokenPayment, DctTokenPayment,
-        ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
+        BigUint, MoaxOrDctTokenIdentifier, MoaxOrDctTokenPayment, MoaxOrMultiDctPayment,
+        DctTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
     },
 };
 
 use super::{
     contract_call_exec::UNSPECIFIED_GAS_LIMIT, contract_call_with_moax::ContractCallWithMoax,
     contract_call_with_multi_dct::ContractCallWithMultiDct, ContractCall,
-    ContractCallWithMoaxOrSingleDct, ManagedArgBuffer,
+    ContractCallWithAnyPayment, ContractCallWithMoaxOrSingleDct, ManagedArgBuffer,
 };
 
 /// Holds metadata for calling another contract, without payments.
@@ -123,6 +123,18 @@ where
         ContractCallWithMultiDct {
             basic: self,
             dct_payments: payments,
+        }
+    }
+
+    /// Sets payment to be a (potentially) multi-token transfer.
+    #[inline]
+    pub fn with_any_payment(
+        self,
+        payment: MoaxOrMultiDctPayment<SA>,
+    ) -> ContractCallWithAnyPayment<SA, OriginalResult> {
+        ContractCallWithAnyPayment {
+            basic: self,
+            payment,
         }
     }
 

@@ -18,7 +18,7 @@ where
     SA: CallTypeApi + 'static,
 {
     pub(super) basic: ContractCallNoPayment<SA, OriginalResult>,
-    pub(super) payment: MoaxOrDctTokenPayment<SA>,
+    pub payment: MoaxOrDctTokenPayment<SA>,
 }
 
 impl<SA, OriginalResult> ContractCallWithMoaxOrSingleDct<SA, OriginalResult>

@@ -11,18 +11,19 @@ pub(crate) fn write_snippet_imports(file: &mut File, contract_crate_name: &str) 
 
 use {contract_crate_name}::ProxyTrait as _;
 use {contract_crate_name}::*;
+
 use dharitri_sc_snippets::{{
-    dharitri_sc::{{
-        codec::multi_types::*,
-        types::*,
-    }},
     env_logger,
-    erdrs::wallet::Wallet,
-    tokio, Interactor,
-}};
-use dharitri_sc_scenario::scenario_model::*;
-use dharitri_chain_vm::{{
-    bech32, scenario_format::interpret_trait::InterpreterContext, ContractInfo, DebugApi,
+    moars::wallet::Wallet,
+    dharitri_sc::{{codec::multi_types::*, types::*}},
+    dharitri_sc_scenario::{{
+        api::StaticApi,
+        bech32,
+        scenario_format::interpret_trait::{{InterpretableFrom, InterpreterContext}},
+        scenario_model::*,
+        ContractInfo,
+    }},
+    sdk, tokio, Interactor,
 }};
 "
     )
@@ -32,14 +33,18 @@ use dharitri_chain_vm::{{
 }
 
 pub(crate) fn write_snippet_constants(file: &mut File) {
-    writeln!(file, "const GATEWAY: &str = dharitri_sdk::blockchain::DEVNET_GATEWAY;
+    writeln!(
+        file,
+        "const GATEWAY: &str = sdk::blockchain::DEVNET_GATEWAY;
 const PEM: &str = \"alice.pem\";
 const SC_ADDRESS: &str = \"\";
 
 const SYSTEM_SC_BECH32: &str = \"moa1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls29jpxv\";
-const DEFAULT_ADDRESS_EXPR: &str = \"0x0000000000000000000000000000000000000000000000000000000000000000\";
-const DEFAULT_GAS_LIMIT: u64 = 100_000_000;
-const TOKEN_ISSUE_COST: u64 = 50_000_000_000_000_000;").unwrap();
+const DEFAULT_ADDRESS_EXPR: &str =
+    \"0x0000000000000000000000000000000000000000000000000000000000000000\";
+const TOKEN_ISSUE_COST: u64 = 50_000_000_000_000_000;"
+    )
+    .unwrap();
 
     write_newline(file);
 }
@@ -47,7 +52,7 @@ const TOKEN_ISSUE_COST: u64 = 50_000_000_000_000_000;").unwrap();
 pub(crate) fn write_contract_type_alias(file: &mut File, contract_crate_name: &str) {
     writeln!(
         file,
-        "type ContractType = ContractInfo<{contract_crate_name}::Proxy<DebugApi>>;"
+        "type ContractType = ContractInfo<{contract_crate_name}::Proxy<StaticApi>>;"
     )
     .unwrap();
 
@@ -60,7 +65,6 @@ pub(crate) fn write_snippet_main_function(file: &mut File, abi: &ContractAbi) {
         "#[tokio::main]
 async fn main() {{
     env_logger::init();
-    let _ = DebugApi::dummy();
 
     let mut args = std::env::args();
     let _ = args.next();
@@ -100,6 +104,7 @@ pub(crate) fn write_state_struct_declaration(file: &mut File) {
         "struct State {{
     interactor: Interactor,
     wallet_address: Address,
+    contract_code: BytesValue,
     contract: ContractType,
 }}"
     )

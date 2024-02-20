@@ -1,12 +1,12 @@
 [package]
 name = "dharitri-sc"
-version = "0.12.3"
+version = "0.12.4"
 edition = "2021"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/dharitri/mx-sdk-rs"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri smart contract API"
@@ -16,9 +16,9 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 [features]
 num-bigint = ["dharitri-sc-codec/num-bigint"]
 alloc = ["dharitri-sc-codec/alloc"]
-ei-unmanaged = ["alloc"]
 promises = []
 big-float = []
+managed-map = []
 dct-token-payment-legacy-decode = []
 
 [dependencies]
@@ -31,10 +31,10 @@ version = "0.2"
 default-features = false
 
 [dependencies.dharitri-sc-derive]
-version = "=0.12.3"
+version = "=0.12.4"
 path = "../derive"
 
 [dependencies.dharitri-sc-codec]
-version = "=0.4.4"
+version = "=0.4.5"
 path = "../../data/codec"
 features = ["derive"]

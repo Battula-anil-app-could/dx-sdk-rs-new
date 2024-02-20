@@ -18,11 +18,12 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     parent
     (
-        deposit
-        deployChildContract
-        executeOnDestIssueToken
-        getChildContractAddress
+        init => init
+        deposit => deposit
+        deployChildContract => deploy_child_contract
+        executeOnDestIssueToken => execute_on_dest_issue_token
+        getChildContractAddress => child_contract_address
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

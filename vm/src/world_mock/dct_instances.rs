@@ -1,13 +1,11 @@
-use crate::num_bigint::BigUint;
+use super::{DctInstance, DctInstanceMetadata};
+use crate::display_util::verbose_hex_list;
+use num_bigint::BigUint;
 use num_traits::Zero;
 use std::{
     collections::BTreeMap,
     fmt::{self, Write},
 };
-
-use crate::verbose_hex_list;
-
-use super::{DctInstance, DctInstanceMetadata};
 
 #[derive(Clone, Debug, Default)]
 pub struct DctInstances(BTreeMap<u64, DctInstance>);

@@ -15,13 +15,15 @@
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
 
+dharitri_sc_wasm_adapter::external_view_init! {}
+
 dharitri_sc_wasm_adapter::external_view_endpoints! {
     multi_contract_features
     (
-        external_pure
-        sample_value_external_get
-        sample_value_external_set
+        external_pure => external_pure
+        sample_value_external_get => sample_value_external_get
+        sample_value_external_set => sample_value_external_set
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

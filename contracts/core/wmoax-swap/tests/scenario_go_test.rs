@@ -1,9 +1,15 @@
+use dharitri_sc_scenario::*;
+
+fn world() -> ScenarioWorld {
+    ScenarioWorld::vm_go()
+}
+
 #[test]
 fn unwrap_moax_go() {
-    dharitri_sc_scenario::run_go("scenarios/unwrap_moax.scen.json");
+    world().run("scenarios/unwrap_moax.scen.json");
 }
 
 #[test]
 fn wrap_moax_go() {
-    dharitri_sc_scenario::run_go("scenarios/wrap_moax.scen.json");
+    world().run("scenarios/wrap_moax.scen.json");
 }

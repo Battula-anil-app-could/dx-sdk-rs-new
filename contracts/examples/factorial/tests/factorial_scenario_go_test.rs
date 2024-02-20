@@ -1,4 +1,10 @@
+use dharitri_sc_scenario::*;
+
+fn world() -> ScenarioWorld {
+    ScenarioWorld::vm_go()
+}
+
 #[test]
 fn factorial_go() {
-    dharitri_sc_scenario::run_go("scenarios/factorial.scen.json");
+    world().run("scenarios/factorial.scen.json");
 }

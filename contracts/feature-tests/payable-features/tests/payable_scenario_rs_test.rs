@@ -12,75 +12,75 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn call_value_check_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/call-value-check.scen.json", world());
+    world().run("scenarios/call-value-check.scen.json");
 }
 
 #[test]
 fn payable_any_1_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_any_1.scen.json", world());
+    world().run("scenarios/payable_any_1.scen.json");
 }
 
 #[test]
 fn payable_any_2_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_any_2.scen.json", world());
+    world().run("scenarios/payable_any_2.scen.json");
 }
 
 #[test]
 fn payable_any_3_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_any_3.scen.json", world());
+    world().run("scenarios/payable_any_3.scen.json");
 }
 
 #[test]
 fn payable_any_4_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_any_4.scen.json", world());
+    world().run("scenarios/payable_any_4.scen.json");
 }
 
 #[test]
 fn payable_moax_1_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_moax_1.scen.json", world());
+    world().run("scenarios/payable_moax_1.scen.json");
 }
 
 #[test]
 fn payable_moax_2_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_moax_2.scen.json", world());
+    world().run("scenarios/payable_moax_2.scen.json");
 }
 
 #[test]
 fn payable_moax_3_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_moax_3.scen.json", world());
+    world().run("scenarios/payable_moax_3.scen.json");
 }
 
 #[test]
 fn payable_moax_4_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_moax_4.scen.json", world());
+    world().run("scenarios/payable_moax_4.scen.json");
 }
 
 #[test]
 fn payable_multi_array_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_multi_array.scen.json", world());
+    world().run("scenarios/payable_multi_array.scen.json");
 }
 
 #[test]
 fn payable_multiple_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_multiple.scen.json", world());
+    world().run("scenarios/payable_multiple.scen.json");
 }
 
 #[test]
 fn payable_token_1_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_token_1.scen.json", world());
+    world().run("scenarios/payable_token_1.scen.json");
 }
 
 #[test]
 fn payable_token_2_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_token_2.scen.json", world());
+    world().run("scenarios/payable_token_2.scen.json");
 }
 
 #[test]
 fn payable_token_3_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_token_3.scen.json", world());
+    world().run("scenarios/payable_token_3.scen.json");
 }
 
 #[test]
 fn payable_token_4_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/payable_token_4.scen.json", world());
+    world().run("scenarios/payable_token_4.scen.json");
 }

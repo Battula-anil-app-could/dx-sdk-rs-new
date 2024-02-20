@@ -1,12 +1,12 @@
 [package]
 name = "dharitri-sc-modules"
-version = "0.12.3"
+version = "0.12.4"
 edition = "2021"
 
 authors = ["Dharitri <contact@dharitri.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/dharitri/mx-sdk-rs"
+repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri WebAssembly standard smart contract modules"
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 alloc = ["dharitri-sc/alloc"]
 
 [dependencies.dharitri-sc]
-version = "0.12.3"
+version = "0.12.4"
 path = "../../framework/base"

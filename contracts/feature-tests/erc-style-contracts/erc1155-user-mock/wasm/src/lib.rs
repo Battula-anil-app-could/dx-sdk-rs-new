@@ -18,9 +18,10 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     erc1155_user_mock
     (
-        onERC1155Received
-        onERC1155BatchReceived
+        init => init
+        onERC1155Received => on_erc1155_received
+        onERC1155BatchReceived => on_erc1155_batch_received
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

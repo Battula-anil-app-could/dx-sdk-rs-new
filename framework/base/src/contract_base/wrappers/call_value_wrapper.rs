@@ -3,12 +3,12 @@ use core::marker::PhantomData;
 use crate::{
     api::{
         const_handles, use_raw_handle, CallValueApi, CallValueApiImpl, ErrorApi, ErrorApiImpl,
-        ManagedTypeApi, StaticVarApiImpl,
+        HandleConstraints, ManagedTypeApi, StaticVarApiImpl,
     },
     err_msg,
     types::{
-        BigUint, MoaxOrDctTokenIdentifier, MoaxOrDctTokenPayment, DctTokenPayment, ManagedRef,
-        ManagedVec, TokenIdentifier,
+        BigUint, MoaxOrDctTokenIdentifier, MoaxOrDctTokenPayment, MoaxOrMultiDctPayment,
+        DctTokenPayment, ManagedRef, ManagedVec, TokenIdentifier,
     },
 };
 
@@ -33,10 +33,11 @@ where
     /// Retrieves the MOAX call value from the VM.
     /// Will return 0 in case of an DCT transfer (cannot have both MOAX and DCT transfer simultaneously).
     pub fn moax_value(&self) -> ManagedRef<'static, A, BigUint<A>> {
-        let mut call_value_handle = A::static_var_api_impl().get_call_value_moax_handle();
+        let mut call_value_handle: A::BigIntHandle =
+            use_raw_handle(A::static_var_api_impl().get_call_value_moax_handle());
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
             call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MOAX);
-            A::static_var_api_impl().set_call_value_moax_handle(call_value_handle.clone());
+            A::static_var_api_impl().set_call_value_moax_handle(call_value_handle.get_raw_handle());
             A::call_value_api_impl().load_moax_value(call_value_handle.clone());
         }
         unsafe { ManagedRef::wrap_handle(call_value_handle) }
@@ -46,10 +47,12 @@ where
     /// Will return 0 results if nothing was transfered, or just MOAX.
     /// Fully managed underlying types, very efficient.
     pub fn all_dct_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, DctTokenPayment<A>>> {
-        let mut call_value_handle = A::static_var_api_impl().get_call_value_multi_dct_handle();
+        let mut call_value_handle: A::ManagedBufferHandle =
+            use_raw_handle(A::static_var_api_impl().get_call_value_multi_dct_handle());
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
             call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MULTI_DCT);
-            A::static_var_api_impl().set_call_value_multi_dct_handle(call_value_handle.clone());
+            A::static_var_api_impl()
+                .set_call_value_multi_dct_handle(call_value_handle.get_raw_handle());
             A::call_value_api_impl().load_all_dct_transfers(call_value_handle.clone());
         }
         unsafe { ManagedRef::wrap_handle(call_value_handle) }
@@ -124,5 +127,17 @@ where
         }
 
         (payment.token_identifier, payment.amount)
+    }
+
+    /// Accepts any sort of patyment, which is either:
+    /// - MOAX (can be zero in case of no payment whatsoever);
+    /// - Multi-DCT (one or more DCT transfers).
+    pub fn any_payment(&self) -> MoaxOrMultiDctPayment<A> {
+        let dct_transfers = self.all_dct_transfers();
+        if dct_transfers.is_empty() {
+            MoaxOrMultiDctPayment::Moax(self.moax_value().clone_value())
+        } else {
+            MoaxOrMultiDctPayment::MultiDct(dct_transfers.clone_value())
+        }
     }
 }

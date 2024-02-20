@@ -18,13 +18,14 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     dct_transfer_with_fee
     (
-        setExactValueFee
-        setPercentageFee
-        claimFees
-        transfer
-        getTokenFee
-        getPaidFees
+        init => init
+        setExactValueFee => set_exact_value_fee
+        setPercentageFee => set_percentage_fee
+        claimFees => claim_fees
+        transfer => transfer
+        getTokenFee => token_fee
+        getPaidFees => paid_fees
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

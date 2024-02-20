@@ -25,7 +25,7 @@
 # 4. Run `cargo test`, to make sure nothing was broken and all dependencies still work fine.
 #
 # 5. Commit changes. The name of the commit should be the released crates and versions, same as the changelog title,
-# e.g. `sc 0.10.9, codec 0.17.0, chain-vm 0.1.0, chain-scenario-format 0.19.0, sdk 0.1.0`.
+# e.g. `sc 0.10.9, codec 0.4.2, chain-vm 0.1.0, chain-scenario-format 0.19.0, sdk 0.1.0`.
 # The branch doesn't need to be published for the following steps to work.
 #
 # 6. Make sure that the contract upgrade tool is still sound.
@@ -42,7 +42,7 @@
 # `git tag -s -a vX.X.X -m 'very short description of the release'`
 # `git push origin vX.X.X`
 #
-# 10. Go to https://github.com/dharitri/mx-sdk-rs/tags
+# 10. Go to https://github.com/Battula-anil-app-could/dx-sdk-rs-new/tags
 # Click on the new tag.
 # Click `Create release from tag`.
 # The title should be the released crates and versions, same as in the changelog and the commit message.
@@ -58,6 +58,10 @@
 #
 # 15. Write a release announcement in Confluence.
 #
+
+cd vm
+cargo publish || return 1
+cd ..
 
 cd sdk/core
 cargo publish || return 1
@@ -86,11 +90,6 @@ cd ../..
 cd framework/meta
 cargo publish || return 1
 cd ../..
-
-### depends on sc-meta and sc, but sc-scenario depends on it (at least for now)
-cd vm
-cargo publish || return 1
-cd ..
 
 cd framework/scenario
 cargo publish || return 1

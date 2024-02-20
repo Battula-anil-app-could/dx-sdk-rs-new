@@ -50,7 +50,7 @@ pub fn generate_callback_selector_and_main(
                     if let dharitri_sc::types::CallbackSelectorResult::NotProcessed(_) =
                         self::EndpointWrappers::callback_selector(self, ___cb_closure___)	{
                         dharitri_sc::api::ErrorApiImpl::signal_error(
-                            &Self::Api::error_api_impl(),
+                            &<Self::Api as dharitri_sc::api::ErrorApi>::error_api_impl(),
                             err_msg::CALLBACK_BAD_FUNC,
                         );
                     }

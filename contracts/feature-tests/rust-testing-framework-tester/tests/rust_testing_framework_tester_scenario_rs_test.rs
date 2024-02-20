@@ -14,21 +14,21 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn test_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/test.scen.json", world());
+    world().run("scenarios/test.scen.json");
 }
 
 #[test]
 fn test_dct_generation_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/test_dct_generation.scen.json", world());
+    world().run("scenarios/test_dct_generation.scen.json");
 }
 
 #[test]
 fn test_multiple_sc_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/test_multiple_sc.scen.json", world());
+    world().run("scenarios/test_multiple_sc.scen.json");
 }
 
 #[test]
 #[ignore = "not supported"]
 fn trace_deploy_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/trace-deploy.scen.json", world());
+    world().run("scenarios/trace-deploy.scen.json");
 }

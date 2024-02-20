@@ -1,9 +1,9 @@
 use dharitri_sc::contract_base::CallableContract;
-use dharitri_sc_scenario::*;
+use dharitri_sc_scenario::api::DebugApi;
 
 #[test]
 fn test_function_selector() {
-    let _ = DebugApi::dummy();
+    DebugApi::dummy();
     let use_module = use_module::contract_obj::<DebugApi>();
 
     assert!(!use_module.call("invalid_endpoint"));

@@ -1,4 +1,5 @@
 pub mod account;
+pub mod account_storage;
 pub mod address;
 pub mod dct;
 pub mod hyperblock;

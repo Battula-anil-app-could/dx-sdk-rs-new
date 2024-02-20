@@ -1,7 +1,7 @@
-use crate::num_bigint::BigUint;
+use num_bigint::BigUint;
 use num_traits::Zero;
 
-use crate::key_hex;
+use crate::{display_util::key_hex, types::VMTokenType};
 use std::{
     collections::{hash_map::Iter, HashMap},
     fmt::{self, Write},
@@ -148,6 +148,58 @@ impl AccountDct {
 
     pub fn iter(&self) -> Iter<Vec<u8>, DctData> {
         self.0.iter()
+    }
+
+    pub fn set_special_role(&mut self, token_identifier: &[u8], role: &[u8]) {
+        if let Some(dct_data) = self.get_mut_by_identifier(token_identifier) {
+            let roles = dct_data.roles.get();
+            if !roles.contains(role.to_vec().as_ref()) {
+                let mut new_roles = roles;
+                new_roles.push(role.to_vec());
+                dct_data.roles = DctRoles::new(new_roles);
+            }
+        }
+    }
+
+    pub fn register_and_set_roles(&mut self, token_identifier: &[u8], token_type: VMTokenType) {
+        self.issue_token(token_identifier);
+        self.set_roles(
+            token_identifier.to_vec(),
+            Self::get_all_roles_for_token_type(token_type),
+        );
+    }
+
+    fn issue_token(&mut self, token_identifier: &[u8]) {
+        self.0.insert(
+            token_identifier.to_vec(),
+            DctData {
+                instances: DctInstances::new(),
+                last_nonce: 0,
+                roles: DctRoles::default(),
+                frozen: false,
+            },
+        );
+    }
+
+    fn get_all_roles_for_token_type(token_type: VMTokenType) -> Vec<Vec<u8>> {
+        match token_type {
+            VMTokenType::NonFungible => vec![
+                "DCTRoleNFTCreate".as_bytes().to_vec(),
+                "DCTRoleNFTBurn".as_bytes().to_vec(),
+                "DCTRoleNFTUpdateAttributes".as_bytes().to_vec(),
+                "DCTRoleNFTAddURI".as_bytes().to_vec(),
+            ],
+            VMTokenType::SemiFungible | VMTokenType::Meta => vec![
+                "DCTRoleNFTCreate".as_bytes().to_vec(),
+                "DCTRoleNFTBurn".as_bytes().to_vec(),
+                "DCTRoleNFTAddQuantity".as_bytes().to_vec(),
+            ],
+            VMTokenType::Fungible => vec![
+                "DCTRoleLocalMint".as_bytes().to_vec(),
+                "DCTRoleLocalBurn".as_bytes().to_vec(),
+                "DCTRoleLocalTransfer".as_bytes().to_vec(),
+            ],
+        }
     }
 }
 

@@ -18,10 +18,11 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     second_contract
     (
-        acceptDctPayment
-        rejectDctPayment
-        getdctTokenName
+        init => init
+        acceptDctPayment => accept_dct_payment
+        rejectDctPayment => reject_dct_payment
+        getdctTokenName => get_contract_dct_token_identifier
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

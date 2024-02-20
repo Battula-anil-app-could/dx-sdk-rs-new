@@ -1,5 +1,6 @@
-use crate::num_bigint::BigUint;
-use dharitri_sc::api::DCT_LOCAL_MINT_FUNC_NAME;
+use num_bigint::BigUint;
+
+use crate::tx_execution::{builtin_function_names::DCT_LOCAL_MINT_FUNC_NAME, BlockchainVMRef};
 
 use crate::{
     tx_mock::{BlockchainUpdate, TxCache, TxInput, TxLog, TxResult},
@@ -15,7 +16,16 @@ impl BuiltinFunction for DCTLocalMint {
         DCT_LOCAL_MINT_FUNC_NAME
     }
 
-    fn execute(&self, tx_input: TxInput, tx_cache: TxCache) -> (TxResult, BlockchainUpdate) {
+    fn execute<F>(
+        &self,
+        tx_input: TxInput,
+        tx_cache: TxCache,
+        _vm: &BlockchainVMRef,
+        _f: F,
+    ) -> (TxResult, BlockchainUpdate)
+    where
+        F: FnOnce(),
+    {
         if tx_input.args.len() != 2 {
             let err_result = TxResult::from_vm_error("DCTLocalMint expects 2 arguments");
             return (err_result, BlockchainUpdate::empty());

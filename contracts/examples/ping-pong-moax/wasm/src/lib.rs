@@ -18,17 +18,18 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     ping_pong_moax
     (
-        ping
-        pong
-        pongAll
-        getUserAddresses
-        getPingAmount
-        getDeadline
-        getActivationTimestamp
-        getMaxFunds
-        getUserStatus
-        pongAllLastUser
+        init => init
+        ping => ping
+        pong => pong
+        pongAll => pong_all
+        getUserAddresses => get_user_addresses
+        getPingAmount => ping_amount
+        getDeadline => deadline
+        getActivationTimestamp => activation_timestamp
+        getMaxFunds => max_funds
+        getUserStatus => user_status
+        pongAllLastUser => pong_all_last_user
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

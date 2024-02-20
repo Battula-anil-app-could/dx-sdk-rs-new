@@ -1,7 +1,4 @@
-use crate::{
-    api::{CallValueApi, CallValueApiImpl},
-    types::DctTokenType,
-};
+use crate::api::{CallValueApi, CallValueApiImpl};
 
 use super::UncallableApi;
 
@@ -22,39 +19,11 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn load_single_dct_value(&self, _dest: Self::BigIntHandle) {
-        unreachable!()
-    }
-
-    fn token(&self) -> Option<Self::ManagedBufferHandle> {
-        unreachable!()
-    }
-
-    fn dct_token_nonce(&self) -> u64 {
-        unreachable!()
-    }
-
-    fn dct_token_type(&self) -> DctTokenType {
+    fn load_all_dct_transfers(&self, _dest_handle: Self::ManagedBufferHandle) {
         unreachable!()
     }
 
     fn dct_num_transfers(&self) -> usize {
-        unreachable!()
-    }
-
-    fn dct_value_by_index(&self, _index: usize) -> Self::BigIntHandle {
-        unreachable!()
-    }
-
-    fn token_by_index(&self, _index: usize) -> Self::ManagedBufferHandle {
-        unreachable!()
-    }
-
-    fn dct_token_nonce_by_index(&self, _index: usize) -> u64 {
-        unreachable!()
-    }
-
-    fn dct_token_type_by_index(&self, _index: usize) -> DctTokenType {
         unreachable!()
     }
 }

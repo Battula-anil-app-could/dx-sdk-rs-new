@@ -18,14 +18,15 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     dharitri_wmoax_swap_sc
     (
-        wrapMoax
-        unwrapMoax
-        getLockedMoaxBalance
-        getWrappedMoaxTokenId
-        pause
-        unpause
-        isPaused
+        init => init
+        wrapMoax => wrap_moax
+        unwrapMoax => unwrap_moax
+        getLockedMoaxBalance => get_locked_moax_balance
+        getWrappedMoaxTokenId => wrapped_moax_token_id
+        pause => pause_endpoint
+        unpause => unpause_endpoint
+        isPaused => paused_status
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

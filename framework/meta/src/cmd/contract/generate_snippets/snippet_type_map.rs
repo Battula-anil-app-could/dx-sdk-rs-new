@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 const INNER_TYPE_SEPARATOR: char = '<';
 const INNER_TYPE_END: char = '>';
-pub static DEBUG_API_SUFFIX: &str = "<DebugApi>";
+pub static STATIC_API_SUFFIX: &str = "<StaticApi>";
 pub static PLACEHOLDER_INPUT_TYPE_NAME: &str = "PlaceholderInput";
 
 #[derive(Clone, Default)]
@@ -70,7 +70,7 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
     m.insert(
         "Address",
         RustTypeString {
-            type_name: "ManagedAddress".to_string() + DEBUG_API_SUFFIX,
+            type_name: "ManagedAddress".to_string() + STATIC_API_SUFFIX,
             default_value_expr: "bech32::decode(\"\")".to_string(),
             contains_custom_types: false,
         },
@@ -78,15 +78,15 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
     m.insert(
         "BigUint",
         RustTypeString {
-            type_name: "BigUint".to_string() + DEBUG_API_SUFFIX,
-            default_value_expr: "BigUint::<DebugApi>::from(0u128)".to_string(),
+            type_name: "BigUint".to_string() + STATIC_API_SUFFIX,
+            default_value_expr: "BigUint::<StaticApi>::from(0u128)".to_string(),
             contains_custom_types: false,
         },
     );
     m.insert(
         "bytes",
         RustTypeString {
-            type_name: "ManagedBuffer".to_string() + DEBUG_API_SUFFIX,
+            type_name: "ManagedBuffer".to_string() + STATIC_API_SUFFIX,
             default_value_expr: "ManagedBuffer::new_from_bytes(&b\"\"[..])".to_string(),
             contains_custom_types: false,
         },
@@ -94,7 +94,7 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
     m.insert(
         "TokenIdentifier",
         RustTypeString {
-            type_name: "TokenIdentifier".to_string() + DEBUG_API_SUFFIX,
+            type_name: "TokenIdentifier".to_string() + STATIC_API_SUFFIX,
             default_value_expr: "TokenIdentifier::from_dct_bytes(&b\"\"[..])".to_string(),
             contains_custom_types: false,
         },
@@ -102,7 +102,7 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
     m.insert(
         "MoaxOrDctTokenIdentifier",
         RustTypeString {
-            type_name: "MoaxOrDctTokenIdentifier".to_string() + DEBUG_API_SUFFIX,
+            type_name: "MoaxOrDctTokenIdentifier".to_string() + STATIC_API_SUFFIX,
             default_value_expr: "MoaxOrDctTokenIdentifier::dct(&b\"\"[..])".to_string(),
             contains_custom_types: false,
         },
@@ -111,11 +111,11 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
     m.insert(
         "DctTokenPayment",
         RustTypeString {
-            type_name: "DctTokenPayment".to_string() + DEBUG_API_SUFFIX,
+            type_name: "DctTokenPayment".to_string() + STATIC_API_SUFFIX,
             default_value_expr: "DctTokenPayment::new(
             TokenIdentifier::from_dct_bytes(&b\"\"[..]),
             0u64,
-            BigUint::from(0u128)
+            BigUint::from(0u128),
         )"
             .to_string(),
             contains_custom_types: false,
@@ -124,11 +124,11 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
     m.insert(
         "MoaxOrDctTokenPayment",
         RustTypeString {
-            type_name: "MoaxOrDctTokenPayment".to_string() + DEBUG_API_SUFFIX,
+            type_name: "MoaxOrDctTokenPayment".to_string() + STATIC_API_SUFFIX,
             default_value_expr: "MoaxOrDctTokenPayment::new(
             MoaxOrDctTokenIdentifier::dct(&b\"\"[..]),
             0u64,
-            BigUint::from(0u128)
+            BigUint::from(0u128),
         )"
             .to_string(),
             contains_custom_types: false,
@@ -188,7 +188,7 @@ fn handle_abi_type(type_string: &mut RustTypeString, abi_type_str: String) {
     match abi_type {
         AbiType::UserDefined(user_type) => {
             // most user-defined types contain managed types
-            type_string.type_name += &(user_type + DEBUG_API_SUFFIX);
+            type_string.type_name += &(user_type + STATIC_API_SUFFIX);
             type_string.contains_custom_types = true;
         },
         AbiType::Basic(basic_type) => {
@@ -255,7 +255,7 @@ fn handle_multi_type(type_string: &mut RustTypeString, inner_types: String) {
 }
 
 fn handle_list_type(type_string: &mut RustTypeString, inner_types: String) {
-    type_string.type_name += "ManagedVec<DebugApi, ";
+    type_string.type_name += "ManagedVec<StaticApi, ";
     type_string.default_value_expr += "ManagedVec::from_single_item(";
 
     handle_abi_type(type_string, inner_types);

@@ -9,5 +9,5 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn empty_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/empty.scen.json", world());
+    world().run("scenarios/empty.scen.json");
 }

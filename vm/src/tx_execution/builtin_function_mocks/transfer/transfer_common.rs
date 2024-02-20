@@ -1,18 +1,18 @@
 use crate::{
     tx_execution::{
         builtin_function_mocks::builtin_func_trait::BuiltinFunctionDctTransferInfo,
-        default_execution,
+        BlockchainVMRef,
     },
     tx_mock::{
         BlockchainUpdate, TxCache, TxFunctionName, TxInput, TxLog, TxResult, TxTokenTransfer,
     },
+    types::{top_decode_u64, VMAddress},
 };
-use dharitri_sc::{codec::TopDecode, types::heap::Address};
 use num_bigint::BigUint;
 use num_traits::Zero;
 
 pub(super) struct ParsedTransferBuiltinFunCall {
-    pub destination: Address,
+    pub destination: VMAddress,
     pub raw_dct_transfers: Vec<RawDctTransfer>,
     pub func_name: TxFunctionName,
     pub args: Vec<Vec<u8>>,
@@ -27,7 +27,7 @@ pub(super) struct RawDctTransfer {
 pub(super) fn process_raw_dct_transfer(raw_dct_transfer: RawDctTransfer) -> TxTokenTransfer {
     TxTokenTransfer {
         token_identifier: raw_dct_transfer.token_identifier,
-        nonce: u64::top_decode(raw_dct_transfer.nonce_bytes.as_slice()).unwrap(),
+        nonce: top_decode_u64(raw_dct_transfer.nonce_bytes.as_slice()),
         value: BigUint::from_bytes_be(raw_dct_transfer.value_bytes.as_slice()),
     }
 }
@@ -48,12 +48,17 @@ pub(super) fn extract_transfer_info(
     }
 }
 
-pub(super) fn execute_transfer_builtin_func(
+pub(super) fn execute_transfer_builtin_func<F>(
+    vm: &BlockchainVMRef,
     parsed_tx: ParsedTransferBuiltinFunCall,
     builtin_function_name: &str,
     tx_input: TxInput,
     tx_cache: TxCache,
-) -> (TxResult, BlockchainUpdate) {
+    f: F,
+) -> (TxResult, BlockchainUpdate)
+where
+    F: FnOnce(),
+{
     let mut builtin_logs = Vec::new();
     for raw_dct_transfer in &parsed_tx.raw_dct_transfers {
         builtin_logs.push(TxLog {
@@ -82,7 +87,7 @@ pub(super) fn execute_transfer_builtin_func(
         ..Default::default()
     };
 
-    let (mut tx_result, blockchain_updates) = default_execution(exec_input, tx_cache);
+    let (mut tx_result, blockchain_updates) = vm.default_execution(exec_input, tx_cache, f);
 
     // prepends dct log
     tx_result.result_logs = [builtin_logs.as_slice(), tx_result.result_logs.as_slice()].concat();

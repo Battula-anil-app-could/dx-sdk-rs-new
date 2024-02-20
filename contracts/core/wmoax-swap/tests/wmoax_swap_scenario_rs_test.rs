@@ -13,10 +13,10 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn unwrap_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/unwrap_moax.scen.json", world());
+    world().run("scenarios/unwrap_moax.scen.json");
 }
 
 #[test]
 fn wrap_moax_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/wrap_moax.scen.json", world());
+    world().run("scenarios/wrap_moax.scen.json");
 }

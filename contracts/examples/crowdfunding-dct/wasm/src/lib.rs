@@ -18,15 +18,16 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     crowdfunding_dct
     (
-        fund
-        status
-        getCurrentFunds
-        claim
-        getTarget
-        getDeadline
-        getDeposit
-        getCrowdfundingTokenIdentifier
+        init => init
+        fund => fund
+        status => status
+        getCurrentFunds => get_current_funds
+        claim => claim
+        getTarget => target
+        getDeadline => deadline
+        getDeposit => deposit
+        getCrowdfundingTokenIdentifier => cf_token_identifier
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

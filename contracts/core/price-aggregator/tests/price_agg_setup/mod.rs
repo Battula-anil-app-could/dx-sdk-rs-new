@@ -1,3 +1,5 @@
+#![allow(deprecated)] // TODO: migrate tests
+
 use dharitri_price_aggregator_sc::{staking::StakingModule, PriceAggregator};
 use dharitri_sc::types::{Address, MoaxOrDctTokenIdentifier, MultiValueEncoded};
 use dharitri_sc_modules::pause::PauseModule;

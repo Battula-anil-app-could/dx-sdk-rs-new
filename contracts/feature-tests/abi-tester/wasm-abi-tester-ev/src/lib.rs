@@ -15,13 +15,15 @@
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
 
+dharitri_sc_wasm_adapter::external_view_init! {}
+
 dharitri_sc_wasm_adapter::external_view_endpoints! {
     abi_tester
     (
-        external_view
-        payable_any_token
-        label_a
+        external_view => external_view
+        payable_any_token => payable_any_token
+        label_a => label_a
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

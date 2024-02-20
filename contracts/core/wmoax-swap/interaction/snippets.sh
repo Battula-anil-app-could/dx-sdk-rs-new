@@ -1,5 +1,5 @@
-ALICE="/home/dharitri/dharitri-sdk/testwallets/latest/users/alice.pem"
-BOB="/home/dharitri/dharitri-sdk/testwallets/latest/users/bob.pem"
+ALICE="~/dharitri-sdk/testwallets/latest/users/alice.pem"
+BOB="~/dharitri-sdk/testwallets/latest/users/bob.pem"
 ADDRESS=$(mxpy data load --key=address-testnet-moax-dct-swap)
 DEPLOY_TRANSACTION=$(mxpy data load --key=deployTransaction-testnet)
 PROXY=https://testnet-gateway.dharitri.com
@@ -18,8 +18,8 @@ deploy() {
     --arguments ${WRAPPED_MOAX_TOKEN_ID} \
     --send --outfile="deploy-testnet.interaction.json" --proxy=${PROXY} --chain=${CHAIN_ID} || return
 
-    TRANSACTION=$(mxpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(mxpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(mxpy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(mxpy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
 
     mxpy data store --key=address-testnet --value=${ADDRESS}
     mxpy data store --key=deployTransaction-testnet-moax-dct-swap --value=${TRANSACTION}
