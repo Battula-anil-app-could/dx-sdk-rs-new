@@ -1,10 +1,10 @@
-use crate::{denali_to_moars_address, Interactor, InteractorResult};
+use crate::{denali_to_erdrs_address, Interactor, InteractorResult};
 use log::info;
 use dharitri_sc_scenario::{
     dharitri_sc::codec::{CodecFrom, TopEncodeMulti},
     scenario_model::{ScDeployStep, TypedScDeploy},
 };
-use dharitri_sdk::data::{address::Address as MoarsAddress, transaction::Transaction};
+use dharitri_sdk::data::{address::Address as ErdrsAddress, transaction::Transaction};
 
 const DEPLOY_RECEIVER: [u8; 32] = [0u8; 32];
 impl Interactor {
@@ -12,8 +12,8 @@ impl Interactor {
         Transaction {
             nonce: 0,
             value: sc_deploy_step.tx.moax_value.value.to_string(),
-            sender: denali_to_moars_address(&sc_deploy_step.tx.from),
-            receiver: MoarsAddress::from_bytes(DEPLOY_RECEIVER),
+            sender: denali_to_erdrs_address(&sc_deploy_step.tx.from),
+            receiver: ErdrsAddress::from_bytes(DEPLOY_RECEIVER),
             gas_price: self.network_config.min_gas_price,
             gas_limit: sc_deploy_step.tx.gas_limit.value,
             data: Some(base64::encode(sc_deploy_step.tx.to_tx_data())),

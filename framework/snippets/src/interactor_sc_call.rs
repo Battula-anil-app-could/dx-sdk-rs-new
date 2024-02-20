@@ -1,4 +1,4 @@
-use crate::{address_h256_to_moars, denali_to_moars_address, Interactor, InteractorResult};
+use crate::{address_h256_to_erdrs, denali_to_erdrs_address, Interactor, InteractorResult};
 use log::info;
 use dharitri_sc_scenario::{
     dharitri_sc::{
@@ -39,8 +39,8 @@ impl Interactor {
         Transaction {
             nonce: 0,
             value: contract_call.moax_payment.to_alloc().to_string(),
-            sender: denali_to_moars_address(&tx_call.from),
-            receiver: address_h256_to_moars(&contract_call.basic.to.to_address()),
+            sender: denali_to_erdrs_address(&tx_call.from),
+            receiver: address_h256_to_erdrs(&contract_call.basic.to.to_address()),
             gas_price: self.network_config.min_gas_price,
             gas_limit: tx_call.gas_limit.value,
             data,

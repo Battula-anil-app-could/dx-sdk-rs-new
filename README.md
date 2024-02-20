@@ -1,7 +1,7 @@
 # The Dharitri Rust Tool Set
 
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/dharitri/mx-sdk-rs/actions.yml?branch=master)](https://github.com/Battula-anil-app-could/dx-sdk-rs-new/actions/workflows/actions.yml?query=branch%3Amaster) [![Dependency Status](https://deps.rs/repo/github/dharitri/mx-sdk-rs/status.svg)](https://deps.rs/repo/github/dharitri/mx-sdk-rs) [![Contributors](https://img.shields.io/github/contributors/dharitri/mx-sdk-rs)](https://github.com/Battula-anil-app-could/dx-sdk-rs-new/graphs/contributors)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/dharitri/mx-sdk-rs/actions.yml?branch=master)](https://github.com/dharitri/mx-sdk-rs/actions/workflows/actions.yml?query=branch%3Amaster) [![Dependency Status](https://deps.rs/repo/github/dharitri/mx-sdk-rs/status.svg)](https://deps.rs/repo/github/dharitri/mx-sdk-rs) [![Contributors](https://img.shields.io/github/contributors/dharitri/mx-sdk-rs)](https://github.com/dharitri/mx-sdk-rs/graphs/contributors)
 
 This repository contains a wide variety of tools, aimed primarily at smart contract developers.
 

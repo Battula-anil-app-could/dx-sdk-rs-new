@@ -6,7 +6,7 @@ use multisig::{
 use dharitri_sc_modules::dns::ProxyTrait as _;
 use dharitri_sc_snippets::{
     dns_address_for_name, env_logger,
-    moars::wallet::Wallet,
+    erdrs::wallet::Wallet,
     dharitri_sc::{
         codec::multi_types::MultiValueVec,
         storage::mappers::SingleValue,
@@ -23,7 +23,7 @@ use std::{
     io::{Read, Write},
 };
 
-const GATEWAY: &str = dharitri_sc_snippets::moars::blockchain::TESTNET_GATEWAY;
+const GATEWAY: &str = dharitri_sc_snippets::erdrs::blockchain::TESTNET_GATEWAY;
 const PEM: &str = "alice.pem";
 const DEFAULT_MULTISIG_ADDRESS_EXPR: &str =
     "0x0000000000000000000000000000000000000000000000000000000000000000";

@@ -27,5 +27,5 @@ path = "recursive-caller"
 path = "vault"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.12.2"
+version = "0.12.3"
 path = "../../../framework/scenario"

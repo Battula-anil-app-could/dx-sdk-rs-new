@@ -26,10 +26,15 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.12.2, codec 0.4.4, vm 0.5.5] - 2023-06-09
+
+## [sc 0.12.3, vm 0.5.6] - 2023-06-19
+- Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
+- Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
+
+## [sc 0.41.2, codec 0.4.4, vm 0.3.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
-## [sc 0.12.1, vm 0.3.1] - 2023-05-15
+## [sc 0.41.1, vm 0.3.1] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
 ## [sc 0.12.0, vm 0.3.0] - 2023-05-05
@@ -364,7 +369,7 @@ They are:
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
@@ -615,7 +620,7 @@ They are:
 - ABI generation framework
 - New example contracts
 
-## [dharitri-wasm 0.9.8, dharitri-codec 0.5.5, denali 0.3.1] - 2020-11-23
+## [dharitri-wasm 0.9.8, dharitri-codec 0.3.2, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
 ## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.3.0] - 2020-11-11
@@ -743,7 +748,7 @@ They are:
 	- Generate storage getters & setters
 	- Variable length storage keys
 
-## [dharitri-wasm 0.5.5] - 2020-04-13
+## [dharitri-wasm 0.3.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
 ## [dharitri-wasm 0.3.0] - 2020-04-03

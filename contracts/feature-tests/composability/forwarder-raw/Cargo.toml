@@ -12,14 +12,14 @@ path = "src/forwarder_raw.rs"
 ei-unmanaged = ["dharitri-sc/ei-unmanaged"]
 
 [dependencies.dharitri-sc]
-version = "0.12.2"
+version = "0.12.3"
 path = "../../../../framework/base"
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "0.12.2"
+version = "0.12.3"
 path = "../../../../framework/wasm-adapter"
 optional = true
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.12.2"
+version = "0.12.3"
 path = "../../../../framework/scenario"

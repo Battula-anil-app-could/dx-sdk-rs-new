@@ -8,7 +8,7 @@ use dharitri_sc_snippets::{
         types::*,
     },
     env_logger,
-    moars::wallet::Wallet,
+    erdrs::wallet::Wallet,
     tokio, Interactor,
 };
 use dharitri_sc_scenario::scenario_model::*;

@@ -9,11 +9,11 @@ publish = false
 path = "src/crowdfunding_dct.rs"
 
 [dependencies.dharitri-sc]
-version = "0.12.2"
+version = "0.12.3"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.12.2"
+version = "0.12.3"
 path = "../../../framework/scenario"
 
 [dev-dependencies]

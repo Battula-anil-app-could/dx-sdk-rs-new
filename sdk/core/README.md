@@ -22,4 +22,4 @@ More examples in `./examples`.
 
 ## Acknowledgements
 
-Project originally started by [Bicarus labs](https://github.com/bicarus-labs/dharitri-sdk-moars), later integrated into the Dharitri official codebase.
+Project originally started by [Bicarus labs](https://github.com/bicarus-labs/dharitri-sdk-erdrs), later integrated into the Dharitri official codebase.

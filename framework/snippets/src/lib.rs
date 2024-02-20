@@ -15,5 +15,5 @@ pub use interactor_result::*;
 pub use interactor_sender::*;
 pub use log;
 pub use dharitri_sc_scenario::{self, dharitri_sc};
-pub use dharitri_sdk as moars;
+pub use dharitri_sdk as erdrs;
 pub use tokio;

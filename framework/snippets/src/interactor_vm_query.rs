@@ -1,4 +1,4 @@
-use crate::{address_h256_to_moars, Interactor};
+use crate::{address_h256_to_erdrs, Interactor};
 use log::info;
 use dharitri_sc_scenario::{
     dharitri_sc::{
@@ -16,7 +16,7 @@ impl Interactor {
         RequestedResult: CodecFrom<CC::OriginalResult>,
     {
         let full_cc = contract_call.into_normalized();
-        let sc_address = address_h256_to_moars(&full_cc.basic.to.to_address());
+        let sc_address = address_h256_to_erdrs(&full_cc.basic.to.to_address());
         let req = VmValueRequest {
             sc_address: sc_address.clone(),
             func_name: String::from_utf8(full_cc.basic.endpoint_name.to_boxed_bytes().into_vec())

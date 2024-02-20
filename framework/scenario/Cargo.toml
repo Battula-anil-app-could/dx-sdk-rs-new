@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "0.12.2"
+version = "0.12.3"
 edition = "2021"
 
 authors = [
@@ -9,7 +9,7 @@ authors = [
 ]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/Battula-anil-app-could/dx-sdk-rs-new"
+repository = "https://github.com/dharitri/mx-sdk-rs"
 homepage = "https://dharitri.com/"
 documentation = "https://docs.dharitri.com/"
 description = "Dharitri tools for writing and executing scenarios"
@@ -30,5 +30,5 @@ colored = "2.0"
 run-go-tests = []
 
 [dependencies.dharitri-chain-vm]
-version = "=0.5.5"
+version = "=0.5.6"
 path = "../../vm"
