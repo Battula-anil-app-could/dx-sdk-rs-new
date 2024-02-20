@@ -39,7 +39,7 @@ where
         }
     }
 
-    #[deprecated(since = "0.41.0", note = "Please use method `get_caller` instead.")]
+    #[deprecated(since = "0.12.0", note = "Please use method `get_caller` instead.")]
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn get_caller_legacy(&self) -> crate::types::Address {
@@ -53,7 +53,7 @@ where
         ManagedAddress::from_handle(handle)
     }
 
-    #[deprecated(since = "0.41.0", note = "Please use method `get_sc_address` instead.")]
+    #[deprecated(since = "0.12.0", note = "Please use method `get_sc_address` instead.")]
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn get_sc_address_legacy(&self) -> crate::types::Address {
@@ -68,7 +68,7 @@ where
     }
 
     #[deprecated(
-        since = "0.41.0",
+        since = "0.12.0",
         note = "Please use method `get_owner_address` instead."
     )]
     #[cfg(feature = "alloc")]
@@ -99,7 +99,7 @@ where
     }
 
     #[deprecated(
-        since = "0.41.0",
+        since = "0.12.0",
         note = "Please use method `get_shard_of_address` instead."
     )]
     #[cfg(feature = "alloc")]
@@ -114,7 +114,7 @@ where
     }
 
     #[deprecated(
-        since = "0.41.0",
+        since = "0.12.0",
         note = "Please use method `is_smart_contract` instead."
     )]
     #[cfg(feature = "alloc")]
@@ -128,7 +128,7 @@ where
         A::blockchain_api_impl().is_smart_contract(address.get_handle())
     }
 
-    #[deprecated(since = "0.41.0", note = "Please use method `get_balance` instead.")]
+    #[deprecated(since = "0.12.0", note = "Please use method `get_balance` instead.")]
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn get_balance_legacy(&self, address: &crate::types::Address) -> BigUint<A> {
@@ -155,7 +155,7 @@ where
     }
 
     #[deprecated(
-        since = "0.41.0",
+        since = "0.12.0",
         note = "Please use method `get_state_root_hash` instead."
     )]
     #[cfg(feature = "alloc")]
@@ -171,7 +171,7 @@ where
         ManagedByteArray::from_handle(handle)
     }
 
-    #[deprecated(since = "0.41.0", note = "Please use method `get_tx_hash` instead.")]
+    #[deprecated(since = "0.12.0", note = "Please use method `get_tx_hash` instead.")]
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn get_tx_hash_legacy(&self) -> crate::types::H256 {
@@ -211,7 +211,7 @@ where
     }
 
     #[deprecated(
-        since = "0.41.0",
+        since = "0.12.0",
         note = "Please use method `get_block_random_seed` instead."
     )]
     #[cfg(feature = "alloc")]
@@ -248,7 +248,7 @@ where
     }
 
     #[deprecated(
-        since = "0.41.0",
+        since = "0.12.0",
         note = "Please use method `get_prev_block_random_seed` instead."
     )]
     #[cfg(feature = "alloc")]

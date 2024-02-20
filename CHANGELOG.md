@@ -26,10 +26,13 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+## [sc 0.12.2, codec 0.4.4, vm 0.5.5] - 2023-06-09
+- Releasing a new version of the codec, without the dependency to `wee_alloc`.
+
 ## [sc 0.12.1, vm 0.3.1] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
-## [sc 0.41.0, vm 0.3.0] - 2023-05-05
+## [sc 0.12.0, vm 0.3.0] - 2023-05-05
 - Fixed compatibility with rustc v1.71.0.
 - Allocator system:
 	- Contracts can now choose their own allocator. This works in multi-contract contexts.
@@ -90,7 +93,7 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.11.0.
 - Cleaned up dependencies.
 
-## [sc 0.11.0, codec 0.4.3, vm 0.0.8, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
+## [sc 0.11.0, codec 0.17.1, vm 0.0.8, scenario-format 0.11.0, sdk 0.0.8] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -456,10 +459,10 @@ They are:
 ## [dharitri-wasm 0.17.3] - 2021-06-11
 - `SingleValueMapper` `set_if_empty` method
 
-## [dharitri-wasm 0.17.2] - 2021-06-04
+## [dharitri-wasm 0.4.4] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
-## [dharitri-wasm 0.4.3] - 2021-06-04
+## [dharitri-wasm 0.17.1] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Arwen
 
 ## [dharitri-wasm 0.17.0] - 2021-05-28
@@ -612,7 +615,7 @@ They are:
 - ABI generation framework
 - New example contracts
 
-## [dharitri-wasm 0.9.8, dharitri-codec 0.3.2, denali 0.3.1] - 2020-11-23
+## [dharitri-wasm 0.9.8, dharitri-codec 0.5.5, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
 ## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.3.0] - 2020-11-11
@@ -740,7 +743,7 @@ They are:
 	- Generate storage getters & setters
 	- Variable length storage keys
 
-## [dharitri-wasm 0.3.2] - 2020-04-13
+## [dharitri-wasm 0.5.5] - 2020-04-13
 - Fixes in the macro-based argument handling
 
 ## [dharitri-wasm 0.3.0] - 2020-04-03

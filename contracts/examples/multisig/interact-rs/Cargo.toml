@@ -13,9 +13,9 @@ path = "src/multisig_interact.rs"
 path = ".."
 
 [dependencies.dharitri-sc-modules]
-version = "0.12.1"
+version = "0.12.2"
 path = "../../../../contracts/modules"
 
 [dependencies.dharitri-sc-snippets]
-version = "0.12.1"
+version = "0.12.2"
 path = "../../../../framework/snippets"

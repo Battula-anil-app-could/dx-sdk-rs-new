@@ -9,6 +9,11 @@ fn claim_dct_go() {
 }
 
 #[test]
+fn claim_fees_go() {
+    dharitri_sc_scenario::run_go("scenarios/claim-fees.scen.json");
+}
+
+#[test]
 fn fund_moax_and_dct_go() {
     dharitri_sc_scenario::run_go("scenarios/fund-moax-and-dct.scen.json");
 }

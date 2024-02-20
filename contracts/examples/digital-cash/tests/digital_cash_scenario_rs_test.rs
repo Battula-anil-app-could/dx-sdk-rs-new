@@ -12,15 +12,18 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-#[ignore] // verify_ed25519 not implemented
 fn claim_moax_rs() {
     dharitri_sc_scenario::run_rs("scenarios/claim-moax.scen.json", world());
 }
 
 #[test]
-#[ignore] // verify_ed25519 not implemented
 fn claim_dct_rs() {
     dharitri_sc_scenario::run_rs("scenarios/claim-dct.scen.json", world());
+}
+
+#[test]
+fn claim_fees_rs() {
+    dharitri_sc_scenario::run_rs("scenarios/claim-fees.scen.json", world());
 }
 
 #[test]

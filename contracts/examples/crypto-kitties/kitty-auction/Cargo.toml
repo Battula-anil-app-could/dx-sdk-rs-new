@@ -17,9 +17,9 @@ version = "0.0.0"
 path = "../kitty-ownership"
 
 [dependencies.dharitri-sc]
-version = "0.12.1"
+version = "0.12.2"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.12.1"
+version = "0.12.2"
 path = "../../../../framework/scenario"
