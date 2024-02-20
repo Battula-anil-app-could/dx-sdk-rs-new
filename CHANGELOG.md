@@ -26,7 +26,10 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.12.0, vm 0.5.3] - 2023-05-05
+## [sc 0.12.1, vm 0.3.1] - 2023-05-15
+- Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
+
+## [sc 0.41.0, vm 0.3.0] - 2023-05-05
 - Fixed compatibility with rustc v1.71.0.
 - Allocator system:
 	- Contracts can now choose their own allocator. This works in multi-contract contexts.
@@ -612,7 +615,7 @@ They are:
 ## [dharitri-wasm 0.9.8, dharitri-codec 0.3.2, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
-## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.5.3] - 2020-11-11
+## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.3.0] - 2020-11-11
 - Monomorphization via codec trait instead of TypeInfo for arguments and storage
 - Reorganized all contracts in the `contracts` folder
 
@@ -637,7 +640,7 @@ They are:
 ## [dharitri-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [dharitri-wasm 0.9.0, dharitri-codec 0.5.3, denali 0.2.0] - 2020-11-04
+## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
@@ -740,7 +743,7 @@ They are:
 ## [dharitri-wasm 0.3.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
-## [dharitri-wasm 0.5.3] - 2020-04-03
+## [dharitri-wasm 0.3.0] - 2020-04-03
 - Raw callback support
 - `storage_load_len` hook
 - Multi args

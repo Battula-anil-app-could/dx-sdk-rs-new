@@ -35,7 +35,7 @@ where
         ManagedByteArray::from_handle(new_handle)
     }
 
-    #[deprecated(since = "0.12.0", note = "Please use method `sha256` instead.")]
+    #[deprecated(since = "0.41.0", note = "Please use method `sha256` instead.")]
     #[cfg(feature = "alloc")]
     pub fn sha256_legacy_alloc(&self, data: &[u8]) -> crate::types::H256 {
         crate::types::H256::from(A::crypto_api_impl().sha256_legacy(data))
@@ -63,7 +63,7 @@ where
         ManagedByteArray::from_handle(new_handle)
     }
 
-    #[deprecated(since = "0.12.0", note = "Please use method `keccak256` instead.")]
+    #[deprecated(since = "0.41.0", note = "Please use method `keccak256` instead.")]
     #[cfg(feature = "alloc")]
     pub fn keccak256_legacy_alloc(&self, data: &[u8]) -> crate::types::H256 {
         crate::types::H256::from(A::crypto_api_impl().keccak256_legacy(data))
@@ -82,7 +82,7 @@ where
         ManagedByteArray::new_from_bytes(&A::crypto_api_impl().keccak256_legacy(data_buffer_slice))
     }
 
-    #[deprecated(since = "0.12.0", note = "Please use method `ripemd160` instead.")]
+    #[deprecated(since = "0.41.0", note = "Please use method `ripemd160` instead.")]
     #[cfg(feature = "alloc")]
     pub fn ripemd160_legacy(&self, data: &[u8]) -> crate::types::Box<[u8; 20]> {
         crate::types::Box::new(A::crypto_api_impl().ripemd160_legacy(data))
@@ -97,7 +97,7 @@ where
         ManagedByteArray::from_handle(new_handle)
     }
 
-    #[deprecated(since = "0.12.0", note = "Please use method `verify_bls` instead.")]
+    #[deprecated(since = "0.41.0", note = "Please use method `verify_bls` instead.")]
     pub fn verify_bls_legacy(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
         A::crypto_api_impl().verify_bls_legacy(key, message, signature)
     }
@@ -115,12 +115,12 @@ where
         )
     }
 
-    #[deprecated(since = "0.12.0", note = "Please use method `verify_ed25519` instead.")]
+    #[deprecated(since = "0.41.0", note = "Please use method `verify_ed25519` instead.")]
     pub fn verify_ed25519_legacy(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
         A::crypto_api_impl().verify_ed25519_legacy(key, message, signature)
     }
 
-    #[deprecated(since = "0.12.0", note = "Please use method `verify_ed25519` instead.")]
+    #[deprecated(since = "0.41.0", note = "Please use method `verify_ed25519` instead.")]
     pub fn verify_ed25519_legacy_managed<const MAX_MESSAGE_LEN: usize>(
         &self,
         key: &ManagedByteArray<A, ED25519_KEY_BYTE_LEN>,
@@ -155,7 +155,7 @@ where
     /// Note: the signature is minimum 2 bytes in length,
     /// the second byte encodes the length of the remaining signature bytes.
     #[deprecated(
-        since = "0.12.0",
+        since = "0.41.0",
         note = "Please use method `verify_secp256k1` instead."
     )]
     pub fn verify_secp256k1_legacy(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
@@ -176,7 +176,7 @@ where
     }
 
     #[deprecated(
-        since = "0.12.0",
+        since = "0.41.0",
         note = "Please use method `verify_custom_secp256k1` instead."
     )]
     pub fn verify_custom_secp256k1_legacy(
@@ -205,7 +205,7 @@ where
     }
 
     #[deprecated(
-        since = "0.12.0",
+        since = "0.41.0",
         note = "Please use method `encode_secp256k1_der_signature` instead."
     )]
     #[cfg(feature = "alloc")]
