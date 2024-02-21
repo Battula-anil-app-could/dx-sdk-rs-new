@@ -4,7 +4,7 @@ This file contains a centralizes a trace of all published crate versions, with t
 
 ## Versioning the crates
 
-The `mx-sdk-rs` repo contains many crates, grouped into several families. Crates in these families always have the same version with one another.
+The `dx-sdk-rs-new` repo contains many crates, grouped into several families. Crates in these families always have the same version with one another.
 
 For brevity, the changelog will only mention a short version of their name.
 
@@ -25,6 +25,13 @@ They are:
 - `dharitri-chain-vm`, in short `vm`, a Rust VM implementation, 1 crate.
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
+
+## [sc 0.12.6, vm 0.5.9] - 2023-08-18
+- Template tool improvements:
+	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.12.5.
+	- Ability to specify path where to create new contract.
+	- Various bugfixes.
+- VM implementation for `get_shard_of_address` VM hook.
 
 ## [sc 0.12.5, codec 0.4.6, vm 0.5.0] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
@@ -568,7 +575,7 @@ They are:
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
+## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.9] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -747,7 +754,7 @@ They are:
 ## [dharitri-wasm 0.5.2] - 2020-07-09
 - Queue type
 
-## [dharitri-wasm 0.5.1] - 2020-07-02
+## [dharitri-wasm 0.5.9] - 2020-07-02
 - `#[view]` attribute, same as `#[endpoint]`
 - `#[init]` attribute
 - `storage get mut` annotation + BorrowedMutStorage

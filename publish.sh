@@ -30,7 +30,7 @@
 #
 # 6. Make sure that the contract upgrade tool is still sound.
 # At the very least add the new version to `VERSIONS` and change `DEFAULT_LAST_VERSION` in 
-# `/home/andreim/dharitri/rs/mx-sdk-rs/framework/meta/src/sc_upgrade/upgrade_versions.rs`
+# `/home/andreim/dharitri/rs/dx-sdk-rs-new/framework/meta/src/sc_upgrade/upgrade_versions.rs`
 # 
 # 7. Run this script, `./publish.sh`.
 # You can comment out the crates you are not publishing. The script will stop otherwise when it cannot publish them.
