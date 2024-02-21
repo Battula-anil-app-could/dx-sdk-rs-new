@@ -30,4 +30,3 @@ pub fn verify_ed25519(key: &[u8], message: &[u8], signature: &[u8]) -> bool {
 
     public.unwrap().verify(message, &sig.unwrap()).is_ok()
 }
-

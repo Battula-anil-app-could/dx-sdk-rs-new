@@ -9,9 +9,9 @@ publish = false
 path = "src/digital_cash.rs"
 
 [dependencies.dharitri-sc]
-version = "0.12.6"
+version = "0.12.7"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.12.6"
+version = "0.12.7"
 path = "../../../framework/scenario"

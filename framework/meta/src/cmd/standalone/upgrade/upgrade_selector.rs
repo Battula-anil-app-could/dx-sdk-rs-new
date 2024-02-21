@@ -62,25 +62,26 @@ pub fn upgrade_sc(args: &UpgradeArgs) {
 
 fn upgrade_function_selector(dir: &RelevantDirectory) {
     if dir.upgrade_in_progress.is_some() {
-        print_upgrading(dir);
+            print_upgrading(dir);
     }
-
+    
     match dir.upgrade_in_progress {
-        Some((_, "0.9.7")) => {
-            upgrade_to_31_0(dir);
-        },
-    Some((_, "0.9.9")) => {
-            upgrade_to_32_0(dir);
-        },
-        Some((_, "0.10.9")) => {
-            upgrade_to_39_0(dir);
-        },
-        Some((from_version, to_version)) => {
-            version_bump_in_cargo_toml(&dir.path, from_version, to_version);
-        },
-        None => {},
+            Some((_, "0.9.7")) => {
+                upgrade_to_31_0(dir);
+            },
+            Some((_, "0.9.9")) => {
+                upgrade_to_32_0(dir);
+            },
+            Some((_, "0.10.9")) => {
+                upgrade_to_39_0(dir);
+            },
+            Some((from_version, to_version)) => {
+                version_bump_in_cargo_toml(&dir.path, from_version, to_version);
+            },
+            None => {},
     }
 }
+
 fn upgrade_post_processing(dir: &RelevantDirectory) {
     match dir.upgrade_in_progress {
         Some((_, "0.9.2")) | Some((_, "0.9.3")) | Some((_, "0.9.6")) | Some((_, "0.9.7"))
