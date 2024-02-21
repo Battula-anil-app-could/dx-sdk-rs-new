@@ -39,8 +39,9 @@ pub const VERSIONS: &[&str] = &[
      "0.12.2",
      "0.12.3",
      "0.12.4",
-
+     "0.12.5",
  ];
+
 pub struct VersionIterator {
     next_version: usize,
     last_version: String,

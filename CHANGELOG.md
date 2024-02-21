@@ -40,7 +40,7 @@ They are:
 - Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
 - Fixed an issue with contract calls and DCT transfers in the `StaticApi` environment.
 
-## [sc 0.12.4, codec 0.18.0, vm 0.4.0, scenario-format 0.20.0, sdk 0.2.0] - 2023-07-15
+## [sc 0.12.4, codec 0.18.0, vm 0.4.0, scenario-format 0.11.1, sdk 0.0.9] - 2023-07-15
 - Multi-endpoints in multi-contracts:
 	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
 	- We can also have multiple versions of the constructor.
@@ -102,7 +102,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.40.0, vm 0.2.0] - 2023-04-20
+## [sc 0.40.0, vm 0.0.9] - 2023-04-20
 - Call value `moax_value` and `all_dct_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -131,7 +131,7 @@ They are:
 	- `update` command updates Cargo.lock files without building the contracts.
 - Backwards compatibility for running scenarios using the VM Go infrastructure.
 
-## [sc 0.39.3, vm 0.12.5] - 2023-01-26
+## [sc 0.39.3, vm 0.1.3] - 2023-01-26
 - `dharitri-sc-meta` improvements:
 	- `upgrade` can handle crates as early as `0.28.0`;
 	- `--ignore` flag for the `all` command: will ignore folders with given names, by default set to `target`;
@@ -143,10 +143,10 @@ They are:
 ## [sc 0.39.2, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
-	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
+	- `upgrade` also re-generates wasm crates after reaching 0.11.0.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
+## [sc 0.11.0, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -448,7 +448,7 @@ They are:
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [dharitri-wasm 0.20.0, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [dharitri-wasm 0.11.1, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -696,12 +696,12 @@ They are:
 ## [dharitri-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.0.9] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from dharitri-wasm 0.8.0.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.8.0, dharitri-codec 0.0.9] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -722,7 +722,7 @@ They are:
 ## [dharitri-wasm 0.6.2] - 2020-09-16
 - NonZeroUsize iterator and utils
 
-## [dharitri-wasm 0.6.1, dharitri-codec 0.12.5] - 2020-09-15
+## [dharitri-wasm 0.6.1, dharitri-codec 0.1.3] - 2020-09-15
 - Integrated NonZeroUsize into the framework
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
@@ -805,7 +805,7 @@ They are:
 - Multi args
 - Multi args in async calls
 
-## [dharitri-wasm 0.2.0] - 2020-03-18
+## [dharitri-wasm 0.0.9] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
