@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc"
-version = "0.13.0"
+version = "0.13.1"
 edition = "2021"
 
 authors = ["Andrei Marinica <andrei.marinica@dharitri.com>", "Dharitri <contact@dharitri.com>"]
@@ -21,6 +21,7 @@ num-bigint = ["dharitri-sc-codec/num-bigint"]
 alloc = ["dharitri-sc-codec/alloc"]
 promises = []
 managed-map = []
+back-transfers = []
 dct-token-payment-legacy-decode = []
 
 [dependencies]
@@ -33,7 +34,7 @@ version = "0.2"
 default-features = false
 
 [dependencies.dharitri-sc-derive]
-version = "=0.13.0"
+version = "=0.13.1"
 path = "../derive"
 
 [dependencies.dharitri-sc-codec]

@@ -10,6 +10,7 @@ pub struct ContractAbi {
     pub endpoints: Vec<EndpointAbi>,
     pub promise_callbacks: Vec<EndpointAbi>,
     pub events: Vec<EventAbi>,
+    pub dct_attributes: Vec<DctAttributeAbi>,
     pub has_callback: bool,
     pub type_descriptions: TypeDescriptionContainerImpl,
 }
@@ -24,6 +25,8 @@ impl ContractAbi {
             .extend_from_slice(other.promise_callbacks.as_slice());
         self.has_callback |= other.has_callback;
         self.type_descriptions.insert_all(&other.type_descriptions);
+        self.dct_attributes
+            .extend_from_slice(other.dct_attributes.as_slice());
     }
 
     /// A type can provide more than 1 type descripions.

@@ -24,6 +24,8 @@ dharitri_sc::imports!();
 /// - GovernanceModule
 /// - PauseModule
 #[dharitri_sc::contract]
+#[dct_attribute("TICKER1", BigUint)]
+#[dct_attribute("TICKER2", ManagedBuffer)]
 pub trait UseModule:
     ContractBase
     + contract_base_full_path_mod::ContractBaseFullPathTestModule

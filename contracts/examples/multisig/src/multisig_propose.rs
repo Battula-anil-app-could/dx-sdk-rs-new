@@ -51,23 +51,18 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         &self,
         to: ManagedAddress,
         moax_amount: BigUint,
-        opt_function: OptionalValue<ManagedBuffer>,
-        arguments: MultiValueEncoded<ManagedBuffer>,
+        function_call: FunctionCall,
     ) -> CallActionData<Self::Api> {
         require!(
-            moax_amount > 0 || opt_function.is_some(),
+            moax_amount > 0 || !function_call.is_empty(),
             "proposed action has no effect"
         );
 
-        let endpoint_name = match opt_function {
-            OptionalValue::Some(data) => data,
-            OptionalValue::None => ManagedBuffer::new(),
-        };
         CallActionData {
             to,
             moax_amount,
-            endpoint_name,
-            arguments: arguments.into_vec_of_buffers(),
+            endpoint_name: function_call.function_name,
+            arguments: function_call.arg_buffer.into_vec_of_buffers(),
         }
     }
 
@@ -80,10 +75,9 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         &self,
         to: ManagedAddress,
         moax_amount: BigUint,
-        opt_function: OptionalValue<ManagedBuffer>,
-        arguments: MultiValueEncoded<ManagedBuffer>,
+        function_call: FunctionCall,
     ) -> usize {
-        let call_data = self.prepare_call_data(to, moax_amount, opt_function, arguments);
+        let call_data = self.prepare_call_data(to, moax_amount, function_call);
         self.propose_action(Action::SendTransferExecute(call_data))
     }
 
@@ -97,10 +91,9 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         &self,
         to: ManagedAddress,
         moax_amount: BigUint,
-        opt_function: OptionalValue<ManagedBuffer>,
-        arguments: MultiValueEncoded<ManagedBuffer>,
+        function_call: FunctionCall,
     ) -> usize {
-        let call_data = self.prepare_call_data(to, moax_amount, opt_function, arguments);
+        let call_data = self.prepare_call_data(to, moax_amount, function_call);
         self.propose_action(Action::SendAsyncCall(call_data))
     }
 

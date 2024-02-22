@@ -1,7 +1,7 @@
 /// The last version to be used for upgrades and templates.
 ///
 /// Should be edited every time a new version of the framework is released.
-pub const LAST_VERSION: &str = "0.13.0";
+pub const LAST_VERSION: &str = "0.13.1";
 
 /// Indicates where to stop with the upgrades.
 pub const LAST_UPGRADE_VERSION: &str = LAST_VERSION;
@@ -50,6 +50,7 @@ pub const VERSIONS: &[&str] = &[
      "0.12.8",
      "0.12.9",
      "0.13.0",
+     "0.13.1",
  ];
 
 /// We started supporting contract templates with version 0.12.5.
@@ -109,7 +110,7 @@ pub mod tests {
     fn template_versions_test() {
         assert_eq!(template_versions()[0], "0.12.5");
 
-        // assert!(validate_template_tag("0.12.5"));
-        // assert!(!validate_template_tag("0.12.4"));
+        assert!(validate_template_tag("0.12.5"));
+        assert!(!validate_template_tag("0.12.4"));
     }
 }

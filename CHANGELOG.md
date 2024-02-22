@@ -26,7 +26,21 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.0] - 2023-10-16
+## [sc 0.13.1, vm 0.6.1] - 2023-11-03
+- Back-transfer:
+	- API support in framework (not yet implemented in the Rust VM);
+	- Feature flag: `"back-transfers"`;
+	- EI updated.
+- DCT attribute ABI annotation and generator.
+- Multiple var-args disallowed, unless annotating endpoint with `#[allow_multiple_var_args]`.
+- Build system updates:
+	- `multicontract.toml` renamed to `sc-config.toml`;
+	- `add-unlabelled` default true.
+- New `FunctionCall` object & refactoring. Can be used as multi-value to pass contract call info to contracts.
+- `AddressToId` storage mapper.
+
+
+## [sc 0.43.5] - 2023-10-16
 - Meta crate: removed external dependencies to `wasm2wat` and `wasm-objdump`, replaces with internal implementation.
 - NFT subscription module.
 - DctTokenData implements `ManagedVecItem`.
@@ -38,7 +52,7 @@ They are:
 - Template fix: added `dharitri.json` files.
 - Testing framework: check NFT balances and attributes.
 
-## [sc 0.43.3, vm 0.6.0] - 2023-09-08
+## [sc 0.43.3, vm 0.5.2] - 2023-09-08
 - Added several new methods in the `SendWrapper`, which perform MOAX & DCT transfers but don't do anything if the value is zero.
 - Added the `DeleteUsername` builtin function to the VM.
 - Minor fixes in API wrapper constructors.
@@ -67,7 +81,7 @@ They are:
 - Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
 - Fixed an issue with contract calls and DCT transfers in the `StaticApi` environment.
 
-## [sc 0.12.4, codec 0.18.0, vm 0.4.0, scenario-format 0.11.1, sdk 0.0.9] - 2023-07-15
+## [sc 0.12.4, codec 0.18.0, vm 0.4.0, scenario-format 0.11.0, sdk 0.0.9] - 2023-07-15
 - Multi-endpoints in multi-contracts:
 	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
 	- We can also have multiple versions of the constructor.
@@ -444,7 +458,7 @@ They are:
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
@@ -475,7 +489,7 @@ They are:
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [dharitri-wasm 0.11.1, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [dharitri-wasm 0.11.0, dharitri-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -486,7 +500,7 @@ They are:
 ## [dharitri-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [dharitri-wasm 0.19.0, dharitri-codec 0.6.0, denali 0.9.0] - 2021-09-10
+## [dharitri-wasm 0.19.0, dharitri-codec 0.6.1, denali 0.9.0] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Arwen minimum version is `v1.4.10`.
 	- Redesigned parts of the dharitri-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -580,7 +594,7 @@ They are:
 ## [dharitri-wasm 0.15.1] - 2021-04-30
 - Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
 
-## [dharitri-wasm 0.15.0, dharitri-codec 0.6.0] - 2021-04-19
+## [dharitri-wasm 0.15.0, dharitri-codec 0.5.2] - 2021-04-19
 - ABI
 	- Constructor representation
 	- Simplified ABI syntax for tuples and fixed-size arrays
@@ -595,7 +609,7 @@ They are:
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
+## [dharitri-wasm 0.14.0, denali 0.6.1, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -754,7 +768,7 @@ They are:
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [dharitri-wasm 0.6.0, dharitri-codec 0.1.2] - 2020-08-25
+## [dharitri-wasm 0.6.1, dharitri-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -771,7 +785,7 @@ They are:
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
-## [dharitri-wasm 0.6.0] - 2020-07-09
+## [dharitri-wasm 0.5.2] - 2020-07-09
 - Queue type
 
 ## [dharitri-wasm 0.5.1] - 2020-07-02

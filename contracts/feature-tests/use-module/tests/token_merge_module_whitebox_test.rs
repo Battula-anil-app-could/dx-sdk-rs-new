@@ -136,7 +136,7 @@ fn test_token_merge() {
         &use_module_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .multi_dct_transfer(nft_transfers.clone()),
+            .multi_dct_transfer(nft_transfers),
         |sc| {
             let merged_token = sc.merge_tokens_endpoint();
             assert_eq!(
@@ -266,7 +266,7 @@ fn test_token_merge() {
         &use_module_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .multi_dct_transfer(dct_transfers.clone()),
+            .multi_dct_transfer(dct_transfers),
         |sc| {
             let merged_token = sc.merge_tokens_endpoint();
             assert_eq!(
@@ -331,7 +331,7 @@ fn test_token_merge() {
         &use_module_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .multi_dct_transfer(combined_transfers.clone()),
+            .multi_dct_transfer(combined_transfers),
         |sc| {
             let merged_token = sc.merge_tokens_endpoint();
             assert_eq!(
@@ -529,7 +529,7 @@ fn test_partial_split() {
         &use_module_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .multi_dct_transfer(dct_transfers.clone()),
+            .multi_dct_transfer(dct_transfers),
         |sc| {
             let merged_token = sc.merge_tokens_endpoint();
             assert_eq!(
@@ -747,7 +747,7 @@ fn test_custom_attributes() {
         &use_module_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .multi_dct_transfer(nft_transfers.clone()),
+            .multi_dct_transfer(nft_transfers),
         |sc| {
             let merged_token = sc.merge_tokens_custom_attributes_endpoint();
             assert_eq!(

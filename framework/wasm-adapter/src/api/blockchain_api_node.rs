@@ -76,6 +76,8 @@ extern "C" {
         urisHandle: i32,
     );
 
+    fn managedGetBackTransfers(dctTransfersValueHandle: i32, callValueHandle: i32);
+
     fn managedIsDCTFrozen(addressHandle: i32, tokenIDHandle: i32, nonce: i64) -> i32;
     fn managedIsDCTPaused(tokenIDHandle: i32) -> i32;
     fn managedIsDCTLimitedTransfer(tokenIDHandle: i32) -> i32;
@@ -320,6 +322,16 @@ impl BlockchainApiImpl for VmApiImpl {
                 royalties_handle,
                 uris_handle,
             );
+        }
+    }
+
+    fn managed_get_back_transfers(
+        &self,
+        dct_transfer_value_handle: RawHandle,
+        call_value_handle: RawHandle,
+    ) {
+        unsafe {
+            managedGetBackTransfers(dct_transfer_value_handle, call_value_handle);
         }
     }
 

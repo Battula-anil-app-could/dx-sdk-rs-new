@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-sc",
-            "version": "0.13.0"
+            "version": "0.13.1"
         }
     },
     "docs": [
@@ -422,6 +422,32 @@
             ]
         }
     ],
+    "dctAttributes": [
+        {
+            "ticker": "TICKER1",
+            "type": "BigUint"
+        },
+        {
+            "ticker": "TICKER2",
+            "type": "bytes"
+        },
+        {
+            "ticker": "TICKER3",
+            "type": "u32"
+        },
+        {
+            "ticker": "STRUCT1",
+            "type": "AbiEnum"
+        },
+        {
+            "ticker": "STRUCT2",
+            "type": "AbiManagedType"
+        },
+        {
+            "ticker": "OnlyInDct",
+            "type": "OnlyShowsUpInDctAttr"
+        }
+    ],
     "hasCallback": false,
     "types": {
         "AbiEnum": {
@@ -724,6 +750,12 @@
                 "Tests that the ABI generator also fetches types that only appear as fields."
             ]
         },
+        "OnlyShowsUpAsNested10": {
+            "type": "struct",
+            "docs": [
+                "Tests that the ABI generator also fetches types that only appear as fields."
+            ]
+        },
         "OnlyShowsUpAsNestedInArray": {
             "type": "struct",
             "docs": [
@@ -787,6 +819,15 @@
                 {
                     "name": "something",
                     "type": "()"
+                }
+            ]
+        },
+        "OnlyShowsUpInDctAttr": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "field",
+                    "type": "OnlyShowsUpAsNested10"
                 }
             ]
         }

@@ -234,13 +234,14 @@ where
     let function = String::from_utf8(
         normalized_cc
             .basic
-            .endpoint_name
+            .function_call
+            .function_name
             .to_boxed_bytes()
             .into_vec(),
     )
     .unwrap();
     let moax_value_expr = BigUintValue::from(normalized_cc.moax_payment);
-    let scenario_args = convert_call_args(&normalized_cc.basic.arg_buffer);
+    let scenario_args = convert_call_args(&normalized_cc.basic.function_call.arg_buffer);
     (to_str, function, moax_value_expr, scenario_args)
 }
 

@@ -1,5 +1,6 @@
 use std::time::Duration;
 
+use dharitri_sc_scenario::dharitri_sc::types::FunctionCall;
 #[allow(unused_imports)]
 use dharitri_sc_snippets::dharitri_sc::types::{
     DctTokenPayment, MultiValueEncoded, TokenIdentifier,
@@ -66,8 +67,7 @@ impl MultisigInteract {
                     .call(self.state.multisig().propose_async_call(
                         bech32::decode(WMOAX_SWAP_SC_BECH32),
                         WRAP_AMOUNT,
-                        "wrapMoax".to_string(),
-                        MultiValueEncoded::new(),
+                        FunctionCall::new("wrapMoax"),
                     ))
                     .from(&self.wallet_address)
                     .gas_limit("10,000,000"),
@@ -99,8 +99,7 @@ impl MultisigInteract {
                     .call(self.state.multisig().propose_async_call(
                         contract_call.basic.to,
                         0u64,
-                        contract_call.basic.endpoint_name,
-                        contract_call.basic.arg_buffer.into_multi_value_encoded(),
+                        contract_call.basic.function_call,
                     ))
                     .from(&self.wallet_address)
                     .gas_limit("10,000,000"),

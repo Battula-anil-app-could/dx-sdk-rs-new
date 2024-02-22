@@ -23,7 +23,7 @@ pub use moax_or_dct_token_payment::MoaxOrDctTokenPayment;
 pub use moax_or_multi_dct_payment::MoaxOrMultiDctPayment;
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use dct_token_data::DctTokenData;
-pub use dct_token_payment::DctTokenPayment;
+pub use dct_token_payment::{DctTokenPayment, MultiDctPayment};
 pub use managed_address::ManagedAddress;
 pub use managed_buffer_cached_builder::ManagedBufferCachedBuilder;
 pub(crate) use managed_byte_array::ManagedBufferSizeContext;

@@ -1,3 +1,5 @@
+use super::DctAttribute;
+
 /// Models any method argument from a contract, module or callable proxy trait.
 /// Contains processed data from argument annotations.
 #[derive(Clone, Debug)]
@@ -59,4 +61,6 @@ pub struct TraitProperties {
     pub only_owner: bool,
     pub only_admin: bool,
     pub only_user_account: bool,
+    pub allow_multiple_var_args: bool,
+    pub dct_attribute: Vec<DctAttribute>,
 }

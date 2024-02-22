@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-sc",
-            "version": "0.13.0"
+            "version": "0.13.1"
         }
     },
     "docs": [
@@ -244,6 +244,20 @@
                     "type": "DctTokenPayment"
                 }
             ]
+        }
+    ],
+    "dctAttributes": [
+        {
+            "ticker": "INMODULE",
+            "type": "u32"
+        },
+        {
+            "ticker": "TICKER1",
+            "type": "BigUint"
+        },
+        {
+            "ticker": "TICKER2",
+            "type": "bytes"
         }
     ],
     "hasCallback": false,

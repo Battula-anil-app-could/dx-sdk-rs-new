@@ -16,7 +16,9 @@ use crate::derive::TypeAbi;
 
 const DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding DCT attributes: ";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
+#[derive(
+    Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
+)]
 pub struct DctTokenData<M: ManagedTypeApi> {
     pub token_type: DctTokenType,
     pub amount: BigUint<M>,

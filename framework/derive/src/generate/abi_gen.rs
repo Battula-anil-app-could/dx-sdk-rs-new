@@ -11,6 +11,7 @@ fn generate_endpoint_snippet(
     only_admin: bool,
     mutability: EndpointMutabilityMetadata,
     endpoint_type: EndpointTypeMetadata,
+    allow_multiple_var_args: bool,
 ) -> proc_macro2::TokenStream {
     let endpoint_docs = &m.docs;
     let rust_method_name = m.name.to_string();
@@ -65,6 +66,7 @@ fn generate_endpoint_snippet(
             inputs: dharitri_sc::types::heap::Vec::new(),
             outputs: dharitri_sc::types::heap::Vec::new(),
             labels: &[ #(#label_names),* ],
+            allow_multiple_var_args: #allow_multiple_var_args,
         };
         #(#input_snippets)*
         #output_snippet
@@ -84,6 +86,7 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     false,
                     EndpointMutabilityMetadata::Mutable,
                     EndpointTypeMetadata::Init,
+                    m.is_allow_multiple_var_args(),
                 );
                 Some(quote! {
                     #endpoint_def
@@ -98,6 +101,7 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     endpoint_metadata.only_admin,
                     endpoint_metadata.mutability.clone(),
                     EndpointTypeMetadata::Endpoint,
+                    endpoint_metadata.allow_multiple_var_args,
                 );
                 Some(quote! {
                     #endpoint_def
@@ -112,6 +116,7 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     false,
                     EndpointMutabilityMetadata::Mutable,
                     EndpointTypeMetadata::PromisesCallback,
+                    m.is_allow_multiple_var_args(),
                 );
                 Some(quote! {
                     #endpoint_def
@@ -191,6 +196,22 @@ fn generate_supertrait_snippets(contract: &ContractTrait) -> Vec<proc_macro2::To
 			.collect()
 }
 
+fn generate_dct_attribute_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
+    contract
+        .trait_attributes
+        .dct_attribute
+        .iter()
+        .map(|dct_attr| {
+            let ticker = &dct_attr.ticker;
+            let ty = &dct_attr.ty;
+            quote! {
+                contract_abi.dct_attributes.push(dharitri_sc::abi::DctAttributeAbi::new::<#ty>(#ticker));
+                contract_abi.add_type_descriptions::<#ty>();
+            }
+        })
+        .collect()
+}
+
 fn generate_abi_method_body(
     contract: &ContractTrait,
     is_contract_main: bool,
@@ -202,6 +223,11 @@ fn generate_abi_method_body(
     let has_callbacks = has_callback(contract);
     let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
         generate_supertrait_snippets(contract)
+    } else {
+        Vec::new()
+    };
+    let dct_attributes = if !&contract.trait_attributes.dct_attribute.is_empty() {
+        generate_dct_attribute_snippets(contract)
     } else {
         Vec::new()
     };
@@ -224,10 +250,12 @@ fn generate_abi_method_body(
             events: dharitri_sc::types::heap::Vec::new(),
             has_callback: #has_callbacks,
             type_descriptions: <dharitri_sc::abi::TypeDescriptionContainerImpl as dharitri_sc::abi::TypeDescriptionContainer>::new(),
+            dct_attributes: dharitri_sc::types::heap::Vec::new(),
         };
         #(#endpoint_snippets)*
         #(#event_snippets)*
         #(#supertrait_snippets)*
+        #(#dct_attributes)*
         contract_abi
     }
 }

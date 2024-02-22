@@ -3,7 +3,10 @@ use std::{
     io::Write,
 };
 
-use crate::abi_json::{serialize_abi_to_json, ContractAbiJson};
+use crate::{
+    abi_json::{serialize_abi_to_json, ContractAbiJson, DctAttributeAbiJson},
+    dct_attr_file_json::create_new_dct_attr_file,
+};
 
 use super::{meta_config::MetaConfig, output_contract::OutputContract};
 
@@ -20,7 +23,7 @@ fn write_contract_abi(output_contract: &OutputContract, git_version: &str, outpu
 }
 
 impl MetaConfig {
-    pub fn write_abi(&self) {
+    pub fn write_contract_abis(&self) {
         create_dir_all(&self.output_dir).unwrap();
         let git_version = self.git_describe();
         for output_contract in &self.output_contracts.contracts {
@@ -29,6 +32,13 @@ impl MetaConfig {
                 git_version.as_str(),
                 self.output_dir.as_str(),
             );
+        }
+    }
+
+    pub fn write_dct_attribute_abis(&self) {
+        for dct_attr in &self.original_contract_abi.dct_attributes {
+            let json = DctAttributeAbiJson::new(dct_attr);
+            create_new_dct_attr_file(&json, &self.output_dir, json.dct_attribute.ticker.as_str());
         }
     }
 
