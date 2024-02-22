@@ -20,7 +20,7 @@ pub use interactor_sender::*;
 pub use interactor_tx_spec::*;
 pub use log;
 pub use dharitri_sc_scenario::{self, dharitri_sc};
-pub use dharitri_sdk as erdrs; // TODO: remove
+pub use dharitri_sdk as moars; // TODO: remove
 pub use dharitri_sdk as sdk;
 pub use step_buffer::*;
 pub use tokio;

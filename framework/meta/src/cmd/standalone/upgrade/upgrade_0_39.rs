@@ -20,7 +20,7 @@ pub const SCENARIO_FILE_PATTERNS: &[(&str, &str)] = &[
 ];
 
 /// Migrate `0.38.0` to `0.10.9`, including the version bump.
-pub fn upgrade_to_39_0(dir: &RelevantDirectory) {
+pub fn upgrade_to_10_9(dir: &RelevantDirectory) {
     if dir.dir_type == DirectoryType::Contract {
         v_0_39_prepare_meta(&dir.path);
         v_0_39_prepare_wasm(&dir.path);
@@ -33,7 +33,7 @@ pub fn upgrade_to_39_0(dir: &RelevantDirectory) {
 }
 
 /// Post-processing: re-generate the wasm crates.
-pub fn postprocessing_after_39_0(dir: &RelevantDirectory) {
+pub fn postprocessing_after_10_9(dir: &RelevantDirectory) {
     if dir.dir_type != DirectoryType::Contract {
         return;
     }

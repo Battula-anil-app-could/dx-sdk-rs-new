@@ -4,7 +4,7 @@ use ruplacer::Query;
 use std::path::Path;
 
 /// Migrate `0.30` to `0.31.0`, including the version bump.
-pub fn upgrade_to_32_0(dir: &RelevantDirectory) {
+pub fn upgrade_to_9_9(dir: &RelevantDirectory) {
     v_0_32_replace_in_files(dir.path.as_ref());
 
     let (from_version, to_version) = dir.upgrade_in_progress.unwrap();

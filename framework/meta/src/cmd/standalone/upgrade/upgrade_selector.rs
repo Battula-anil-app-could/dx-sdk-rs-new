@@ -5,9 +5,9 @@ use crate::{
 };
 
 use super::{
-    upgrade_0_31::upgrade_to_31_0,
-    upgrade_0_32::upgrade_to_32_0,
-    upgrade_0_39::{postprocessing_after_39_0, upgrade_to_39_0},
+    upgrade_0_31::upgrade_to_9_7,
+    upgrade_0_32::upgrade_to_9_9,
+    upgrade_0_39::{postprocessing_after_10_9, upgrade_to_10_9},
     upgrade_common::{cargo_check, version_bump_in_cargo_toml},
     upgrade_print::*,
 };
@@ -61,41 +61,41 @@ pub fn upgrade_sc(args: &UpgradeArgs) {
 }
 
 fn upgrade_function_selector(dir: &RelevantDirectory) {
-    if dir.upgrade_in_progress.is_some() {
-        print_upgrading(dir);
-    }
-
-    match dir.upgrade_in_progress {
-        Some((_, "0.31.0")) => {
-            upgrade_to_31_0(dir);
-        },
-        Some((_, "0.32.0")) => {
-            upgrade_to_32_0(dir);
-        },
-        Some((_, "0.10.9")) => {
-            upgrade_to_39_0(dir);
-        },
-        Some((from_version, to_version)) => {
-            version_bump_in_cargo_toml(&dir.path, from_version, to_version);
-        },
-        None => {},
-    }
-}
+         if dir.upgrade_in_progress.is_some() {
+             print_upgrading(dir);
+         }
+    
+         match dir.upgrade_in_progress {
+             Some((_, "0.9.7")) => {
+                 upgrade_to_9_7(dir);
+             },
+             Some((_, "0.9.9")) => {
+                 upgrade_to_9_9(dir);
+             },
+             Some((_, "0.10.9")) => {
+                 upgrade_to_10_9(dir);
+             },
+             Some((from_version, to_version)) => {
+                 version_bump_in_cargo_toml(&dir.path, from_version, to_version);
+             },
+             None => {},
+         }
+     }
 
 fn upgrade_post_processing(dir: &RelevantDirectory) {
-    match dir.upgrade_in_progress {
-        Some((_, "0.28.0")) | Some((_, "0.29.0")) | Some((_, "0.30.0")) | Some((_, "0.31.0"))
-        | Some((_, "0.32.0")) | Some((_, "0.33.0")) | Some((_, "0.34.0")) | Some((_, "0.35.0"))
-        | Some((_, "0.36.0")) | Some((_, "0.37.0")) | Some((_, "0.40.0")) | Some((_, "0.12.0"))
-        | Some((_, "0.12.4")) | Some((_, "0.12.5")) => {
-            print_post_processing(dir);
-            cargo_check(dir);
-        },
-        Some((_, "0.10.9")) => {
-            print_post_processing(dir);
-            postprocessing_after_39_0(dir);
-            cargo_check(dir);
-        },
-        _ => {},
-    }
-}
+         match dir.upgrade_in_progress {
+             Some((_, "0.9.2")) | Some((_, "0.9.3")) | Some((_, "0.9.6")) | Some((_, "0.9.7"))
+             | Some((_, "0.9.9")) | Some((_, "0.10.3")) | Some((_, "0.10.2")) | Some((_, "0.10.4"))
+             | Some((_, "0.10.5")) | Some((_, "0.10.7")) | Some((_, "0.11.8")) | Some((_, "0.12.0"))
+             | Some((_, "0.12.4")) | Some((_, "0.12.5")) => {
+                 print_post_processing(dir);
+                 cargo_check(dir);
+             },
+             Some((_, "0.10.9")) => {
+                 print_post_processing(dir);
+                 postprocessing_after_10_9(dir);
+                 cargo_check(dir);
+             },
+             _ => {},
+         }
+     }

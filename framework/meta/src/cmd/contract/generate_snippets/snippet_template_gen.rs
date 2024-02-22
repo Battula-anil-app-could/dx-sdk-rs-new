@@ -14,7 +14,7 @@ use {contract_crate_name}::*;
 
 use dharitri_sc_snippets::{{
     env_logger,
-    erdrs::wallet::Wallet,
+    moars::wallet::Wallet,
     dharitri_sc::{{codec::multi_types::*, types::*}},
     dharitri_sc_scenario::{{
         api::StaticApi,

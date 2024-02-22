@@ -5,6 +5,7 @@ use crate::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
         serde_raw::{CheckDctRaw, ValueSubTree},
     },
+    scenario_model::BytesValue,
 };
 use num_bigint::BigUint;
 
@@ -93,6 +94,54 @@ impl CheckDct {
                         dct_instance_check.push(CheckDctInstance {
                             nonce,
                             balance: CheckValue::Equal(balance),
+                            ..Default::default()
+                        });
+                    }
+                },
+            }
+        }
+    }
+
+    pub fn add_balance_and_attributes_check<N, V, T>(
+        &mut self,
+        nonce_expr: N,
+        balance_expr: V,
+        attributes_expr: T,
+    ) where
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        BytesValue: From<T>,
+    {
+        let nonce = U64Value::from(nonce_expr);
+        let balance = BigUintValue::from(balance_expr);
+        let attributes = BytesValue::from(attributes_expr);
+
+        self.convert_to_full();
+
+        if let CheckDct::Full(prev_dct_check) = self {
+            match &mut prev_dct_check.instances {
+                CheckDctInstances::Star => {
+                    let new_instances_check = vec![CheckDctInstance {
+                        nonce,
+                        balance: CheckValue::Equal(balance),
+                        attributes: CheckValue::Equal(attributes),
+                        ..Default::default()
+                    }];
+
+                    prev_dct_check.instances = CheckDctInstances::Equal(new_instances_check);
+                },
+                CheckDctInstances::Equal(dct_instance_check) => {
+                    if let Some(i) = dct_instance_check
+                        .iter()
+                        .position(|item| item.nonce.value == nonce.value)
+                    {
+                        dct_instance_check[i].balance = CheckValue::Equal(balance);
+                        dct_instance_check[i].attributes = CheckValue::Equal(attributes);
+                    } else {
+                        dct_instance_check.push(CheckDctInstance {
+                            nonce,
+                            balance: CheckValue::Equal(balance),
+                            attributes: CheckValue::Equal(attributes),
                             ..Default::default()
                         });
                     }

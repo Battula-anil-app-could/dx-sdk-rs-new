@@ -140,7 +140,7 @@ pub fn check_account_dct(address: &AddressKey, expected: &CheckDctMap, actual: &
                             let single_instance = actual_value
                                 .instances
                                 .get_by_nonce(0)
-                                .unwrap_or_else(|| panic!("Expected fungible DCT with none 0"));
+                                .unwrap_or_else(|| panic!("Expected fungible DCT with nonce 0"));
                             assert_eq!(
                                 single_instance.balance,
                                 expected_balance.value,

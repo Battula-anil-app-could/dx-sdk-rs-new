@@ -26,8 +26,12 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+## [sc 0.12.9] - 2023-09-18
+- Bugfix in `sc-meta`: fixed `--locked argument` in `all` command.
+- Template fix: added `dharitri.json` files.
+- Testing framework: check NFT balances and attributes.
 
-## [sc 0.12.8, vm 0.6.0] - 2023-09-08
+## [sc 0.43.3, vm 0.6.0] - 2023-09-08
 - Added several new methods in the `SendWrapper`, which perform MOAX & DCT transfers but don't do anything if the value is zero.
 - Added the `DeleteUsername` builtin function to the VM.
 - Minor fixes in API wrapper constructors.
@@ -433,7 +437,7 @@ They are:
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26

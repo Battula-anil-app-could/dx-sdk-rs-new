@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "0.12.8"
+version = "0.12.9"
 edition = "2021"
 
 authors = [
@@ -40,11 +40,11 @@ path = "src/main.rs"
 run-go-tests = []
 
 [dependencies.dharitri-sc]
-version = "=0.12.8"
+version = "=0.12.9"
 path = "../base"
 
 [dependencies.dharitri-sc-meta]
-version = "=0.12.8"
+version = "=0.12.9"
 path = "../meta"
 
 [dependencies.dharitri-chain-scenario-format]
