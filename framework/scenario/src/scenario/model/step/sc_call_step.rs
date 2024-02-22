@@ -90,8 +90,29 @@ impl ScCallStep {
         self
     }
 
+    pub fn multi_dct_transfer<T>(mut self, tokens: T) -> Self
+    where
+        T: IntoIterator<Item = TxDCT>,
+    {
+        if self.tx.moax_value.value > 0u32.into() {
+            panic!("Cannot transfer both MOAX and DCT");
+        }
+
+        self.tx.dct_value.extend(tokens);
+
+        self
+    }
+
     pub fn function(mut self, expr: &str) -> Self {
         self.tx.function = expr.to_string();
+        self
+    }
+
+    pub fn tx_hash<T>(mut self, tx_hash_expr: T) -> Self
+    where
+        H256: From<T>,
+    {
+        self.explicit_tx_hash = Some(tx_hash_expr.into());
         self
     }
 

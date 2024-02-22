@@ -40,6 +40,21 @@ fn set_accounts_go() {
 }
 
 #[test]
+fn whitelist_blacklist_fee_token_go() {
+    world().run("scenarios/whitelist-blacklist-fee-tokens.scen.json");
+}
+
+#[test]
+fn pay_fee_and_fund_dct_go() {
+    world().run("scenarios/pay-fee-and-fund-dct.scen.json");
+}
+
+#[test]
+fn pay_fee_and_fund_moax_go() {
+    world().run("scenarios/pay-fee-and-fund-moax.scen.json");
+}
+
+#[test]
 fn withdraw_moax_go() {
     world().run("scenarios/withdraw-moax.scen.json");
 }

@@ -26,7 +26,14 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.12.9] - 2023-09-18
+## [sc 0.13.0] - 2023-10-16
+- Meta crate: removed external dependencies to `wasm2wat` and `wasm-objdump`, replaces with internal implementation.
+- NFT subscription module.
+- DctTokenData implements `ManagedVecItem`.
+- Contract call `argument` method.
+- `SendRawWrapper` made public.
+
+## [sc 0.43.4] - 2023-09-18
 - Bugfix in `sc-meta`: fixed `--locked argument` in `all` command.
 - Template fix: added `dharitri.json` files.
 - Testing framework: check NFT balances and attributes.
