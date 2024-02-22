@@ -92,8 +92,11 @@ impl TxCall {
             (&self.to.value).into(),
             self.function.as_bytes(),
             (&self.moax_value.value).into(),
-        )
-        .convert_to_dct_transfer_call(
+        );
+
+        contract_call.basic.explicit_gas_limit = self.gas_limit.value;
+
+        contract_call = contract_call.convert_to_dct_transfer_call(
             self.dct_value
                 .iter()
                 .map(|dct| {

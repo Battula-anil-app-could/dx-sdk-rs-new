@@ -1,4 +1,4 @@
-use crate::{address_h256_to_moars, Interactor};
+use crate::{address_h256_to_erdrs, Interactor};
 use log::info;
 use dharitri_sc_scenario::{
     api::StaticApi,
@@ -18,7 +18,7 @@ impl Interactor {
     }
 
     pub async fn perform_sc_query(&mut self, step: &mut ScQueryStep) {
-        let sc_address = address_h256_to_moars(&step.tx.to.to_address());
+        let sc_address = address_h256_to_erdrs(&step.tx.to.to_address());
         let req = VmValueRequest {
             sc_address: sc_address.clone(),
             func_name: step.tx.function.clone(),

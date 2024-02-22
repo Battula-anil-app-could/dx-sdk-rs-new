@@ -5,7 +5,7 @@ use super::{
         DCTLocalBurn, DCTLocalMint, DCTNftAddQuantity, DCTNftAddUri, DCTNftBurn,
         DCTNftCreate, DCTNftUpdateAttributes,
     },
-    general::{ChangeOwner, ClaimDeveloperRewards, SetUsername, UpgradeContract},
+    general::{ChangeOwner, ClaimDeveloperRewards, DeleteUsername, SetUsername, UpgradeContract},
     transfer::{DCTMultiTransfer, DCTNftTransfer, DCTTransfer},
     BuiltinFunctionDctTransferInfo,
 };
@@ -110,9 +110,10 @@ impl<'a> BuiltinFunctionCall<'a> {
             CHANGE_OWNER_BUILTIN_FUNC_NAME => self.execute_bf(ChangeOwner, f),
             CLAIM_DEVELOPER_REWARDS_FUNC_NAME => self.execute_bf(ClaimDeveloperRewards, f),
             SET_USERNAME_FUNC_NAME => self.execute_bf(SetUsername, f),
+            DELETE_USERNAME_FUNC_NAME => self.execute_bf(DeleteUsername, f),
             UPGRADE_CONTRACT_FUNC_NAME => self.execute_bf(UpgradeContract, f),
             MIGRATE_USERNAME_FUNC_NAME => {
-                panic!("builtin function {MIGRATE_USERNAME_FUNC_NAME} not implemented")
+                panic!("builtin function {MIGRATE_USERNAME_FUNC_NAME} was dropped")
             },
             _ => or_else(self.tx_input, self.tx_cache, f),
         }

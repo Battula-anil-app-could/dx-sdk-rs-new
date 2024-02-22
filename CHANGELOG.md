@@ -27,10 +27,15 @@ They are:
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
 
-## [sc 0.12.7] - 2023-08-18
+## [sc 0.12.8, vm 0.6.0] - 2023-09-08
+- Added several new methods in the `SendWrapper`, which perform MOAX & DCT transfers but don't do anything if the value is zero.
+- Added the `DeleteUsername` builtin function to the VM.
+- Minor fixes in API wrapper constructors.
+
+## [sc 0.43.2] - 2023-08-18
 - Template tool tag argument validation bugfix.
 
-## [sc 0.43.1, vm 0.5.9] - 2023-08-18
+## [sc 0.43.1, vm 0.5.1] - 2023-08-18
 - Template tool improvements:
 	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.12.5.
 	- Ability to specify path where to create new contract.
@@ -428,7 +433,7 @@ They are:
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
@@ -564,7 +569,7 @@ They are:
 ## [dharitri-wasm 0.15.1] - 2021-04-30
 - Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
 
-## [dharitri-wasm 0.15.0, dharitri-codec 0.5.2] - 2021-04-19
+## [dharitri-wasm 0.15.0, dharitri-codec 0.6.0] - 2021-04-19
 - ABI
 	- Constructor representation
 	- Simplified ABI syntax for tuples and fixed-size arrays
@@ -579,7 +584,7 @@ They are:
 ## [dharitri-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.9] - 2021-03-22
+## [dharitri-wasm 0.14.0, denali 0.6.0, dharitri-codec 0.5.1] - 2021-03-22
 - DCT functionality:
 	- DCT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCT system smart contract proxy
@@ -755,10 +760,10 @@ They are:
 - Extracted dharitri-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
-## [dharitri-wasm 0.5.2] - 2020-07-09
+## [dharitri-wasm 0.6.0] - 2020-07-09
 - Queue type
 
-## [dharitri-wasm 0.5.9] - 2020-07-02
+## [dharitri-wasm 0.5.1] - 2020-07-02
 - `#[view]` attribute, same as `#[endpoint]`
 - `#[init]` attribute
 - `storage get mut` annotation + BorrowedMutStorage

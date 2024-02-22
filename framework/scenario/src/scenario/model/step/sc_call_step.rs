@@ -122,8 +122,13 @@ impl ScCallStep {
         let (to_str, function, moax_value_expr, scenario_args) =
             process_contract_call(contract_call);
         self = self.to(to_str.as_str());
-        self = self.function(function.as_str());
-        self = self.moax_value(moax_value_expr);
+
+        if self.tx.function.is_empty() {
+            self = self.function(function.as_str());
+        }
+        if self.tx.moax_value.value == 0u32.into() {
+            self = self.moax_value(moax_value_expr);
+        }
         for arg in scenario_args {
             self = self.argument(arg.as_str());
         }

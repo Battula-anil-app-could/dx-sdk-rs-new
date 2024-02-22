@@ -2,7 +2,7 @@ use log::debug;
 use dharitri_sc_scenario::dharitri_sc::types::Address;
 use dharitri_sdk::{data::transaction::Transaction, wallet::Wallet};
 
-use crate::{address_h256_to_moars, Interactor};
+use crate::{address_h256_to_erdrs, Interactor};
 
 /// A user account that can sign transactions (a pem is present).
 pub struct Sender {
@@ -13,10 +13,10 @@ pub struct Sender {
 
 impl Interactor {
     pub async fn recall_nonce(&self, address: &Address) -> u64 {
-        let moars_address = address_h256_to_moars(address);
+        let erdrs_address = address_h256_to_erdrs(address);
         let account = self
             .proxy
-            .get_account(&moars_address)
+            .get_account(&erdrs_address)
             .await
             .expect("failed to retrieve account nonce");
         account.nonce

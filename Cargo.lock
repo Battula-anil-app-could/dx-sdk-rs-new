@@ -374,10 +374,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "builtin-func-features"
+version = "0.0.0"
+dependencies = [
+ "dharitri-sc",
+ "dharitri-sc-scenario",
+]
+
+[[package]]
+name = "builtin-func-features-meta"
+version = "0.0.0"
+dependencies = [
+ "builtin-func-features",
+ "dharitri-sc-meta",
+]
+
+[[package]]
 name = "bumpalo"
-version = "3.15.1"
+version = "3.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c764d619ca78fccbf3069b37bd7af92577f044bb15236036662d79b6559f25b7"
+checksum = "a3b1be7772ee4501dba05acbe66bb1e8760f6a6c474a36035631638e4415f130"
 
 [[package]]
 name = "byteorder"
@@ -538,6 +554,7 @@ checksum = "2382f75942f4b3be3690fe4f86365e9c853c1587d6ee58212cebf6e2a9ccd101"
 name = "composability-tests"
 version = "0.0.0"
 dependencies = [
+ "builtin-func-features",
  "dharitri-sc-scenario",
  "forwarder",
  "forwarder-queue",
@@ -833,7 +850,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-chain-vm"
-version = "0.5.9"
+version = "0.6.0"
 dependencies = [
  "bitflags 1.3.2",
  "dharitri-chain-vm-executor",
@@ -868,7 +885,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-price-aggregator-sc"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "arrayvec",
  "dharitri-sc",
@@ -887,7 +904,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "bitflags 1.3.2",
  "dharitri-sc-codec",
@@ -918,7 +935,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -929,7 +946,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-meta"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "anyhow",
  "clap",
@@ -954,14 +971,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-modules"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "dharitri-sc",
 ]
 
 [[package]]
 name = "dharitri-sc-scenario"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "base64 0.13.1",
  "bech32",
@@ -987,7 +1004,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-snippets"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "base64 0.13.1",
  "dharitri-sc-scenario",
@@ -1001,7 +1018,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-wasm-adapter"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "dharitri-sc",
 ]
@@ -1033,7 +1050,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wmoax-swap-sc"
-version = "0.12.7"
+version = "0.12.8"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-modules",
@@ -1422,7 +1439,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-scenario",
- "dharitri-sc-wasm-adapter",
 ]
 
 [[package]]
@@ -2041,7 +2057,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-scenario",
- "dharitri-sc-wasm-adapter",
  "erc20",
 ]
 
@@ -2341,9 +2356,9 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.100"
+version = "0.9.101"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae94056a791d0e1217d18b6cbdccb02c61e3054fc69893607f4067e3bb0b1fd1"
+checksum = "dda2b0f344e78efc2facf7d195d098df0dd72151b26ab98da807afc26c198dff"
 dependencies = [
  "cc",
  "libc",
@@ -2568,7 +2583,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-scenario",
- "dharitri-sc-wasm-adapter",
  "vault",
 ]
 
@@ -2603,7 +2617,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-scenario",
- "dharitri-sc-wasm-adapter",
  "hex-literal",
 ]
 
@@ -2760,7 +2773,6 @@ version = "0.0.0"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-scenario",
- "dharitri-sc-wasm-adapter",
  "vault",
 ]
 

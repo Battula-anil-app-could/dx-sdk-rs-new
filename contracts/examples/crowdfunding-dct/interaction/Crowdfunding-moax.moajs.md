@@ -3,13 +3,13 @@
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let moajs = await require('@dharitrinetwork/moajs');
-let { moaSys, Moax, wallets: { alice, bob, carol }} = await moajs.setupInteractive("local-testnet");
+let erdjs = await require('@dharitrinetwork/erdjs');
+let { erdSys, Moax, wallets: { alice, bob, carol }} = await erdjs.setupInteractive("local-testnet");
 
-let crowdfunding = await moaSys.loadWrapper("contracts/examples/crowdfunding-dct");
+let crowdfunding = await erdSys.loadWrapper("contracts/examples/crowdfunding-dct");
 
 // Set the deadline to 1 minute from now (adjust this if you want more time before claiming the rewards)
-let someTimeFromNow = await moaSys.currentNonce() + moajs.minutesToNonce(1);
+let someTimeFromNow = await erdSys.currentNonce() + erdjs.minutesToNonce(1);
 
 // Deploy the crowdfunding contract with a target of 2 MOAX
 await crowdfunding.sender(alice).gas(50_000_000).call.deploy(Moax(2), someTimeFromNow, Moax);
@@ -22,17 +22,17 @@ await crowdfunding.sender(carol).value(Moax(1.5)).call.fund();
 let currentFunds = Moax.raw(await crowdfunding.query.currentFunds());
 
 // Should print 3 MOAX (since bob and carol added 1.5 MOAX each)
-moajs.print(currentFunds);
+erdjs.print(currentFunds);
 
 // Confirming the target is 2 MOAX
-moajs.print(Moax.raw(await crowdfunding.query.get_target()));
+erdjs.print(Moax.raw(await crowdfunding.query.get_target()));
 
 // Check that alice is the owner
 alice.address.equals(await crowdfunding.query.get_owner());
 
 // Store alice's current balance (we'll use this to check the balance difference later on)
-let aliceBalanceBefore = await moaSys.getBalance(alice, Moax);
-moajs.print(aliceBalanceBefore);
+let aliceBalanceBefore = await erdSys.getBalance(alice, Moax);
+erdjs.print(aliceBalanceBefore);
 
 // Wait a minute first, otherwise you'll get the "cannot claim before deadline" error
 // If the claim doesn't return an error - there are two possibilities:
@@ -42,9 +42,9 @@ moajs.print(aliceBalanceBefore);
 await crowdfunding.sender(alice).call.claim();
 
 // Let's check if alice received the funds
-let aliceBalanceAfter = await moaSys.getBalance(alice, Moax);
-moajs.print(aliceBalanceAfter);
+let aliceBalanceAfter = await erdSys.getBalance(alice, Moax);
+erdjs.print(aliceBalanceAfter);
 
 // If the previous claim was successful, this prints 2.99 MOAX (because of the gas costs)
-moajs.print(aliceBalanceAfter.minus(aliceBalanceBefore));
+erdjs.print(aliceBalanceAfter.minus(aliceBalanceBefore));
 ```
