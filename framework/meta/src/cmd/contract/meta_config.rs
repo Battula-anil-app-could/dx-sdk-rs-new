@@ -65,7 +65,7 @@ impl MetaConfig {
             let cargo_toml_data = WasmCargoTomlData {
                 name: contract.wasm_crate_name.clone(),
                 edition: main_cargo_toml_contents.package_edition(),
-                profile: contract.settings.contract_variant_profile.clone(),
+                profile: contract.settings.profile.clone(),
                 framework_version: main_cargo_toml_contents.dependency_version(FRAMEWORK_NAME_BASE),
                 framework_path: main_cargo_toml_contents.dependency_path(FRAMEWORK_NAME_BASE),
                 contract_features: contract.settings.features.clone(),
@@ -199,12 +199,13 @@ opt-level = \"z\"
 lto = true
 debug = false
 panic = \"abort\"
+overflow-checks = false
 
 [dependencies.test-crate-name]
 path = \"..\"
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = \"0.13.3\"
+version = \"0.13.4\"
 path = \"../../../../framework/wasm-adapter\"
 
 [workspace]
@@ -217,7 +218,7 @@ members = [\".\"]
             name: "test".to_string(),
             edition: "2021".to_string(),
             profile: ContractVariantProfile::default(),
-            framework_version: "0.13.3".to_string(),
+            framework_version: "0.13.4".to_string(),
             framework_path: Option::Some("../../../framework/base".to_string()),
             contract_features: Vec::<String>::new(),
         };

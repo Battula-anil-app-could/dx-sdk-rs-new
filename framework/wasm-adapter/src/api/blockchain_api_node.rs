@@ -356,10 +356,8 @@ impl BlockchainApiImpl for VmApiImpl {
         &self,
         token_id_handle: Self::ManagedBufferHandle,
     ) -> dharitri_sc::types::DctLocalRoleFlags {
-        unsafe {
-            dharitri_sc::types::DctLocalRoleFlags::from_bits_unchecked(getDCTLocalRoles(
-                token_id_handle,
-            ) as u64)
-        }
+        dharitri_sc::types::DctLocalRoleFlags::from_bits_retain(unsafe {
+            getDCTLocalRoles(token_id_handle)
+        } as u64)
     }
 }

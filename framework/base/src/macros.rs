@@ -190,7 +190,7 @@ macro_rules! sc_try {
 /// # }
 /// ```
 #[deprecated(
-    since = "0.8.6",
+    since = "0.10.5",
     note = "Replace with the `#[only_owner]` attribute that can be placed on an endpoint. That one is more compact and shows up in the ABI."
 )]
 #[macro_export]

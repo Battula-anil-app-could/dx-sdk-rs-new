@@ -7,7 +7,7 @@ use crate::{
 };
 use toml::Value;
 
-/// Migrate `0.44.0` to `0.45.0`, including the version bump.
+/// Migrate `0.13.1` to `0.13.2`, including the version bump.
 pub fn upgrade_to_13_2(dir: &RelevantDirectory) {
     if dir.dir_type == DirectoryType::Contract {
         v_0_45_prepare_meta(&dir.path);

@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-snippets"
-version = "0.13.3"
+version = "0.13.4"
 edition = "2021"
 
 authors = ["Dharitri <contact@dharitri.com>"]
@@ -16,15 +16,15 @@ categories = ["cryptography::cryptocurrencies"]
 [dependencies]
 tokio = { version = "1.24", features = ["full"] }
 hex = "0.4"
-base64 = "0.13.0"
+base64 = "0.21.5"
 log = "0.4.17"
 env_logger = "0.10"
 futures = "0.3"
 
 [dependencies.dharitri-sc-scenario]
-version = "=0.13.3"
+version = "=0.13.4"
 path = "../scenario"
 
 [dependencies.dharitri-sdk]
-version = "=0.10.0"
+version = "=0.10.1"
 path = "../../sdk/core"

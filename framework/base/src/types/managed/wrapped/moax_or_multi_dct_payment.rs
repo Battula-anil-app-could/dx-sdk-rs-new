@@ -16,7 +16,7 @@ use crate::derive::TypeAbi;
 /// - MOAX (can be zero in case of no payment whatsoever);
 /// - Multi-DCT (one or more DCT transfers).
 #[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug,
+    TopDecode, TopEncode, TypeAbi, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug,
 )]
 pub enum MoaxOrMultiDctPayment<M: ManagedTypeApi> {
     Moax(BigUint<M>),

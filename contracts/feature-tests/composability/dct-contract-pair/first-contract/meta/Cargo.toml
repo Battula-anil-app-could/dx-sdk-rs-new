@@ -8,10 +8,10 @@ publish = false
 path = ".."
 
 [dependencies.dharitri-sc]
-version = "0.13.3"
+version = "0.13.4"
 path = "../../../../../../framework/base"
 
 [dependencies.dharitri-sc-meta]
-version = "0.13.3"
+version = "0.13.4"
 path = "../../../../../../framework/meta"
 default-features = false

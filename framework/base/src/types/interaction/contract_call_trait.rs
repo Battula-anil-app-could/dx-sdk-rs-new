@@ -118,7 +118,7 @@ where
     ///
     /// Deprecated and will be removed soon. Use `execute_on_dest_context::<IgnoreValue>(...)` instead.
     #[deprecated(
-        since = "0.36.1",
+        since = "0.10.6",
         note = "Redundant method, use `let _: IgnoreValue = contract_call.execute_on_dest_context(...)` instead"
     )]
     fn execute_on_dest_context_ignore_result(self) {

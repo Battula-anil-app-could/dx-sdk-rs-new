@@ -9,7 +9,7 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-sc]
-version = "0.13.3"
+version = "0.13.4"
 path = "../../../../../framework/base"
 
 [dependencies.random]

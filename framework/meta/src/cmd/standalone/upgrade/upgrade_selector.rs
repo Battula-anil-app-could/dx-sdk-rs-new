@@ -1,5 +1,6 @@
 use crate::{
     cli_args::UpgradeArgs,
+    cmd::standalone::upgrade::upgrade_settings::UpgradeSettings,
     folder_structure::{dir_pretty_print, RelevantDirectories, RelevantDirectory},
     version_history::{versions_iter, LAST_UPGRADE_VERSION, VERSIONS},
 };
@@ -19,6 +20,8 @@ pub fn upgrade_sc(args: &UpgradeArgs) {
     } else {
         "./"
     };
+
+    let settings = UpgradeSettings::new(args.no_check);
 
     let last_version = args
         .override_target_version
@@ -52,7 +55,7 @@ pub fn upgrade_sc(args: &UpgradeArgs) {
         }
 
         for dir in dirs.iter_version(from_version) {
-            upgrade_post_processing(dir);
+            upgrade_post_processing(dir, &settings);
         }
 
         // // change the version in memory for the next iteration (dirs is not reloaded from disk)
@@ -77,7 +80,7 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
             upgrade_to_10_9(dir);
         },
         Some((_, "0.13.2")) => {
-        upgrade_to_13_2(dir);
+            upgrade_to_13_2(dir);
         },
         Some((from_version, to_version)) => {
             version_bump_in_cargo_toml(&dir.path, from_version, to_version);
@@ -87,20 +90,19 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
 }
 
 
-
-fn upgrade_post_processing(dir: &RelevantDirectory) {
+fn upgrade_post_processing(dir: &RelevantDirectory,  settings: &UpgradeSettings) {
     match dir.upgrade_in_progress {
         Some((_, "0.9.2")) | Some((_, "0.9.3")) | Some((_, "0.9.6")) | Some((_, "0.9.7"))
         | Some((_, "0.9.9")) | Some((_, "0.10.3")) | Some((_, "0.10.2")) | Some((_, "0.10.4"))
         | Some((_, "0.10.5")) | Some((_, "0.10.7")) | Some((_, "0.11.8")) | Some((_, "0.12.0"))
-        | Some((_, "0.12.4")) | Some((_, "0.12.5")) | Some((_, "0.13.1")) | Some((_, "0.13.3")) => {
+        | Some((_, "0.12.4")) | Some((_, "0.12.5")) | Some((_, "0.13.1")) | Some((_, "0.13.4")) => {
             print_post_processing(dir);
-            cargo_check(dir);
+            cargo_check(dir, settings);
         },
         Some((_, "0.10.9")) => {
             print_post_processing(dir);
             postprocessing_after_10_9(dir);
-            cargo_check(dir);
+            cargo_check(dir, settings);
         },
         _ => {},
     }

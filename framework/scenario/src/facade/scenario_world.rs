@@ -164,7 +164,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "0.10.7",
+        since = "0.37.0",
         note = "Got renamed to `register_contract`, but not completely removed, in order to ease test migration. Please replace with `register_contract`."
     )]
     pub fn register_contract_builder<B: CallableContractBuilder>(
