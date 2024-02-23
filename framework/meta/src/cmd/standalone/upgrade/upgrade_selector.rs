@@ -80,7 +80,7 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
             upgrade_to_10_9(dir);
         },
         Some((_, "0.13.2")) => {
-            upgrade_to_13_2(dir);
+        upgrade_to_13_2(dir);
         },
         Some((from_version, to_version)) => {
             version_bump_in_cargo_toml(&dir.path, from_version, to_version);

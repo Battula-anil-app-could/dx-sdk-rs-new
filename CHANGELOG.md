@@ -26,7 +26,13 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.4, codec 0.4.8, vm 0.6.3, scenario-format 0.11.3, sdk 0.10.1] - 2023-12-18
+## [sc 0.13.5] - 2024-01-05
+- Promises callback memory allocator bugfix.
+- Removed features: `promises`, `managed-map`, `back-transfers`.
+- Removed `hashbrown` dependency from framework.
+- Imports in output now sorted.
+
+## [sc 0.45.2, codec 0.4.8, vm 0.6.3, scenario-format 0.11.3, sdk 0.10.1] - 2023-12-18
 - Updated framework dependencies to the latest versions: syn, bitflags, wasmparser, base64, sha2, sha3, itertools, hmac, pem, pbkdf2, etc.
 - `sc-meta` improvements:
 	- `overflow-checks` field in `sc-config.toml`;
@@ -47,7 +53,7 @@ They are:
 	- `wasm` crates now fully generated based on data from `sc-config.toml` and root `Cargo.toml`.
 	- Setting wasm target dir automatically, if not specified, based on workspace.
 
-## [sc 0.13.1, vm 0.6.0] - 2023-11-03
+## [sc 0.44.0, vm 0.6.0] - 2023-11-03
 - Back-transfer:
 	- API support in framework (not yet implemented in the Rust VM);
 	- Feature flag: `"back-transfers"`;
@@ -83,12 +89,12 @@ They are:
 
 ## [sc 0.43.1, vm 0.5.1] - 2023-08-18
 - Template tool improvements:
-	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.12.5.
+	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.43.0.
 	- Ability to specify path where to create new contract.
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.12.5, codec 0.18.1, vm 0.5.0] - 2023-08-16
+## [sc 0.43.0, codec 0.18.1, vm 0.5.0] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;
@@ -202,7 +208,7 @@ They are:
 	- printing to console the build command.
 - `BigUint` from `u128` conversion.
 
-## [sc 0.11.1, vm 0.1.2] - 2023-01-19
+## [sc 0.39.2, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
 	- `upgrade` also re-generates wasm crates after reaching 0.11.0.
@@ -233,7 +239,7 @@ They are:
 - New utility functions: `self.send().dct_local_burn_multi(...`, `self.blockchain().get_token_attributes(...)`.
 - Updated all crates to Rust 2021.
 
-## [dharitri-wasm 0.37.0, dharitri-codec 0.15.0] - 2022-12-09
+## [dharitri-wasm 0.10.7, dharitri-codec 0.15.0] - 2022-12-09
 - Multi-contract build system:
 	- build system refactor;
 	- `multicontract.toml` config system with labels,
@@ -401,7 +407,7 @@ They are:
 - Refactored `CodeMetadata` and added "payable by SC" field.
 - Empty contract template.
 
-## [dharitri-wasm 0.10.5] - 2022-01-19
+## [dharitri-wasm 0.8.6] - 2022-01-19
 - Major VM API trait refactoring. All API methods can be accessed from a static context. Removed api instance variables from all objects.
 - External view contracts
 	- Annotating one or more endpoints with `#[external_view]` triggers the framework to create a second "external view" contract where all these endpoints are placed. This is primarily to reduce the main contract size.

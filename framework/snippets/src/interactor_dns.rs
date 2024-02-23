@@ -70,10 +70,10 @@ fn test_compute_dns_address() {
 fn test_dns_for_name() {
     assert_eq!(
         bech32::encode(&dns_address_for_name("test.dharitri")),
-        "moa1qqqqqqqqqqqqqpgqp64e3pqxwwyy93t5wp2w2jnlf4lfx3ljqqgs6lxpsj"
+        "moa1qqqqqqqqqqqqqpgqx4ca3eu4k6w63hl8pjjyq2cp7ul7a4ukqz0smcux6z"
     );
     assert_eq!(
         bech32::encode(&dns_address_for_name("helloworld.dharitri")),
-        "moa1qqqqqqqqqqqqqpgqrx5fz9lsd0nz526wmcjnj5cv6as3y2qkqzhqe5tved"
+        "moa1qqqqqqqqqqqqqpgqhcm9k2xkk75e47wpmvfgj8fuzwaguvzyqqrqanl8m7"
     );
 }

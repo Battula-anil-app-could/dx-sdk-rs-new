@@ -23,10 +23,9 @@ overflow-checks = false
 
 [dependencies.forwarder-queue]
 path = ".."
-features = ["promises"]
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "0.13.4"
+version = "0.13.5"
 path = "../../../../../framework/wasm-adapter"
 
 [workspace]

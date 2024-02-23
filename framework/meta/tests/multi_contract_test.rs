@@ -1,7 +1,7 @@
 use dharitri_sc::abi::{ContractAbi, EndpointAbi};
-use dharitri_sc_meta::cmd::contract::sc_config::{MultiContractConfigSerde, ScConfig};
+use dharitri_sc_meta::cmd::contract::sc_config::{ScConfig, ScConfigSerde};
 
-fn get_serialized_toml() -> MultiContractConfigSerde {
+fn get_serialized_toml() -> ScConfigSerde {
     toml::from_str(
         r#"
         [settings]

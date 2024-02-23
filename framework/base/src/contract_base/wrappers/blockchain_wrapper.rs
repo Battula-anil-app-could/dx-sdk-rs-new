@@ -10,8 +10,9 @@ use crate::{
     err_msg::{ONLY_OWNER_CALLER, ONLY_USER_ACCOUNT_CALLER},
     storage::{self},
     types::{
-        BigUint, MoaxOrDctTokenIdentifier, DctLocalRoleFlags, DctTokenData, DctTokenType,
-        ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec, TokenIdentifier,
+        BackTransfers, BigUint, MoaxOrDctTokenIdentifier, DctLocalRoleFlags, DctTokenData,
+        DctTokenType, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec,
+        TokenIdentifier,
     },
 };
 
@@ -347,8 +348,7 @@ where
     /// Works after:
     /// - synchronous calls
     /// - asynchronous calls too, in callbacks.
-    #[cfg(feature = "back-transfers")]
-    pub fn get_back_transfers(&self) -> crate::types::BackTransfers<A> {
+    pub fn get_back_transfers(&self) -> BackTransfers<A> {
         let dct_transfer_value_handle: A::BigIntHandle =
             use_raw_handle(A::static_var_api_impl().next_handle());
         let call_value_handle: A::BigIntHandle =
@@ -359,7 +359,7 @@ where
             call_value_handle.get_raw_handle(),
         );
 
-        crate::types::BackTransfers {
+        BackTransfers {
             total_moax_amount: BigUint::from_raw_handle(call_value_handle.get_raw_handle()),
             dct_payments: ManagedVec::from_raw_handle(dct_transfer_value_handle.get_raw_handle()),
         }
