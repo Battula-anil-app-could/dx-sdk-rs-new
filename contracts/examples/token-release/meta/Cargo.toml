@@ -10,7 +10,7 @@ publish = false
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "0.13.5"
+version = "0.13.6"
 path = "../../../../framework/meta"
 default-features = false
 

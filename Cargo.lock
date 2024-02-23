@@ -729,7 +729,7 @@ checksum = "553150902e88ebe93a6db89903f51c85546d32345a592a2bbf6a896f21ae0a8b"
 
 [[package]]
 name = "dharitri-price-aggregator-sc"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "arrayvec",
  "dharitri-sc",
@@ -750,7 +750,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "bitflags 2.4.2",
  "dharitri-sc-codec",
@@ -780,7 +780,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -791,7 +791,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-meta"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "clap",
  "colored",
@@ -816,14 +816,14 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-modules"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "dharitri-sc",
 ]
 
 [[package]]
 name = "dharitri-sc-scenario"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "base64",
  "bech32",
@@ -849,7 +849,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-snippets"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "base64",
  "dharitri-sc-scenario",
@@ -863,7 +863,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-wasm-adapter"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "dharitri-sc",
 ]
@@ -894,7 +894,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-wmoax-swap-sc"
-version = "0.13.5"
+version = "0.13.6"
 dependencies = [
  "dharitri-sc",
  "dharitri-sc-modules",

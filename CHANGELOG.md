@@ -26,7 +26,10 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.5] - 2024-01-05
+## [sc 0.13.6] - 2024-01-10
+- Interactor: fixed parsing of newly issued token identifier.
+
+## [sc 0.46.0] - 2024-01-05
 - Promises callback memory allocator bugfix.
 - Removed features: `promises`, `managed-map`, `back-transfers`.
 - Removed `hashbrown` dependency from framework.
@@ -53,7 +56,7 @@ They are:
 	- `wasm` crates now fully generated based on data from `sc-config.toml` and root `Cargo.toml`.
 	- Setting wasm target dir automatically, if not specified, based on workspace.
 
-## [sc 0.44.0, vm 0.6.0] - 2023-11-03
+## [sc 0.13.1, vm 0.6.0] - 2023-11-03
 - Back-transfer:
 	- API support in framework (not yet implemented in the Rust VM);
 	- Feature flag: `"back-transfers"`;
@@ -89,12 +92,12 @@ They are:
 
 ## [sc 0.43.1, vm 0.5.1] - 2023-08-18
 - Template tool improvements:
-	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.43.0.
+	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.12.5.
 	- Ability to specify path where to create new contract.
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.43.0, codec 0.18.1, vm 0.5.0] - 2023-08-16
+## [sc 0.12.5, codec 0.18.1, vm 0.5.0] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;

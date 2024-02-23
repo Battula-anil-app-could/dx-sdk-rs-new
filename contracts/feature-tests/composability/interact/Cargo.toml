@@ -24,9 +24,9 @@ path = "../forwarder-queue"
 path = "../promises-features"
 
 [dependencies.dharitri-sc-modules]
-version = "0.13.5"
+version = "0.13.6"
 path = "../../../../contracts/modules"
 
 [dependencies.dharitri-sc-snippets]
-version = "0.13.5"
+version = "0.13.6"
 path = "../../../../framework/snippets"

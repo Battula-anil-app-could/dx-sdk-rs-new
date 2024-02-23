@@ -89,13 +89,13 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
     }
 }
 
-
 fn upgrade_post_processing(dir: &RelevantDirectory,  settings: &UpgradeSettings) {
     match dir.upgrade_in_progress {
         Some((_, "0.9.2")) | Some((_, "0.9.3")) | Some((_, "0.9.6")) | Some((_, "0.9.7"))
         | Some((_, "0.9.9")) | Some((_, "0.10.3")) | Some((_, "0.10.2")) | Some((_, "0.10.4"))
         | Some((_, "0.10.5")) | Some((_, "0.10.7")) | Some((_, "0.11.8")) | Some((_, "0.12.0"))
-        | Some((_, "0.12.4")) | Some((_, "0.12.5")) | Some((_, "0.13.1")) | Some((_, "0.13.4")) => {
+        | Some((_, "0.12.4")) | Some((_, "0.12.5")) | Some((_, "0.13.1")) | Some((_, "0.13.4")) 
+        | Some((_, "0.13.5")) => {
             print_post_processing(dir);
             cargo_check(dir, settings);
         },
@@ -107,3 +107,4 @@ fn upgrade_post_processing(dir: &RelevantDirectory,  settings: &UpgradeSettings)
         _ => {},
     }
 }
+    
