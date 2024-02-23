@@ -204,7 +204,7 @@ panic = \"abort\"
 path = \"..\"
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = \"0.13.2\"
+version = \"0.13.3\"
 path = \"../../../../framework/wasm-adapter\"
 
 [workspace]
@@ -217,7 +217,7 @@ members = [\".\"]
             name: "test".to_string(),
             edition: "2021".to_string(),
             profile: ContractVariantProfile::default(),
-            framework_version: "0.13.2".to_string(),
+            framework_version: "0.13.3".to_string(),
             framework_path: Option::Some("../../../framework/base".to_string()),
             contract_features: Vec::<String>::new(),
         };

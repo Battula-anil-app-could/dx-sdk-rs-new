@@ -26,7 +26,11 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.2, vm 0.6.2, scenario-format 0.11.2, sdk 0.10.0] - 2023-11-24
+## [sc 0.13.3, codec 0.4.7] - 2023-11-24
+- Fixed sc-meta standalone install backwards compatibility.
+- Better hygiene in codec derive.
+
+## [sc 0.45.0, vm 0.6.2, scenario-format 0.11.2, sdk 0.10.0] - 2023-11-24
 - Replicated VM 1.5 in the Rust VM. This includes support for:
 	- promises,
 	- back-transfers,
@@ -77,7 +81,7 @@ They are:
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.12.5, codec 0.4.6, vm 0.5.0] - 2023-08-16
+## [sc 0.12.5, codec 0.18.1, vm 0.5.0] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;
@@ -246,10 +250,10 @@ They are:
 	- Added `take` and `replace` methods for `SingleValueMapper`;
 	- Implemented `Extend` trait for `UnorderedSetMapper`.
 
-## [dharitri-wasm 0.10.6.1] - 2022-11-01
+## [dharitri-wasm 0.36.1] - 2022-11-01
 - Deprecated `ContractCall` `execute_on_dest_context_ignore_result` method, since it is currently redundant.
 
-## [dharitri-wasm 0.10.6.0, dharitri-codec 0.14.0] - 2022-10-13
+## [dharitri-wasm 0.36.0, dharitri-codec 0.14.0] - 2022-10-13
 - `DctTokenPayment` legacy decode: objects encoded by older versions of the framework can now also be decoded, if flag `dct-token-payment-legacy-decode` is active.
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
@@ -538,10 +542,10 @@ They are:
 	- Support for DCT multi-transfer.
 
 
-## [dharitri-wasm 0.18.2] - 2021-08-20
+## [dharitri-wasm 0.4.7] - 2021-08-20
 - Crypto API: `ripemd160` function, custom secp256k1 signature verification (`verify_custom_secp256k1`) and signature generation (`encode_secp256k1_der_signature`).
 
-## [dharitri-wasm 0.4.6] - 2021-08-05
+## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
 ## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28

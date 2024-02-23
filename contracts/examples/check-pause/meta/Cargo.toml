@@ -9,5 +9,6 @@ authors = ["Alin Cruceat <alin.cruceat@dharitri.com>"]
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "0.13.2"
+version = "0.13.3"
 path = "../../../../framework/meta"
+default-features = false
