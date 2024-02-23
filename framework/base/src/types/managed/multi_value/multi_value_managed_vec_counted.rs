@@ -21,13 +21,13 @@ where
 }
 
 #[deprecated(
-    since = "0.29.0",
+    since = "0.9.3",
     note = "Alias kept for backwards compatibility. Replace with `MultiValueManagedVecCounted`"
 )]
 pub type ManagedCountedVarArgs<M, T> = MultiValueManagedVecCounted<M, T>;
 
 #[deprecated(
-    since = "0.29.0",
+    since = "0.9.3",
     note = "Alias kept for backwards compatibility. Replace with `MultiValueManagedVecCounted`"
 )]
 pub type ManagedCountedMultiResultVec<M, T> = MultiValueManagedVecCounted<M, T>;

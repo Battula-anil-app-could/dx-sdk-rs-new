@@ -9,10 +9,10 @@ publish = false
 path = "src/proxy-test-second.rs"
 
 [dependencies.dharitri-sc]
-version = "0.13.1"
+version = "0.13.2"
 path = "../../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.13.1"
+version = "0.13.2"
 path = "../../../../framework/scenario"

@@ -11,6 +11,7 @@ use super::{convert_type_descriptions_to_json, DctAttributeJson, TypeDescription
 pub struct DctAttributeAbiJson {
     pub dct_attribute: DctAttributeJson,
 
+    #[serde(default)]
     #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub types: BTreeMap<String, TypeDescriptionJson>,
 }

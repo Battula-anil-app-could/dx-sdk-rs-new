@@ -51,11 +51,16 @@
                         "endpoint": "str:DCTTransfer",
                         "topics": [
                             "str:TEST-TOKENA",
-                            "",
+                            "0",
                             "1000",
                             "sc:vault"
                         ],
-                        "data": ""
+                        "data": [
+                            "str:DirectCall",
+                            "str:DCTTransfer",
+                            "str:TEST-TOKENA",
+                            "1000"
+                        ]
                     }
                 ],
                 "gas": "*",

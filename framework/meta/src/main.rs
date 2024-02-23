@@ -1,4 +1,3 @@
-#[tokio::main]
-async fn main() {
-    dharitri_sc_meta::cli_main_standalone().await;
+fn main() {
+    dharitri_sc_meta::cmd::standalone::cli_main_standalone();
 }
