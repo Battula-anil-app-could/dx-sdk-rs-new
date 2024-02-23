@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "0.13.6"
+version = "0.13.7"
 edition = "2021"
 
 authors = [
@@ -40,23 +40,23 @@ path = "src/main.rs"
 run-go-tests = []
 
 [dependencies.dharitri-sc]
-version = "=0.13.6"
+version = "=0.13.7"
 features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.dharitri-sc-meta]
-version = "=0.13.6"
+version = "=0.13.7"
 path = "../meta"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "0.11.3"
+version = "0.11.4"
 path = "../../sdk/scenario-format"
 
 [dependencies.dharitri-chain-vm-executor]
 version = "0.4.0"
 
 [dependencies.dharitri-chain-vm]
-version = "=0.6.3"
+version = "=0.6.4"
 path = "../../vm"
 
 [dependencies.dharitri-sdk]

@@ -9,17 +9,17 @@ publish = false
 path = "src/check_pause.rs"
 
 [dev-dependencies]
-num-bigint = "0.4.2"
+num-bigint = "0.4"
 
 [dependencies.dharitri-sc]
-version = "0.13.6"
+version = "0.13.7"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "0.13.6"
+version = "0.13.7"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.13.6"
+version = "0.13.7"
 path = "../../../framework/scenario"
 

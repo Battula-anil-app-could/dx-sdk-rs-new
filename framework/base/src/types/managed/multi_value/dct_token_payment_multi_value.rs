@@ -18,7 +18,7 @@ pub struct DctTokenPaymentMultiValue<M: ManagedTypeApi> {
 }
 
 #[deprecated(
-    since = "0.29.3",
+    since = "0.9.5",
     note = "Alias kept for backwards compatibility. Replace with `DctTokenPaymentMultiValue`"
 )]
 pub type DctTokenPaymentMultiArg<M> = DctTokenPaymentMultiValue<M>;

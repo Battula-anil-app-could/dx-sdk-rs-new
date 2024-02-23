@@ -10,11 +10,11 @@ name = "mxpy-snippet-generator"
 path = "src/mxpy_snippet_generator.rs"
 
 [dependencies.dharitri-sc]
-version = "0.13.6"
+version = "0.13.7"
 path = "../../framework/base"
 
 [dependencies]
 bech32 = "0.9"
-num-bigint = "0.4.2"
+num-bigint = "0.4"
 num-traits = "0.2"
 hex = "0.4"

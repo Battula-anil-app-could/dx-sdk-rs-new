@@ -26,7 +26,16 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.6] - 2024-01-10
+## [sc 0.13.7, codec 0.4.9, vm 0.6.4, scenario-format 0.11.4] - 2024-01-23
+- Added support for the code metadata in the Rust VM and Rust scenarios backend.
+- `sc-meta`:
+	- New `mx-scenario-go` installer;
+	- `--nocapture` flag added in `sc-meta test` CLI;
+	- Framework version system refactor,
+- `SetMapper` and `QueueMapper` can read from another contract.
+- Fixed an edge case when generating enum encoding.
+
+## [sc 0.46.1] - 2024-01-10
 - Interactor: fixed parsing of newly issued token identifier.
 
 ## [sc 0.46.0] - 2024-01-05
@@ -35,7 +44,7 @@ They are:
 - Removed `hashbrown` dependency from framework.
 - Imports in output now sorted.
 
-## [sc 0.45.2, codec 0.4.8, vm 0.6.3, scenario-format 0.11.3, sdk 0.10.1] - 2023-12-18
+## [sc 0.45.2, codec 0.18.3, vm 0.7.1, scenario-format 0.21.1, sdk 0.10.1] - 2023-12-18
 - Updated framework dependencies to the latest versions: syn, bitflags, wasmparser, base64, sha2, sha3, itertools, hmac, pem, pbkdf2, etc.
 - `sc-meta` improvements:
 	- `overflow-checks` field in `sc-config.toml`;
@@ -214,10 +223,10 @@ They are:
 ## [sc 0.39.2, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
-	- `upgrade` also re-generates wasm crates after reaching 0.11.0.
+	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.11.0, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
+## [sc 0.39.1, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -357,7 +366,7 @@ They are:
 - Rust testing framework: Allow checking NFT balance without also checking attributes.
 - View for `MapMapper`.
 
-## [dharitri-wasm 0.29.3] - 2022-03-03
+## [dharitri-wasm 0.9.5] - 2022-03-03
 - `ManagedVec` backwards compatible implementation for `set`.
 - Implemented `ManagedVecItem` for `Option<T>`.
 
@@ -486,7 +495,7 @@ They are:
 ## [dharitri-wasm 0.22.1] - 2021-11-04
 - Made the generated code in `wasm/lib.rs` more compact with the use of macros.
 
-## [dharitri-wasm 0.22.0] - 2021-11-02
+## [dharitri-wasm 0.11.4] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
 - Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
@@ -494,7 +503,7 @@ They are:
 ## [dharitri-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `dharitri-wasm-debug`
 
-## [dharitri-wasm 0.11.3, dharitri-codec 0.8.1, denali 0.11.1] - 2021-10-26
+## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.11.1] - 2021-10-26
 - Relative path improvements and fixes in `dharitri-wasm-debug`:
 	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
 	- debugging now works seamlessly, without needing to temporarily change paths in the tests
@@ -502,7 +511,7 @@ They are:
 - Debugger builtin function mocks check for DCT roles
 - ABI provides definitions for DctTokenPayment, DctTokenData, DctTokenType
 
-## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.11.0] - 2021-10-22
+## [dharitri-wasm 0.21.0, dharitri-codec 0.6.4, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -564,7 +573,7 @@ They are:
 ## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
+## [dharitri-wasm 0.18.0, denali 0.6.4] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -602,7 +611,7 @@ They are:
 - Published DNS module, which helps contracts register usernames for themselves
 - `DCTLocalRole` more expressive type ABI
 
-## [dharitri-wasm 0.16.1, denali 0.6.3] - 2021-05-18
+## [dharitri-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
 ## [dharitri-wasm 0.16.0, denali 0.7.0, dharitri-codec 0.5.3] - 2021-05-14
@@ -770,9 +779,9 @@ They are:
 ## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
-- Completely ditched the approach from dharitri-wasm 0.8.0.
+- Completely ditched the approach from dharitri-wasm 0.6.4.
 
-## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.6.4, dharitri-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -781,7 +790,7 @@ They are:
 - small int EI
 - minor refactors, serialization fixes
 
-## [dharitri-wasm 0.6.3] - 2020-10-07
+## [dharitri-wasm 0.7.1] - 2020-10-07
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
