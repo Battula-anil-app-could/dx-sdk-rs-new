@@ -20,7 +20,7 @@ impl Address {
         self.0
     }
 
-    pub fn from_bech9_9_string(bech32: &str) -> Result<Self> {
+    pub fn from_bech32_string(bech32: &str) -> Result<Self> {
         let (_, data, _) = bech32::decode(bech32)?;
         let data = Vec::<u8>::from_base32(&data)?;
 
@@ -78,7 +78,7 @@ impl<'de> Deserialize<'de> for Address {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        Ok(Self::from_bech9_9_string(s.as_str()).unwrap())
+        Ok(Self::from_bech32_string(s.as_str()).unwrap())
     }
 }
 
@@ -88,7 +88,7 @@ pub mod tests {
 
     #[test]
     fn test_decode_address() {
-        let addr = Address::from_bech9_9_string(
+        let addr = Address::from_bech32_string(
             "moa1qqqqqqqqqqqqqpgqyfjjn43spw7teklwtpz4x5waygq2mluyj9tszrtp02",
         )
         .unwrap();

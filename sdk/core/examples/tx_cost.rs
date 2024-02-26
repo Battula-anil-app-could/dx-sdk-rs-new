@@ -9,11 +9,11 @@ async fn main() {
     let tx = Transaction {
         nonce: 1,
         value: "50".to_string(),
-        receiver: Address::from_bech9_9_string(
+        receiver: Address::from_bech32_string(
             "moa1rh5ws22jxm9pe7dtvhfy6j3uttuupkepferdwtmslms5fydtrh5stfqvmn",
         )
         .unwrap(),
-        sender: Address::from_bech9_9_string(
+        sender: Address::from_bech32_string(
             "moa1rh5ws22jxm9pe7dtvhfy6j3uttuupkepferdwtmslms5fydtrh5stfqvmn",
         )
         .unwrap(),

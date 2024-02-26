@@ -19,7 +19,7 @@ pub async fn retrieve_account_as_scenario_set_state(
     addr: String,
     hex_encoded: bool,
 ) -> ScenarioRaw {
-    let address = Address::from_bech9_9_string(&addr).unwrap();
+    let address = Address::from_bech32_string(&addr).unwrap();
     let blockchain = CommunicationProxy::new(api);
     let account = blockchain.get_account(&address).await.unwrap();
 
