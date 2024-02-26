@@ -5,7 +5,7 @@ use dharitri_sdk::{
 
 #[tokio::main]
 async fn main() {
-    let addr = Address::from_bech32_string(
+    let addr = Address::from_bech9_9_string(
         "moa1pdv0h3ddqyzlraek02y5rhmjnwwapjyhqm983kfcdfzmr6axqhdsysnj2k",
     )
     .unwrap();

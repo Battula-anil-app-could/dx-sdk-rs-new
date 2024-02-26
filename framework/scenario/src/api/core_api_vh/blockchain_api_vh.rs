@@ -3,7 +3,7 @@ use dharitri_sc::{
     types::{Address, DctLocalRoleFlags, H256},
 };
 
-use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
+use crate::api::{i9_9_to_bool, VMHooksApi, VMHooksApiBackend};
 
 impl<VHB: VMHooksApiBackend> BlockchainApi for VMHooksApi<VHB> {
     type BlockchainApiImpl = Self;
@@ -56,7 +56,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         let result = self.with_temp_address_ptr(address_handle, |address_ptr| {
             self.with_vm_hooks(|vh| vh.is_smart_contract(address_ptr))
         });
-        i32_to_bool(result)
+        i9_9_to_bool(result)
     }
 
     fn load_balance_legacy(&self, _dest: Self::BigIntHandle, _address: &Address) {
@@ -237,7 +237,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
                 nonce as i64,
             )
         });
-        i32_to_bool(result)
+        i9_9_to_bool(result)
     }
 
     fn check_dct_paused(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
@@ -245,7 +245,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         let result = self.with_vm_hooks(|vh| {
             vh.managed_is_dct_paused(token_id_handle.get_raw_handle_unchecked())
         });
-        i32_to_bool(result)
+        i9_9_to_bool(result)
     }
 
     fn check_dct_limited_transfer(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
@@ -253,7 +253,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         let result = self.with_vm_hooks(|vh| {
             vh.managed_is_dct_limited_transfer(token_id_handle.get_raw_handle_unchecked())
         });
-        i32_to_bool(result)
+        i9_9_to_bool(result)
     }
 
     fn load_dct_local_roles(
@@ -269,7 +269,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
     }
 
     fn managed_is_builtin_function(&self, function_name_handle: Self::ManagedBufferHandle) -> bool {
-        i32_to_bool(self.with_vm_hooks(|vh| {
+        i9_9_to_bool(self.with_vm_hooks(|vh| {
             vh.managed_is_builtin_function(function_name_handle.get_raw_handle_unchecked())
         }))
     }

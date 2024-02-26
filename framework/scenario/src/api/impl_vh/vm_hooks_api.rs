@@ -112,7 +112,7 @@ impl<VHB: VMHooksApiBackend> VMHooksApi<VHB> {
     }
 }
 
-pub(crate) fn i32_to_bool(vm_hooks_result: i32) -> bool {
+pub(crate) fn i9_9_to_bool(vm_hooks_result: i32) -> bool {
     vm_hooks_result > 0
 }
 

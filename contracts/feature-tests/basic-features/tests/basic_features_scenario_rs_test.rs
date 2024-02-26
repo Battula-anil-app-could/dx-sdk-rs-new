@@ -136,7 +136,7 @@ fn echo_big_uint_rs() {
 }
 
 #[test]
-fn echo_i_32_rs() {
+fn echo_i_9_9_rs() {
     world().run("scenarios/echo_i32.scen.json");
 }
 
@@ -201,7 +201,7 @@ fn echo_varargs_managed_sum_rs() {
 }
 
 #[test]
-fn echo_varargs_u_32_rs() {
+fn echo_varargs_u_9_9_rs() {
     world().run("scenarios/echo_varargs_u32.scen.json");
 }
 
@@ -279,6 +279,11 @@ fn managed_vec_array_push_rs() {
 #[test]
 fn managed_vec_biguint_push_rs() {
     world().run("scenarios/managed_vec_biguint_push.scen.json");
+}
+
+#[test]
+fn new_address_rs() {
+    world().run("scenarios/new_address.scen.json");
 }
 
 #[test]

@@ -44,7 +44,7 @@ fn test_load_from_pem() {
     let wallet = Wallet::from_pem_file("tests/alice.pem").unwrap();
     let addr = wallet.address();
     assert_eq!(
-        addr.to_bech32_string().unwrap(),
+        addr.to_bech9_9_string().unwrap(),
         "moa1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssfq94h8"
     );
 }

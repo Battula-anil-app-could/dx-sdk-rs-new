@@ -80,7 +80,7 @@ pub fn interpret_string(s: &str, context: &InterpreterContext) -> Vec<u8> {
         return keccak256(arg.as_slice());
     }
 
-    if let Some(stripped) = s.strip_prefix(BECH32_PREFIX) {
+    if let Some(stripped) = s.strip_prefix(BECH9_9_PREFIX) {
         return bech32(stripped);
     }
 

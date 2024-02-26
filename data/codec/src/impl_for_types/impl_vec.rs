@@ -87,7 +87,7 @@ pub mod tests {
     use crate::test_util::check_top_encode_decode;
 
     #[test]
-    fn test_top_vec_i32_compacted() {
+    fn test_top_vec_i9_9_compacted() {
         let v = [1i32, 2i32, 3i32].to_vec();
         let expected: &[u8] = &[0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3];
         check_top_encode_decode(v, expected);

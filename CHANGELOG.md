@@ -26,7 +26,16 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.8, codec 0.5.0, vm 0.6.5, scenario-format 0.11.5] - 2024-01-29
+## [sc 0.13.9, codec 0.5.1, vm 0.6.6, scenario-format 0.11.6] - 2024-02-02
+- Scenario testing infrastructure:
+	- The Rust VM can generate mock addresses, if not specified in advance.
+	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of mx-scenario-go.
+	- Rust test support for checking `code_metadata`.
+- Explicit discriminants supported for enums.
+- Optimized `top_encode_number` function. It no longer contains branches or loops.
+- Removed reliance on Rust nightly features `is_sorted` and `slice_partition_dedup`.
+
+## [sc 0.47.1, codec 0.18.5, vm 0.8.1, scenario-format 0.22.1] - 2024-01-29
 - Blockchain hooks: `get_code_metadata`, `is_builtin_function`.
 - Support for `mxsc:` syntax in scenarios.
 - Updated dependencies.
@@ -187,7 +196,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.11.8, vm 0.2.0] - 2023-04-20
+## [sc 0.40.0, vm 0.2.0] - 2023-04-20
 - Call value `moax_value` and `all_dct_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -326,7 +335,7 @@ They are:
 - Testing and debugging environment aligned with VM version 1.4.53.
 - Call value and token data infrastructure additional cleanup.
 
-## [dharitri-wasm 0.9.9, denali 0.14.0] - 2022-06-03
+## [dharitri-wasm 0.32.0, denali 0.14.0] - 2022-06-03
 - VM new functionality added as part of the environment interface 1.2:
 	- Fully managed functionality for elliptic curves (no allocator);
 	- Fully managed cryptographic functions (no allocator);
@@ -350,7 +359,7 @@ They are:
 ## [dharitri-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
-## [dharitri-wasm 0.9.7, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
+## [dharitri-wasm 0.31.0, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -457,18 +466,18 @@ They are:
 ## [dharitri-wasm 0.23.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
-## [dharitri-wasm 0.11.51] - 2021-11-17
+## [dharitri-wasm 0.22.11] - 2021-11-17
 - Derive `ManagedVecItem` generics fix
 - Constructor can reside in module
 
-## [dharitri-wasm 0.11.50] - 2021-11-12
+## [dharitri-wasm 0.22.10] - 2021-11-12
 - `ManagedMultiResultVec` push accepts multi result
 
 ## [dharitri-wasm 0.22.9] - 2021-11-12
 - `ManagedVarArgsEager` implementation
 - `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
 
-## [dharitri-wasm 0.22.8, dharitri-codec 0.8.2] - 2021-11-12
+## [dharitri-wasm 0.22.8, dharitri-codec 0.6.6] - 2021-11-12
 - Optimized decode unsigned number from slice
 
 ## [dharitri-wasm 0.22.7] - 2021-11-12
@@ -492,12 +501,12 @@ They are:
 ## [dharitri-wasm 0.22.3] - 2021-11-10
 - Memory allocation optimisations.
 
-## [dharitri-wasm 0.22.2] - 2021-11-06
+## [dharitri-wasm 0.11.6] - 2021-11-06
 - Callback endpoint automatically created empty for contracts that have no callbacks. This is determined by the `meta` crate, based on the ABI of the contract and its modules.
 - `UnorderedSetMapper`
 - `IgnoreVarArgs` variadic argument type that ignores input
 
-## [dharitri-wasm 0.11.5] - 2021-11-04
+## [dharitri-wasm 0.22.1] - 2021-11-04
 - Made the generated code in `wasm/lib.rs` more compact with the use of macros.
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
@@ -508,7 +517,7 @@ They are:
 ## [dharitri-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `dharitri-wasm-debug`
 
-## [dharitri-wasm 0.21.1, dharitri-codec 0.6.5, denali 0.11.1] - 2021-10-26
+## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.11.1] - 2021-10-26
 - Relative path improvements and fixes in `dharitri-wasm-debug`:
 	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
 	- debugging now works seamlessly, without needing to temporarily change paths in the tests

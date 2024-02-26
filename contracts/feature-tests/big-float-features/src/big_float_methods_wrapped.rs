@@ -73,7 +73,7 @@ pub trait BigFloatWrappedMethods: big_float_methods::BigFloatMethods {
     }
 
     #[endpoint]
-    fn big_float_from_i32_wrapped(&self, small_value: i32) -> BigInt {
+    fn big_float_from_i9_9_wrapped(&self, small_value: i32) -> BigInt {
         let number = BigFloat::from(small_value);
         number.to_fixed_point(&BigFloat::from(1))
     }

@@ -3,8 +3,8 @@ use crate::folder_structure::RelevantDirectory;
 use ruplacer::Query;
 use std::path::Path;
 
-/// Migrate `0.30` to `0.9.7`, including the version bump.
-pub fn upgrade_to_9_9(dir: &RelevantDirectory) {
+/// Migrate `0.30` to `0.31.0`, including the version bump.
+pub fn upgrade_to_9_9_0(dir: &RelevantDirectory) {
     v_0_9_9_replace_in_files(dir.path.as_ref());
 
     let (from_version, to_version) = dir.upgrade_in_progress.clone().unwrap();

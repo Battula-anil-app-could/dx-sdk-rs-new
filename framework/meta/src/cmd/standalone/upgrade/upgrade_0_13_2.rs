@@ -8,15 +8,15 @@ use crate::{
 use toml::Value;
 
 /// Migrate `0.13.1` to `0.13.2`, including the version bump.
-pub fn upgrade_to_13_2(dir: &RelevantDirectory) {
+pub fn upgrade_to_13_2_0(dir: &RelevantDirectory) {
     if dir.dir_type == DirectoryType::Contract {
-        v_0_45_prepare_meta(&dir.path);
+        v_0_13_2_prepare_meta(&dir.path);
     }
     let (from_version, to_version) = dir.upgrade_in_progress.clone().unwrap();
     version_bump_in_cargo_toml(&dir.path, &from_version, &to_version);
 }
 
-fn v_0_45_prepare_meta(sc_crate_path: &Path) {
+fn v_0_13_2_prepare_meta(sc_crate_path: &Path) {
     let cargo_toml_path = sc_crate_path.join("meta/Cargo.toml");
     assert!(
         cargo_toml_path.exists(),

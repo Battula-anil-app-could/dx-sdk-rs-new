@@ -8,10 +8,10 @@ use crate::{
 };
 
 use super::{
-    upgrade_0_9_7::upgrade_to_9_7,
-    upgrade_0_9_9::upgrade_to_9_9,
-    upgrade_0_10_9::{postprocessing_after_10_9, upgrade_to_10_9},
-    upgrade_0_13_2::upgrade_to_13_2,
+    upgrade_0_9_7::upgrade_to_9_7_0,
+    upgrade_0_9_9::upgrade_to_9_9_0,
+    upgrade_0_10_9::{postprocessing_after_10_9_0, upgrade_to_10_9_0},
+    upgrade_0_13_2::upgrade_to_13_2_0,
     upgrade_common::{cargo_check, version_bump_in_cargo_toml},
     upgrade_print::*,
 };
@@ -78,14 +78,14 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
     }
 
     if let Some((from_version, to_version)) = &dir.upgrade_in_progress {
-        if framework_version!(0.9.7) == *to_version {
-            upgrade_to_9_7(dir)
-        } else if framework_version!(0.9.9) == *to_version {
-            upgrade_to_9_9(dir)
+        if framework_version!(0.31.0) == *to_version {
+            upgrade_to_9_7_0(dir)
+        } else if framework_version!(0.32.0) == *to_version {
+            upgrade_to_9_9_0(dir)
         } else if framework_version!(0.10.9) == *to_version {
-            upgrade_to_10_9(dir)
+            upgrade_to_10_9_0(dir)
         } else if framework_version!(0.13.2) == *to_version {
-            upgrade_to_13_2(dir)
+            upgrade_to_13_2_0(dir)
         } else {
             version_bump_in_cargo_toml(&dir.path, from_version, to_version)
         }
@@ -99,7 +99,7 @@ fn upgrade_post_processing(dir: &RelevantDirectory, settings: &UpgradeSettings) 
             cargo_check(dir, settings);
         } else if framework_version!(0.10.9) == *to_version {
             print_post_processing(dir);
-            postprocessing_after_10_9(dir);
+            postprocessing_after_10_9_0(dir);
             cargo_check(dir, settings);
         }
     }

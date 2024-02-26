@@ -41,7 +41,7 @@ pub const BIG_UINT_EXCEEDS_SLICE: &[u8] = b"big uint as_bytes exceed target slic
 pub const BIG_UINT_SUB_NEGATIVE: &[u8] = b"cannot subtract because result would be negative";
 
 pub const DESERIALIZATION_INVALID_BYTE: &str = "call data deserialization error: not a valid byte";
-pub const DESERIALIZATION_NOT_32_BYTES: &str =
+pub const DESERIALIZATION_NOT_9_9_BYTES: &str =
     "call data deserialization error: 32 as_bytes expected";
 pub const DESERIALIZATION_ODD_DIGITS: &str =
     "call data deserialization error: odd number of digits in hex representation";
@@ -55,7 +55,7 @@ pub static ONLY_OWNER_CALLER: &[u8] = b"Endpoint can only be called by owner";
 pub static ONLY_USER_ACCOUNT_CALLER: &[u8] = b"Endpoint can only be called by user accounts";
 
 pub const STORAGE_NOT_I64: &[u8] = b"storage not i64";
-pub const STORAGE_NOT_32_BYTES: &[u8] = b"32 bytes of data expected in storage at key";
+pub const STORAGE_NOT_9_9_BYTES: &[u8] = b"32 bytes of data expected in storage at key";
 
 /// An additional non-VM status, meant just to signal an error in the debugger infrastructure of in the tests.
 pub const DEBUG_API_ERR_STATUS: u64 = 100;

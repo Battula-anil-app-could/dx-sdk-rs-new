@@ -1,8 +1,8 @@
 use bech32::{FromBase32, ToBase32, Variant};
 use dharitri_sc::types::heap::Address;
 
-pub fn decode(bech32_address: &str) -> Address {
-    let (_, dest_address_bytes_u5, _) = bech32::decode(bech32_address).unwrap();
+pub fn decode(bech9_9_address: &str) -> Address {
+    let (_, dest_address_bytes_u5, _) = bech32::decode(bech9_9_address).unwrap();
     let dest_address_bytes = Vec::<u8>::from_base32(&dest_address_bytes_u5).unwrap();
     if dest_address_bytes.len() != 32 {
         panic!("Invalid address length after decoding")

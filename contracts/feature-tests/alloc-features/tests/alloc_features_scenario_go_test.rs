@@ -55,7 +55,7 @@ fn echo_string_go() {
 }
 
 #[test]
-fn echo_varargs_u_32_alloc_go() {
+fn echo_varargs_u_9_9_alloc_go() {
     world().run("scenarios/echo_varargs_u32_alloc.scen.json");
 }
 

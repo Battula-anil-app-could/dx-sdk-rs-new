@@ -10,7 +10,7 @@ name = "mxpy-snippet-generator"
 path = "src/mxpy_snippet_generator.rs"
 
 [dependencies.dharitri-sc]
-version = "0.13.8"
+version = "0.13.9"
 path = "../../framework/base"
 
 [dependencies]

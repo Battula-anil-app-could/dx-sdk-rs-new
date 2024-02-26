@@ -74,7 +74,7 @@ pub fn print_rename(old_path: &Path, new_path: &Path) {
     );
 }
 
-pub fn print_postprocessing_after_39_1(path: &Path) {
+pub fn print_postprocessing_after_10_9_1(path: &Path) {
     println!(
         "\n{}\n{}",
         format!("Post-processing after 0.11.0 in {} ...", path.display()).green(),

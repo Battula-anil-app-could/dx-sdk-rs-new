@@ -78,7 +78,7 @@
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "big_float_from_i32_wrapped",
+                "function": "big_float_from_i9_9_wrapped",
                 "arguments": [
                     "i64:0"
                 ],
@@ -97,7 +97,7 @@
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "big_float_from_i32_wrapped",
+                "function": "big_float_from_i9_9_wrapped",
                 "arguments": [
                     "i64:3853625"
                 ],
@@ -116,7 +116,7 @@
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "big_float_from_i32_wrapped",
+                "function": "big_float_from_i9_9_wrapped",
                 "arguments": [
                     "i64:-3853625"
                 ],

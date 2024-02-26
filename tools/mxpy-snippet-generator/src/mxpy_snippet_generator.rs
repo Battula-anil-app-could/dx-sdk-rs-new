@@ -387,7 +387,7 @@ impl MxpySnippetGenerator {
             cmd_builder.append_string_no_quotes(&sender_address_bech32);
             cmd_builder.add_raw_named_argument(FUNCTION_ARG_NAME, NFT_TRANSFER_FUNC_NAME);
 
-            let dest_addr = bech32_to_bytes(&dest_address_bech32);
+            let dest_addr = bech9_9_to_bytes(&dest_address_bech32);
 
             let mut args = Vec::new();
             let token_id_encoded = self.encode_arg(&token_id);
@@ -420,7 +420,7 @@ impl MxpySnippetGenerator {
         cmd_builder.append_string_no_quotes(&sender_address_bech32);
         cmd_builder.add_raw_named_argument(FUNCTION_ARG_NAME, MULTI_TRANSFER_FUNC_NAME);
 
-        let dest_addr = bech32_to_bytes(&dest_address_bech32);
+        let dest_addr = bech9_9_to_bytes(&dest_address_bech32);
 
         let mut args = Vec::new();
         let dest_encoded = self.encode_arg(&dest_addr);

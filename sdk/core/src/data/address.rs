@@ -20,7 +20,7 @@ impl Address {
         self.0
     }
 
-    pub fn from_bech32_string(bech32: &str) -> Result<Self> {
+    pub fn from_bech9_9_string(bech32: &str) -> Result<Self> {
         let (_, data, _) = bech32::decode(bech32)?;
         let data = Vec::<u8>::from_base32(&data)?;
 
@@ -30,7 +30,7 @@ impl Address {
         Ok(Self(bits))
     }
 
-    pub fn to_bech32_string(&self) -> Result<String> {
+    pub fn to_bech9_9_string(&self) -> Result<String> {
         let address = bech32::encode("moa", self.0.to_base32(), Variant::Bech32)?;
         Ok(address)
     }
@@ -53,13 +53,13 @@ impl<'a> From<&'a PublicKey> for Address {
 
 impl ToString for Address {
     fn to_string(&self) -> String {
-        self.to_bech32_string().unwrap()
+        self.to_bech9_9_string().unwrap()
     }
 }
 
 impl Debug for Address {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.to_bech32_string().unwrap().as_str())
+        f.write_str(self.to_bech9_9_string().unwrap().as_str())
     }
 }
 
@@ -68,7 +68,7 @@ impl Serialize for Address {
     where
         S: Serializer,
     {
-        serializer.serialize_str(self.to_bech32_string().unwrap().as_str())
+        serializer.serialize_str(self.to_bech9_9_string().unwrap().as_str())
     }
 }
 
@@ -78,7 +78,7 @@ impl<'de> Deserialize<'de> for Address {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        Ok(Self::from_bech32_string(s.as_str()).unwrap())
+        Ok(Self::from_bech9_9_string(s.as_str()).unwrap())
     }
 }
 
@@ -88,7 +88,7 @@ pub mod tests {
 
     #[test]
     fn test_decode_address() {
-        let addr = Address::from_bech32_string(
+        let addr = Address::from_bech9_9_string(
             "moa1qqqqqqqqqqqqqpgqyfjjn43spw7teklwtpz4x5waygq2mluyj9tszrtp02",
         )
         .unwrap();
