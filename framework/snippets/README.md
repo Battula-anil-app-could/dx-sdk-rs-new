@@ -4,4 +4,4 @@ Provides basic functionality for interacting with smart contracts directly from 
 
 It a base on top of which little interaction programs (or snippets) can be written.
 
-It is largely a wrapper around `dharitri-sdk-moars` and `dharitri-chain-vm`.
+It is largely a wrapper around `dharitri-sdk-erdrs` and `dharitri-chain-vm`.

@@ -63,7 +63,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "0.14.0"
+version = "0.14.1"
 dependencies = [
  "bitflags",
  "hex-literal",
@@ -92,7 +92,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "0.14.0"
+version = "0.14.1"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -103,7 +103,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-wasm-adapter"
-version = "0.14.0"
+version = "0.14.1"
 dependencies = [
  "dharitri-sc",
 ]

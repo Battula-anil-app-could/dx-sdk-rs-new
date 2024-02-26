@@ -26,12 +26,17 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.14.0, sdk 0.10.2] - 2024-02-06
+
+## [sc 0.14.1, vm 0.6.7] - 2024-02-08
+- Post-build wasm report added to `.mxsc.json` file.
+- Fixed a dependency issue involving ed25519-dalek (downgraded dependency).
+
+## [sc 0.47.3, sdk 0.10.2] - 2024-02-06
 - SDK: changed the way to retrieve the new deployed address afte deploy/
 - Support for reading from another contract for the following storage mappers: `AddressToIdMapper`, `BiDiMapper`, `LinkedListMapper`, `SetMapper`, `SingleValueMapper`, `UniqueIdMapper`, `UnorderedSetMapper`, `UserMapper`, `VecMapper`, `WhitelistMapper`.
 - Additional methods to access data nodes directly in the `SetMapper` and `QueueMapper`.
 
-## [sc 0.47.2, codec 0.5.1, vm 0.6.6, scenario-format 0.11.6] - 2024-02-02
+## [sc 0.47.2, codec 0.5.1, vm 0.8.2, scenario-format 0.11.6] - 2024-02-02
 - Scenario testing infrastructure:
 	- The Rust VM can generate mock addresses, if not specified in advance.
 	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of mx-scenario-go.
@@ -184,7 +189,7 @@ They are:
 ## [sc 0.41.1, vm 0.3.1] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
-## [sc 0.12.0, vm 0.3.0] - 2023-05-05
+## [sc 0.12.4, vm 0.3.0] - 2023-05-05
 - Fixed compatibility with rustc v1.71.0.
 - Allocator system:
 	- Contracts can now choose their own allocator. This works in multi-contract contexts.
@@ -464,7 +469,7 @@ They are:
 - New hook for DCT local roles
 - Only-owner module annotation
 
-## [dharitri-wasm 0.23.1, dharitri-codec 0.8.3] - 2021-11-25
+## [dharitri-wasm 0.23.1, dharitri-codec 0.6.7] - 2021-11-25
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 
@@ -482,7 +487,7 @@ They are:
 - `ManagedVarArgsEager` implementation
 - `DctLocalRoleFlags`, no heap allocation in `get_dct_local_roles`
 
-## [dharitri-wasm 0.22.8, dharitri-codec 0.6.6] - 2021-11-12
+## [dharitri-wasm 0.22.8, dharitri-codec 0.8.2] - 2021-11-12
 - Optimized decode unsigned number from slice
 
 ## [dharitri-wasm 0.22.7] - 2021-11-12
@@ -516,7 +521,7 @@ They are:
 
 ## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
-- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `erdpy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
 
 ## [dharitri-wasm 0.21.2] - 2021-10-26
