@@ -8,10 +8,10 @@ use crate::{
 };
 
 use super::{
-    upgrade_0_31::upgrade_to_9_7,
-    upgrade_0_32::upgrade_to_9_9,
-    upgrade_0_39::{postprocessing_after_10_9, upgrade_to_10_9},
-    upgrade_0_45::upgrade_to_13_2,
+    upgrade_0_9_7::upgrade_to_9_7,
+    upgrade_0_9_9::upgrade_to_9_9,
+    upgrade_0_10_9::{postprocessing_after_10_9, upgrade_to_10_9},
+    upgrade_0_13_2::upgrade_to_13_2,
     upgrade_common::{cargo_check, version_bump_in_cargo_toml},
     upgrade_print::*,
 };

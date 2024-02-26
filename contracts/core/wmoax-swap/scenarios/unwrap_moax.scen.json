@@ -62,7 +62,7 @@
                     "storage": {
                         "str:wrappedMoaxTokenId": "str:MOAX-abcdef"
                     },
-                    "code": "file:../output/dharitri-wmoax-swap-sc.wasm"
+                    "code": "mxsc:../output/dharitri-wmoax-swap-sc.mxsc.json"
                 }
             }
         }

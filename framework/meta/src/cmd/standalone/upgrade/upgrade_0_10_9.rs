@@ -22,10 +22,10 @@ pub const SCENARIO_FILE_PATTERNS: &[(&str, &str)] = &[
 /// Migrate `0.38.0` to `0.10.9`, including the version bump.
 pub fn upgrade_to_10_9(dir: &RelevantDirectory) {
     if dir.dir_type == DirectoryType::Contract {
-        v_0_39_prepare_meta(&dir.path);
-        v_0_39_prepare_wasm(&dir.path);
+        v_0_10_9_prepare_meta(&dir.path);
+        v_0_10_9_prepare_wasm(&dir.path);
     }
-    v_0_39_replace_in_files(&dir.path);
+    v_0_10_9_replace_in_files(&dir.path);
     rename_files(dir.path.as_ref(), SCENARIO_FILE_PATTERNS);
 
     let (from_version, to_version) = dir.upgrade_in_progress.clone().unwrap();
@@ -41,7 +41,7 @@ pub fn postprocessing_after_10_9(dir: &RelevantDirectory) {
     re_generate_wasm_crate(dir);
 }
 
-fn v_0_39_prepare_meta(sc_crate_path: &Path) {
+fn v_0_10_9_prepare_meta(sc_crate_path: &Path) {
     let cargo_toml_path = sc_crate_path.join("meta/Cargo.toml");
     assert!(
         cargo_toml_path.exists(),
@@ -65,7 +65,7 @@ fn v_0_39_prepare_meta(sc_crate_path: &Path) {
     meta_cargo_toml.save_to_file(&cargo_toml_path);
 }
 
-fn v_0_39_prepare_wasm(sc_crate_path: &Path) {
+fn v_0_10_9_prepare_wasm(sc_crate_path: &Path) {
     let cargo_toml_path = sc_crate_path.join("wasm/Cargo.toml");
     assert!(
         cargo_toml_path.exists(),
@@ -81,7 +81,7 @@ fn v_0_39_prepare_wasm(sc_crate_path: &Path) {
     meta_cargo_toml.save_to_file(&cargo_toml_path);
 }
 
-fn v_0_39_replace_in_files(sc_crate_path: &Path) {
+fn v_0_10_9_replace_in_files(sc_crate_path: &Path) {
     replace_in_files(
         sc_crate_path,
         "*Cargo.toml",

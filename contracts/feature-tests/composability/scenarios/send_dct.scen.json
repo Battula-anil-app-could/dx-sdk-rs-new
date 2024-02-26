@@ -11,7 +11,7 @@
                     "dct": {
                         "str:SENDDCT": "1,000"
                     },
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "mxsc:../forwarder/output/forwarder.mxsc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",
@@ -89,7 +89,7 @@
                         "str:SENDDCT": "800"
                     },
                     "storage": {},
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "mxsc:../forwarder/output/forwarder.mxsc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",

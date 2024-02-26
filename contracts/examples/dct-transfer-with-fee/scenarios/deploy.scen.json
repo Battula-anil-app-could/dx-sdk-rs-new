@@ -54,7 +54,7 @@
             "id": "1",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/dct-transfer-with-fee.wasm",
+                "contractCode": "mxsc:../output/dct-transfer-with-fee.mxsc.json",
                 "arguments": [],
                 "gasLimit": "5,000,000",
                 "gasPrice": "0"
@@ -109,7 +109,7 @@
                 "sc:dct-transfer-with-fee": {
                     "nonce": "0",
                     "storage": {},
-                    "code": "file:../output/dct-transfer-with-fee.wasm",
+                    "code": "mxsc:../output/dct-transfer-with-fee.mxsc.json",
                     "owner": "address:owner"
                 }
             }

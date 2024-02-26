@@ -81,7 +81,7 @@
                         "str:token_fee|nested:str:MFNFT-567890": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:5",
                         "str:token_fee|nested:str:WMOAX-012345": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:10"
                     },
-                    "code": "file:../output/dct-transfer-with-fee.wasm",
+                    "code": "mxsc:../output/dct-transfer-with-fee.mxsc.json",
                     "owner": "address:owner"
                 }
             }

@@ -53,7 +53,7 @@
                         "str:tokenIdentifier": "str:MOAX",
                         "str:deposit|address:donor1": "250,000,000,000"
                     },
-                    "code": "file:../output/crowdfunding-dct.wasm"
+                    "code": "mxsc:../output/crowdfunding-dct.mxsc.json"
                 }
             }
         },

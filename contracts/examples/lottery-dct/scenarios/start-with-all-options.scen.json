@@ -66,7 +66,7 @@
                         },
                         "+": ""
                     },
-                    "code": "file:../output/lottery-dct.wasm"
+                    "code": "mxsc:../output/lottery-dct.mxsc.json"
                 }
             }
         }

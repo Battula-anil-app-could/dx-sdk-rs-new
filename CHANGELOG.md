@@ -26,7 +26,12 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.7, codec 0.4.9, vm 0.6.4, scenario-format 0.11.4] - 2024-01-23
+## [sc 0.13.8, codec 0.5.0, vm 0.6.5, scenario-format 0.11.5] - 2024-01-29
+- Blockchain hooks: `get_code_metadata`, `is_builtin_function`.
+- Support for `mxsc:` syntax in scenarios.
+- Updated dependencies.
+
+## [sc 0.47.0, codec 0.18.4, vm 0.8.0, scenario-format 0.22.0] - 2024-01-23
 - Added support for the code metadata in the Rust VM and Rust scenarios backend.
 - `sc-meta`:
 	- New `mx-scenario-go` installer;
@@ -159,7 +164,7 @@ They are:
 - Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
 - Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
 
-## [sc 0.41.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
+## [sc 0.12.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
 ## [sc 0.41.1, vm 0.10.1] - 2023-05-15
@@ -182,7 +187,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.40.0, vm 0.2.0] - 2023-04-20
+## [sc 0.11.8, vm 0.2.0] - 2023-04-20
 - Call value `moax_value` and `all_dct_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -213,7 +218,7 @@ They are:
 
 ## [sc 0.39.3, vm 0.1.3] - 2023-01-26
 - `dharitri-sc-meta` improvements:
-	- `upgrade` can handle crates as early as `0.28.0`;
+	- `upgrade` can handle crates as early as `0.9.2`;
 	- `--ignore` flag for the `all` command: will ignore folders with given names, by default set to `target`;
 	- `info` command, shows contracts and contract library crates with their respective framework versions;
 	- `--mir` flag when building, also emits MIR files;
@@ -223,10 +228,10 @@ They are:
 ## [sc 0.39.2, vm 0.1.2] - 2023-01-19
 - `dharitri-sc-meta` improvements:
 	- `all` command that allows calling all contract meta crates in a folder;
-	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
+	- `upgrade` also re-generates wasm crates after reaching 0.11.0.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
+## [sc 0.11.0, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -321,7 +326,7 @@ They are:
 - Testing and debugging environment aligned with VM version 1.4.53.
 - Call value and token data infrastructure additional cleanup.
 
-## [dharitri-wasm 0.32.0, denali 0.14.0] - 2022-06-03
+## [dharitri-wasm 0.9.9, denali 0.14.0] - 2022-06-03
 - VM new functionality added as part of the environment interface 1.2:
 	- Fully managed functionality for elliptic curves (no allocator);
 	- Fully managed cryptographic functions (no allocator);
@@ -345,7 +350,7 @@ They are:
 ## [dharitri-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
-## [dharitri-wasm 0.31.0, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
+## [dharitri-wasm 0.9.7, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -366,7 +371,7 @@ They are:
 - Rust testing framework: Allow checking NFT balance without also checking attributes.
 - View for `MapMapper`.
 
-## [dharitri-wasm 0.9.5] - 2022-03-03
+## [dharitri-wasm 0.29.3] - 2022-03-03
 - `ManagedVec` backwards compatible implementation for `set`.
 - Implemented `ManagedVecItem` for `Option<T>`.
 
@@ -382,7 +387,7 @@ They are:
 - Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
 - Git tag/commit info in ABI.
 
-## [dharitri-wasm 0.28.0, dharitri-codec 0.9.0, denali 0.12.0] - 2022-02-22
+## [dharitri-wasm 0.9.2, dharitri-codec 0.9.0, denali 0.12.0] - 2022-02-22
 - Major dharitri-codec refactor:
 	- Redesigned the error handling for single value encoding
 	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
@@ -452,11 +457,11 @@ They are:
 ## [dharitri-wasm 0.23.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
-## [dharitri-wasm 0.22.11] - 2021-11-17
+## [dharitri-wasm 0.11.51] - 2021-11-17
 - Derive `ManagedVecItem` generics fix
 - Constructor can reside in module
 
-## [dharitri-wasm 0.22.10] - 2021-11-12
+## [dharitri-wasm 0.11.50] - 2021-11-12
 - `ManagedMultiResultVec` push accepts multi result
 
 ## [dharitri-wasm 0.22.9] - 2021-11-12
@@ -492,10 +497,10 @@ They are:
 - `UnorderedSetMapper`
 - `IgnoreVarArgs` variadic argument type that ignores input
 
-## [dharitri-wasm 0.22.1] - 2021-11-04
+## [dharitri-wasm 0.11.5] - 2021-11-04
 - Made the generated code in `wasm/lib.rs` more compact with the use of macros.
 
-## [dharitri-wasm 0.11.4] - 2021-11-02
+## [dharitri-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
 - Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `moapy`.
 - Renamed feature `arwen-tests` to `denali-go-tests`
@@ -503,7 +508,7 @@ They are:
 ## [dharitri-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `dharitri-wasm-debug`
 
-## [dharitri-wasm 0.21.1, dharitri-codec 0.8.1, denali 0.11.1] - 2021-10-26
+## [dharitri-wasm 0.21.1, dharitri-codec 0.6.5, denali 0.11.1] - 2021-10-26
 - Relative path improvements and fixes in `dharitri-wasm-debug`:
 	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
 	- debugging now works seamlessly, without needing to temporarily change paths in the tests
@@ -511,7 +516,7 @@ They are:
 - Debugger builtin function mocks check for DCT roles
 - ABI provides definitions for DctTokenPayment, DctTokenData, DctTokenType
 
-## [dharitri-wasm 0.21.0, dharitri-codec 0.6.4, denali 0.11.0] - 2021-10-22
+## [dharitri-wasm 0.21.0, dharitri-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `dharitri-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -573,7 +578,7 @@ They are:
 ## [dharitri-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [dharitri-wasm 0.18.0, denali 0.6.4] - 2021-07-28
+## [dharitri-wasm 0.18.0, denali 0.8.0] - 2021-07-28
 
 - New math hooks exposed from Arwen:
 	- `pow`, `log2`, `sqrt`
@@ -779,9 +784,9 @@ They are:
 ## [dharitri-wasm 0.9.0, dharitri-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
-- Completely ditched the approach from dharitri-wasm 0.6.4.
+- Completely ditched the approach from dharitri-wasm 0.8.0.
 
-## [dharitri-wasm 0.6.4, dharitri-codec 0.2.0] - 2020-11-02
+## [dharitri-wasm 0.8.0, dharitri-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.

@@ -3,18 +3,21 @@ use crate::folder_structure::RelevantDirectory;
 use ruplacer::Query;
 use std::path::Path;
 
-/// Migrate `0.30` to `0.31.0`, including the version bump.
-pub fn upgrade_to_9_7(dir: &RelevantDirectory) {
-    v_0_31_replace_in_files(dir.path.as_ref());
+/// Migrate `0.30` to `0.9.7`, including the version bump.
+pub fn upgrade_to_9_9(dir: &RelevantDirectory) {
+    v_0_9_9_replace_in_files(dir.path.as_ref());
 
     let (from_version, to_version) = dir.upgrade_in_progress.clone().unwrap();
     version_bump_in_cargo_toml(&dir.path, &from_version, &to_version);
 }
 
-fn v_0_31_replace_in_files(sc_crate_path: &Path) {
+fn v_0_9_9_replace_in_files(sc_crate_path: &Path) {
     replace_in_files(
         sc_crate_path,
         "*rs",
-        &[Query::substring("#[var_args]", "")][..],
+        &[Query::substring(
+            "TokenIdentifier::moax()",
+            "MoaxOrDctTokenIdentifier::moax()",
+        )][..],
     );
 }

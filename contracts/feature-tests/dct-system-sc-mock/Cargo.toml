@@ -9,9 +9,9 @@ publish = false
 path = "src/dct_system_sc_mock.rs"
 
 [dependencies.dharitri-sc]
-version = "0.13.7"
+version = "0.13.8"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.13.7"
+version = "0.13.8"
 path = "../../../framework/scenario"
