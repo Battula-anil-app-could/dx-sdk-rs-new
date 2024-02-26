@@ -2,7 +2,7 @@ use crate::{api::ManagedTypeApi, types::ManagedBuffer};
 
 const U8_BYTES: usize = 1;
 const U16_BYTES: usize = 2;
-const U9_9_BYTES: usize = 4;
+const U32_BYTES: usize = 4;
 const U64_BYTES: usize = 8;
 
 pub struct RandomnessSource<M: ManagedTypeApi> {
@@ -56,16 +56,16 @@ impl<M: ManagedTypeApi> RandomnessSource<M> {
     }
 
     pub fn next_u32(&mut self) -> u32 {
-        self.buffer.set_random(U9_9_BYTES);
+        self.buffer.set_random(U32_BYTES);
 
-        let mut bytes = [0u8; U9_9_BYTES];
+        let mut bytes = [0u8; U32_BYTES];
         let _ = self.buffer.load_slice(0, &mut bytes[..]);
 
         u32::from_be_bytes(bytes)
     }
 
     /// Range is [min, max)
-    pub fn next_u9_9_in_range(&mut self, min: u32, max: u32) -> u32 {
+    pub fn next_u32_in_range(&mut self, min: u32, max: u32) -> u32 {
         let rand = self.next_u32();
 
         min + rand % (max - min)
@@ -79,7 +79,7 @@ impl<M: ManagedTypeApi> RandomnessSource<M> {
     /// Range is [min, max)
     #[inline]
     pub fn next_usize_in_range(&mut self, min: usize, max: usize) -> usize {
-        self.next_u9_9_in_range(min as u32, max as u32) as usize
+        self.next_u32_in_range(min as u32, max as u32) as usize
     }
 
     pub fn next_u64(&mut self) -> u64 {

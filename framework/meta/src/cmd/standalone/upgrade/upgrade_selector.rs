@@ -78,9 +78,9 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
     }
 
     if let Some((from_version, to_version)) = &dir.upgrade_in_progress {
-        if framework_version!(0.31.0) == *to_version {
+        if framework_version!(0.9.7) == *to_version {
             upgrade_to_9_7_0(dir)
-        } else if framework_version!(0.32.0) == *to_version {
+        } else if framework_version!(0.9.9) == *to_version {
             upgrade_to_9_9_0(dir)
         } else if framework_version!(0.10.9) == *to_version {
             upgrade_to_10_9_0(dir)

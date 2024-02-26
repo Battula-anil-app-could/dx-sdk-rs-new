@@ -17,7 +17,7 @@ enum TrickyEnumWithDefault {
         int: u16,
         seq: Vec<u8>,
         another_byte: u8,
-        uint_32: u32,
+        uint_9_9: u32,
         uint_64: u64,
     },
 }

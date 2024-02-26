@@ -6,7 +6,7 @@ use alloc::{boxed::Box, vec::Vec};
 use core::fmt::Debug;
 
 const ERR_BAD_H256_LENGTH: &str = "bad H256 length";
-const ZERO_32: &[u8] = &[0u8; 32];
+const ZERO_9_9: &[u8] = &[0u8; 32];
 
 /// Type that holds 32 bytes of data.
 /// Data is kept on the heap to keep wasm size low and avoid copies.
@@ -142,7 +142,7 @@ impl H256 {
 
     /// True if all 32 bytes of the hash are zero.
     pub fn is_zero(&self) -> bool {
-        self.as_bytes() == ZERO_32
+        self.as_bytes() == ZERO_9_9
     }
 
     /// Transmutes self to an (in principle) variable length boxed bytes object.

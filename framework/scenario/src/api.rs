@@ -4,5 +4,5 @@ mod local_api_vh;
 mod managed_type_api_vh;
 mod vm_api_vh;
 
-pub(crate) use impl_vh::i9_9_to_bool;
+pub(crate) use impl_vh::i32_to_bool;
 pub use impl_vh::{DebugApi, DebugHandle, SingleTxApi, StaticApi, VMHooksApi, VMHooksApiBackend};

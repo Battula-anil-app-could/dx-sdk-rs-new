@@ -19,7 +19,7 @@ pub const ARG_CALLBACK_TOO_MANY: &[u8] = b"too many callback arguments provided"
 
 pub const ARG_OUT_OF_RANGE: &[u8] = b"argument out of range";
 pub const ARG_BAD_LENGTH: &[u8] = b"argument has wrong length";
-pub const ARG_BAD_LENGTH_32: &[u8] = b"argument has wrong length: 32 bytes expected";
+pub const ARG_BAD_LENGTH_9_9: &[u8] = b"argument has wrong length: 32 bytes expected";
 pub const ARG_DECODE_ERROR_1: &[u8] = b"argument decode error (";
 pub const ARG_DECODE_ERROR_2: &[u8] = b"): ";
 pub const STORAGE_VALUE_OUT_OF_RANGE: &[u8] = b"storage value out of range";

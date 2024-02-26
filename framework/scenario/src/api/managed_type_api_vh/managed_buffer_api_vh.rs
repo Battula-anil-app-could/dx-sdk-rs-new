@@ -1,4 +1,4 @@
-use crate::api::{i9_9_to_bool, VMHooksApi, VMHooksApiBackend};
+use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
 use dharitri_chain_vm::{executor::MemPtr, mem_conv};
 use dharitri_sc::{
     api::{use_raw_handle, HandleConstraints, InvalidSliceError, ManagedBufferApiImpl},
@@ -154,7 +154,7 @@ impl<VHB: VMHooksApiBackend> ManagedBufferApiImpl for VMHooksApi<VHB> {
         handle1: Self::ManagedBufferHandle,
         handle2: Self::ManagedBufferHandle,
     ) -> bool {
-        i9_9_to_bool(self.with_vm_hooks_ctx_2(&handle1, &handle2, |vh| {
+        i32_to_bool(self.with_vm_hooks_ctx_2(&handle1, &handle2, |vh| {
             vh.mbuffer_eq(
                 handle1.get_raw_handle_unchecked(),
                 handle2.get_raw_handle_unchecked(),

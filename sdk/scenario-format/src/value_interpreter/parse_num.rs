@@ -7,7 +7,7 @@ pub fn try_parse_fixed_width(s: &str) -> Option<Vec<u8>> {
         return Some(parse_fixed_width_unsigned(stripped, 8));
     }
 
-    if let Some(stripped) = s.strip_prefix(U9_9_PREFIX) {
+    if let Some(stripped) = s.strip_prefix(U32_PREFIX) {
         return Some(parse_fixed_width_unsigned(stripped, 4));
     }
 
@@ -23,7 +23,7 @@ pub fn try_parse_fixed_width(s: &str) -> Option<Vec<u8>> {
         return Some(parse_fixed_width_signed(stripped, 8));
     }
 
-    if let Some(stripped) = s.strip_prefix(I9_9_PREFIX) {
+    if let Some(stripped) = s.strip_prefix(I32_PREFIX) {
         return Some(parse_fixed_width_signed(stripped, 4));
     }
 

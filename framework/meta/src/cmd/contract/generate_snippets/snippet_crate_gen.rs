@@ -69,7 +69,7 @@ path = "src/{SNIPPETS_SOURCE_FILE_NAME}"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "0.13.9"
+version = "0.14.0"
 
 # [workspace]
 

@@ -26,7 +26,12 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 0.13.9, codec 0.5.1, vm 0.6.6, scenario-format 0.11.6] - 2024-02-02
+## [sc 0.14.0, sdk 0.10.2] - 2024-02-06
+- SDK: changed the way to retrieve the new deployed address afte deploy/
+- Support for reading from another contract for the following storage mappers: `AddressToIdMapper`, `BiDiMapper`, `LinkedListMapper`, `SetMapper`, `SingleValueMapper`, `UniqueIdMapper`, `UnorderedSetMapper`, `UserMapper`, `VecMapper`, `WhitelistMapper`.
+- Additional methods to access data nodes directly in the `SetMapper` and `QueueMapper`.
+
+## [sc 0.47.2, codec 0.5.1, vm 0.6.6, scenario-format 0.11.6] - 2024-02-02
 - Scenario testing infrastructure:
 	- The Rust VM can generate mock addresses, if not specified in advance.
 	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of mx-scenario-go.
@@ -58,7 +63,7 @@ They are:
 - Removed `hashbrown` dependency from framework.
 - Imports in output now sorted.
 
-## [sc 0.45.2, codec 0.18.3, vm 0.7.1, scenario-format 0.21.1, sdk 0.10.1] - 2023-12-18
+## [sc 0.45.2, codec 0.18.3, vm 0.7.1, scenario-format 0.21.1, sdk 0.3.1] - 2023-12-18
 - Updated framework dependencies to the latest versions: syn, bitflags, wasmparser, base64, sha2, sha3, itertools, hmac, pem, pbkdf2, etc.
 - `sc-meta` improvements:
 	- `overflow-checks` field in `sc-config.toml`;
@@ -173,10 +178,10 @@ They are:
 - Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
 - Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
 
-## [sc 0.12.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
+## [sc 0.12.2, codec 0.17.2, vm 0.10.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
-## [sc 0.41.1, vm 0.10.1] - 2023-05-15
+## [sc 0.41.1, vm 0.3.1] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
 ## [sc 0.12.0, vm 0.3.0] - 2023-05-05
@@ -196,7 +201,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.40.0, vm 0.2.0] - 2023-04-20
+## [sc 0.11.8, vm 0.2.0] - 2023-04-20
 - Call value `moax_value` and `all_dct_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -335,7 +340,7 @@ They are:
 - Testing and debugging environment aligned with VM version 1.4.53.
 - Call value and token data infrastructure additional cleanup.
 
-## [dharitri-wasm 0.32.0, denali 0.14.0] - 2022-06-03
+## [dharitri-wasm 0.9.9, denali 0.14.0] - 2022-06-03
 - VM new functionality added as part of the environment interface 1.2:
 	- Fully managed functionality for elliptic curves (no allocator);
 	- Fully managed cryptographic functions (no allocator);
@@ -359,7 +364,7 @@ They are:
 ## [dharitri-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
-## [dharitri-wasm 0.31.0, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
+## [dharitri-wasm 0.9.7, dharitri-codec 0.11.0, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -762,10 +767,10 @@ They are:
 - ABI generation framework
 - New example contracts
 
-## [dharitri-wasm 0.9.8, dharitri-codec 0.3.2, denali 0.10.1] - 2020-11-23
+## [dharitri-wasm 0.9.8, dharitri-codec 0.10.2, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
-## [dharitri-wasm 0.9.7, dharitri-codec 0.10.1, denali 0.3.0] - 2020-11-11
+## [dharitri-wasm 0.9.7, dharitri-codec 0.3.1, denali 0.3.0] - 2020-11-11
 - Monomorphization via codec trait instead of TypeInfo for arguments and storage
 - Reorganized all contracts in the `contracts` folder
 
@@ -890,7 +895,7 @@ They are:
 	- Generate storage getters & setters
 	- Variable length storage keys
 
-## [dharitri-wasm 0.3.2] - 2020-04-13
+## [dharitri-wasm 0.10.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
 ## [dharitri-wasm 0.3.0] - 2020-04-03

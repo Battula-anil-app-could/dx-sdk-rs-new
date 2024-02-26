@@ -30,7 +30,7 @@ impl Address {
         Ok(Self(bits))
     }
 
-    pub fn to_bech9_9_string(&self) -> Result<String> {
+    pub fn to_bech32_string(&self) -> Result<String> {
         let address = bech32::encode("moa", self.0.to_base32(), Variant::Bech32)?;
         Ok(address)
     }
@@ -53,13 +53,13 @@ impl<'a> From<&'a PublicKey> for Address {
 
 impl ToString for Address {
     fn to_string(&self) -> String {
-        self.to_bech9_9_string().unwrap()
+        self.to_bech32_string().unwrap()
     }
 }
 
 impl Debug for Address {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.to_bech9_9_string().unwrap().as_str())
+        f.write_str(self.to_bech32_string().unwrap().as_str())
     }
 }
 
@@ -68,7 +68,7 @@ impl Serialize for Address {
     where
         S: Serializer,
     {
-        serializer.serialize_str(self.to_bech9_9_string().unwrap().as_str())
+        serializer.serialize_str(self.to_bech32_string().unwrap().as_str())
     }
 }
 

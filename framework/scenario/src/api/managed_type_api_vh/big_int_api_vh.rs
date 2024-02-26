@@ -2,7 +2,7 @@ use core::cmp::Ordering;
 
 use dharitri_sc::api::{use_raw_handle, BigIntApiImpl, HandleConstraints, Sign};
 
-use crate::api::{i9_9_to_bool, VMHooksApi, VMHooksApiBackend};
+use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
 
 macro_rules! binary_op_method {
     ($api_method_name:ident, $hook_name:ident) => {
@@ -51,7 +51,7 @@ impl<VHB: VMHooksApiBackend> BigIntApiImpl for VMHooksApi<VHB> {
     fn bi_to_i64(&self, reference: Self::BigIntHandle) -> Option<i64> {
         self.with_vm_hooks_ctx_1(&reference, |vh| {
             let is_i64_result = vh.big_int_is_int64(reference.get_raw_handle_unchecked());
-            if i9_9_to_bool(is_i64_result) {
+            if i32_to_bool(is_i64_result) {
                 Some(vh.big_int_get_int64(reference.get_raw_handle_unchecked()))
             } else {
                 None

@@ -10,7 +10,7 @@ pub struct StructExampleAlloc {
     /// Bytes buffer.
     pub seq: Vec<u8>,
     pub another_byte: u8,
-    pub uint_32: u32,
+    pub uint_9_9: u32,
     pub uint_64: u64,
     pub boxed_bytes: BoxedBytes,
 }

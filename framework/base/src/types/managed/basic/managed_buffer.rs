@@ -279,7 +279,7 @@ impl<M: ManagedTypeApi> ManagedBuffer<M> {
     }
 
     /// Utility function: helps serialize lengths (or any other value of type usize) easier.
-    pub fn append_u9_9_be(&mut self, item: u32) {
+    pub fn append_u32_be(&mut self, item: u32) {
         M::managed_type_impl().mb_append_bytes(self.handle.clone(), &item.to_be_bytes()[..]);
     }
 

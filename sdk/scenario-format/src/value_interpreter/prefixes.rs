@@ -5,14 +5,14 @@ pub(super) const SC_ADDR_PREFIX: &str = "sc:";
 pub(super) const FILE_PREFIX: &str = "file:";
 pub(super) const MXSC_PREFIX: &str = "mxsc:";
 pub(super) const KECCAK256_PREFIX: &str = "keccak256:";
-pub(super) const BECH9_9_PREFIX: &str = "bech32:";
+pub(super) const BECH32_PREFIX: &str = "bech32:";
 
 pub(super) const U64_PREFIX: &str = "u64:";
-pub(super) const U9_9_PREFIX: &str = "u32:";
+pub(super) const U32_PREFIX: &str = "u32:";
 pub(super) const U16_PREFIX: &str = "u16:";
 pub(super) const U8_PREFIX: &str = "u8:";
 pub(super) const I64_PREFIX: &str = "i64:";
-pub(super) const I9_9_PREFIX: &str = "i32:";
+pub(super) const I32_PREFIX: &str = "i32:";
 pub(super) const I16_PREFIX: &str = "i16:";
 pub(super) const I8_PREFIX: &str = "i8:";
 

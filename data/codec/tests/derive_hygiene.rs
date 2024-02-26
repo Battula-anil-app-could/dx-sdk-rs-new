@@ -49,7 +49,7 @@ pub struct Struct {
     pub int: u16,
     pub seq: Vec<u8>,
     pub another_byte: u8,
-    pub uint_32: u32,
+    pub uint_9_9: u32,
     pub uint_64: u64,
     buffer: bool, // used to occur in derive implementation
     dest: bool,   // used to occur in derive implementation
@@ -79,7 +79,7 @@ enum EnumWithEverything {
         int: u16,
         seq: Vec<u8>,
         another_byte: u8,
-        uint_32: u32,
+        uint_9_9: u32,
         uint_64: u64,
         buffer: bool, // used to occur in derive implementation
         dest: bool,   // used to occur in derive implementation

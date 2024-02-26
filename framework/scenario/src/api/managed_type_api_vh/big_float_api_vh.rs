@@ -2,7 +2,7 @@ use core::cmp::Ordering;
 
 use dharitri_sc::api::{use_raw_handle, BigFloatApiImpl, HandleConstraints, Sign};
 
-use crate::api::{i9_9_to_bool, VMHooksApi, VMHooksApiBackend};
+use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
 
 macro_rules! binary_op_wrapper {
     ($method_name:ident, $hook_name:ident) => {
@@ -117,7 +117,7 @@ impl<VHB: VMHooksApiBackend> BigFloatApiImpl for VMHooksApi<VHB> {
     unary_op_method_big_int_handle! {bf_trunc , big_float_truncate}
 
     fn bf_is_bi(&self, x: Self::BigFloatHandle) -> bool {
-        i9_9_to_bool(
+        i32_to_bool(
             self.with_vm_hooks_ctx_1(&x, |vh| vh.big_float_is_int(x.get_raw_handle_unchecked())),
         )
     }

@@ -8,7 +8,7 @@ pub struct StructOrDefault {
     pub int: u16,
     pub seq: Vec<u8>,
     pub another_byte: u8,
-    pub uint_32: u32,
+    pub uint_9_9: u32,
     pub uint_64: u64,
 }
 
@@ -24,7 +24,7 @@ impl codec::DecodeDefault for StructOrDefault {
             int: 5,
             seq: vec![],
             another_byte: 0,
-            uint_32: 0,
+            uint_9_9: 0,
             uint_64: 0,
         }
     }
@@ -36,7 +36,7 @@ fn struct_default() {
         int: 5,
         seq: vec![],
         another_byte: 0,
-        uint_32: 0,
+        uint_9_9: 0,
         uint_64: 0,
     };
 
@@ -49,7 +49,7 @@ fn struct_or_default_not_default() {
         int: 0x42,
         seq: vec![0x1, 0x2, 0x3, 0x4, 0x5],
         another_byte: 0x6,
-        uint_32: 0x12345,
+        uint_9_9: 0x12345,
         uint_64: 0x123456789,
     };
 
@@ -59,7 +59,7 @@ fn struct_or_default_not_default() {
 		/* seq length */ 0, 0, 0, 5, 
 		/* seq contents */ 1, 2, 3, 4, 5,
 		/* another_byte */ 6,
-		/* uint_32 */ 0x00, 0x01, 0x23, 0x45,
+		/* uint_9_9 */ 0x00, 0x01, 0x23, 0x45,
 		/* uint_64 */ 0x00, 0x00, 0x00, 0x01, 0x23, 0x45, 0x67, 0x89,
 	];
 

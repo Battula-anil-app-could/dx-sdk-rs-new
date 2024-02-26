@@ -1,5 +1,4 @@
 #![no_std]
-
 dharitri_sc::imports!();
 
 #[dharitri_sc::contract]

@@ -17,7 +17,7 @@ enum EnumWithDefault {
         int: u16,
         seq: Vec<u8>,
         another_byte: u8,
-        uint_32: u32,
+        uint_9_9: u32,
         uint_64: u64,
     },
 }
@@ -48,7 +48,7 @@ fn enum_not_defaults() {
         int: 0x42,
         seq: vec![0x1, 0x2, 0x3, 0x4, 0x5],
         another_byte: 0x6,
-        uint_32: 0x12345,
+        uint_9_9: 0x12345,
         uint_64: 0x123456789,
     };
 
@@ -59,7 +59,7 @@ fn enum_not_defaults() {
 		/* seq length */ 0, 0, 0, 5,
 		/* seq contents */ 1, 2, 3, 4, 5,
 		/* another_byte */ 6,
-		/* uint_32 */ 0x00, 0x01, 0x23, 0x45,
+		/* uint_9_9 */ 0x00, 0x01, 0x23, 0x45,
 		/* uint_64 */ 0x00, 0x00, 0x00, 0x01, 0x23, 0x45, 0x67, 0x89,
 	];
 

@@ -64,7 +64,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         big_float_from_big_uint_1_wrapped => big_float_from_big_uint_1_wrapped
         big_float_from_big_uint_2_wrapped => big_float_from_big_uint_2_wrapped
         big_float_from_i64_wrapped => big_float_from_i64_wrapped
-        big_float_from_i9_9_wrapped => big_float_from_i9_9_wrapped
+        big_float_from_i32_wrapped => big_float_from_i32_wrapped
         big_float_from_i16_wrapped => big_float_from_i16_wrapped
         big_float_from_i8_wrapped => big_float_from_i8_wrapped
         big_float_from_isize_wrapped => big_float_from_isize_wrapped
